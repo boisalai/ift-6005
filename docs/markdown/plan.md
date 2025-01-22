@@ -105,13 +105,13 @@ graph LR
 ```mermaid
 graph TD
     U[Utilisateur] <--> MA[Agent principal de conversation]
-    MA <-->| coordonne | A1[Agent de génération de requêtes]
+    MA <-->|&nbsp;coordonne&nbsp;| A1[Agent de génération de requêtes]
     MA <-->|&nbsp;coordonne&nbsp;| A2[Agent d'enrichissement]
-    MA <-->|coordonne| A3[Agent de visualisation]
+    MA <-->|&nbsp;coordonne&nbsp;| A3[Agent de visualisation]
     
-    A1 <-->|Requête| DB[(OpenFoodFacts)]
-    A2 <-->|Interroge| G[Guide alimentaire canadien]
-    A3 <-->|Génère| V[Graphiques]
+    A1 <-->|&nbsp;interroge&nbsp;| DB[(OpenFoodFacts)]
+    A2 <-->|&nbsp;cherche&nbsp;| G[Guide alimentaire canadien]
+    A3 <-->|&nbsp;génère&nbsp;| V[Graphiques]
     
     classDef coord fill:#4a86e8,color:white
     class MA coord

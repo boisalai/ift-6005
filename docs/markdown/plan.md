@@ -17,7 +17,7 @@ L'objectif principal est de développer un agent conversationnel capable d'inter
 sur près de 95 000 produits alimentaires canadiens d'[Open Food Facts](https://world.openfoodfacts.org/). Le système devra :
 
 - Interpréter des questions en langage naturel (multilingue) sur les produits alimentaires
-- Générer et exécuter des requêtes DuckDB appropriées
+- Générer et exécuter des requêtes appropriées sur la base de données
 - Fournir des réponses pertinentes sous forme de texte, tableaux ou visualisations
 - Compléter les réponses avec des informations du [Guide alimentaire canadien](https://guide-alimentaire.canada.ca/fr/) 
   si nécessaire
@@ -32,7 +32,7 @@ Le projet inclut&nbsp;:
 - Documentation technique et pédagogique complète
 - Métriques d'évaluation de la qualité des réponses
 
-Le projet n'inclut pas :
+Le projet n'inclut pas&nbsp;:
 
 - Interface utilisateur graphique (utilisation en ligne de commande)
 - Mise à jour en temps réel des données Open Food Facts
@@ -59,10 +59,10 @@ Le système sera construit selon une architecture à base d'agents multiples :
 
 Les technologies et outils utilisés seront les suivants :
 
-- **Base**: Python 3.10+
-- **Agents**: smolagents (HuggingFace)
-- **LLM**: ollama avec mistral:7b et deepseek-r1-distill-qwen:7b
-- **Base de données**: DuckDB
+- **Base**&nbsp;: Python 3.10+
+- **Agents**&nbsp;: smolagents (HuggingFace)
+- **LLM**&nbsp;: [Ollama](https://ollama.com/) avec un ou plusieurs grands modèles de langages (ex. Mistral-7B, DeepSeek-R1-Distill-Qwen-7B)
+- **Base de données**: [DuckDB]
 - **Visualisation**: Matplotlib
 - **Tests**: pytest
 - **Livrables**: 

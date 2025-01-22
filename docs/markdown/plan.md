@@ -56,14 +56,40 @@ Le système sera construit selon une architecture à base d'agents multiples :
   - Génère des représentations visuelles pertinentes
   - Choisit le format de présentation optimal
 
-Les technologies et outils utilisés seront les suivants :
+```mermaid
+graph TD
+    subgraph Système Multi-Agents
+        MA[Agent Principal de Conversation<br>(Multi-Agent Coordinator)]
+        MA -->|coordonne| A1
+        MA -->|coordonne| A2
+        MA -->|coordonne| A3
+        
+        A1[Agent de Génération de Requêtes<br>Mistral-7B/DeepSeek-R1-7B via Ollama]
+        A2[Agent d'Enrichissement<br>Guide Alimentaire Canadien]
+        A3[Agent de Visualisation<br>Matplotlib]
+        
+        MA <-->|gère le dialogue| Utilisateur
+        A1 <-->|requêtes SQL| DuckDB[(Base de données<br>Open Food Facts<br>Parquet/DuckDB)]
+    end
 
-- **Programmation**&nbsp;: Python 3.10+
-- **Base de données**&nbsp;: Les données parquet d'Open Food Facts seraient utilisées via [DuckDB](https://duckdb.org/)
-- **Modèles de langage**&nbsp;: [Mistral-7B](https://ollama.com/library/mistral) et [DeepSeek-R1-7B](https://ollama.com/library/deepseek-r1:7b) via [Ollama](https://ollama.com/)
-- **Agents**&nbsp;: Possiblement [smolagents](https://huggingface.co/docs/smolagents/en/index) (HuggingFace)
-- **Visualisation**&nbsp;: [Matplotlib](https://matplotlib.org/)
-- **Tests**&nbsp;: [pytest](https://docs.pytest.org/en/stable/#)
+    classDef agent fill:#e1f5fe,stroke:#039be5,stroke-width:2px
+    classDef db fill:#f0f4c3,stroke:#c0ca33,stroke-width:2px
+    classDef user fill:#ffcdd2,stroke:#e53935,stroke-width:2px
+    
+    class MA,A1,A2,A3 agent
+    class DuckDB db
+    class Utilisateur user
+```
+
+Les technologies utilisées seront les suivants :
+
+- **Python 3.10+** : Langage de programmation principal.
+- **DuckDB** : Base de données pour interroger les données Open Food Facts.
+- **Mistral-7B et DeepSeek-R1-7B** : Modèles de langage pour l'interprétation des questions et la génération de réponses.
+- **Ollama** : Plateforme pour exécuter les modèles de langage.
+- **Matplotlib** : Bibliothèque pour la génération de visualisations.
+- **pytest** : Framework pour les tests automatisés.
+
 
 ## 3. Plan d'exécution
 

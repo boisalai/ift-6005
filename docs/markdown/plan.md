@@ -105,6 +105,7 @@ graph TD
     U["Utilisateur"] <--> MA
 
     subgraph S[**Système à développer**]
+        direction TB
         MA["**Agent principal<br>de conversation**"]
         A1["**Agent de<br>génération<br>de requêtes**"]
         A2["**Agent<br>d'enrichissement**"]

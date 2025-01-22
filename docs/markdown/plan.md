@@ -60,8 +60,8 @@ Le système sera construit selon une architecture à base d'agents multiples :
 Les technologies et outils utilisés seront les suivants :
 
 - **Base**&nbsp;: Python 3.10+
-- **Agents**&nbsp;: smolagents (HuggingFace)
-- **LLM**&nbsp;: [Ollama](https://ollama.com/) avec un ou plusieurs grands modèles de langages (ex. Mistral-7B, DeepSeek-R1-Distill-Qwen-7B)
+- **Agents**&nbsp;: Possiblement [smolagents](https://huggingface.co/docs/smolagents/en/index) (HuggingFace)
+- **LLM**&nbsp;: [Ollama](https://ollama.com/) avec un ou plusieurs grands modèles de langages (ex. Mistral-7B, DeepSeek-R1-Distill-Qwen-7B).
 - **Base de données**: [DuckDB]
 - **Visualisation**: Matplotlib
 - **Tests**: pytest

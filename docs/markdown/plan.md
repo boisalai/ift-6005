@@ -1,5 +1,4 @@
-# IFT-6005 - Projet intégrateur - H25
-# Rapport de description et de planification 
+# IFT-6005 - Projet intégrateur - H25<br>Rapport de description et de planification 
 
 # Agent conversationnel pour l'interrogation de la base de données Open Food Facts
 

@@ -117,6 +117,25 @@ graph TD
     class MA coord
 ```
 
+```mermaid
+graph TD
+    classDef main fill:#2e7d32,stroke:#1b5e20,color:white
+    classDef agent fill:#c8e6c9,stroke:#4caf50
+    classDef resource fill:#fff9c4,stroke:#fdd835
+
+    U[Utilisateur] <--> MA[["Agent Principal<br>de Conversation"]]
+    MA <-->|coordonne| A1[["Génération<br>de Requêtes"]]
+    MA <-->|coordonne| A2[["Enrichissement<br>des Données"]]
+    MA <-->|coordonne| A3[["Visualisation<br>des Résultats"]]
+    
+    A1 -->|interroge| DB[(("OpenFoodFacts<br>(Parquet/DuckDB)"))]
+    A2 -->|consulte| GC[["Guide Alimentaire<br>Canadien"]]
+    A3 -->|produit| V[Graphiques]
+
+    class MA main
+    class A1,A2,A3 agent
+    class DB,GC,V resource
+```
 
 Les technologies utilisées seront les suivants :
 

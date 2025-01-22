@@ -66,7 +66,7 @@ graph TD
     classDef agent fill:#c8e6c9,stroke:#4caf50
     classDef resource fill:#f0f0f0,stroke:#cccccc
 
-    U[Utilisateur] <--> MA[**Agent principal de conversation**]
+    U[Utilisateur] <--> MA[**Agent principal<br>de conversation**]
     MA <-->|&nbsp;coordonne&nbsp;| A1[**Agent de génération de requêtes**]
     MA <-->|&nbsp;coordonne&nbsp;| A2[**Agent d'enrichissement**]
     MA <-->|&nbsp;coordonne&nbsp;| A3[**Agent de visualisation**]

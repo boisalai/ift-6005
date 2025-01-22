@@ -104,19 +104,43 @@ graph LR
 
 ```mermaid
 graph TD
-    U[Utilisateur] --> MA[Coordinateur]
-    MA -->|1. Analyse| A1[Requêtes]
-    MA -->|2. Enrichit| A2[Connaissances]
-    MA -->|3. Visualise| A3[Graphiques]
+    U[Utilisateur] --> MA[Agent principal de conversation]
+    MA -->|coordonne| A1[Agent de génération de requêtes]
+    MA -->|coordonne| A2[Agent d'enrichissement]
+    MA -->|coordonne| A3[Agent de visualisation]
     
-    A1 -->|Requête| DB[(OpenFoodFacts)]
-    A2 -->|Référence| G[Guide]
-    A3 -->|Génère| V[Diagrammes]
+    A1 -->|Requête| DB[OpenFoodFacts (DuckDB)]
+    A2 -->|Interroge| G[Guide alimentaire canadien]
+    A3 -->|Génère| V[Graphiques]
     
     classDef coord fill:#4a86e8,color:white
     class MA coord
 ```
 
+```mermaid
+graph TD
+    subgraph "Système Multi-Agents"
+        MA["Agent Principal"]:::main
+        U[Utilisateur] <-->|Langage naturel| MA
+        
+        MA -->|Analyse| A1["Génération SQL"]
+        A1 -->|Résultats| MA
+        
+        MA -->|Enrichit| A2["Guide Alimentaire"]
+        A2 -->|Données| MA
+        
+        MA -->|Visualise| A3["Graphiques"]
+        A3 -->|Images| MA
+    end
+    
+    A1 <-->|Query/Results| DB[(DuckDB)]
+    
+    classDef main fill:#2e7d32,color:white
+    classDef agent fill:#c8e6c9
+    classDef db fill:#fff9c4
+    class MA,A1,A2,A3 agent
+    class DB db
+```
 
 Les technologies utilisées seront les suivants :
 

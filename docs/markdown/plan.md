@@ -92,15 +92,15 @@ graph TD
 
 ```mermaid
 graph TD
-    %% Définition de classes avec texte en noir
+    %% Définition de classes
     classDef main fill:#e3f2fd,stroke:#1976d2,color:#000000,stroke-width:2px
     classDef agent fill:#f3e5f5,stroke:#7b1fa2,color:#000000
     classDef resource fill:#fafafa,stroke:#616161,color:#000000
     classDef user fill:#e8f5e9,stroke:#2e7d32,color:#000000
     classDef system_border stroke:#000000,stroke-width:2px,stroke-dasharray:10 5
 
-    %% Alignement du titre du système
-    style cluster:S label text-anchor:start
+    %% Style pour le titre du système
+    style S label text-anchor:start, font-weight:bold
 
     U["Utilisateur"] <--> MA
 

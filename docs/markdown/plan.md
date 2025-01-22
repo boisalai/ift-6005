@@ -60,6 +60,7 @@ Le système sera construit selon une architecture à base d'agents multiples :
 FIGURE 1<br>
 **Architecture du système conversationnel**
 
+<!--
 ```mermaid
 graph TD
     %%classDef main fill:#c8e6c9,stroke:#4caf50
@@ -89,6 +90,7 @@ graph TD
     class DB,GAC,V resource
     class U user
 ```
+-->
 
 ```mermaid
 graph TD

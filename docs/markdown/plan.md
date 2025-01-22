@@ -3,7 +3,7 @@
 # Agent conversationnel pour l'interrogation de la base de données Open Food Facts
 
 **Auteur** : Alain Boisvert  
-**Date** : 2025-01-22
+**Date** : 2025-01-22 14:00
 
 ---
 

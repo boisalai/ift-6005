@@ -110,8 +110,8 @@ classDef main fill:#2e7d32,stroke:#1b5e20,color:white
 
 ```mermaid
 graph TD
-    classDef main fill:#2e7d32,stroke:#1b5e20,color:white
-    classDef agent fill:#f8f9fa,stroke:#dee2e6
+    classDef main fill:#c8e6c9,stroke:#4caf50
+    classDef agent fill:#c8e6c9,stroke:#4caf50
     classDef resource fill:#f0f0f0,stroke:#cccccc
 
     U[Utilisateur] <--> MA[Agent principal de conversation]
@@ -120,12 +120,12 @@ graph TD
     MA <-->|&nbsp;coordonne&nbsp;| A3[Agent de visualisation]
     
     A1 <-->|&nbsp;interroge&nbsp;| DB[(OpenFoodFacts)]
-    A2 <-->|&nbsp;consulte&nbsp;| G[Guide alimentaire canadien]
+    A2 <-->|&nbsp;consulte&nbsp;| GAC[Guide alimentaire canadien]
     A3 <-->|&nbsp;produit&nbsp;| V[Graphiques]
     
     class MA main
     class A1,A2,A3 agent
-    class DB,GC,V resource
+    class U,DB,GAC,V resource
 ```
 
 

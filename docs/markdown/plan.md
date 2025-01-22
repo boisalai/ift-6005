@@ -109,7 +109,7 @@ graph TD
     MA -->|coordonne| A2[Agent d'enrichissement]
     MA -->|coordonne| A3[Agent de visualisation]
     
-    A1 -->|Requête| DB[OpenFoodFacts (DuckDB)]
+    A1 -->|Requête| DB[(OpenFoodFacts)]
     A2 -->|Interroge| G[Guide alimentaire canadien]
     A3 -->|Génère| V[Graphiques]
     

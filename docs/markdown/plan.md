@@ -123,13 +123,13 @@ graph TD
     classDef agent fill:#c8e6c9,stroke:#4caf50
     classDef resource fill:#fff9c4,stroke:#fdd835
 
-    U[Utilisateur] <--> MA[["Agent Principal<br>de Conversation"]]
-    MA <-->|coordonne| A1[["Génération<br>de Requêtes"]]
-    MA <-->|coordonne| A2[["Enrichissement<br>des Données"]]
-    MA <-->|coordonne| A3[["Visualisation<br>des Résultats"]]
+    U[Utilisateur] <--> MA[Agent Principal de Conversation]
+    MA <-->|coordonne| A1[Génération de Requêtes]
+    MA <-->|coordonne| A2[Enrichissement des Données]
+    MA <-->|coordonne| A3[Visualisation des Résultats]
     
-    A1 -->|interroge| DB[(("OpenFoodFacts<br>(Parquet/DuckDB)"))]
-    A2 -->|consulte| GC[["Guide Alimentaire<br>Canadien"]]
+    A1 -->|interroge| DB[(OpenFoodFacts\nParquet/DuckDB)]
+    A2 -->|consulte| GC[Guide Alimentaire Canadien]
     A3 -->|produit| V[Graphiques]
 
     class MA main

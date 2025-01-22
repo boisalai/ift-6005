@@ -1,0 +1,29 @@
+\chapter{Introduction}
+
+L'accès à des informations nutritionnelles fiables est devenu un enjeu majeur de santé publique. Les consommateurs sont de plus en plus soucieux de la qualité de leur alimentation et souhaitent faire des choix éclairés. La base de données Open Food Facts \cite{openfoodfacts} représente une ressource précieuse dans ce contexte, offrant des informations détaillées sur des milliers de produits alimentaires.
+
+Cependant, l'exploitation de ces données n'est pas toujours intuitive pour l'utilisateur moyen. Les interfaces traditionnelles de requêtes de base de données nécessitent des connaissances techniques spécifiques que la plupart des utilisateurs ne possèdent pas. C'est dans ce contexte que l'utilisation d'agents conversationnels basés sur des modèles de langage (LLM) prend tout son sens.
+
+\section{Objectifs du projet}
+
+Selon \citet{smolagents}, l'importance de ...
+Selon \citet{openfoodfacts}, les données alimentaires ...
+
+Ce projet vise à développer un agent conversationnel capable d'interroger une base de données contenant des informations sur 10 000 produits alimentaires canadiens d'Open Food Facts. En utilisant le framework smolagents \cite{smolagents}, nous implémentons une architecture multi-agents permettant aux utilisateurs de poser des questions en langage naturel et d'obtenir des réponses pertinentes et contextuelles.
+
+Les objectifs spécifiques sont :
+\begin{itemize}
+    \item Permettre l'interrogation de la base de données en langage naturel
+    \item Générer des réponses complètes avec visualisations appropriées
+    \item Enrichir les réponses avec des informations du Guide alimentaire canadien
+    \item Supporter les requêtes en plusieurs langues
+    \item Assurer la précision et la pertinence des réponses fournies
+\end{itemize}
+
+\section{Portée du projet}
+
+Le système développé s'appuie sur une architecture multi-agents où chaque agent est spécialisé dans une tâche spécifique : génération de requêtes SQL, enrichissement des réponses, et création de visualisations. Cette approche modulaire permet une meilleure maintenance et une évolution plus facile du système.
+
+La base de données est implémentée avec DuckDB, choisi pour ses performances sur les requêtes analytiques et sa facilité d'intégration. Le système utilise les modèles de langage Mistral-7B et deepseek-r1-distill-qwen-7b via ollama, permettant un traitement efficace des requêtes en langage naturel.
+
+Les sections suivantes détaillent l'architecture du système, son implémentation, et les résultats obtenus lors de son évaluation.

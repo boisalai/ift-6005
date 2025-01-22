@@ -68,13 +68,15 @@ data/*.csv
 EOF
 ```
 
-7. Installez les dépendances initiales :
+Installez les dépendances initiales :
+
 ```bash
 pip install pytest smolagents duckdb matplotlib pandas jupyter
 pip freeze > requirements.txt
 ```
 
-8. Faites votre premier commit :
+Faites votre premier commit :
+
 ```bash
 git add .
 git commit -m "Initial project structure"
@@ -82,6 +84,7 @@ git push origin main
 ```
 
 Votre structure de répertoire devrait maintenant ressembler à ceci :
+
 ```
 votre-repo/
 ├── LICENSE
@@ -96,3 +99,37 @@ votre-repo/
 └── notebooks/
 ```
 
+Pour la documentation Markdown :
+
+```
+docs/markdown/
+├── README.md              # Vue d'ensemble
+├── installation.md        # Guide d'installation
+├── architecture.md        # Architecture du système
+├── agents/               
+│   ├── main_agent.md     # Agent principal
+│   ├── query_agent.md    # Agent de requêtes
+│   ├── enrichment_agent.md # Agent d'enrichissement
+│   └── viz_agent.md      # Agent de visualisation
+├── database/
+│   ├── schema.md         # Structure de la base de données
+│   └── queries.md        # Exemples de requêtes
+└── api/
+    └── reference.md      # Documentation API
+```
+
+Pour la documentation LaTeX :
+
+```
+docs/latex/
+├── main.tex              # Document principal
+├── chapters/
+│   ├── introduction.tex
+│   ├── architecture.tex
+│   ├── implementation.tex
+│   ├── evaluation.tex
+│   └── conclusion.tex
+├── images/               # Figures et diagrammes
+├── appendices/           # Code source, exemples
+└── bibliography.bib      # Références
+```

@@ -82,30 +82,24 @@ graph TD
 ```
 
 ```mermaid
-graph TD
+graph LR
     classDef main fill:#4a86e8,stroke:#333,color:white
     classDef agent fill:#f8f9fa,stroke:#333,stroke-width:2px
     classDef db fill:#e9ecef,stroke:#333,stroke-width:2px
 
-    subgraph "Système Multi-Agents"
-        direction TB
-        MA["Agent Principal de Conversation"]:::main
-        
-        MA -->|coordonne| A1
-        MA -->|coordonne| A2
-        MA -->|coordonne| A3
-        
-        subgraph "Agents Spécialisés"
-            direction LR
-            A1["Génération de Requêtes\n(Mistral-7B/DeepSeek)"]:::agent
-            A2["Enrichissement\n(Guide Alimentaire)"]:::agent
-            A3["Visualisation\n(Matplotlib)"]:::agent
-        end
-        
-        A1 -->|SQL| DB[("Base Open Food Facts\n(Parquet/DuckDB)")]:::db
-    end
+    U[Utilisateur] --> MA["Agent Principal de Conversation"]:::main
+    MA -->|coordonne| A1["Génération Requêtes"]:::agent
+    MA -->|coordonne| A2["Enrichissement"]:::agent
+    MA -->|coordonne| A3["Visualisation"]:::agent
     
-    MA <-->|Dialogue| U[Utilisateur]
+    A1 -->|SQL| DB[("Base Open Food Facts")]:::db
+    
+    subgraph "Technologies"
+        A1 -.-> M["Mistral-7B"]
+        A1 -.-> D["DeepSeek-R1"]
+        A2 -.-> G["Guide Alimentaire"]
+        A3 -.-> V["Matplotlib"]
+    end
 ```
 
 

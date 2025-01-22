@@ -60,38 +60,6 @@ Le système sera construit selon une architecture à base d'agents multiples :
 FIGURE 1<br>
 **Architecture du système conversationnel**
 
-<!--
-```mermaid
-graph TD
-    %%classDef main fill:#c8e6c9,stroke:#4caf50
-    %%classDef agent fill:#c8e6c9,stroke:#4caf50
-    %%classDef resource fill:#f0f0f0,stroke:#cccccc
-
-    classDef main fill:#e3f2fd,stroke:#1976d2,color:#000000,stroke-width:2px
-    classDef agent fill:#f3e5f5,stroke:#7b1fa2,color:#000000
-    classDef resource fill:#fafafa,stroke:#616161,color:#000000
-    classDef user fill:#e8f5e9,stroke:#2e7d32,color:#000000
-
-    U[Utilisateur] <--> MA[**Agent principal<br>de conversation**]
-    MA <-->|&nbsp;coordonne&nbsp;| A1[**Agent de génération<br>de requêtes**]
-    MA <-->|&nbsp;coordonne&nbsp;| A2[**Agent<br>d'enrichissement**]
-    MA <-->|&nbsp;coordonne&nbsp;| A3[**Agent de<br>visualisation**]
-    
-    A1 <-->|&nbsp;interroge&nbsp;| DB[(OpenFoodFacts)]
-    A2 <-->|&nbsp;consulte&nbsp;| GAC[Guide alimentaire<br>canadien]
-    A3 <-->|&nbsp;produit&nbsp;| V[Graphiques]
-    
-    %%class MA main
-    %%class A1,A2,A3 agent
-    %%class U,DB,GAC,V resource
-
-    class MA main
-    class A1,A2,A3 agent
-    class DB,GAC,V resource
-    class U user
-```
--->
-
 ```mermaid
 graph TD
     %% Définition de classes

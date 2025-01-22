@@ -3,27 +3,27 @@
 
 ## Agent conversationnel pour l'interrogation de la base de données Open Food Facts
 
-**Auteur:** Alain Boisvert  
-**Date:** 2025-01-22
+**Auteur** : Alain Boisvert  
+**Date** : 2025-01-22
 
 ---
 
-
-> 2025-01-22 12h45
-
 ## 1. Description du projet
 
-L'accès à des informations nutritionnelles fiables et la comparaison de produits alimentaires sont des enjeux importants pour les consommateurs qui souhaitent faire des choix éclairés pour leur alimentation. Bien que des bases de données comme Open Food Facts contiennent une grande quantité d'informations sur les produits alimentaires, leur exploitation n'est pas toujours intuitive pour l'utilisateur moyen qui préférerait poser des questions en langage naturel.
+L'accès à des informations nutritionnelles fiables et la comparaison de produits alimentaires sont des enjeux importants pour les consommateurs qui souhaitent faire des choix éclairés pour leur alimentation. Bien que des bases de données
+comme [Open Food Facts](https://world.openfoodfacts.org/) contiennent une grande quantité d'informations sur les produits alimentaires, leur exploitation n'est pas toujours intuitive pour l'utilisateur moyen qui préférerait poser des questions en langage naturel.
 
-L'objectif principal est de développer un agent conversationnel capable d'interroger une base de données contenant des informations sur 10 000 produits alimentaires canadiens d'Open Food Facts. Le système devra:
+L'objectif principal est de développer un agent conversationnel capable d'interroger une base de données contenant des informations 
+sur près de 95 000 produits alimentaires canadiens d'[Open Food Facts](https://world.openfoodfacts.org/). Le système devra :
 
 - Interpréter des questions en langage naturel (multilingue) sur les produits alimentaires
 - Générer et exécuter des requêtes DuckDB appropriées
 - Fournir des réponses pertinentes sous forme de texte, tableaux ou visualisations
-- Compléter les réponses avec des informations du Guide alimentaire canadien si nécessaire
+- Compléter les réponses avec des informations du [Guide alimentaire canadien](https://guide-alimentaire.canada.ca/fr/) 
+  si nécessaire
 - Permettre différents types d'analyses et de comparaisons entre produits
 
-Le projet inclut:
+Le projet inclut&nbsp;:
 
 - Développement d'un système d'agents RAG utilisant smolagents et ollama
 - Intégration avec DuckDB et la base Open Food Facts

@@ -56,57 +56,9 @@ Le système sera construit selon une architecture à base d'agents multiples :
   - Génère des représentations visuelles pertinentes
   - Choisit le format de présentation optimal
 
-```mermaid
-graph TD
-    subgraph Système_Multi_Agents[Système Multi-Agents]
-        MA["Agent Principal de Conversation\n(Multi-Agent Coordinator)"]
-        MA -->|coordonne| A1
-        MA -->|coordonne| A2
-        MA -->|coordonne| A3
-        
-        A1["Agent de Génération de Requêtes\nMistral-7B/DeepSeek-R1-7B via Ollama"]
-        A2["Agent d'Enrichissement\nGuide Alimentaire Canadien"]
-        A3["Agent de Visualisation\nMatplotlib"]
-        
-        MA <-->|gère le dialogue| Utilisateur
-        A1 <-->|requêtes SQL| DuckDB[("Base de données\nOpen Food Facts\nParquet/DuckDB")]
-    end
 
-    classDef agent fill:#e1f5fe,stroke:#039be5,stroke-width:2px
-    classDef db fill:#f0f4c3,stroke:#c0ca33,stroke-width:2px
-    classDef user fill:#ffcdd2,stroke:#e53935,stroke-width:2px
-    
-    class MA,A1,A2,A3 agent
-    class DuckDB db
-    class Utilisateur user
-```
-
-```mermaid
-graph LR
-    classDef main fill:#4a86e8,stroke:#333,color:white
-    classDef agent fill:#f8f9fa,stroke:#333,stroke-width:2px
-    classDef db fill:#e9ecef,stroke:#333,stroke-width:2px
-
-    U[Utilisateur] --> MA["Agent Principal de Conversation"]:::main
-    MA -->|coordonne| A1["Génération Requêtes"]:::agent
-    MA -->|coordonne| A2["Enrichissement"]:::agent
-    MA -->|coordonne| A3["Visualisation"]:::agent
-    
-    A1 -->|DuckDB| DB[("Base Open Food Facts")]:::db
-    
-    subgraph "Technologies"
-        A1 -.-> M["Mistral-7B"]
-        A1 -.-> D["DeepSeek-R1"]
-        A2 -.-> G["Guide Alimentaire"]
-        A3 -.-> V["Matplotlib"]
-    end
-```
-
-
-classDef main fill:#2e7d32,stroke:#1b5e20,color:white
-    classDef agent fill:#c8e6c9,stroke:#4caf50
-    classDef resource fill:#fff9c4,stroke:#fdd835
-
+FIGURE 1<br>
+**Architecture du système multi-agents**
 
 ```mermaid
 graph TD

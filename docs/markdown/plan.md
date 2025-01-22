@@ -97,7 +97,7 @@ graph TD
     classDef agent fill:#f3e5f5,stroke:#7b1fa2,color:#000000
     classDef resource fill:#fafafa,stroke:#616161,color:#000000
     classDef user fill:#e8f5e9,stroke:#2e7d32,color:#000000
-    classDef system_border stroke:#000000,stroke-width:2px,stroke-dasharray:10 5
+    classDef system_border stroke:#000000,stroke-width:2px,stroke-dasharray:10 5,fill:#fafafa
 
     U["Utilisateur"] <--> MA
 

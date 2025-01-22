@@ -71,14 +71,14 @@ graph TD
     classDef resource fill:#fafafa,stroke:#616161,color:#000000
     classDef user fill:#e8f5e9,stroke:#2e7d32,color:#000000
 
-    U["👤 Utilisateur"] <--> MA["**Agent principal<br>de conversation**"]
-    MA <-->|coordonne| A1["**Agent de<br>génération<br>de requêtes**"]
-    MA <-->|coordonne| A2["**Agent<br>d'enrichissement**"]
-    MA <-->|coordonne| A3["**Agent de<br>visualisation**"]
+    U[![user](img/user.svg) Utilisateur] <--> MA[**Agent principal<br>de conversation**]
+    MA <-->|&nbsp;coordonne&nbsp;| A1[**Agent de génération<br>de requêtes**]
+    MA <-->|&nbsp;coordonne&nbsp;| A2[**Agent<br>d'enrichissement**]
+    MA <-->|&nbsp;coordonne&nbsp;| A3[**Agent de<br>visualisation**]
     
-    A1 <-->|interroge| DB["💾 OpenFoodFacts"]
-    A2 <-->|consulte| GAC["📖 Guide<br>alimentaire<br>canadien"]
-    A3 <-->|produit| V["📊 Graphiques"]
+    A1 <-->|&nbsp;interroge&nbsp;| DB[(OpenFoodFacts)]
+    A2 <-->|&nbsp;consulte&nbsp;| GAC[Guide alimentaire<br>canadien]
+    A3 <-->|&nbsp;produit&nbsp;| V[Graphiques]
     
     %%class MA main
     %%class A1,A2,A3 agent

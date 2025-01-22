@@ -102,40 +102,32 @@ graph LR
     end
 ```
 
+
+classDef main fill:#2e7d32,stroke:#1b5e20,color:white
+    classDef agent fill:#c8e6c9,stroke:#4caf50
+    classDef resource fill:#fff9c4,stroke:#fdd835
+
+
 ```mermaid
 graph TD
+    classDef main fill:#2e7d32,stroke:#1b5e20,color:white
+    classDef agent fill:#f8f9fa,stroke:#dee2e6
+    classDef resource fill:#f0f0f0,stroke:#cccccc
+
     U[Utilisateur] <--> MA[Agent principal de conversation]
     MA <-->|&nbsp;coordonne&nbsp;| A1[Agent de génération de requêtes]
     MA <-->|&nbsp;coordonne&nbsp;| A2[Agent d'enrichissement]
     MA <-->|&nbsp;coordonne&nbsp;| A3[Agent de visualisation]
     
     A1 <-->|&nbsp;interroge&nbsp;| DB[(OpenFoodFacts)]
-    A2 <-->|&nbsp;cherche&nbsp;| G[Guide alimentaire canadien]
-    A3 <-->|&nbsp;génère&nbsp;| V[Graphiques]
+    A2 <-->|&nbsp;consulte&nbsp;| G[Guide alimentaire canadien]
+    A3 <-->|&nbsp;produit&nbsp;| V[Graphiques]
     
-    classDef coord fill:#4a86e8,color:white
-    class MA coord
-```
-
-```mermaid
-graph TD
-    classDef main fill:#2e7d32,stroke:#1b5e20,color:white
-    classDef agent fill:#c8e6c9,stroke:#4caf50
-    classDef resource fill:#fff9c4,stroke:#fdd835
-
-    U[Utilisateur] <--> MA[Agent Principal de Conversation]
-    MA <-->|coordonne| A1[Génération de Requêtes]
-    MA <-->|coordonne| A2[Enrichissement des Données]
-    MA <-->|coordonne| A3[Visualisation des Résultats]
-    
-    A1 -->|interroge| DB[(OpenFoodFacts\nParquet/DuckDB)]
-    A2 -->|consulte| GC[Guide Alimentaire Canadien]
-    A3 -->|produit| V[Graphiques]
-
     class MA main
     class A1,A2,A3 agent
     class DB,GC,V resource
 ```
+
 
 Les technologies utilisées seront les suivants :
 

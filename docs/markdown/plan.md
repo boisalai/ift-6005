@@ -62,22 +62,32 @@ FIGURE 1<br>
 
 ```mermaid
 graph TD
-    classDef main fill:#c8e6c9,stroke:#4caf50
-    classDef agent fill:#c8e6c9,stroke:#4caf50
-    classDef resource fill:#f0f0f0,stroke:#cccccc
+    %%classDef main fill:#c8e6c9,stroke:#4caf50
+    %%classDef agent fill:#c8e6c9,stroke:#4caf50
+    %%classDef resource fill:#f0f0f0,stroke:#cccccc
+
+    classDef main fill:#e3f2fd,stroke:#1976d2,color:#1976d2,stroke-width:2px  %% Bleu pour l'agent principal
+    classDef agent fill:#f3e5f5,stroke:#7b1fa2,color:#7b1fa2  %% Violet pour les agents secondaires
+    classDef resource fill:#fafafa,stroke:#616161,color:#616161  %% Gris neutre pour les ressources
+    classDef user fill:#e8f5e9,stroke:#2e7d32,color:#2e7d32     %% Vert pour l'utilisateur
 
     U[Utilisateur] <--> MA[**Agent principal<br>de conversation**]
-    MA <-->|&nbsp;coordonne&nbsp;| A1[**Agent de<br>génération<br>de requêtes**]
+    MA <-->|&nbsp;coordonne&nbsp;| A1[**Agent de génération<br>de requêtes**]
     MA <-->|&nbsp;coordonne&nbsp;| A2[**Agent<br>d'enrichissement**]
     MA <-->|&nbsp;coordonne&nbsp;| A3[**Agent de<br>visualisation**]
     
     A1 <-->|&nbsp;interroge&nbsp;| DB[(OpenFoodFacts)]
-    A2 <-->|&nbsp;consulte&nbsp;| GAC[Guide<br>alimentaire<br>canadien]
+    A2 <-->|&nbsp;consulte&nbsp;| GAC[Guide alimentaire<br>canadien]
     A3 <-->|&nbsp;produit&nbsp;| V[Graphiques]
     
+    %%class MA main
+    %%class A1,A2,A3 agent
+    %%class U,DB,GAC,V resource
+
     class MA main
     class A1,A2,A3 agent
-    class U,DB,GAC,V resource
+    class DB,GAC,V resource
+    class U user
 ```
 
 

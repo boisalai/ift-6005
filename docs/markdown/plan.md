@@ -97,11 +97,11 @@ graph TD
     classDef agent fill:#f3e5f5,stroke:#7b1fa2,color:#000000
     classDef resource fill:#fafafa,stroke:#616161,color:#000000
     classDef user fill:#e8f5e9,stroke:#2e7d32,color:#000000
-    classDef subgraph fill:none,stroke:#666666,color:#000000
+    classDef system_border stroke-dasharray: 5 5
 
     U["👤 Utilisateur"] <--> MA
 
-    subgraph Système
+    subgraph S[Système à développer]
         MA["**Agent principal<br>de conversation**"]
         A1["**Agent de<br>génération<br>de requêtes**"]
         A2["**Agent<br>d'enrichissement**"]
@@ -120,6 +120,7 @@ graph TD
     class A1,A2,A3 agent
     class DB,GAC,V resource
     class U user
+    class S system_border
 ```
 
 Les technologies utilisées seront les suivants :

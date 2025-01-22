@@ -1,7 +1,7 @@
 # IFT-6005 - Projet intégrateur - H25
 # Rapport de description et de planification 
 
-## Agent conversationnel pour l'interrogation de la base de données Open Food Facts
+# Agent conversationnel pour l'interrogation de la base de données Open Food Facts
 
 **Auteur** : Alain Boisvert  
 **Date** : 2025-01-22
@@ -61,7 +61,7 @@ Les technologies et outils utilisés seront les suivants :
 
 - **Programmation**&nbsp;: Python 3.10+
 - **Base de données**&nbsp;: Les données parquet d'Open Food Facts seraient utilisées via [DuckDB](https://duckdb.org/)
-- **Modèles de langage**&nbsp;: [Ollama](https://ollama.com/) avec [Mistral-7B](https://ollama.com/library/mistral) et [DeepSeek-R1-7B](https://ollama.com/library/deepseek-r1:7b)
+- **Modèles de langage**&nbsp;: [Mistral-7B](https://ollama.com/library/mistral) et [DeepSeek-R1-7B](https://ollama.com/library/deepseek-r1:7b) via [Ollama](https://ollama.com/)
 - **Agents**&nbsp;: Possiblement [smolagents](https://huggingface.co/docs/smolagents/en/index) (HuggingFace)
 - **Visualisation**&nbsp;: [Matplotlib](https://matplotlib.org/)
 - **Tests**&nbsp;: [pytest](https://docs.pytest.org/en/stable/#)

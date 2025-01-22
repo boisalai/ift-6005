@@ -1,5 +1,10 @@
 # Agent conversationnel pour l'interrogation de la base de données Open Food Facts
 
+## Rapport de description et de planification de projet
+
+## Alain Boisvert - IFT-6005 - Hiver 2025 
+
+
 > 2025-01-22 12h45
 
 ## 1. Description du projet

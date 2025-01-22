@@ -99,12 +99,9 @@ graph TD
     classDef user fill:#e8f5e9,stroke:#2e7d32,color:#000000
     classDef system_border stroke:#000000,stroke-width:2px,stroke-dasharray:10 5
 
-    %% Style pour le titre du système
-    style S label text-align:left, font-weight:bold
-
     U["Utilisateur"] <--> MA
 
-    subgraph S[**Système à développer**]
+    subgraph S[ ]
         MA["**Agent principal<br>de conversation**"]
         A1["**Agent de<br>génération<br>de requêtes**"]
         A2["**Agent<br>d'enrichissement**"]

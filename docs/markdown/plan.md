@@ -92,7 +92,7 @@ graph LR
     MA -->|coordonne| A2["Enrichissement"]:::agent
     MA -->|coordonne| A3["Visualisation"]:::agent
     
-    A1 -->|SQL| DB[("Base Open Food Facts")]:::db
+    A1 -->|DuckDB| DB[("Base Open Food Facts")]:::db
     
     subgraph "Technologies"
         A1 -.-> M["Mistral-7B"]
@@ -100,6 +100,21 @@ graph LR
         A2 -.-> G["Guide Alimentaire"]
         A3 -.-> V["Matplotlib"]
     end
+```
+
+```mermaid
+graph TD
+    U[Utilisateur] --> MA[Coordinateur]
+    MA -->|1. Analyse| A1[Requêtes]
+    MA -->|2. Enrichit| A2[Connaissances]
+    MA -->|3. Visualise| A3[Graphiques]
+    
+    A1 -->|Requête| DB[(OpenFoodFacts)]
+    A2 -->|Référence| G[Guide]
+    A3 -->|Génère| V[Diagrammes]
+    
+    classDef coord fill:#4a86e8,color:white
+    class MA coord
 ```
 
 

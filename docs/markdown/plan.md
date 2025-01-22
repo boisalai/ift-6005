@@ -71,7 +71,7 @@ graph TD
     classDef resource fill:#fafafa,stroke:#616161,color:#000000
     classDef user fill:#e8f5e9,stroke:#2e7d32,color:#000000
 
-    U[![user](img/user.svg) Utilisateur] <--> MA[**Agent principal<br>de conversation**]
+    U[Utilisateur] <--> MA[**Agent principal<br>de conversation**]
     MA <-->|&nbsp;coordonne&nbsp;| A1[**Agent de génération<br>de requêtes**]
     MA <-->|&nbsp;coordonne&nbsp;| A2[**Agent<br>d'enrichissement**]
     MA <-->|&nbsp;coordonne&nbsp;| A3[**Agent de<br>visualisation**]

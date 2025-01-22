@@ -25,14 +25,14 @@ sur près de 95 000 produits alimentaires canadiens d'[Open Food Facts](https://
 
 Le projet inclut&nbsp;:
 
-- Développement d'un système d'agents RAG utilisant smolagents et ollama
-- Intégration avec DuckDB et la base Open Food Facts
+- Développement d'un système d'agents RAG 
+- Utilisation des produits canadiens de la base Open Food Facts
 - Support multilingue des requêtes et réponses
 - Visualisations des données pertinentes
 - Documentation technique et pédagogique complète
 - Métriques d'évaluation de la qualité des réponses
 
-Le projet n'inclut pas:
+Le projet n'inclut pas :
 
 - Interface utilisateur graphique (utilisation en ligne de commande)
 - Mise à jour en temps réel des données Open Food Facts

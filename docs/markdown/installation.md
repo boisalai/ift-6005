@@ -111,11 +111,9 @@ docs/markdown/
 │   ├── query_agent.md    # Agent de requêtes
 │   ├── enrichment_agent.md # Agent d'enrichissement
 │   └── viz_agent.md      # Agent de visualisation
-├── database/
-│   ├── schema.md         # Structure de la base de données
-│   └── queries.md        # Exemples de requêtes
-└── api/
-    └── reference.md      # Documentation API
+└── database/
+    ├── schema.md         # Structure de la base de données
+    └── queries.md        # Exemples de requêtes
 ```
 
 Pour la documentation LaTeX :

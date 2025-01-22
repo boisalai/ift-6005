@@ -109,6 +109,7 @@ graph TD
         A2["**Agent<br>d'enrichissement**"]
         A3["**Agent de<br>visualisation**"]
         
+        Space --> MA
         MA <-->|coordonne| A1
         MA <-->|coordonne| A2
         MA <-->|coordonne| A3

@@ -97,11 +97,11 @@ graph TD
     classDef agent fill:#f3e5f5,stroke:#7b1fa2,color:#000000
     classDef resource fill:#fafafa,stroke:#616161,color:#000000
     classDef user fill:#e8f5e9,stroke:#2e7d32,color:#000000
-    classDef system_border stroke:#000000,stroke-width:3px,stroke-dasharray:10 5
+    classDef system_border stroke:#000000,stroke-width:2px,stroke-dasharray:10 5
 
-    U["👤 Utilisateur"] <--> MA
+    U["Utilisateur"] <--> MA
 
-    subgraph S[**Système à développer**<br>&nbsp;]
+    subgraph S[**Système à développer**<br>&nbsp;<br>&nbsp;]
         MA["**Agent principal<br>de conversation**"]
         A1["**Agent de<br>génération<br>de requêtes**"]
         A2["**Agent<br>d'enrichissement**"]
@@ -112,9 +112,9 @@ graph TD
         MA <-->|coordonne| A3
     end
     
-    A1 <-->|interroge| DB["💾 OpenFoodFacts"]
-    A2 <-->|consulte| GAC["📖 Guide<br>alimentaire<br>canadien"]
-    A3 <-->|produit| V["📊 Graphiques"]
+    A1 <-->|interroge| DB["OpenFoodFacts"]
+    A2 <-->|consulte| GAC["Guide<br>alimentaire<br>canadien"]
+    A3 <-->|produit| V["Graphiques"]
     
     class MA main
     class A1,A2,A3 agent

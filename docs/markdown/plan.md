@@ -103,18 +103,18 @@ graph TD
 
     subgraph S[ ]
         MA["**Agent principal<br>de conversation**"]
-        A1["**Agent de<br>génération<br>de requêtes**"]
+        A1["**Agent de génération<br>de requêtes**"]
         A2["**Agent<br>d'enrichissement**"]
         A3["**Agent de<br>visualisation**"]
         
-        MA <-->|coordonne| A1
-        MA <-->|coordonne| A2
-        MA <-->|coordonne| A3
+        MA <-->|&nbsp;coordonne&nbsp;| A1
+        MA <-->|&nbsp;coordonne&nbsp;| A2
+        MA <-->|&nbsp;coordonne&nbsp;| A3
     end
     
-    A1 <-->|interroge| DB["OpenFoodFacts"]
-    A2 <-->|consulte| GAC["Guide<br>alimentaire<br>canadien"]
-    A3 <-->|produit| V["Graphiques"]
+    A1 <-->|&nbsp;interroge&nbsp;| DB["OpenFoodFacts"]
+    A2 <-->|&nbsp;consulte&nbsp;| GAC["Guide alimentaire<br>canadien"]
+    A3 <-->|&nbsp;produit&nbsp;| V["Graphiques"]
     
     class MA main
     class A1,A2,A3 agent

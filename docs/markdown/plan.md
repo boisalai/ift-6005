@@ -66,12 +66,12 @@ graph TD
     %%classDef agent fill:#c8e6c9,stroke:#4caf50
     %%classDef resource fill:#f0f0f0,stroke:#cccccc
 
-    classDef main fill:#e3f2fd,stroke:#1976d2,color:#1976d2,stroke-width:2px  %% Bleu pour l'agent principal
-    classDef agent fill:#f3e5f5,stroke:#7b1fa2,color:#7b1fa2  %% Violet pour les agents secondaires
-    classDef resource fill:#fafafa,stroke:#616161,color:#616161  %% Gris neutre pour les ressources
-    classDef user fill:#e8f5e9,stroke:#2e7d32,color:#2e7d32     %% Vert pour l'utilisateur
+    classDef main fill:#e3f2fd,stroke:#1976d2,color:#000000,stroke-width:2px
+    classDef agent fill:#f3e5f5,stroke:#7b1fa2,color:#000000
+    classDef resource fill:#fafafa,stroke:#616161,color:#000000
+    classDef user fill:#e8f5e9,stroke:#2e7d32,color:#000000
 
-    U[Utilisateur] <--> MA[**Agent principal<br>de conversation**]
+    U[fa:fa-user Utilisateur] <--> MA[**Agent principal<br>de conversation**]
     MA <-->|&nbsp;coordonne&nbsp;| A1[**Agent de génération<br>de requêtes**]
     MA <-->|&nbsp;coordonne&nbsp;| A2[**Agent<br>d'enrichissement**]
     MA <-->|&nbsp;coordonne&nbsp;| A3[**Agent de<br>visualisation**]

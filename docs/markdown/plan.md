@@ -98,18 +98,15 @@ graph TD
     classDef resource fill:#fafafa,stroke:#616161,color:#000000
     classDef user fill:#e8f5e9,stroke:#2e7d32,color:#000000
     classDef system_border stroke:#000000,stroke-width:2px,stroke-dasharray:10 5
-    classDef invisible fill:none,stroke:none
 
     U["Utilisateur"] <--> MA
 
-    subgraph S[**Système à développer**]
-        Space[ ]
+    subgraph S[**Système à développer**&#10;&#10;.]
         MA["**Agent principal<br>de conversation**"]
         A1["**Agent de<br>génération<br>de requêtes**"]
         A2["**Agent<br>d'enrichissement**"]
         A3["**Agent de<br>visualisation**"]
         
-        Space --> MA
         MA <-->|coordonne| A1
         MA <-->|coordonne| A2
         MA <-->|coordonne| A3
@@ -124,7 +121,6 @@ graph TD
     class DB,GAC,V resource
     class U user
     class S system_border
-    class Space invisible
 ```
 
 Les technologies utilisées seront les suivants :

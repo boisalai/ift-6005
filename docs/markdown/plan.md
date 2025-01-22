@@ -59,52 +59,49 @@ Le système sera construit selon une architecture à base d'agents multiples :
 
 Les technologies et outils utilisés seront les suivants :
 
-- **Base**&nbsp;: Python 3.10+
+- **Programmation**&nbsp;: Python 3.10+
+- **Base de données**&nbsp;: Les données parquet d'Open Food Facts seraient utilisées via [DuckDB]
+- **Modèles de langage**&nbsp;: [Ollama](https://ollama.com/) avec [Mistral-7B](https://ollama.com/library/mistral) et [DeepSeek-R1-7B](https://ollama.com/library/deepseek-r1:7b)
 - **Agents**&nbsp;: Possiblement [smolagents](https://huggingface.co/docs/smolagents/en/index) (HuggingFace)
-- **LLM**&nbsp;: [Ollama](https://ollama.com/) avec un ou plusieurs grands modèles de langages (ex. Mistral-7B, DeepSeek-R1-Distill-Qwen-7B).
-- **Base de données**: [DuckDB]
-- **Visualisation**: Matplotlib
-- **Tests**: pytest
-- **Livrables**: 
-  - Rapport PDF (LaTeX)
-  - Dépôt GitHub public
+- **Visualisation**&nbsp;: [Matplotlib](https://matplotlib.org/)
+- **Tests**&nbsp;: [pytest](https://docs.pytest.org/en/stable/#)
 
 ## 3. Plan d'exécution
 
 Les étapes du projet seront réparties en quatre phases distinctes, chacune visant à atteindre des objectifs spécifiques:
 
-- **Phase 1: Configuration et prototype initial (25h)**
+- **Phase 1&nbsp;: Configuration et prototype initial (25h)**
   - Configuration de l'environnement de développement (3h)
   - Mise en place de la base DuckDB avec les données Open Food Facts (5h)
   - Développement d'un prototype simple de requêtes basiques (12h)
   - Tests initiaux et validation du concept (5h)
-- **Phase 2: Développement du cœur du système (35h)**
+- **Phase 2&nbsp;: Développement du cœur du système (35h)**
   - Implémentation de l'agent principal et de l'agent de génération de requêtes (15h)
   - Développement des fonctionnalités de base de requêtes (10h)
   - Mise en place du système de tests automatisés (5h)
   - Intégration des premiers retours et corrections (5h)
-- **Phase 3: Fonctionnalités avancées (25h)**
+- **Phase 3&nbsp;: Fonctionnalités avancées (25h)**
   - Implémentation de l'agent d'enrichissement (8h)
   - Développement de l'agent de visualisation (8h)
   - Amélioration du support multilingue (4h)
   - Tests d'intégration des fonctionnalités avancées (5h)
-- **Phase 4: Évaluation et documentation (15h)**
+- **Phase 4&nbsp;: Évaluation et documentation (15h)**
   - Développement des métriques d'évaluation (5h)
   - Tests exhaustifs et optimisation des performances (5h)
   - Rédaction de la documentation technique et pédagogique (5h)
 
 Le calendrier de développement et les jalons clés seraient répartis comme suit:
 
-- Semaines 1-2 : Phase 1 avec comme livrable un prototype fonctionnel pour requêtes simples
-- Semaines 3-5 : Phase 2 avec comme livrable un système multi-agents opérationnel
-- Semaines 6-8 : Phase 3 avec comme livrable l'intégration complète des fonctionnalités avancées
-- Semaines 9-10 : Phase 4 avec comme livrable la documentation et les tests finalisés
+- **Semaines 1-2**&nbsp;: Phase 1 avec comme livrable un prototype fonctionnel pour requêtes simples
+- **Semaines 3-5**&nbsp;: Phase 2 avec comme livrable un système multi-agents opérationnel
+- **Semaines 6-8**&nbsp;: Phase 3 avec comme livrable l'intégration complète des fonctionnalités avancées
+- **Semaines 9-10**&nbsp;: Phase 4 avec comme livrable la documentation et les tests finalisés
 
 ## 4. Gestion des risques
 
 Les risques potentiels du projet seront identifiés et évalués régulièrement pour minimiser leur impact sur le calendrier et la qualité du livrable.
 
-- **Performances du LLM** : Risque lié à la qualité des réponses générées par le modèle de langage
+- **Performances des LLMs** : Risque lié à la qualité des réponses générées par les modèles de langage
   - Mitigation : Tests précoces avec différents modèles, optimisation des prompts
 - **Qualité des données Open Food Facts** : Risque de données manquantes ou incorrectes dans la base de données
   - Mitigation : Aucune idée puisque je connais pas le domaine de l'alimentation.
@@ -122,11 +119,11 @@ Le suivi des risques se fera via les actions suivantes :
 
 ## 5. Critères de succès
 
-- Le système répond correctement à 80% des requêtes de test
+- Le système répond correctement à 80&nbsp;\% des requêtes de test
 - Temps de réponse moyen inférieur à 5 secondes
 - Support effectif d'au moins 3 langues (français, anglais, espagnol)
 - Documentation claire et complète
-- Tests couvrant au moins 80% du code
+- Tests couvrant au moins 80&nbsp;\% du code
 - Capacité à gérer les différents types de requêtes définis dans les objectifs
 
 ## 6. Livrables

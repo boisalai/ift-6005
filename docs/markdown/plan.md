@@ -67,12 +67,12 @@ graph TD
     classDef resource fill:#f0f0f0,stroke:#cccccc
 
     U[Utilisateur] <--> MA[**Agent principal<br>de conversation**]
-    MA <-->|&nbsp;coordonne&nbsp;| A1[**Agent de génération de requêtes**]
-    MA <-->|&nbsp;coordonne&nbsp;| A2[**Agent d'enrichissement**]
-    MA <-->|&nbsp;coordonne&nbsp;| A3[**Agent de visualisation**]
+    MA <-->|&nbsp;coordonne&nbsp;| A1[**Agent de<br>génération<br>de requêtes**]
+    MA <-->|&nbsp;coordonne&nbsp;| A2[**Agent<br>d'enrichissement**]
+    MA <-->|&nbsp;coordonne&nbsp;| A3[**Agent de<br>visualisation**]
     
     A1 <-->|&nbsp;interroge&nbsp;| DB[(OpenFoodFacts)]
-    A2 <-->|&nbsp;consulte&nbsp;| GAC[Guide alimentaire canadien]
+    A2 <-->|&nbsp;consulte&nbsp;| GAC[Guide<br>alimentaire<br>canadien]
     A3 <-->|&nbsp;produit&nbsp;| V[Graphiques]
     
     class MA main

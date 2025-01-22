@@ -81,6 +81,34 @@ graph TD
     class Utilisateur user
 ```
 
+```mermaid
+graph TD
+    classDef main fill:#4a86e8,stroke:#333,color:white
+    classDef agent fill:#f8f9fa,stroke:#333,stroke-width:2px
+    classDef db fill:#e9ecef,stroke:#333,stroke-width:2px
+
+    subgraph "Système Multi-Agents"
+        direction TB
+        MA["Agent Principal de Conversation"]:::main
+        
+        MA -->|coordonne| A1
+        MA -->|coordonne| A2
+        MA -->|coordonne| A3
+        
+        subgraph "Agents Spécialisés"
+            direction LR
+            A1["Génération de Requêtes\n(Mistral-7B/DeepSeek)"]:::agent
+            A2["Enrichissement\n(Guide Alimentaire)"]:::agent
+            A3["Visualisation\n(Matplotlib)"]:::agent
+        end
+        
+        A1 -->|SQL| DB[("Base Open Food Facts\n(Parquet/DuckDB)")]:::db
+    end
+    
+    MA <-->|Dialogue| U[Utilisateur]
+```
+
+
 Les technologies utilisées seront les suivants :
 
 - **Python 3.10+** : Langage de programmation principal.

@@ -58,18 +58,18 @@ Le système sera construit selon une architecture à base d'agents multiples :
 
 ```mermaid
 graph TD
-    subgraph Système Multi-Agents
-        MA[Agent Principal de Conversation<br>(Multi-Agent Coordinator)]
+    subgraph Système_Multi_Agents[Système Multi-Agents]
+        MA["Agent Principal de Conversation\n(Multi-Agent Coordinator)"]
         MA -->|coordonne| A1
         MA -->|coordonne| A2
         MA -->|coordonne| A3
         
-        A1[Agent de Génération de Requêtes<br>Mistral-7B/DeepSeek-R1-7B via Ollama]
-        A2[Agent d'Enrichissement<br>Guide Alimentaire Canadien]
-        A3[Agent de Visualisation<br>Matplotlib]
+        A1["Agent de Génération de Requêtes\nMistral-7B/DeepSeek-R1-7B via Ollama"]
+        A2["Agent d'Enrichissement\nGuide Alimentaire Canadien"]
+        A3["Agent de Visualisation\nMatplotlib"]
         
         MA <-->|gère le dialogue| Utilisateur
-        A1 <-->|requêtes SQL| DuckDB[(Base de données<br>Open Food Facts<br>Parquet/DuckDB)]
+        A1 <-->|requêtes SQL| DuckDB[("Base de données\nOpen Food Facts\nParquet/DuckDB")]
     end
 
     classDef agent fill:#e1f5fe,stroke:#039be5,stroke-width:2px

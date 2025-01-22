@@ -1,4 +1,4 @@
-# IFT-6005 - Projet intégrateur - H25<br>Rapport de description et de planification 
+# IFT-6005 - Projet intégrateur - H25 - Université Laval<br>Rapport de description et de planification 
 
 # Agent conversationnel pour l'interrogation de la base de données Open Food Facts
 
@@ -47,10 +47,10 @@ Le système sera construit selon une architecture à base d'agents multiples :
   - Coordonne les autres agents
   - Assure la cohérence des réponses
 - **Agent de génération de requêtes**
-  - Transforme les questions en langage naturel en requêtes DuckDB
+  - Transforme les questions en langage naturel en requêtes sur les données Open Food Facts
   - Gère les différents types de requêtes (recherche, comparaison, analyse)
 - **Agent d'enrichissement**
-  - Recherche des informations complémentaires dans le Guide alimentaire
+  - Recherche des informations complémentaires dans le Guide alimentaire canadien
   - Intègre ces informations aux réponses
 - **Agent de visualisation**
   - Génère des représentations visuelles pertinentes
@@ -83,12 +83,12 @@ graph TD
 
 Les technologies utilisées seront les suivants :
 
-- **Python 3.10+** : Langage de programmation principal.
-- **DuckDB** : Base de données pour interroger les données Open Food Facts.
-- **Mistral-7B et DeepSeek-R1-7B** : Modèles de langage pour l'interprétation des questions et la génération de réponses.
-- **Ollama** : Plateforme pour exécuter les modèles de langage.
-- **Matplotlib** : Bibliothèque pour la génération de visualisations.
-- **pytest** : Framework pour les tests automatisés.
+- **Python 3.10+** : Langage de programmation principal
+- **DuckDB** : Base de données pour interroger les données Open Food Facts
+- **Mistral-7B et DeepSeek-R1-7B** : Modèles de langage pour l'interprétation des questions et la génération de réponses
+- **Ollama** : Plateforme pour exécuter les modèles de langage
+- **Matplotlib** : Bibliothèque pour la génération de visualisations
+- **pytest** : Framework pour les tests automatisés
 
 
 ## 3. Plan d'exécution
@@ -115,7 +115,7 @@ Les étapes du projet seront réparties en quatre phases distinctes, chacune vis
   - Tests exhaustifs et optimisation des performances (5h)
   - Rédaction de la documentation technique et pédagogique (5h)
 
-Le calendrier de développement et les jalons clés seraient répartis comme suit:
+Le calendrier de développement et les jalons clés seraient répartis comme suit :
 
 - **Semaines 1-2**&nbsp;: Phase 1 avec comme livrable un prototype fonctionnel pour requêtes simples
 - **Semaines 3-5**&nbsp;: Phase 2 avec comme livrable un système multi-agents opérationnel
@@ -129,7 +129,7 @@ Les risques potentiels du projet seront identifiés et évalués régulièrement
 - **Performances des LLMs** : Risque lié à la qualité des réponses générées par les modèles de langage
   - Mitigation : Tests précoces avec différents modèles, optimisation des prompts
 - **Qualité des données Open Food Facts** : Risque de données manquantes ou incorrectes dans la base de données
-  - Mitigation : Aucune idée puisque je connais pas le domaine de l'alimentation.
+  - Mitigation : Aucune idée puisque je connais pas le domaine de l'alimentation
 - **Complexité de l'intégration des agents** : Risque de conflits ou de dysfonctionnements entre les agents
   - Mitigation : Architecture modulaire, tests d'intégration réguliers
 - **Temps de développement sous-estimé** : Risque de ne pas respecter les délais prévus

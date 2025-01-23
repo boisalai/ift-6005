@@ -131,7 +131,7 @@ Les risques potentiels du projet seront identifiés et évalués régulièrement
 - **Performances des LLMs** : Risque lié à la qualité des réponses générées par les modèles de langage
   - Mitigation : Tests précoces avec différents modèles, optimisation des prompts
 - **Qualité des données Open Food Facts** : Risque de données manquantes ou incorrectes dans la base de données
-  - Mitigation : Aucune idée puisque je connais pas le domaine de l'alimentation
+  - Mitigation : Analyse préliminaire de la qualité des données et mise en place de filtres/validations
 - **Complexité de l'intégration des composantes** : Risque de conflits ou de dysfonctionnements entre l'agent et les outils RAG et visualisation
   - Mitigation : Architecture modulaire, tests d'intégration réguliers
 - **Temps de développement sous-estimé** : Risque de ne pas respecter les délais prévus
@@ -144,7 +144,14 @@ Le suivi des risques se fera via les actions suivantes :
 - Points de contrôle aux deux semaines avec le professeur Luc Lamontagne
 - Possibilité de réduire la portée de certaines fonctionnalités si nécessaire
 
-## 5. Livrables
+## 5. Critères de succès
+
+- Capacité à gérer les différents types de requêtes définis dans les objectifs
+- Le système répond correctement à 80&nbsp;\% des requêtes de test
+- Support effectif d'au moins 2 langues (français, anglais)
+- Documentation claire et complète
+
+## 6. Livrables
 
 - **Description et planification du projet intégrateur** :
   Ce document présentant les objectifs, l'approche technique et le plan d'exécution.

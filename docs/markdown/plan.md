@@ -165,7 +165,7 @@ Le suivi des risques se fera via les actions suivantes :
   - Justification détaillée des choix finaux
   - État d'avancement du projet
 
-- **Rapport final** comprenant :
+- **Rapport final** (~10 pages pour mi-mars 2024) comprenant :
   - Architecture détaillée du système
   - Analyse des performances (agent et RAGs)
   - Difficultés techniques rencontrées et solutions
@@ -173,7 +173,7 @@ Le suivi des risques se fera via les actions suivantes :
   - Évaluation des critères de succès
   - Leçons apprises
 
-- **Dépôt GitHub** contenant :
+- **Dépôt GitHub** (~10 pages pour fin avril 2024)contenant :
   - Code source documenté
   - Guide technique d'installation et d'utilisation
   - Documentation pédagogique expliquant :
@@ -183,7 +183,7 @@ Le suivi des risques se fera via les actions suivantes :
   - Jeux de tests et métriques
   - Notebooks de démonstration
 
-- **Capsule vidéo de 10 minutes** présentant :
+- **Capsule vidéo de 10-12 minutes** présentant :
   - Objectifs du projet
   - Architecture développée
   - Démonstration du système

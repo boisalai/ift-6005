@@ -2,12 +2,12 @@
 
 Les principales différences entre RAG et agents :
 
-RAG (Retrieval-Augmented Generation)[^1, p.85] :
+RAG (Retrieval-Augmented Generation)[^1] :
 - Se concentre sur l'enrichissement du contexte en récupérant des informations pertinentes depuis des sources externes
 - Processus en 2 étapes : récupération puis génération
 - Utilise principalement la recherche documentaire comme outil
 
-Agents[^1, p.92] :
+Agents[^1] :
 - Peuvent utiliser de nombreux outils différents, dont RAG n'est qu'un exemple
 - Capables de planifier et d'exécuter des séquences d'actions complexes
 - Peuvent interagir directement avec leur environnement via des actions de lecture/écriture

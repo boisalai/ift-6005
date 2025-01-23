@@ -3,7 +3,7 @@
 # Agent conversationnel pour l'interrogation de la base de données Open Food Facts
 
 **Auteur** : Alain Boisvert  
-**Date** : 2025-01-22 14:00
+**Date** : 2025-01-23 11:00
 
 ---
 
@@ -144,18 +144,7 @@ Le suivi des risques se fera via les actions suivantes :
 - Points de contrôle aux deux semaines avec le professeur Luc Lamontagne
 - Possibilité de réduire la portée de certaines fonctionnalités si nécessaire
 
-## 5. Critères de succès
-
-- Le système répond correctement à 80&nbsp;\% des requêtes de test
-- Temps de réponse moyen inférieur à 5 secondes
-- Support effectif d'au moins 3 langues (français, anglais, espagnol)
-- Documentation claire et complète
-- Tests couvrant au moins 80&nbsp;\% du code
-- Capacité à gérer les différents types de requêtes définis dans les objectifs
-
-## 6. Livrables
-
-## 6. Livrables
+## 5. Livrables
 
 - **Description et planification du projet intégrateur** :
   Ce document présentant les objectifs, l'approche technique et le plan d'exécution.

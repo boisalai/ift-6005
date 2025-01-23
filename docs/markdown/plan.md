@@ -88,7 +88,7 @@ Le développement du système sera organisé en quatre phases, pour un total de 
 **Phase 1 : Agent principal et configuration (40h)**
 - Configuration de l'environnement de développement et gestion du projet (5h)
 - Développement de l'agent principal avec ses capacités de base de planification et de prise de décision (20h)
-- Mise en place de DuckDB et intégration des données OpenFoodFacts (8h)
+- Mise en place de DuckDB et intégration des données Open Food Facts (8h)
 - Conception et exécution des tests initiaux de l'agent principal (5h)
 - Rédaction documentation initiale de l'architecture (2h)
 
@@ -153,7 +153,7 @@ Le suivi des risques se fera via les actions suivantes :
 
 ## 6. Livrables
 
-- **Description et planification du projet intégrateur** :
+- **Description et planification du projet-intégrateur** :
   Ce document présentant les objectifs, l'approche technique et le plan d'exécution.
 
 - **Rapport de mi-session** détaillant les choix technologiques :
@@ -165,7 +165,7 @@ Le suivi des risques se fera via les actions suivantes :
   - Justification détaillée des choix finaux
   - État d'avancement du projet
 
-- **Rapport final** (~10 pages pour mi-mars 2024) comprenant :
+- **Rapport final** (~10 pages pour mi-mars 2025) comprenant :
   - Architecture détaillée du système
   - Analyse des performances (agent et RAGs)
   - Difficultés techniques rencontrées et solutions
@@ -173,7 +173,7 @@ Le suivi des risques se fera via les actions suivantes :
   - Évaluation des critères de succès
   - Leçons apprises
 
-- **Dépôt GitHub** (~10 pages pour fin avril 2024)contenant :
+- **Dépôt GitHub** (~10 pages pour fin avril 2025)contenant :
   - Code source documenté
   - Guide technique d'installation et d'utilisation
   - Documentation pédagogique expliquant :

@@ -2,94 +2,29 @@
  
 ## Créer l'environnement de travail
 
-Voici des instructions pour créer l'environnement de travail.
-
-Ouvrez le terminal, créez et accédez au répertoire où vous voulez placer votre projet :
+Dans le terminal, créez et accédez au répertoire où vous voulez placer le projet.
 
 ```bash
 mkdir ~/Projects  # si ce n'est pas déjà fait
 cd ~/Projects
 ```
 
-Clonez le dépôt GitHub :
+Clonez le dépôt GitHub.
 
 ```bash
-git clone https://github.com/votre-username/nom-du-repo.git
-cd nom-du-repo
+git clone git@github.com:boisalai/ift-6005.git
+cd ift-6005
 ```
 
-Créez un environnement virtuel Python :
+Créez un environnement virtuel Python et installer les dépendances.
 
 ```bash
 python -m venv venv
 source venv/bin/activate
+pip install -r requirements.txt
 ```
 
-Créez la structure initiale du projet :
-
-```bash
-mkdir -p src/agents tests data docs notebooks
-touch requirements.txt
-```
-
-Cette commande créera :
-
-- `src/agents/` pour votre code source
-- `tests/` pour vos tests
-- `data/` pour les données Open Food Facts
-- `docs/` pour la documentation
-- `notebooks/` pour les notebooks Jupyter
-- `requirements.txt` pour les dépendances
-
-Créez un fichier `.gitignore` :
-
-```bash
-cat << EOF > .gitignore
-# Python
-__pycache__/
-*.py[cod]
-*$py.class
-.Python
-venv/
-.env
-
-# Notebooks
-.ipynb_checkpoints
-
-# VS Code
-.vscode/
-
-# Data
-data/*.db
-data/*.csv
-
-# Mac
-.DS_Store
-EOF
-```
-
-Installez Jupyter dans l'environnement virtuel :
-
-```bash
-pip install jupyter ipykernel
-```
-
-Installez les autres librairies : 
-
-```bash
-pip install pytest smolagents duckdb matplotlib pandas 
-pip freeze > requirements.txt
-```
-
-Faites votre premier commit :
-
-```bash
-git add .
-git commit -m "Initial project structure"
-git push origin main
-```
-
-Votre structure de répertoire devrait maintenant ressembler à ceci :
+Voici la structure du projet :
 
 ```
 votre-repo/
@@ -137,6 +72,72 @@ docs/latex/
 ├── appendices/           # Code source, exemples
 └── bibliography.bib      # Références
 ```
+
+## Télécharger les données d'Open Food Facts
+
+Télécharger le fichier d'Open Food Facts depuis Hugging Face directement dans le dossier `data/` du projet.
+
+```bash
+brew install wget  # si vous n'avez pas wget
+wget -P data/ https://huggingface.co/datasets/openfoodfacts/product-database/resolve/main/food.parquet
+```
+
+Le fichier `food.parquet` contient les données de Open Food Facts au format Parquet. Ce fichier pèse 5.5 Go.
+
+```bash
+$ ls -lh data/food.parquet | awk '{print $5}'
+5.5G
+```
+
+## Lire les données 
+
+Nous pourrions normalement lire les données en utilisant la librairie `pandas` comme ceci.
+
+```python
+import pandas as pd
+df = pd.read_parquet('food.parquet')
+df.describe()
+```
+
+Cependant, le code précédent entraîne une erreur de mémoire insuffisante. Nous devons donc utiliser une autre approche.
+
+DuckDB offre plusieurs avantages majeurs par rapport à Pandas pour la manipulation de fichiers volumineux. Son traitement "out-of-core" permet d'analyser des fichiers plus grands que la RAM disponible, contrairement à Pandas qui doit charger l'intégralité des données en mémoire. 
+
+De plus, DuckDB permet l'exécution vectorisée et la parallélisation automatique, ce qui offre des performances nettement supérieures, avec des requêtes jusqu'à 100 fois plus rapides que Pandas pour les agrégations. Sa syntaxe SQL native facilite également l'analyse des fichiers Parquet avec des requêtes ciblées.
+
+Un autre avantage clé est l'accès partiel aux données : DuckDB ne lit que les colonnes nécessaires à la requête, optimisant ainsi l'utilisation des ressources. L'intégration transparente avec Pandas permet de basculer facilement entre les deux outils selon les besoins spécifiques.
+
+Pandas reste toutefois préférable pour les manipulations fines nécessitant des opérations personnalisées sur les lignes, le prototypage rapide et l'intégration directe avec l'écosystème de visualisation et d'apprentissage automatique. La solution optimale consiste souvent à combiner les deux approches : utiliser DuckDB pour le prétraitement des données volumineuses, puis convertir le résultat en DataFrame Pandas pour les analyses détaillées.
+
+Donc, voici comment lire le fichier Parquet avec DuckDB.
+
+```python
+import duckdb
+
+DATA_PATH = "../data/food.parquet"
+
+# Pour afficher les 5 premières lignes
+with duckdb.connect() as con:
+    query = f"SELECT * FROM '{DATA_PATH}' LIMIT 5"
+    result = con.execute(query).fetchall()
+    print(result)
+```
+
+Voir aussi :
+
+- [Parquet Data Export on Hugging Face](https://world.openfoodfacts.org/data).
+- [Parquet file hosted on Hugging Face (beta)](https://wiki.openfoodfacts.org/Reusing_Open_Food_Facts_Data#Parquet_file_hosted_on_Hugging_Face_.28beta.29)
+- [Data field](https://wiki.openfoodfacts.org/Data_fields)
+- [DuckDB Cheatsheet](https://wiki.openfoodfacts.org/DuckDB_Cheatsheet)
+
+## Agents
+
+- LlamaIndex, [AgentWorkflow Basic Introduction](https://docs.llamaindex.ai/en/stable/examples/agent/agent_workflow_basic/)
+
+
+
+-----
+
 
 
 ## Document technique
@@ -707,64 +708,6 @@ Cette hiérarchie d'agents permet de maintenir une séparation claire des respon
 
 
 ## Data
-
-**Question** : Je veux utiliser ces données à l'aide de python et d'un Agent LLM. À partir d'une question ou d'une demande (un prompt), je demande à un LLM (mistral:7b) d'identifier le meilleur outil pour répondre, et s'il faut faire des requêtes sur les données de Open Food Facts. Avec ce cas d'utilisation, comment devrais-je télécharger les données d'Open Food Facts et pourquoi?
-
-**Réponse** :
-
-Pour ce cas d'utilisation avec Python et un LLM comme agent, je recommande d'utiliser le format Parquet pour plusieurs raisons :
-
-1. Avantages techniques du format Parquet :
-- Optimisé pour les requêtes analytiques
-- Compression efficace qui réduit l'utilisation de la mémoire
-- Organisation par colonnes qui permet de ne charger que les données nécessaires
-- Support natif des types de données complexes
-
-2. Intégration facile avec Python :
-```python
-import pandas as pd
-# Lecture directe en DataFrame
-df = pd.read_parquet('food.parquet')
-```
-
-3. Support des requêtes efficaces :
-- Permet le filtrage rapide des colonnes pertinentes
-- Idéal pour un agent LLM qui aura besoin de faire des requêtes ciblées
-- Excellentes performances même sur un ordinateur standard
-
-Je suggère donc de :
-
-1. Télécharger le fichier Parquet depuis Hugging Face :
-```
-https://huggingface.co/datasets/openfoodfacts/product-database/resolve/main/food.parquet
-```
-
-2. Utiliser pandas ou DuckDB pour les requêtes (DuckDB est particulièrement efficace pour les grandes données) :
-```python
-import duckdb
-
-# Créer une connexion
-con = duckdb.connect()
-
-# Requête sur le fichier Parquet
-con.execute("SELECT * FROM 'food.parquet' WHERE ...")
-```
-
-Cette approche offre :
-- Des performances optimales pour les requêtes ad hoc générées par le LLM
-- Une utilisation efficace de la mémoire
-- Une simplicité d'utilisation avec Python
-- Une grande flexibilité pour différents types de requêtes
-
-C'est particulièrement adapté pour un agent LLM qui aura besoin d'accéder rapidement à des sous-ensembles spécifiques des données selon les questions posées.
-
-See also :
-
-- [Parquet Data Export on Hugging Face](https://world.openfoodfacts.org/data).
-- [Parquet file hosted on Hugging Face (beta)](https://wiki.openfoodfacts.org/Reusing_Open_Food_Facts_Data#Parquet_file_hosted_on_Hugging_Face_.28beta.29)
-- [Data field](https://wiki.openfoodfacts.org/Data_fields)
-- [DuckDB Cheatsheet](https://wiki.openfoodfacts.org/DuckDB_Cheatsheet)
-
 
 
 

@@ -42,16 +42,16 @@ Le projet n'inclut pas&nbsp;:
 
 Le système s'appuiera sur une architecture agent-RAG où un agent principal intelligent coordonne l'utilisation de RAG et d'outils spécialisés.
 
-- Un **agent principal** agira comme un gestionnaire intelligent qui :
+- Un **Agent principal** agira comme un gestionnaire intelligent qui :
   - Analyse les intentions de l'utilisateur
   - Planifie la séquence d'actions nécessaires
   - Coordonne l'utilisation des RAG et outils
   - Assure la cohérence des réponses
   - Gère le dialogue avec l'utilisateur
-- Deux **outils RAG** (*Retrieval Augmented Generation*) seront utilisés pour :
-  - Interroger les données Open Food Facts
-  - Interroger le Guide alimentaire canadien
-- Un **outil de visualisation** sera utilisé pour générer des graphiques.
+- Deux **outils RAG** (*Retrieval Augmented Generation*) seront utilisés :
+  - **RAG OpenFoodFacts** pour interroger les données Open Food Facts
+  - **RAG Guide alimentaire** pour interroger le Guide alimentaire canadien
+- Un **Outil de visualisation** sera utilisé pour générer des graphiques.
 
 ```mermaid
 graph TD
@@ -61,15 +61,15 @@ graph TD
     classDef tool fill:#fafafa,stroke:#616161,color:#000000
     classDef data fill:#e8f5e9,stroke:#2e7d32,color:#000000
     
-    U["Utilisateur"] <--> AP["Agent Principal"]
+    U["Utilisateur"] <--> AP["Agent principal"]
     
     subgraph Système
-        AP -->|Planifie & Coordonne| RAG1["RAG OpenFoodFacts"]
-        AP -->|Planifie & Coordonne| RAG2["RAG Guide Alimentaire"]
-        AP -->|Planifie & Coordonne| VIZ["Outil Visualisation"]
+        AP -->|&nbsp;coordonne&nbsp;| RAG1["RAG OpenFoodFacts"]
+        AP -->|&nbsp;coordonne&nbsp;| RAG2["RAG Guide Alimentaire"]
+        AP -->|&nbsp;coordonne&nbsp;| VIZ["Outil visualisation"]
         
-        RAG1 --> DB[("DuckDB")]
-        RAG2 --> GUIDE["Guide Alimentaire"]
+        RAG1 --> DB[("OpenFoodFacts")]
+        RAG2 --> GUIDE["Guide alimentaire"]
         VIZ --> PLOT["Graphiques"]
     end
     

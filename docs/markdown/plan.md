@@ -24,7 +24,7 @@ sur près de 95 000 produits alimentaires canadiens d'[Open Food Facts](https://
 
 Le projet inclut&nbsp;:
 
-- Développement d'un système d'agents RAG 
+- Développement d'un système d'agent RAG 
 - Utilisation des produits canadiens de la base Open Food Facts
 - Support multilingue des requêtes et réponses
 - Visualisations des données pertinentes
@@ -40,58 +40,46 @@ Le projet n'inclut pas&nbsp;:
 
 ## 2. Approche technique
 
-Le système sera construit selon une architecture à base d'agents multiples :
+Le système s'appuiera sur une architecture agent-RAG où un agent principal intelligent coordonne l'utilisation de RAG et d'outils spécialisés.
 
-- **Agent principal de conversation** 
-  - Gère le dialogue avec l'utilisateur
-  - Coordonne les autres agents
+- Un **agent principal** agira comme un gestionnaire intelligent qui :
+  - Analyse les intentions de l'utilisateur
+  - Planifie la séquence d'actions nécessaires
+  - Coordonne l'utilisation des RAG et outils
   - Assure la cohérence des réponses
-- **Agent de génération de requêtes**
-  - Transforme les questions en langage naturel en requêtes sur les données Open Food Facts
-  - Gère les différents types de requêtes (recherche, comparaison, analyse)
-- **Agent d'enrichissement**
-  - Recherche des informations complémentaires dans le Guide alimentaire canadien
-  - Intègre ces informations aux réponses
-- **Agent de visualisation**
-  - Génère des représentations visuelles pertinentes
-  - Choisit le format de présentation optimal
-
-
-FIGURE 1<br>
-**Architecture du système conversationnel**
+  - Gère le dialogue avec l'utilisateur
+- Deux **outils RAG** (*Retrieval Augmented Generation*) seront utilisés pour :
+  - Interroger les données Open Food Facts
+  - Interroger le Guide alimentaire canadien
+- Un **outil de visualisation** sera utilisé pour générer des graphiques.
 
 ```mermaid
 graph TD
-    %% Définition de classes
-    classDef main fill:#e3f2fd,stroke:#1976d2,color:#000000,stroke-width:2px
-    classDef agent fill:#f3e5f5,stroke:#7b1fa2,color:#000000
-    classDef resource fill:#fafafa,stroke:#616161,color:#000000
-    classDef user fill:#e8f5e9,stroke:#2e7d32,color:#000000
-    classDef system_border stroke:#000000,stroke-width:2px,stroke-dasharray:10 5,fill:#fafafa
-
-    U["Utilisateur"] <--> MA
-
-    subgraph S[ ]
-        MA["**Agent principal<br>de conversation**"]
-        A1["**Agent de génération<br>de requêtes**"]
-        A2["**Agent<br>d'enrichissement**"]
-        A3["**Agent de<br>visualisation**"]
+    %% Classes
+    classDef agent fill:#e3f2fd,stroke:#1976d2,color:#000000,stroke-width:2px
+    classDef rag fill:#f3e5f5,stroke:#7b1fa2,color:#000000
+    classDef tool fill:#fafafa,stroke:#616161,color:#000000
+    classDef data fill:#e8f5e9,stroke:#2e7d32,color:#000000
+    
+    U["Utilisateur"] <--> AP["Agent Principal"]
+    
+    subgraph Système
+        AP -->|Planifie & Coordonne| RAG1["RAG OpenFoodFacts"]
+        AP -->|Planifie & Coordonne| RAG2["RAG Guide Alimentaire"]
+        AP -->|Planifie & Coordonne| VIZ["Outil Visualisation"]
         
-        MA <-->|&nbsp;coordonne&nbsp;| A1
-        MA <-->|&nbsp;coordonne&nbsp;| A2
-        MA <-->|&nbsp;coordonne&nbsp;| A3
+        RAG1 --> DB[("DuckDB")]
+        RAG2 --> GUIDE["Guide Alimentaire"]
+        VIZ --> PLOT["Graphiques"]
     end
     
-    A1 <-->|&nbsp;interroge&nbsp;| DB["OpenFoodFacts"]
-    A2 <-->|&nbsp;consulte&nbsp;| GAC["Guide alimentaire<br>canadien"]
-    A3 <-->|&nbsp;produit&nbsp;| V["Graphiques"]
-    
-    class MA main
-    class A1,A2,A3 agent
-    class DB,GAC,V resource
-    class U user
-    class S system_border
+    class AP agent
+    class RAG1,RAG2 rag
+    class VIZ tool
+    class DB,GUIDE,PLOT data
 ```
+
+Cette architecture permet d'exploiter les forces des agents (planification, prise de décision) et des RAG (recherche d'information), tout en maintenant une séparation claire des responsabilités.
 
 Les technologies utilisées seront les suivants :
 

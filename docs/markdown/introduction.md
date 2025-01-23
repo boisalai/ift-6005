@@ -1,5 +1,9 @@
 # Introduction
 
+
+[!CAUTION]
+> Document de travail en cours de rédaction.
+
 Les principales différences entre RAG et agents :
 
 RAG (Retrieval-Augmented Generation)[^1] :

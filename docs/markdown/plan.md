@@ -48,7 +48,7 @@ Le système s'appuiera sur une architecture agent-RAG où un agent principal int
   - Coordonne l'utilisation des RAG et outils
   - Assure la cohérence des réponses
   - Gère le dialogue avec l'utilisateur
-- Deux **outils RAG** (*Retrieval Augmented Generation*) seront utilisés :
+- Deux outils RAG (*Retrieval Augmented Generation*) seront utilisés :
   - **RAG OpenFoodFacts** pour interroger les données Open Food Facts
   - **RAG Guide alimentaire** pour interroger le Guide alimentaire canadien
 - Un **Outil de visualisation** sera utilisé pour générer des graphiques.
@@ -81,46 +81,48 @@ graph TD
 
 Cette architecture permet d'exploiter les forces des agents (planification, prise de décision) et des RAG (recherche d'information), tout en maintenant une séparation claire des responsabilités.
 
-Les technologies utilisées seront les suivants :
-
-- **Python 3.10+** : Langage de programmation principal
-- **DuckDB** : Base de données pour interroger les données Open Food Facts
-- **Mistral-7B et DeepSeek-R1-7B** : Modèles de langage pour l'interprétation des questions et la génération de réponses
-- **Ollama** : Plateforme pour exécuter les modèles de langage
-- **Matplotlib** : Bibliothèque pour la génération de visualisations
-- **pytest** : Framework pour les tests automatisés
-
-
 ## 3. Plan d'exécution
 
-Les étapes du projet seront réparties en quatre phases distinctes, chacune visant à atteindre des objectifs spécifiques:
+Le développement du système sera organisé en quatre phases, pour un total de 150 heures, incluant toute la documentation :
 
-- **Phase 1&nbsp;: Configuration et prototype initial (25h)**
-  - Configuration de l'environnement de développement (3h)
-  - Mise en place de la base DuckDB avec les données Open Food Facts (5h)
-  - Développement d'un prototype simple de requêtes basiques (12h)
-  - Tests initiaux et validation du concept (5h)
-- **Phase 2&nbsp;: Développement du cœur du système (35h)**
-  - Implémentation de l'agent principal et de l'agent de génération de requêtes (15h)
-  - Développement des fonctionnalités de base de requêtes (10h)
-  - Mise en place du système de tests automatisés (5h)
-  - Intégration des premiers retours et corrections (5h)
-- **Phase 3&nbsp;: Fonctionnalités avancées (25h)**
-  - Implémentation de l'agent d'enrichissement (8h)
-  - Développement de l'agent de visualisation (8h)
-  - Amélioration du support multilingue (4h)
-  - Tests d'intégration des fonctionnalités avancées (5h)
-- **Phase 4&nbsp;: Évaluation et documentation (15h)**
-  - Développement des métriques d'évaluation (5h)
-  - Tests exhaustifs et optimisation des performances (5h)
-  - Rédaction de la documentation technique et pédagogique (5h)
+**Phase 1 : Agent principal et configuration (40h)**
+- Configuration de l'environnement de développement et gestion du projet (5h)
+- Développement de l'agent principal avec ses capacités de base de planification et de prise de décision (20h)
+- Mise en place de DuckDB et intégration des données OpenFoodFacts (8h)
+- Conception et exécution des tests initiaux de l'agent principal (5h)
+- Rédaction documentation initiale de l'architecture (2h)
 
-Le calendrier de développement et les jalons clés seraient répartis comme suit :
+**Phase 2 : RAG OpenFoodFacts (45h)**
+- Développement du RAG OpenFoodFacts (20h)
+  - Implémentation du système de traduction langue naturelle vers SQL
+  - Mise en place du système de recherche sémantique
+  - Tests unitaires du RAG
+- Intégration du RAG avec l'agent principal et optimisation de leurs interactions (15h)
+- Réalisation des tests d'intégration RAG-Agent (5h)
+- Documentation du RAG et des interactions (5h)
 
-- **Semaines 1-2**&nbsp;: Phase 1 avec comme livrable un prototype fonctionnel pour requêtes simples
-- **Semaines 3-5**&nbsp;: Phase 2 avec comme livrable un système multi-agents opérationnel
-- **Semaines 6-8**&nbsp;: Phase 3 avec comme livrable l'intégration complète des fonctionnalités avancées
-- **Semaines 9-10**&nbsp;: Phase 4 avec comme livrable la documentation et les tests finalisés
+**Phase 3 : RAG Guide alimentaire et Outil visualisations (40h)**
+- Développement et test du RAG Guide Alimentaire (15h)
+- Implémentation et intégration de l'outil de visualisation (10h)
+- Amélioration des capacités de planification de l'agent principal (8h)
+- Tests d'intégration du système complet (5h)
+- Documentation des nouveaux composants (2h)
+
+**Phase 4 : Évaluation et documentation (25h)**
+- Développement et application des métriques de performance (7h)
+  - Évaluation de la qualité des décisions de l'agent
+  - Mesure de la pertinence des réponses des RAG
+  - Analyse des temps de réponse
+- Tests exhaustifs du système complet (7h)
+- Rédaction de la documentation technique et du guide utilisateur (5h)
+- Préparation du rapport final incluant l'analyse des résultats, les difficultés rencontrées et les améliorations possibles (3h)
+- Préparation d'une capsule vidéo pour présenter le projet (3h)
+
+**Calendrier de réalisation** :
+- Semaines 1-2 : Phase 1 - Agent principal opérationnel et documenté
+- Semaines 3-5 : Phase 2 - RAG OpenFoodFacts intégré et testé
+- Semaines 6-8 : Phase 3 - Système complet avec RAG Guide alimentaire et Outil visualisations
+- Semaines 9-10 : Phase 4 - Évaluation, documentation et rapport final
 
 ## 4. Gestion des risques
 
@@ -130,7 +132,7 @@ Les risques potentiels du projet seront identifiés et évalués régulièrement
   - Mitigation : Tests précoces avec différents modèles, optimisation des prompts
 - **Qualité des données Open Food Facts** : Risque de données manquantes ou incorrectes dans la base de données
   - Mitigation : Aucune idée puisque je connais pas le domaine de l'alimentation
-- **Complexité de l'intégration des agents** : Risque de conflits ou de dysfonctionnements entre les agents
+- **Complexité de l'intégration des composantes** : Risque de conflits ou de dysfonctionnements entre l'agent et les outils RAG et visualisation
   - Mitigation : Architecture modulaire, tests d'intégration réguliers
 - **Temps de développement sous-estimé** : Risque de ne pas respecter les délais prévus
   - Mitigation : Priorisation des fonctionnalités, approche itérative
@@ -153,16 +155,41 @@ Le suivi des risques se fera via les actions suivantes :
 
 ## 6. Livrables
 
-- Code source sur GitHub
-- Documentation
-  - Guide technique
-  - Documentation pédagogique sur les agents
-  - Exemples d'utilisation
-- Jeux de tests
-  - Suite de tests automatisés
-  - Jeu de requêtes d'évaluation
-  - Métriques de performance
-- Rapport final
-  - Analyse des résultats
-  - Difficultés rencontrées
-  - Améliorations possibles
+## 6. Livrables
+
+- **Description et planification du projet intégrateur** :
+  Ce document présentant les objectifs, l'approche technique et le plan d'exécution.
+
+- **Rapport de mi-session** détaillant les choix technologiques :
+  - Évaluation comparative des modèles de langage (Mistral-7B vs. DeepSeek-R1-7B)
+  - Analyse des plateformes d'exécution (Ollama vs. alternatives)
+  - Comparaison des bases de données (DuckDB vs. Parquet)
+  - Évaluation des frameworks pour les agents et RAG (smolagents de Hugging Face vs. AgentWorkflow de LlamaIndex)
+  - Critères d'évaluation utilisés (performance, facilité d'intégration, maintenance)
+  - Justification détaillée des choix finaux
+  - État d'avancement du projet
+
+- **Rapport final** comprenant :
+  - Architecture détaillée du système
+  - Analyse des performances (agent et RAGs)
+  - Difficultés techniques rencontrées et solutions
+  - Améliorations possibles et perspectives
+  - Évaluation des critères de succès
+  - Leçons apprises
+
+- **Dépôt GitHub** contenant :
+  - Code source documenté
+  - Guide technique d'installation et d'utilisation
+  - Documentation pédagogique expliquant :
+    - Architecture agent/RAG
+    - Interactions entre composants
+    - Exemples détaillés d'utilisation
+  - Jeux de tests et métriques
+  - Notebooks de démonstration
+
+- **Capsule vidéo de 10 minutes** présentant :
+  - Objectifs du projet
+  - Architecture développée
+  - Démonstration du système
+  - Présentation des résultats
+  - Défis et apprentissages

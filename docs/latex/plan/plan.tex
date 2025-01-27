@@ -1,0 +1,319 @@
+\documentclass[a4paper,11pt]{article}
+
+% Packages essentiels suggérés par DeepSeek-R1
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{csquotes}        % Pour les guillemets français
+\usepackage{xcolor}           % Pour la couleur dans le code
+\usepackage{graphicx}         % Pour les images
+
+\usepackage{tabularx}         % Pour les tableaux
+\usepackage{booktabs}         % Pour de beaux tableaux
+
+% Autres packages
+\bibliographystyle{plain} % Style de bibliographie
+\usepackage{amsmath,amssymb,amsfonts}  % Pour les mathématiques
+\usepackage{float}                     % Pour les images flottantes
+\usepackage{listings}                  % Pour le code source
+\usepackage{tcolorbox}                 % Pour créer des arrières plans colorés
+\usepackage{pgfplots}                  % Pour les graphiques
+\pgfplotsset{compat=newest,compat/show suggested version=false}
+\usepackage{parskip}                   % Pour éliminer l'indentation des paragraphes
+\usepackage[french]{datetime2}         % Pour la date et l'heure
+\usepackage{multirow}                  % Pour les tableaux multi-lignes
+\usepackage{mdframed}                  % Pour les boîtes de texte colorées
+\usepackage{hyperref}         % Pour les liens hypertextes
+\usepackage{cleveref} % Si nécessaire, après hyperref
+
+% Configuration des boîtes de texte
+\newmdenv[
+    linewidth=1pt,
+    topline=true,
+    bottomline=true,
+    leftline=true,
+    rightline=true,
+    % backgroundcolor=white,
+    backgroundcolor=gray!5,
+    innertopmargin=10pt,
+    innerbottommargin=10pt,
+    innerrightmargin=10pt,
+    innerleftmargin=10pt,
+    skipabove=15pt,
+    skipbelow=15pt
+]{solution}
+
+% Configuration pour le code Python
+\lstset{
+    language=Python,
+    basicstyle=\ttfamily\small,
+    % numbers=left,
+    % numberstyle=\tiny\color{gray},
+    frame=single,
+    breaklines=true,
+    keywordstyle=\color{blue},
+    commentstyle=\color{green!60!black},
+    stringstyle=\color{red},
+    showstringspaces=false,
+    backgroundcolor=\color{gray!5},
+    literate={é}{{\'e}}1 {è}{{\`e}}1 {à}{{\`a}}1 {É}{{\'E}}1 {ù}{{\'u}}1
+    {π}{{$\pi$}}1
+    {≤}{{$\leq$}}1
+    {≥}{{$\geq$}}1
+    {≠}{{$\neq$}}1
+    {²}{{$^2$}}1
+    {⁸}{{$^8$}}1
+    {⁷}{{$^7$}}1
+    {⁶}{{$^6$}}1
+    {⁵}{{$^5$}}1
+    {⁴}{{$^4$}}1
+    {³}{{$^3$}}1,
+}
+
+% Configuration des marges
+\usepackage[top=2cm, bottom=2cm, left=2.5cm, right=2.5cm]{geometry}
+
+% Alain: Couleur d'arrière-plan d'une section en gris très pâle
+\newtcolorbox{graysection}[1]{
+  colback=gray!10,
+  colframe=white,
+  title=#1,
+  fonttitle=\bfseries\large,
+  boxrule=0pt,
+  arc=0pt,
+  boxsep=5pt,
+  left=10pt,right=10pt,top=10pt,bottom=10pt
+}
+
+% Déclaration TODOs professionnelle
+\newcommand{\todo}[1]{\textcolor{red}{\bfseries [TODO: #1]}}
+
+% Page de présentation.
+\newcommand{\titre}{IFT-6005 - Projet intégrateur - H25 \\ 
+Agent conversationnel pour l'interrogation de la base de données Open Food Facts \\
+Description et planification du projet}
+\newcommand{\auteurs}{Alain Boisvert}
+\newcommand{\matricules}{994 029 313}
+\newcommand{\destinataire}{ }
+\newcommand{\cours}{GLO-7021}
+\newcommand{\dateremise}{25 novembre 2024}
+
+% Titre de première page
+\title{IFT-6005 - Projet intégrateur - H25 \\ Agent conversationnel pour l'interrogation de la base de données Open Food Facts}
+\author{Alain Boisvert}
+\date{23 janvier 2025}
+
+\begin{document}
+
+\input{pagetitre} 
+
+\newpage
+
+\maketitle
+
+%----------------------------------------------------------------------------------------
+\section{Description du problème}
+\label{sec:probleme}
+L'accès à des informations nutritionnelles fiables et la comparaison de produits alimentaires sont des enjeux importants pour les consommateurs. 
+
+\og texte \fg{} ou utiliser le package csquotes
+
+Il existe des bases de données ouvertes telles qu'Open Food Facts qui fournissent des informations sur les produits alimentaires, y compris les ingrédients, les valeurs nutritionnelles et les labels.
+Toutefois, l'accès à ces données est souvent difficile pour les utilisateurs non techniques.
+Les interfaces Web ou mobiles actuelles nécessitent souvent des recherches manuelles fastidieuses pour obtenir des informations précises sur les produits.
+
+L’objectif de ce projet est de développer un agent conversationnel capable de répondre à des questions en langage naturel en interrogeant une base de données 
+sur les produits alimentaires canadiens.
+
+\todo{Compléter cette section}
+
+%----------------------------------------------------------------------------------------
+\section{Revue de littérature}
+\label{sec:revue}
+
+Résoudre ce problème nécessite un agent conversationel pour dialoguer avec l'utilisateur, 
+une capacité d'interpréter les recherches de l'utilisateur et de générer des requêtes SQL sur ue base de données, 
+ainsi qu'une capacité de synthèse des résultats pour les présenter à l'utilisateur.
+
+L'approche RAG (Retriever-Reader-Generator) est une architecture populaire pour les agents conversationnels qui combine un modèle de recherche (Retriever), un modèle de lecture (Reader) et un modèle de génération (Generator). Conçu pour des données non structurées (textes, PDF, etc.), où la recherche par similarité sémantique (via embeddings) est efficace.
+
+Les systèmes de RAG peuvent fonctionner avec des données structurées SQL, mais leur efficacité dépend de la manière dont les données sont préparées et intégrées au processus.
+Leur intégration dans RAG nécessite une transformation adaptée, par exemple :
+
+\begin{itemize}
+    \item \textbf{Représentation textuelle} : Convertir les lignes de tables SQL en descriptions naturelles (ex: "Client: Jean, Commande: 123, Montant: 200€"). Cette approche peut ne pas être suffisante pour intégrer la structure relationnelle des données.
+    \item \textbf{Requêtes SQL dynamiques} : Utiliser un LLM pour générer des requêtes SQL pertinentes, puis injecter les résultats dans le modèle génératif (approche hybride).
+\end{itemize}
+
+Ainsi, un LLM (Large Language Model) ayant la capacité d'utiliser un outil pour interroger une base de données 
+semble être une solution appropriée.
+
+Many modern LLMs (e.g., GPT-4, Claude) can use tools via post-training adaptations (e.g., plugins, function calling), but only a subset (like Qwen) were directly trained for this purpose during pre-training or instruction tuning. 
+
+Qwen-Chat has been optimized for tool usage and function calling capabilities. Users can develop agents, LangChain applications, and even augment Qwen with a Python Code Interpreter
+\footnote{See \href{https://github.com/QwenLM/Qwen/blob/main/README.md}{GitHub documentation}}.
+
+
+Les travaux suivants éclairent notre approche :
+
+\textcolor{red}{TODO: Cette section doit être bonifiée sinon complétée.}.
+
+%----------------------------------------------------------------------------------------
+\section{Approches proposées}
+
+Pour y parvenir, plusieurs approches sont possibles, chacune avec ses forces et ses limites.
+
+\subsection{Approche 1 : RAG classique}
+
+Le RAG classique repose sur l’analyse sémantique de données non structurées, comme des textes ou des documents. Un modèle de langue génère des réponses en s’appuyant sur des extraits pertinents trouvés dans ces données. Cette méthode fonctionne bien pour des questions ouvertes ou complexes, comme expliquer un concept à partir d’un manuel. Cependant, elle est peu adaptée aux bases de données structurées (ex: tables SQL), car elle ne gère pas efficacement les chiffres, les dates ou les relations entre tables.  
+
+\paragraph{Avantages} \mbox{} % Structure sémantique DeepSeek
+Idéal pour des réponses contextuelles et naturelles.  
+
+**Inconvénients** : Perte de précision sur les données organisées en tables.  
+
+
+\textbf{Approche 2 : Conversion des données SQL en texte)} \\   
+Cette méthode transforme les lignes d’une base SQL en phrases simples (ex: « Client : Jean, Commande : 200€ ») pour les traiter comme du texte. Le modèle de langue peut alors utiliser ces phrases pour répondre aux questions. Cela permet d’exploiter des outils existants comme les chatbots, mais simplifie excessivement les relations entre les données (ex: jointures entre tables).  
+
+**Avantages** : Facile à mettre en place pour des schémas simples.  
+**Inconvénients** : Risque de dégradation des résultats pour des bases volumineuses ou complexes.  
+
+
+\textbf{Approche 3 : Génération dynamique de requêtes SQL)} \\  
+Ici, un modèle de langue comme GPT-4 ou Mistral est entraîné à traduire une question utilisateur en requête SQL. Par exemple, la question « Quel est le chiffre d’affaires de juillet 2023 ? » devient `SELECT SUM(montant) FROM ventes WHERE date BETWEEN '2023-07-01' AND '2023-07-31'`. La requête est exécutée directement sur la base de données, garantissant des résultats précis.  
+
+**Avantages** : Exploite pleinement la structure des données (dates, catégories, etc.).  
+**Inconvénients** : Dépend de la fiabilité du modèle pour générer des requêtes correctes.  
+
+
+\textbf{Approche 4 : Utilisation d’Elasticsearch)} \\  
+Elasticsearch est un outil de recherche qui combine filtres structurés (ex: « prix > 500€ ») et recherche sémantique (ex: « produits populaires »). En indexant les données SQL dans Elasticsearch, l’agent peut répondre à des questions hybrides, comme « Quels clients mécontents ont dépensé plus de 1000€ en 2023 ? ». Cette approche offre flexibilité, mais nécessite une préparation minutieuse des données.  
+
+**Avantages** : Réponses riches, mélangeant chiffres et contexte sémantique.  
+**Inconvénients** : Complexité d’intégration et maintenance accrue.  
+
+Dans le cadre du présent projet, je propose un développement incrémental basé sur ces approches, en commençant par une approche simple et évolutive vers des réponses plus nuancées.
+
+\textbf{Étape 1 : Valider la génération de requêtes SQL} \\  
+Pour commencer simplement, l’agent utilisera un modèle de langue (comme Mistral) pour convertir les questions en requêtes SQL. Une base légère, comme DuckDB, permettra d’exécuter ces requêtes sans infrastructure complexe. Par exemple, à la question « Quelles sont les ventes de décembre ? », le modèle générera `SELECT * FROM ventes WHERE mois = '12'`. Cette phase validera la capacité du système à comprendre les intentions de l’utilisateur et à produire des requêtes fiables.  
+
+\textbf{Étape 2 : Intégrer Elasticsearch pour enrichir les réponses} \\   
+Dans un second temps, les données SQL seront indexées dans Elasticsearch pour ajouter une couche sémantique. L’agent pourra alors répondre à des questions comme « Trouve les commandes récentes avec des retours négatifs ». Elasticsearch combinera automatiquement les filtres (ex: « date > 2023-01-01 ») et la recherche par similarité (ex: commentaires clients négatifs). Le modèle de langue synthétisera les résultats en une réponse claire, exploitant à la fois la structure des données et leur contexte.  
+
+\textbf{tape 3 : Optimisation et tests utilisateurs} \\ 
+Enfin, le système sera testé avec des scénarios réels pour ajuster les prompts du modèle, corriger les requêtes incorrectes, et améliorer la fluidité des réponses. L’accent sera mis sur la gestion des erreurs (ex: requêtes SQL invalides) et la personnalisation des réponses.  
+
+
+Ce projet suit une logique de simplicité avant complexité : commencer par des requêtes SQL basiques pour valider le cœur du système, puis ajouter Elasticsearch pour des réponses plus nuancées. Cette approche minimise les risques tout en explorant des techniques variées, idéales pour un projet universitaire visant à concilier innovation et pragmatisme.
+
+\textcolor{red}{TODO: Cette section doit être bonifiée sinon complétée.}.
+
+
+%----------------------------------------------------------------------------------------
+\section{Choix du modèle LLM}
+\label{sec:modele}
+Trois modèles seront évalués :
+
+
+\begin{itemize}
+    \item \textbf{Mistral-7B} :  À compléter
+    \item \textbf{DeepSeek-R1-7B} : 
+    \item \textbf{Qwen-7B} : 
+\end{itemize}
+
+\textcolor{red}{TODO: Cette section doit être bonifiée sinon complétée.}.
+
+
+Avantages comparatifs :
+
+\begin{tabularx}{\textwidth}{llX}
+\toprule
+\textbf{RAG} & \textbf{Agents} \\
+\midrule
+Accès précis aux données & Gestion du flux décisionnel \\
+Maintien du contexte court & Coordination multi-étapes \\
+\bottomrule
+\end{tabularx}
+
+%----------------------------------------------------------------------------------------
+\section{Données utilisées}
+\label{sec:donnees}
+Le jeu de données Open Food Facts (version canadienne) contient :
+
+\begin{itemize}
+    \item 94~782 produits alimentaires (mise à jour janvier 2024)
+    \item 156 attributs par produit regroupés en 8 catégories :
+    \begin{itemize}
+        \item Nutrition : 35 champs (dont 22\% manquants)
+        \item Ingrédients : Composition textuelle (78\% complète)
+        \item Labels : Certifications (Bio, Sans gluten...)
+    \end{itemize}
+\end{itemize}
+
+\textcolor{red}{TODO: Cette section doit être bonifiée sinon complétée.}.
+
+
+\begin{table}[ht]
+\centering
+\caption{Exemple de données nutritionnelles}
+\begin{tabular}{lrrr}
+\toprule
+Produit & Calories (kcal) & Protéines (g) & Sucre (g) \\
+\midrule
+Lait 2\% & 130 & 8 & 12 \\
+Pain complet & 240 & 9 & 3 \\
+Yaourt nature & 150 & 5 & 7 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+%----------------------------------------------------------------------------------------
+\section{Évaluation du système}
+\label{sec:evaluation}
+Métriques d'évaluation :
+
+\begin{enumerate}
+    \item Exactitude des réponses (F1-score sur 500 questions de référence)
+    \item Temps de réponse moyen (objectif < 3s)
+    \item Taux de réussite multilingue (FR/EN)
+    \item Robustesse aux données manquantes
+\end{enumerate}
+
+Méthodologie : Test A/B avec 50 utilisateurs et analyse des logs d'interaction.
+
+\textcolor{red}{TODO: Cette section doit être bonifiée sinon complétée.}.
+
+
+%----------------------------------------------------------------------------------------
+\section{Tâches à faire}
+\label{sec:taches}
+Planification détaillée (270h total) :
+
+\begin{itemize}
+    \item Intégration données (50h) : Nettoyage, validation, indexation
+    \item Développement agent principal (70h) : Mécanismes de décision et gestion d'erreurs
+    \item Implémentation RAG (80h) : Optimisation des embeddings et requêtes hybrides
+    \item Tests performance (40h) : Benchmark sur 4 configurations matérielles
+    \item Documentation (30h) : Guide technique et manuel utilisateur illustré
+\end{itemize}
+
+\textcolor{red}{TODO: Cette section doit être bonifiée sinon complétée.}.
+
+
+\LaTeX{} 
+
+
+% Exemple de citation dans le texte
+Comme démontré par \cite{xi2023rise}, les méthodes d'évaluation agentiques...
+
+% Section Bibliographie
+\label{sec:biblio}
+\bibliography{refs} % Fichier .bib sans l'extension
+
+
+\iffalse
+Mettre ici des commentaires...
+\fi
+
+\end{document}

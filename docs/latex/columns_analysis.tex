@@ -1,0 +1,51 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[french]{babel}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{siunitx}
+
+\begin{document}
+
+\section{Analyse des colonnes de la base de données}
+
+Le tableau suivant présente l'analyse de remplissage des 25 colonnes les plus remplies de la base de données \texttt{food_canada.duckdb}, qui contient 94\,802 lignes au total.
+
+\begin{table}[htbp]
+\centering
+\begin{tabular}{@{}p{4.5cm}p{2cm}S[table-format=3.2]S[table-format=6.0]@{}}
+\toprule
+\textbf{Colonne} & \textbf{Type} & {\textbf{\% Non Null}} & {\textbf{Count}} \\
+\midrule
+checkers\_tags & list & 100.00 & 94\,802 \\
+code & STRING & 100.00 & 94\,802 \\
+complete & NUMBER & 100.00 & 94\,802 \\
+completeness & NUMBER & 100.00 & 94\,802 \\
+correctors\_tags & list & 100.00 & 94\,802 \\
+countries\_tags & list & 100.00 & 94\,802 \\
+created\_t & NUMBER & 100.00 & 94\,802 \\
+creator & STRING & 100.00 & 94\,802 \\
+entry\_dates\_tags & list & 100.00 & 94\,802 \\
+generic\_name & list & 100.00 & 94\,802 \\
+images & list & 100.00 & 94\,802 \\
+informers\_tags & list & 100.00 & 94\,802 \\
+ingredients\_text & list & 100.00 & 94\,802 \\
+lang & STRING & 100.00 & 94\,802 \\
+languages\_tags & list & 100.00 & 94\,802 \\
+last\_edit\_dates\_tags & list & 100.00 & 94\,802 \\
+last\_modified\_t & NUMBER & 100.00 & 94\,802 \\
+misc\_tags & list & 100.00 & 94\,802 \\
+obsolete & bool & 100.00 & 94\,802 \\
+packaging\_text & list & 100.00 & 94\,802 \\
+popularity\_key & NUMBER & 100.00 & 94\,802 \\
+product\_name & list & 100.00 & 94\,802 \\
+rev & NUMBER & 100.00 & 94\,802 \\
+states\_tags & list & 100.00 & 94\,802 \\
+last\_updated\_t & NUMBER & 100.00 & 94\,801 \\
+\bottomrule
+\end{tabular}
+\caption{Statistiques de remplissage des colonnes}
+\end{table}
+
+\end{document}

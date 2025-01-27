@@ -1,0 +1,1927 @@
+\documentclass[a4paper,11pt]{article}
+
+% Packages essentiels suggérés par DeepSeek-R1
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{xcolor}           % Pour la couleur dans le code
+\usepackage{graphicx}         % Pour les images
+\usepackage{hyperref}         % Pour les liens hypertextes
+\usepackage{tabularx}         % Pour les tableaux
+\usepackage{booktabs}         % Pour de beaux tableaux
+
+% Autres packages
+\bibliographystyle{plain} % Style de bibliographie
+\usepackage{amsmath,amssymb,amsfonts}  % Pour les mathématiques
+\usepackage{float}                     % Pour les images flottantes
+\usepackage{listings}                  % Pour le code source
+\usepackage{tcolorbox}                 % Pour créer des arrières plans colorés
+\usepackage{pgfplots}                  % Pour les graphiques
+\pgfplotsset{compat=newest,compat/show suggested version=false}
+\usepackage{parskip}                   % Pour éliminer l'indentation des paragraphes
+\usepackage[french]{datetime2}         % Pour la date et l'heure
+\usepackage{multirow}                  % Pour les tableaux multi-lignes
+\usepackage{mdframed}                  % Pour les boîtes de texte colorées
+
+% Configuration des boîtes de texte
+\newmdenv[
+    linewidth=1pt,
+    topline=true,
+    bottomline=true,
+    leftline=true,
+    rightline=true,
+    % backgroundcolor=white,
+    backgroundcolor=gray!5,
+    innertopmargin=10pt,
+    innerbottommargin=10pt,
+    innerrightmargin=10pt,
+    innerleftmargin=10pt,
+    skipabove=15pt,
+    skipbelow=15pt
+]{solution}
+
+% Configuration pour le code Python
+\lstset{
+    language=Python,
+    basicstyle=\ttfamily\small,
+    % numbers=left,
+    % numberstyle=\tiny\color{gray},
+    frame=single,
+    breaklines=true,
+    keywordstyle=\color{blue},
+    commentstyle=\color{green!60!black},
+    stringstyle=\color{red},
+    showstringspaces=false,
+    backgroundcolor=\color{gray!5},
+    literate={é}{{\'e}}1 {è}{{\`e}}1 {à}{{\`a}}1 {É}{{\'E}}1 {ù}{{\'u}}1
+    {π}{{$\pi$}}1
+    {≤}{{$\leq$}}1
+    {≥}{{$\geq$}}1
+    {≠}{{$\neq$}}1
+    {²}{{$^2$}}1
+    {⁸}{{$^8$}}1
+    {⁷}{{$^7$}}1
+    {⁶}{{$^6$}}1
+    {⁵}{{$^5$}}1
+    {⁴}{{$^4$}}1
+    {³}{{$^3$}}1,
+}
+
+% Configuration des marges
+\usepackage[top=2cm, bottom=2cm, left=2.5cm, right=2.5cm]{geometry}
+
+% Alain: Couleur d'arrière-plan d'une section en gris très pâle
+\newtcolorbox{graysection}[1]{
+  colback=gray!10,
+  colframe=white,
+  title=#1,
+  fonttitle=\bfseries\large,
+  boxrule=0pt,
+  arc=0pt,
+  boxsep=5pt,
+  left=10pt,right=10pt,top=10pt,bottom=10pt
+}
+
+% Page de présentation.
+\newcommand{\titre}{IFT-6005 - Projet intégrateur - H25 \\ 
+Agent conversationnel pour l'interrogation de la base de données Open Food Facts \\
+Description et planification du projet}
+\newcommand{\auteurs}{Alain Boisvert}
+\newcommand{\matricules}{994 029 313}
+\newcommand{\destinataire}{ }
+\newcommand{\cours}{GLO-7021}
+\newcommand{\dateremise}{25 novembre 2024}
+
+% Titre de première page
+\title{IFT-6005 - Projet intégrateur - H25 \ Agent conversationnel pour l'interrogation de la base de données Open Food Facts}
+\author{Alain Boisvert}
+\date{23 janvier 2025}
+
+\begin{document}
+
+\input{pagetitre} 
+
+\newpage
+
+\maketitle
+
+%----------------------------------------------------------------------------------------
+\section{Description du problème}
+\label{sec:probleme}
+L'accès à des informations nutritionnelles fiables et la comparaison de produits alimentaires sont des enjeux importants pour les consommateurs. 
+
+Il existe des bases de données ouvertes telles qu'Open Food Facts qui fournissent des informations sur les produits alimentaires, y compris les ingrédients, les valeurs nutritionnelles et les labels.
+Toutefois, l'accès à ces données est souvent difficile pour les utilisateurs non techniques.
+Les interfaces Web ou mobiles actuelles nécessitent souvent des recherches manuelles fastidieuses pour obtenir des informations précises sur les produits.
+
+L’objectif de ce projet est de développer un agent conversationnel capable de répondre à des questions en langage naturel en interrogeant une base de données 
+sur les produits alimentaires canadiens.
+
+\textcolor{red}{TODO: Cette section doit être bonifiée sinon complétée.}.
+
+%----------------------------------------------------------------------------------------
+\section{Revue de littérature}
+\label{sec:revue}
+
+Résoudre ce problème nécessite un agent conversationel pour dialoguer avec l'utilisateur, 
+une capacité d'interpréter les recherches de l'utilisateur et de générer des requêtes SQL sur ue base de données, 
+ainsi qu'une capacité de synthèse des résultats pour les présenter à l'utilisateur.
+
+L'approche RAG (Retriever-Reader-Generator) est une architecture populaire pour les agents conversationnels qui combine un modèle de recherche (Retriever), un modèle de lecture (Reader) et un modèle de génération (Generator). Conçu pour des données non structurées (textes, PDF, etc.), où la recherche par similarité sémantique (via embeddings) est efficace.
+
+Les systèmes de RAG peuvent fonctionner avec des données structurées SQL, mais leur efficacité dépend de la manière dont les données sont préparées et intégrées au processus.
+Leur intégration dans RAG nécessite une transformation adaptée, par exemple :
+
+\begin{itemize}
+    \item \textbf{Représentation textuelle} : Convertir les lignes de tables SQL en descriptions naturelles (ex: "Client: Jean, Commande: 123, Montant: 200€"). Cette approche peut ne pas être suffisante pour intégrer la structure relationnelle des données.
+    \item \textbf{Requêtes SQL dynamiques} : Utiliser un LLM pour générer des requêtes SQL pertinentes, puis injecter les résultats dans le modèle génératif (approche hybride).
+\end{itemize}
+
+Ainsi, un LLM (Large Language Model) ayant la capacité d'utiliser un outil pour interroger une base de données 
+semble être une solution appropriée.
+
+Many modern LLMs (e.g., GPT-4, Claude) can use tools via post-training adaptations (e.g., plugins, function calling), but only a subset (like Qwen) were directly trained for this purpose during pre-training or instruction tuning. 
+
+Qwen-Chat has been optimized for tool usage and function calling capabilities. Users can develop agents, LangChain applications, and even augment Qwen with a Python Code Interpreter
+\footnote{See \href{https://github.com/QwenLM/Qwen/blob/main/README.md}{GitHub documentation}}.
+
+
+Les travaux suivants éclairent notre approche :
+
+\textcolor{red}{TODO: Cette section doit être bonifiée sinon complétée.}.
+
+%----------------------------------------------------------------------------------------
+\section{Approches proposées}
+
+Pour y parvenir, plusieurs approches sont possibles, chacune avec ses forces et ses limites.
+
+\textbf{Approche 1 : RAG classique (Retrieval-Augmented Generation)} \\  
+Le RAG classique repose sur l’analyse sémantique de données non structurées, comme des textes ou des documents. Un modèle de langue génère des réponses en s’appuyant sur des extraits pertinents trouvés dans ces données. Cette méthode fonctionne bien pour des questions ouvertes ou complexes, comme expliquer un concept à partir d’un manuel. Cependant, elle est peu adaptée aux bases de données structurées (ex: tables SQL), car elle ne gère pas efficacement les chiffres, les dates ou les relations entre tables.  
+
+**Avantages** : Idéal pour des réponses contextuelles et naturelles.  
+**Inconvénients** : Perte de précision sur les données organisées en tables.  
+
+
+\textbf{Approche 2 : Conversion des données SQL en texte)} \\   
+Cette méthode transforme les lignes d’une base SQL en phrases simples (ex: « Client : Jean, Commande : 200€ ») pour les traiter comme du texte. Le modèle de langue peut alors utiliser ces phrases pour répondre aux questions. Cela permet d’exploiter des outils existants comme les chatbots, mais simplifie excessivement les relations entre les données (ex: jointures entre tables).  
+
+**Avantages** : Facile à mettre en place pour des schémas simples.  
+**Inconvénients** : Risque de dégradation des résultats pour des bases volumineuses ou complexes.  
+
+
+\textbf{Approche 3 : Génération dynamique de requêtes SQL)} \\  
+Ici, un modèle de langue comme GPT-4 ou Mistral est entraîné à traduire une question utilisateur en requête SQL. Par exemple, la question « Quel est le chiffre d’affaires de juillet 2023 ? » devient `SELECT SUM(montant) FROM ventes WHERE date BETWEEN '2023-07-01' AND '2023-07-31'`. La requête est exécutée directement sur la base de données, garantissant des résultats précis.  
+
+**Avantages** : Exploite pleinement la structure des données (dates, catégories, etc.).  
+**Inconvénients** : Dépend de la fiabilité du modèle pour générer des requêtes correctes.  
+
+
+\textbf{Approche 4 : Utilisation d’Elasticsearch)} \\  
+Elasticsearch est un outil de recherche qui combine filtres structurés (ex: « prix > 500€ ») et recherche sémantique (ex: « produits populaires »). En indexant les données SQL dans Elasticsearch, l’agent peut répondre à des questions hybrides, comme « Quels clients mécontents ont dépensé plus de 1000€ en 2023 ? ». Cette approche offre flexibilité, mais nécessite une préparation minutieuse des données.  
+
+**Avantages** : Réponses riches, mélangeant chiffres et contexte sémantique.  
+**Inconvénients** : Complexité d’intégration et maintenance accrue.  
+
+Dans le cadre du présent projet, je propose un développement incrémental basé sur ces approches, en commençant par une approche simple et évolutive vers des réponses plus nuancées.
+
+\textbf{Étape 1 : Valider la génération de requêtes SQL} \\  
+Pour commencer simplement, l’agent utilisera un modèle de langue (comme Mistral) pour convertir les questions en requêtes SQL. Une base légère, comme DuckDB, permettra d’exécuter ces requêtes sans infrastructure complexe. Par exemple, à la question « Quelles sont les ventes de décembre ? », le modèle générera `SELECT * FROM ventes WHERE mois = '12'`. Cette phase validera la capacité du système à comprendre les intentions de l’utilisateur et à produire des requêtes fiables.  
+
+\textbf{Étape 2 : Intégrer Elasticsearch pour enrichir les réponses} \\   
+Dans un second temps, les données SQL seront indexées dans Elasticsearch pour ajouter une couche sémantique. L’agent pourra alors répondre à des questions comme « Trouve les commandes récentes avec des retours négatifs ». Elasticsearch combinera automatiquement les filtres (ex: « date > 2023-01-01 ») et la recherche par similarité (ex: commentaires clients négatifs). Le modèle de langue synthétisera les résultats en une réponse claire, exploitant à la fois la structure des données et leur contexte.  
+
+\textbf{tape 3 : Optimisation et tests utilisateurs} \\ 
+Enfin, le système sera testé avec des scénarios réels pour ajuster les prompts du modèle, corriger les requêtes incorrectes, et améliorer la fluidité des réponses. L’accent sera mis sur la gestion des erreurs (ex: requêtes SQL invalides) et la personnalisation des réponses.  
+
+
+Ce projet suit une logique de simplicité avant complexité : commencer par des requêtes SQL basiques pour valider le cœur du système, puis ajouter Elasticsearch pour des réponses plus nuancées. Cette approche minimise les risques tout en explorant des techniques variées, idéales pour un projet universitaire visant à concilier innovation et pragmatisme.
+
+\textcolor{red}{TODO: Cette section doit être bonifiée sinon complétée.}.
+
+
+%----------------------------------------------------------------------------------------
+\section{Choix du modèle LLM}
+\label{sec:modele}
+Trois modèles seront évalués :
+
+
+\begin{itemize}
+    \item \textbf{Mistral-7B} :  À compléter
+    \item \textbf{DeepSeek-R1-7B} : 
+    \item \textbf{Qwen-7B} : 
+\end{itemize}
+
+\textcolor{red}{TODO: Cette section doit être bonifiée sinon complétée.}.
+
+
+Avantages comparatifs :
+
+\begin{tabularx}{\textwidth}{llX}
+\toprule
+\textbf{RAG} & \textbf{Agents} \\
+\midrule
+Accès précis aux données & Gestion du flux décisionnel \\
+Maintien du contexte court & Coordination multi-étapes \\
+\bottomrule
+\end{tabularx}
+
+%----------------------------------------------------------------------------------------
+\section{Données utilisées}
+\label{sec:donnees}
+Le jeu de données Open Food Facts (version canadienne) contient :
+
+\begin{itemize}
+    \item 94~782 produits alimentaires (mise à jour janvier 2024)
+    \item 156 attributs par produit regroupés en 8 catégories :
+    \begin{itemize}
+        \item Nutrition : 35 champs (dont 22\% manquants)
+        \item Ingrédients : Composition textuelle (78\% complète)
+        \item Labels : Certifications (Bio, Sans gluten...)
+    \end{itemize}
+\end{itemize}
+
+\textcolor{red}{TODO: Cette section doit être bonifiée sinon complétée.}.
+
+
+\begin{table}[ht]
+\centering
+\caption{Exemple de données nutritionnelles}
+\begin{tabular}{lrrr}
+\toprule
+Produit & Calories (kcal) & Protéines (g) & Sucre (g) \\
+\midrule
+Lait 2\% & 130 & 8 & 12 \\
+Pain complet & 240 & 9 & 3 \\
+Yaourt nature & 150 & 5 & 7 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+%----------------------------------------------------------------------------------------
+\section{Évaluation du système}
+\label{sec:evaluation}
+Métriques d'évaluation :
+
+\begin{enumerate}
+    \item Exactitude des réponses (F1-score sur 500 questions de référence)
+    \item Temps de réponse moyen (objectif < 3s)
+    \item Taux de réussite multilingue (FR/EN)
+    \item Robustesse aux données manquantes
+\end{enumerate}
+
+Méthodologie : Test A/B avec 50 utilisateurs et analyse des logs d'interaction.
+
+\textcolor{red}{TODO: Cette section doit être bonifiée sinon complétée.}.
+
+
+%----------------------------------------------------------------------------------------
+\section{Tâches à faire}
+\label{sec:taches}
+Planification détaillée (270h total) :
+
+\begin{itemize}
+    \item Intégration données (50h) : Nettoyage, validation, indexation
+    \item Développement agent principal (70h) : Mécanismes de décision et gestion d'erreurs
+    \item Implémentation RAG (80h) : Optimisation des embeddings et requêtes hybrides
+    \item Tests performance (40h) : Benchmark sur 4 configurations matérielles
+    \item Documentation (30h) : Guide technique et manuel utilisateur illustré
+\end{itemize}
+
+\textcolor{red}{TODO: Cette section doit être bonifiée sinon complétée.}.
+
+
+\LaTeX{} 
+
+
+% Exemple de citation dans le texte
+Comme démontré par \cite{xi2023rise}, les méthodes d'évaluation agentiques...
+
+% Section Bibliographie
+\label{sec:biblio}
+\bibliography{refs} % Fichier .bib sans l'extension
+
+
+\iffalse
+
+\section{Filtre de Kalman linéaire~: estimation de la température d’un
+échantillon (22 pts)}
+
+Vous cherchez à estimer la température d’un échantillon avec une sonde électrique $S$, 
+qui retourne un voltage de $0.03\,V/K$ (volts par Kelvin), et qui a un bruit avec écart type 
+$\sigma_S$=0.05\,V. 
+Votre estimé initial de la température est $X_0=340\,K$, auquel vous associez une incertitude initiale de variance $P_0 =6\,K^2$. L’échantillon baisse de température au rythme 
+de $1.5\,K$ par intervalle de temps (ce qui constituera la commande). De plus, cette chute
+de température est légèrement bruitée, selon un bruit gaussien d'écart type de $0.01\,K$ 
+entre chaque intervalle. Les mesures de la sonde $S$ à chaque intervalle de temps 
+($z_1 =9.928\,V, z_2 =9.820\,V et z_3 =9.817/,V$) sont reproduites dans le tableau 1. 
+Important! La chute de température s’effectue avant la mesure, à chaque itération.
+
+% Section 1.1
+\subsection{a) (6 pts)}
+Quelles sont les valeurs des matrices $\Phi$, $\Gamma$ et $\Lambda$ pour ce problème?
+
+\begin{solution}{}
+\textbf{Solution 1.1 a)}
+\smallskip
+
+Le modèle de transition \(\Phi\) modélise l'évolution de l'état d'un instant \(k\) à l'instant \(k+1\) en l'absence de commande. Dans ce problème, l'état \(X_k\) représente uniquement la température, qui se propage linéairement sans facteur multiplicatif ni dépendance temporelle. Par conséquent~:  
+$$
+\Phi = \begin{bmatrix} 1 \end{bmatrix}.
+$$
+
+Le modèle de commande \(\Gamma\) représente l'effet direct de la commande \(u_k\) sur l'état \(X_k\). Ici, la commande correspond à une chute constante de température de \(u_k = -1.5 \, \text{K}\) par intervalle de temps. Puisque cette commande agit directement et linéairement sur l'état, la matrice de commande est~:  
+$$
+\Gamma = \begin{bmatrix} 1 \end{bmatrix}.
+$$
+
+Le modèle de mesure \(\Lambda\) relie l'état réel (la température \(X_k\)) à la mesure \(z_k\) obtenue par le capteur. La sonde électrique \(S\) mesure une tension proportionnelle à la température selon la relation~:  
+$$
+z_k = 0.03 \cdot X_k + v_k,
+$$  
+où \(v_k\) est un bruit de mesure gaussien d'écart type \(\sigma_S = 0.05 \, \text{V}\). Par définition, la matrice \(\Lambda\) correspond au coefficient de proportionnalité entre la mesure \(z_k\) et l'état \(X_k\), ce qui donne~:  
+$$
+\Lambda = \begin{bmatrix} 0.03 \end{bmatrix}.
+$$
+
+En résumé~:  
+$$
+\Phi = \begin{bmatrix} 1 \end{bmatrix}, \quad
+\Gamma = \begin{bmatrix} 1 \end{bmatrix}, \quad
+\Lambda = \begin{bmatrix} 0.03 \end{bmatrix}.
+$$
+\end{solution}
+
+% Section 1.2
+\subsection{b) Exécution du filtre (16 pts)}
+
+Calculez à la main pour les deux premières itérations les différentes étapes du filtre de Kalman, en complétant le tableau 1. Pas besoin d'inclure les démarches dans le rapport. Pour la troisième ligne, programmez le filtre de Kalman pour calculer les entrées. Utilisez-le d'ailleurs pour vérifiez vos calculs manuels !
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|}
+\hline
+Calcul & Itération & $X_{t-1}$ & $P_{t-1}$ & $X_{pred}$ & $P_{pred}$ & Mesure $z$ & Gain $K$ & $X_t$ & $P_t$ \\
+\hline
+Manuel & 1 & 340 & 6 & & & 9.928 & & & \\
+\hline
+Manuel & 2 & & & & & 9.820 & & & \\
+\hline
+Programme & 3 & & & & & 9.817 & & & \\
+\hline
+\end{tabular}
+\caption{Tableau à compléter pour l'exercice de Kalman.}
+\label{tab:kalman_table_1}
+\end{table}
+    
+\begin{solution}{}
+\textbf{Solution 1.1 b)}
+\smallskip
+
+
+Nous devons faire trois itérations du filtre de Kalman linéaire
+basé sur les informations suivantes~:
+
+\begin{itemize}
+    \item \textbf{État initial}~:  
+    Température initiale $X_0 = 340 \, K$, variance initiale $P_0 = 6 \, K^2$.
+    \item \textbf{commander}~:  
+  $u = -1.5 \, K$, avec un bruit gaussien d'écart type $\sigma_\nu = 0.1 \, K$ \\ 
+  ($C_\nu = \sigma_\nu^2 = 0.01 \, K^2$).
+    \item \textbf{Capteur}~:  
+  Sensibilité $\Lambda = 0.03 \, V/K$, avec un bruit de mesure d’écart type \\ 
+  $\sigma_S = 0.05 \, V$ ($C_w = \sigma_S^2 = 0.0025 \, V^2$).
+    \item \textbf{Mesures de la sonde}~:  
+  $z_1 = 9.928 \, V$, $z_2 = 9.820 \, V$, $z_3 = 9.817 \, V$.
+\end{itemize}
+
+Nous avons calculé les deux premières itérations du filtre de Kalman à la main
+en utilisant les équations suivantes~:
+\begin{align*}
+(1) & \quad \hat{x}(k+1|k) = \Phi\hat{x}(k) + \Gamma u(k) \quad \text{(modèle du système)} \\
+(2) & \quad P(k+1|k) = \Phi P(k)\Phi^T + C_\nu(k+1) \\
+(3) & \quad \hat{z}(k+1|k) = \Lambda\hat{x}(k+1|k) \quad \text{(modèle du capteur)} \\
+(4) & \quad r(k+1) = z(k+1) - \hat{z}(k+1|k) \quad \text{(innovation)} \\
+(5) & \quad K(k+1) = P(k+1|k)\Lambda^T \{\Lambda P(k+1|k)\Lambda^T + C_w(k+1)\}^{-1} \\
+(6) & \quad \hat{x}(k+1) = \hat{x}(k+1|k) + K(k+1)r(k+1) \\
+(7) & \quad P(k+1) = (I - K(k+1)\Lambda)P(k+1|k)
+\end{align*}
+
+Nous avons calculé la troisième itération du filtre de Kalman
+en utilisant le code Python ci-dessous. Notez que ce code se retrouve dans 
+le notebook \texttt{Q1Q2.ipynb}~:
+
+\begin{lstlisting}[language=Python, caption=Script filtre de Kalman]
+# Données initiales
+Phi, Gamma, Lambda, sigma_nu, sigma_S = 1, 1, 0.03, 0.1, 0.05
+C_nu = sigma_nu**2
+C_w = sigma_S**2
+u = -1.5  # Commande
+measurements = [9.928, 9.820, 9.817]  # Mesures
+X_prev, P_prev = 340, 6  # Estimation et variance initiale
+
+# Filtre de Kalman
+results = []
+
+for i, z in enumerate(measurements):
+    # Prédiction
+    X_pred = Phi * X_prev + Gamma * u
+    P_pred = Phi * P_prev * Phi + C_nu
+    z_pred = Lambda * X_pred
+
+    # Innovation
+    r = z_pred - z
+
+    # Gain de Kalman
+    K = (P_pred * Lambda) / (Lambda * P_pred * Lambda + C_w)
+
+    # Mise à jour
+    X_t = X_pred + K * r
+    P_t = (1 - K * Lambda) * P_pred
+
+    # Stocker les résultats
+    results.append((i + 1, X_prev, P_prev, X_pred, P_pred, z, K, 
+                    X_t, P_t))
+
+    X_prev, P_prev = X_t, P_t
+
+# Afficher les résultats
+print("Iter |X_prev  |P_prev |X_pred  |P_pred |Meas z "
+        + "|Gain K |X_t     |P_t")
+for r in results:
+    print(f"{r[0]:4} |{r[1]:6.3f} |{r[2]:6.3f} |{r[3]:6.3f} "
+            f"|{r[4]:6.3f} |{r[5]:6.3f} |{r[6]:6.3f} |{r[7]:6.3f} "
+            f"|{r[8]:5.3f}")    
+\end{lstlisting}
+
+Nous avons obtenu ces résultats~:
+ 
+\begin{table}[H]
+\centering
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|}
+\hline
+Itération & $X_{t-1}$ & $P_{t-1}$ & $X_{pred}$ & $P_{pred}$ & Mesure $z$ & Gain $K$ & $X_t$ & $P_t$ \\
+\hline
+1 & 340 & 6 & 338.500 & 6.010 & 9.928 & 22.797 & 343.675 & 1.900 \\
+\hline
+2 & 343.675 & 1.900 & 342.175 & 1.910 & 9.820 & 13.580 & 348.221 & 1.132 \\
+\hline
+3 & 348.221 & 1.132 & 346.721 & 1.142 & 9.817 & 9.710 & 352.398 & 0.809 \\
+\hline
+\end{tabular}
+\caption{Résultats des trois premières itérations du filtre de Kalman.}
+\end{table}
+\end{solution}
+
+\section{Aladdin et son tapis volant magique ! 
+(38 pts pour GLO-4001, 50 pts pour GLO-7021)}
+
+Aladdin décide d'appliquer les principes du filtre de Kalman ! 
+Son tapis magique possède la propriété qu'il se déplace à une vitesse constante, 
+sans aucune friction ni perturbation, après une impulsion au démarrage. 
+Cependant, Aladdin n'a pas encore compris comment le commander, au delà de piaffer au 
+départ pour se donner un élan. Aladdin se situe, au repos, à côté d'une borne kilométrique marquant le kilomètre 0. L'écart-type de position associé à cette borne est 
+de $\sigma_x = 2\,m$. L'écart-type sur la vitesse de son tapis est de 
+$\sigma_{V_0} = 0.2\,m/s$. L'état décrivant le tapis sera~:
+
+\begin{equation}
+X = \begin{bmatrix} x \\ \dot{x} \end{bmatrix}
+\end{equation}
+
+où $x$ sera en m et $\dot{x}$ en m/s. Vous devez tenir compte de ces unités dans 
+vos réponses aux questions, car les mesures, comme vous le verrez plus loin, seront dans des unités différentes (km et km/h).
+
+\subsection{Matrice \texorpdfstring{$\Phi$}{Phi} (2 pts)}
+
+Quelle sera la matrice $\Phi$ pour décrire le comportement dynamique de ce système ? Pour votre information, la matrice de commande $\Gamma$ sera nulle~: l'impulsion de départ sera tenue en compte dans la section 2.3.
+
+\begin{solution}{}
+\textbf{Solution 2.1)}
+\smallskip
+
+L'état du tapis est donné par~:
+$$
+X = \begin{bmatrix} x \\ \dot{x} \end{bmatrix},
+$$
+où $x$ est la position (en $m$) et $\dot{x}$ la vitesse (en $m/s$). La dynamique de ce système, pour un mouvement à vitesse constante sans friction, est décrite par~:
+
+$$
+\begin{aligned}
+x_{k+1} &= x_k + \dot{x}_k \Delta t, \\
+\dot{x}_{k+1} &= \dot{x}_k.
+\end{aligned}
+$$
+
+Cela peut être exprimé sous forme matricielle comme suit~:
+$$
+\begin{bmatrix} 
+x_{k+1} \\ 
+\dot{x}_{k+1} 
+\end{bmatrix} = 
+\begin{bmatrix} 
+1 & \Delta t \\ 
+0 & 1 
+\end{bmatrix} 
+\begin{bmatrix} 
+x_k \\ 
+\dot{x}_k 
+\end{bmatrix}.
+$$
+
+Ainsi, la matrice $\Phi$, qui représente l'évolution de l'état entre deux instants séparés par un intervalle de temps $\Delta t$, est donnée par~:
+
+$$
+\Phi = \begin{bmatrix} 
+1 & \Delta t \\ 
+0 & 1 
+\end{bmatrix}.
+$$
+\end{solution}
+
+    
+\subsection{Matrice \texorpdfstring{$P(0)$}{P(0)} (2 pts)}
+
+Quelle sera la matrice de covariance $P(0)$ initialisant le système ?
+
+\begin{solution}{}
+\textbf{Solution 2.2)}
+\smallskip
+\begin{align*}
+P(0) = \begin{bmatrix} \sigma_x^2 & \sigma_{x\dot{x}} \\ 
+    \sigma_{\dot{x}x} & \sigma_{V_0}^2 \end{bmatrix} 
+= \begin{bmatrix} (2 \,\text{m})^2 & 0 \\ 0 & (0.2 \,\text{m/s})^2 \end{bmatrix} 
+= \begin{bmatrix} 4 \,\text{m}^2 & 0 \\ 0 & 0.04 \,\text{m}^2/\text{s}^2 \end{bmatrix}.
+\end{align*}
+
+Les termes non-diagonaux sont nuls car il n'y a pas de corrélation initiale entre position et vitesse.
+\end{solution}
+
+
+\subsection{Et c'est un départ !}
+
+Aladdin piaffe au sol et son tapis volant se met à se déplacer sous l'impulsion. Il estime sa vitesse à environ $1.5\,m/s$, et son point de départ à $0\,m$, puisqu'il est à côté de la borne kilométrique 0. Pour son filtre, l'intervalle de temps entre les itérations sera $\Delta T = 0.5\,s$. Comme il ne prend pas de mesure au début, son filtre n'exécute que les deux premières équations à chaque itération, c'est-à-dire celles qui représentent le modèle de déplacement, incluant le bruit.
+
+\subsubsection{Impact sur la position de l'erreur en vitesse (4 pts)}
+
+Comme vu en classe, vous devriez voir qu'à mesure que le filtre itère sur les deux premières équations, l'erreur sur l'estimé de vitesse $\dot{x}$ aura un impact grandissant sur l'incertitude de l'estimé en position $x$. Quel élément de la matrice $P$, entre $\sigma^2_x$, $\sigma_{x\dot{x}}$ et $\sigma^2_{\dot{x}}$, viendra capturer cette dépendance entre l'incertitude en vitesse et en position ? De plus, tracez l'évolution de ces trois valeurs $\sigma^2_x$, $\sigma_{x\dot{x}}$ et $\sigma^2_{\dot{x}}$, en fonction des itérations, jusqu'à l'itération 100.
+
+\begin{solution}{}
+\textbf{Solution 2.3.1)}
+\smallskip
+
+Le terme de covariance $\sigma_{x\dot{x}}$ capture cette dépendance puisqu'il représente la corrélation entre les erreurs de position et de vitesse. Comme on le voit dans le graphique ci-dessous, ce terme augmente linéairement avec le temps, reflétant l'impact croissant de l'incertitude de vitesse sur l'incertitude de position.
+
+\begin{figure}[H]
+\includegraphics[width=1.0\linewidth]{img/output.png}
+\caption{Évolution des termes de la matrice $P$ sur 100 itérations.}
+\label{fig:fig-plot-incertitudes}
+\end{figure}
+
+Le code Python pour les calculs et graphiques est fourni dans le 
+notebook \texttt{Q1Q2.ipynb}.
+\end{solution}
+
+
+\subsubsection{Mesure (6 pts) ou (10 pts)}
+
+Aladdin passe à côté d'une pancarte indiquant la distance de $z_d = 0.2\,km$ à l'itération 243. La précision de sa localisation par rapport à cette pancarte est de $\sigma_d = 5\,m$.
+
+\textbf{a) (2 pts)} Quelle seront les matrices $\Lambda$ et $C_w$ à cet instant ? Attention ! N'oubliez-pas que la mesure est en $km$, et que votre matrice $\Lambda$ ainsi que la matrice de bruit $C_w$ devront tenir compte de ces unités. Sinon, vos résultats seront incorrects. Autrement dit, $z_d = 0.2$ et non pas $z_d = 200$.
+
+\begin{solution}{}
+\textbf{Solution 2.3.2 a)}
+\smallskip
+
+Pour une mesure de position en $km$ et un état en $m$~:
+
+\begin{itemize}
+    \item $\Lambda = \begin{bmatrix} 0.001 & 0 \end{bmatrix}$ (conversion de $m$ à $km$ pour la position)~;
+    \item $C_w = [\sigma_d^2] = [0.005^2\,km^2] = [0.000025\, km^2]$ (variance de $\sigma_d^2$ en $m^2$ convertie en $km^2$).
+\end{itemize}
+
+La matrice de mesure $\Lambda$ n'a qu'une ligne car on mesure seulement la position, et le facteur 0.001 convertit les mètres en kilomètres.
+
+\end{solution}
+
+\textbf{b) (4 pts)} 
+Estimez la vitesse $V$ manuellement (en $m/s$), en tenant compte du temps écoulé entre les deux pancartes. Faites l'hypothèse que le temps est exact, c'est-à-dire n'est pas une variable aléatoire.
+
+\begin{solution}{}
+\textbf{Solution 2.3.2 b)}
+\smallskip
+
+Calcul de la vitesse~:
+
+\begin{itemize}
+    \item Distance parcourue = $0.2\,km$ = $200\,m$~;
+    \item Temps écoulé = 243 itérations $\times$ 0.5 seconde/itération = $121.5\,s$~;
+    \item Vitesse $V = 200\,m/121.5\,s = 1.646\,m/s$.
+\end{itemize}
+\end{solution}
+
+\textbf{c) (4 pts)} 
+(GLO-7021 seulement) Estimez la variance $\sigma^2_V$ de votre estimé de vitesse, en tenant compte des incertitudes reliées aux deux pancartes. Indice ! Vous devez faire intervenir la règle de variance $V\{aX + bY\}$.
+
+\begin{solution}{}
+\textbf{Solution 2.3.2 c)}
+\smallskip
+
+Nous avons estimé la vitesse $V$ comme ceci~:
+$$
+V = \frac{x_2-x_1}{\Delta t} = \frac{200\,m-0\,m}{253 \text{ itérations} \cdot 0.5 \text{ sec./itérations} } = \frac{200 \,m}{121.5 \,s} \approx 1.646 \,m/s
+$$
+La variance de $V$ est donc~:
+$$
+\text{Var}(V) = \text{Var}\left(\frac{x_2-x_1}{\Delta t}\right) = \text{Var}\left(\frac{1}{\Delta t}(x_2 - x_1)\right)
+$$
+En utilisant $\text{Var}\{aX\} = a^2\text{Var}\{X\}$ et $\text{Var}\{X + Y\} = \text{Var}\{X\} + \text{Var}\{Y\}$ pour des variables indépendantes~:
+\begin{align*}
+\text{Var}(V) & = \frac{1}{\Delta t^2}\text{Var}(x_2 - x_1) \\
+& = \frac{1}{\Delta t^2}(\text{Var}(x_2)+\text{Var}(x_1)) \\
+& = \frac{1}{121.5^2 \,s^2} (25 \,m^2 + 4 \,m^2) \\
+& = \frac{29 \,m^2}{14762.25 \,s^2} \\
+& \approx 0.001964 \,(m/s)^2
+\end{align*}
+où:
+\begin{itemize}
+    \item $\text{Var}(x_1) = 4 \,m^2$ est la variance à la borne kilométrique 
+    marquant le kilomètre 0 \\ ($\sigma_x = 2 \,m \rightarrow \sigma_x^2 = 4 \,m^2$)~;
+    \item $\text{Var}(x_2) = 25 \,m^2$ est la variance à la pancarte 
+    à $0.2\,km$ ($\sigma_d = 5 \,m \rightarrow \sigma_d^2 = 25 \,m^2$).
+\end{itemize}
+\end{solution}
+
+
+% Section 2.3.3
+\subsubsection{Mise-à-jour avec mesure de position (9 pts ou 17 pts)}
+
+Faites la mise-à-jour, c'est-à-dire exécutez les équations 3 à 7 du filtre de Kalman.
+
+\textbf{a) (4 pts)}
+Comparez l'incertitude de la position estimée par Kalman (entrée $\sigma^2_x$ 
+de la matrice $P$) et la variance $\sigma^2_d$ de la position de la deuxième pancarte, après cette mise-à-jour. Que constatez-vous ? (Ceci correspond à la situation où la mesure $z$ est beaucoup plus précise que l'estimé $x(k + 1|k)$ provenant de la prédiction).
+
+
+\begin{solution}{}
+\textbf{Solution 2.3.3 a)}
+\smallskip
+
+La variance de position après mise à jour ($23.99 \,m^2$) est proche de la variance de la pancarte 
+($25 \,m^2$), ce qui est logique car l'estimé fusionne deux sources d'information en 
+favorisant la plus précise.
+
+Voici le code Python utilisé pour effectuer la mise à jour~:
+
+\begin{lstlisting}[language=Python, caption=Script filtre de Kalman]
+import numpy as np
+
+# Paramètres initiaux
+dt = 0.5  # s
+X = np.array([[0], [1.5]])         # m, m/s
+P = np.array([[4, 0], [0, 0.04]])  # m², m²/s, m²/s, (m/s)²
+Phi = np.array([[1, dt], [0, 1]])  # 1, s, 1/s, 1
+
+# Prédiction sur 243 itérations (équations 1 et 2 du filtre de Kalman)
+for _ in range(243):
+    X = Phi @ X               # Équation 1: m, m/s
+    P = Phi @ P @ Phi.T       # Équation 2: m², (m/s)²
+
+# Matrices de mesure
+Lambda = np.array([[0.001, 0]])  # 1/1000 (km/m), 0
+Cw = np.array([[0.000025]])      # km²
+z = np.array([[0.2]])            # km
+
+# Mise à jour
+z_pred = Lambda @ X                  # Équation 3: km
+r = z - z_pred                       # Équation 4: km
+S = Lambda @ P @ Lambda.T + Cw       # Partie de équation 5: km²
+K = P @ Lambda.T @ np.linalg.inv(S)  # Équation 5: m/km
+X = X + K @ r                        # Équation 6: m, m/s
+P = (np.eye(2) - K @ Lambda) @ P     # Équation 7: m², (m/s)²
+
+print(f"Variance de position après mise à jour selon Kalman: {P[0,0]:.2f} m²")
+print(f"Variance de la pancarte (en m²): {25}")
+
+print(" ")
+print("Autres résultats...")
+print(f"Position après mise à jour: {X[0,0]:.3f} m")
+print(f"Vitesse après mise à jour: {X[1,0]:.3f} m/s")
+print(f"Variance position après mise à jour: {P[0,0]:.6f} m²")
+print(f"Variance vitesse après mise à jour: {P[1,1]:.6f} (m/s)²")
+print(f"Covariance position/vitesse après mise à jour: {P[0,1]:.6f} m²/s")
+\end{lstlisting}
+
+Ce code a retourné les résultats suivants~:
+
+\begin{verbatim}
+Variance de position après mise à jour selon Kalman: 23.99 m²
+Variance de la pancarte (en m²): 25
+    
+Autres résultats...
+Position après mise à jour: 199.284 m
+Vitesse après mise à jour: 1.639 m/s
+Variance position après mise à jour: 23.991106 m²
+Variance vitesse après mise à jour: 0.001873 (m/s)²
+Covariance position/vitesse après mise à jour: 0.196129 m²/s
+\end{verbatim}
+
+Notez que ce code est également fourni dans le notebook \texttt{Q1Q2.ipynb}.
+\end{solution}
+
+\textbf{b) (2 pts)}
+Quelle est la valeur de la vitesse
+$\dot{x}$ estimée par Kalman (c’est-à-dire la deuxième entrée du
+vecteur $X$? Cette valeur devrait être très proche de votre valeur V estimée à la question 2.3.2 b).
+
+
+
+\begin{solution}{}
+\textbf{Solution 2.3.3 b)}
+\smallskip
+
+Rappelons que $X_k = \begin{bmatrix} x_k & \dot{x}_k \end{bmatrix}^\top$.
+
+La vitesse $\dot{x}$ estimée par Kalman est environ $1.639\,m/s$, 
+effectivement très proche de la vitesse $V$ estimée à $1.646\,m/s$ à la question 2.3.2 b).
+\end{solution}
+
+
+\textbf{c) (4 pts)}
+(GLO-7021 seulement) Quelle est la valeur de l'incertitude sur la vitesse $\dot{x}$, telle qu'estimée 
+par le filtre de Kalman (entrée $\sigma^2_{\dot{x}}$ de la matrice $P$) ? Cette valeur devrait être 
+légèrement inférieure à $\sigma^2_V$, que vous avez calculé en 2.3.2 c). Pourquoi ? (Ici l'explication doit être de haut niveau~: je ne cherche pas une preuve mathématique. Indice~: quelles sont toutes les évidences utilisées par votre approche manuelle vs. celles utilisées par le filtre de Kalman).
+
+\begin{solution}{}
+\textbf{Solution 2.3.3 c)}
+\smallskip
+
+Rappelons que $P = \begin{bmatrix} \sigma_x^2 & \sigma_{x\dot{x}} \\ \sigma_{\dot{x}x} & \sigma_{\dot{x}}^2 \end{bmatrix}$.
+
+La valeur de l'incertitude sur la vitesse $\dot{x}$, telle qu'estimée par le filtre de Kalman est \\ 
+$\sigma^2_{\dot{x}} \approx 0.001873 \,m/s^2$.
+
+Cette valeur est légèrement inférieure à $\sigma^2_V \approx 0.001964 \,m/s^2$ calculé manuellement \\ 
+en 2.3.2 c).
+
+La raison pour laquelle la variance de la vitesse $\sigma^2_{\dot{x}}$ estimée par le filtre de Kalman est légèrement inférieure à $\sigma^2_V$ calculé manuellement est que 
+le filtre de Kalman exploite la corrélation entre position et vitesse capturée dans le terme $\sigma_{x\dot{x}}$ de la matrice $P$. Notre calcul manuel considérait uniquement les mesures de position aux bornes, tandis que le filtre combine cette information avec l'historique des estimations et la relation dynamique entre position et vitesse.
+
+\end{solution}
+
+\textbf{d) (4 pts)}
+(GLO-7021 seulement) Que devriez-vous faire pour que votre estimé $V$ concorde avec celui de Kalman ? Montrez le détails du calcul. (Indice~: fusionner toutes les évidences disponibles sur la vitesse). Notez que bien que je ne le demande pas, vous devriez aussi être capable de faire correspondre les deux variances $\sigma^2_V$ et $\sigma^2_{\dot{x}}$ si vous appliquiez ce même concept.
+
+
+\begin{solution}{}
+\textbf{Solution 2.3.3 d)}
+\smallskip
+
+Nous avons dans la présentation \texttt{07-EstimationEtat.A2024-I.pdf} page 23, la formule pour combiner optimalement deux mesures.
+$$
+z_3 = \frac{\sigma_2^2}{\sigma_1^2 + \sigma_2^2} z_1 + \frac{\sigma_1^2}{\sigma_1^2 + \sigma_2^2} z_2.
+$$ 
+
+Ainsi, la formule pour que l'estimé $V$ concorde avec celui de Kalman ($\dot{x}= 1.639252$) est~:
+\begin{align*}
+V_{opt} & = \frac{\sigma_V^2}{\sigma_{V_0}^2 + \sigma_V^2} V_0 + \frac{\sigma_{V_0}^2}{\sigma_{V_0}^2 + \sigma_V^2} V \\
+& \approx \frac{0.001964}{0.04 + 0.001964} 1.5 + \frac{0.04}{0.04 + 0.001964} 1.646091 \\
+& \approx 0.070202 + 1.569051 \\
+& \approx 1.639
+\end{align*}
+
+La nouvelle variance sera égale à~:
+\begin{align*}
+\sigma_3^2 = \frac{\sigma_1^2 \sigma_2^2}{\sigma_1^2 + \sigma_2^2}.
+\end{align*}
+
+De la même façon, la formule pour que l'estimé de la variance de $V$ concorde avec celui
+de Kalman ($\sigma_{\dot{x}}^2 = 0.001873$) est~:
+\begin{align*}
+\sigma_{opt}^2 & = \frac{\sigma_{V_0}^2 \sigma_V^2}{\sigma_{V_0}^2 + \sigma_V^2} \\
+& \approx \frac{0.04 \cdot 0.001964}{0.04 + 0.001964} \\
+& \approx 0.001872
+\end{align*}
+
+\end{solution}
+
+
+\textbf{e) (3 pts)}
+Repartez votre script afin de tracer les trois valeurs de la matrice $P$, jusqu'à l'itération 300. N'oubliez pas de faire la mise-à-jour à l'itération 243. Notez que c'est la seule mise-à-jour que vous faites dans ce script. Commentez et expliquer ce qui se passe pour chacune des trois courbes.
+
+
+\begin{solution}{}
+\textbf{Solution 2.3.3 e)}
+\smallskip
+
+Nous obtenons le graphique suivant~:
+
+\begin{figure}[H]
+\includegraphics[width=1.0\linewidth]{img/evolutionP.png}
+\caption{Évolution des termes de la matrice $P$ sur 300 itérations}
+\label{fig:fig-evolution-P}
+\end{figure}
+
+Voici notre analyse des trois courbes~:
+
+Courbe bleue $\sigma_x^2$ (position)~:
+\begin{itemize}
+    \item Croissance quadratique avant $t=243$ due à l'accumulation d'incertitude sur la position.
+    \item Chute brutale à $t=243$ grâce à la mesure précise de la pancarte.
+    \item Reprise de la croissance quadratique après la mise à jour.
+\end{itemize}
+    
+Courbe orange $\sigma_{\dot{x}}^2$ (vitesse)~:
+\begin{itemize}
+    \item Reste constante avant $t=243$ car pas de bruit sur la vitesse 
+    ($\sigma_{\dot{x}}^2 = 0.04 \, \text{(m/s)}^2$ pour $t < 243$).
+    \item Diminution à $t=243$ grâce à la corrélation position-vitesse 
+    ($\sigma_{\dot{x}}^2 = 0.001873\,m/s^2$).
+    \item Reste constante après la mise à jour.
+\end{itemize}
+    
+Courbe verte $\sigma_{x\dot{x}}$ (covariance)~:
+\begin{itemize}
+    \item Croissance linéaire avant $t=243$ reflétant la corrélation croissante entre position et vitesse.
+    \item Réduction significative à $t=243$ lors de la mise à jour de Kalman \\
+    ($\sigma_{x\dot{x}} = 0.196129\,m^2/s$).
+    \item Reprise de la croissance linéaire après la mise à jour.
+\end{itemize}
+
+\bigskip
+Voici le code utilisé~:
+
+\begin{lstlisting}[language=Python, caption=Script filtre de Kalman avec mise à jour]
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Paramètres initiaux
+dt = 0.5  # s
+X = np.array([[0], [1.5]])         # m, m/s
+P = np.array([[4, 0], [0, 0.04]])  # m², m²/s, m²/s, (m/s)²
+Phi = np.array([[1, dt], [0, 1]])  # 1, s, 1/s, 1
+
+# Paramètre de mise à jour
+update_step = 243  # itération où la mise à jour se produit
+
+# Arrays pour stocker l'historique
+n_iterations = 300
+sigma_x = np.zeros(n_iterations)
+sigma_xdot = np.zeros(n_iterations)
+sigma_cross = np.zeros(n_iterations)
+
+for i in range(n_iterations):
+    # Stockage des valeurs actuelles
+    sigma_x[i] = P[0,0]
+    sigma_xdot[i] = P[1,1]
+    sigma_cross[i] = P[0,1]
+    
+    # Prédiction (équations 1 et 2)
+    X = Phi @ X               # Équation 1: m, m/s
+    P = Phi @ P @ Phi.T       # Équation 2: m², (m/s)²
+
+    # Faire la mise-à-jour à l'itération 243.
+    if i == (update_step-1):
+        # Matrices de mesure
+        Lambda = np.array([[0.001, 0]])  # 1/1000 (km/m), 0
+        Cw = np.array([[0.000025]])      # km²
+        z = np.array([[0.2]])            # km
+        
+        # Mise à jour
+        z_pred = Lambda @ X              # Équation 3: km
+        r = z - z_pred                   # Équation 4: km
+        S = Lambda @ P @ Lambda.T + Cw   # Partie de équation 5: km²
+        K = P @ Lambda.T @ np.linalg.inv(S)  # Équation 5: m/km
+        X = X + K @ r                    # Équation 6: m, m/s
+        P = (np.eye(2) - K @ Lambda) @ P # Équation 7: m², (m/s)²
+
+        print(f"Position après mise à jour: {X[0,0]:.3f} m")
+        print(f"Vitesse après mise à jour: {X[1,0]:.3f} m/s")
+        print(f"Variance position après mise à jour: {P[0,0]:.6f} m²")
+        print(f"Variance vitesse après mise à jour: {P[1,1]:.6f} (m/s)²")
+        print(f"Covariance position/vitesse après mise à jour: {P[0,1]:.6f} m²/s")
+        
+plt.figure(figsize=(8, 5))
+plt.plot(sigma_x, label='$\sigma_x^2$ (position)')
+plt.plot(sigma_xdot, label='$\sigma_\dot{x}^2$ (vitesse)')
+plt.plot(sigma_cross, label='$\sigma_{x\dot{x}}$ (covariance)')
+plt.axvline(x=243, color='r', linestyle='--', label='Mise à jour')
+plt.xlabel('Itération')
+plt.ylabel('Variance/Covariance')
+plt.title('Q 2.3.3 e) - Évolution des termes de la matrice de covariance $P$')
+plt.legend()
+plt.grid(True)
+plt.savefig('chart-233e.png')
+plt.show()
+\end{lstlisting}
+
+Ce code a retourné les résultats suivants~:
+
+\begin{verbatim}
+Position après mise à jour: 199.284 m
+Vitesse après mise à jour: 1.639 m/s
+Variance position après mise à jour: 23.991106 m²
+Variance vitesse après mise à jour: 0.001873 (m/s)²
+Covariance position/vitesse après mise à jour: 0.196129 m²/s
+\end{verbatim}
+
+Ce code est également fourni dans le notebook \texttt{Q1Q2.ipynb}.
+
+\end{solution}
+
+
+
+    
+
+
+\subsubsection{Mise-à-jour avec mesure de position, partie II (7 pts)}
+
+Vous venez de voir un exemple de mesure incomplète, où une mesure en position $x$ vient modifier la variable d'état de vitesse $\dot{x}$. Dans les équations de mise-à-jour, la seule matrice qui contient l'information pour faire cela se situe dans la matrice $P$. Quel élément de la matrice $P$, ($\sigma^2_x$, $\sigma_{x\dot{x}}$ ou $\sigma^2_{\dot{x}}$) sera responsable ? Pour valider votre réponse, mettez directement ce terme à zéro lors de l'itération correspondant à la mise-à-jour. N'oubliez pas qu'il y a deux entrées $\sigma_{x\dot{x}}$ dans $P$, si vous choisissez de mettre ce terme à zéro). Faites tourner le code de mise-à-jour avec cette modification à $P$. Rapporter et discutez~:
+
+\begin{itemize}
+    \item la position $x$ et la vitesse $\dot{x}$, par rapport à la réponse à 2.3.3.
+    \item la covariance $\sigma^2_{\dot{x}}$ après la mise-à-jour.
+\end{itemize}
+
+
+
+
+
+\begin{solution}{}
+\textbf{Solution 2.3.4}
+\smallskip
+
+Une mesure en position $x$ vient modifier la variable d'état de vitesse $\dot{x}$.
+Le terme $\sigma_{x\dot{x}}$ de la matrice $P$ est responsable de cela car il capture la corrélation entre position et vitesse, permettant ainsi à une mesure de position d'influencer l'estimation de la vitesse.
+
+La mise à zéro de $\sigma_{x\dot{x}}$ à t=243 devrait empêcher la mesure de position d'améliorer l'estimé de vitesse, donc~:
+
+\begin{itemize}
+\item La vitesse devrait rester à sa valeur prédite
+\item La variance de vitesse $\sigma^2_{\dot{x}}$ devrait rester à $0.04\,(m/s)^2$
+\end{itemize}
+
+Effectivement, en annulant le terme de covariance $\sigma_{x\dot{x}}$, nous observons que~:
+
+\begin{itemize}
+\item La position est toujours mise à jour ($199.284\,m$) car elle est directement mesurée
+\item La vitesse reste inchangée à sa valeur initiale ($1.5\,m/s$) au lieu de passer à $1.639\,m/s$ comme dans la question 2.3.3 e)
+\item La variance de la vitesse reste à sa valeur initiale ($0.04\,(m/s)^2$) au lieu de diminuer
+à $0.001873\,(m/s)^2$ comme dans 2.3.3 e)
+\end{itemize}
+
+Cela confirme que c'est bien le terme $\sigma_{x\dot{x}}$ qui permet à une mesure de position d'améliorer l'estimation de la vitesse. Sans lui, il n'y a plus de lien entre position et vitesse lors de la mise à jour.
+
+\begin{figure}[H]
+\includegraphics[width=1.0\linewidth]{img/evolutionMiseaJour.png}
+\caption{Évolution des termes de la matrice $P$ sur 300 itérations}
+\end{figure}
+
+Le code développé pour répondre à cette question est le suivant :
+
+\begin{lstlisting}[language=Python]
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Paramètres initiaux
+dt = 0.5  # s
+X = np.array([[0], [1.5]])         # m, m/s
+P = np.array([[4, 0], [0, 0.04]])  # m², m²/s, m²/s, (m/s)²
+Phi = np.array([[1, dt], [0, 1]])  # 1, s, 1/s, 1
+
+# Paramètre de mise à jour
+update_step = 243  # itération où la mise à jour se produit
+
+# Arrays pour stocker l'historique
+n_iterations = 300
+sigma_x = np.zeros(n_iterations)
+sigma_xdot = np.zeros(n_iterations)
+sigma_cross = np.zeros(n_iterations)
+
+for i in range(n_iterations):
+    # Stockage des valeurs actuelles
+    sigma_x[i] = P[0,0]
+    sigma_xdot[i] = P[1,1]
+    sigma_cross[i] = P[0,1]
+    
+    # Prédiction (équations 1 et 2)
+    X = Phi @ X               # Équation 1: m, m/s
+    P = Phi @ P @ Phi.T       # Équation 2: m², (m/s)²
+    
+    # Faire la mise-à-jour à l'itération 243
+    if i == (update_step-1):
+        # Mise à zéro du terme de covariance seulement à la mise à jour
+        P[0,1] = P[1,0] = 0       
+    
+        # Matrices de mesure
+        Lambda = np.array([[0.001, 0]])  # 1/1000 (km/m), 0
+        Cw = np.array([[0.000025]])      # km²
+        z = np.array([[0.2]])            # km
+        
+        # Mise à jour
+        z_pred = Lambda @ X              # Équation 3: km
+        r = z - z_pred                   # Équation 4: km
+        S = Lambda @ P @ Lambda.T + Cw   # Partie de équation 5: km²
+        K = P @ Lambda.T @ np.linalg.inv(S)  # Équation 5: m/km
+        X = X + K @ r                    # Équation 6: m, m/s
+        P = (np.eye(2) - K @ Lambda) @ P # Équation 7: m², (m/s)²
+
+        print(f"Position après mise à jour: {X[0,0]:.3f} m")
+        print(f"Vitesse après mise à jour: {X[1,0]:.3f} m/s")
+        print(f"Variance position après mise à jour: {P[0,0]:.6f} m²")
+        print(f"Variance vitesse après mise à jour: {P[1,1]:.6f} (m/s)²")
+        print(f"Covariance position/vitesse après mise à jour: {P[0,1]:.6f} m²/s")
+        
+plt.figure(figsize=(8, 5))
+plt.plot(sigma_x, label='$\sigma_x^2$ (position)')
+plt.plot(sigma_xdot, label='$\sigma_\dot{x}^2$ (vitesse)')
+plt.plot(sigma_cross, label='$\sigma_{x\dot{x}}$ (covariance)')
+plt.axvline(x=243, color='r', linestyle='--', label='Mise à jour')
+plt.xlabel('Itération')
+plt.ylabel('Variance/Covariance')
+plt.title('Q 2.3.4 - Évolution des termes de la matrice de covariance $P$')
+plt.legend()
+plt.grid(True)
+plt.savefig('chart-234.png')
+plt.show()
+\end{lstlisting}
+
+Ce code a retourné les résultats suivants~:
+
+\begin{verbatim}
+Position après mise à jour: 199.284 m
+Vitesse après mise à jour: 1.500 m/s
+Variance position après mise à jour: 23.991106 m²
+Variance vitesse après mise à jour: 0.040000 (m/s)²
+Covariance position/vitesse après mise à jour: 0.000000 m²/s
+\end{verbatim}
+
+Ce code est également fourni dans le notebook \texttt{Q1Q2.ipynb}.
+
+\end{solution}
+
+
+\subsection{Nouveau problème ! Mesure de vitesse au lieu de position (8 pts)}
+
+Reprenez ce problème, mais à l'itération 243, au lieu d'une pancarte indiquant la distance $0.2\,km$, 
+ce sera plutôt une borne radar intelligente. La vitesse affichée sur cette borne est $z_R = 5\,km/h$ lors du passage d'Aladdin et son tapis.
+
+\textbf{a) (2 pts)} 
+Quelle sera la matrice de mesure $\Lambda$ associée avec cette situation ?
+
+\begin{solution}{}
+\textbf{Solution 2.4 a)}
+\smallskip
+
+Procédons par étape~:
+
+\begin{itemize}
+    \item Notre état est $X = \begin{bmatrix} x & \dot{x} \end{bmatrix}^\top$ où~:
+    $x$ est en mètres ($m$) et $\dot{x}$ est en mètres par seconde ($m/s$). 
+    \item La mesure $z_R$ est en $km/h$.
+    \item Nous avons besoin d'une matrice $\Lambda$ telle que $\Lambda X$ donne une vitesse en $km/h$.
+    On ignore la position $x$, d'où le $0$.
+    On multiplie par $3.6$ convertir la vitesse $\dot{x}$ de $m/s$ en $km/h$, car $1\,m/s = 3.6\,km/h$.
+\end{itemize}
+
+Donc $\Lambda = \begin{bmatrix} 0 & 3.6 \end{bmatrix}$ de sorte que 
+$\Lambda \begin{bmatrix} x \\ \dot{x} \end{bmatrix} = 0 \cdot x + 3.6 \cdot \dot{x}$ donne la vitesse en $km/h$.
+\end{solution}  
+
+
+\textbf{b) (2 pts)} 
+Faites la mise-à-jour avec cette mesure. Quel est l'effet sur la position $x$ et la vitesse $\dot{x}$, en utilisant un bruit de mesure de $\sigma_R = 0.01\,km/h$ ?
+
+
+\begin{solution}{}
+\textbf{Solution 2.4 b)}
+\smallskip
+
+Pour répondre à cette question, nous avons modifié le code de la question 2.3.3 avec les changements suivants~:
+
+\begin{lstlisting}[language=Python, caption=Corrections sur le code]
+Lambda = np.array([[0, 3.6]])  # Mesure de vitesse en km/h
+Cw = np.array([[0.0001]])  # Bruit de mesure au carré (0.01 km/h)²
+z = np.array([[5]])  # Vitesse mesurée en km/h
+\end{lstlisting}
+
+Le code complet est fourni dans le notebook \texttt{Q1Q2.ipynb}.
+
+Comparons les résultats à l'itération 243 des questions 2.3.3 e) et 2.4 b).
+$$
+\begin{array}{|l|r|r|}
+\hline
+\textbf{} & \textbf{2.3.3 e)} & \textbf{2.4 b)} \\
+\hline
+\text{Position après mise à jour} & 199.284\,m & 168.753 \,m \\
+\hline
+\text{Vitesse après mise à jour} & 1.639 \,m/s & 1.389 \,m/s \\
+\hline
+\text{Variance position après mise à jour} & 23.991106 \,m^2 & 4.113884 \,m^2 \\
+\hline
+\text{Variance vitesse après mise à jour} & 0.001873 \,(m/s)^2 & 0.000008 \,(m/s)^2 \\
+\hline
+\text{Covariance position/vitesse après mise à jour} & 0.196129 \,m^2/s & 0.000937 \, m^2/s \\
+\hline
+\end{array}
+$$
+
+Dans le cas 2.4 b), la mesure précise de vitesse ($\sigma_R = 0.01 \, \text{km/h}$)~:
+
+\begin{itemize}
+    \item Force la vitesse à converger vers $5 \,km/h$ ($\approx 1.389 \,m/s$).
+    \item Réduit drastiquement l'incertitude sur la vitesse (de $0.001873$ à $0.000008 \,(m/s)^2$).
+    \item Affecte aussi la position et sa variance grâce à la corrélation position-vitesse ($\sigma_{x\dot{x}}$).
+    \item La covariance position-vitesse est réduite car l'incertitude sur la vitesse est très faible.
+\end{itemize}
+
+\end{solution}
+
+
+
+
+\textbf{c) (2 pts)} 
+Comparez la covariance $\sigma^2_x$ entre la nouvelle matrice $P$ et la matrice $P(0)$ utilisées pour initialiser le filtre. Que constatez-vous ? Qu'est-ce que cela signifie ? Comme à la question 2.3.3, tracez les trois valeurs de la matrice $P$, jusqu'à l'itération 300, en incluant l'unique mise-à-jour. Commentez et expliquez ce qui se passe pour chacune des courbes.
+
+\begin{solution}{}
+\textbf{Solution 2.4 c)}
+\smallskip
+
+Comparons la variance de position $\sigma^2_x$~:
+
+\begin{itemize}
+    \item Dans $P(0)$~: $\sigma^2_x = 4\,m^2$
+    \item Après mise à jour avec radar~: $\sigma^2_x = 4.113884\,m^2$
+\end{itemize}
+
+Les valeurs sont très proches, ce qui est logique car la mesure de vitesse ne donne pas 
+d'information directe sur la position. La légère augmentation de $\sigma^2_x$ vient de 
+l'accumulation d'incertitude pendant les 243 itérations de prédiction, que même la 
+mise à jour avec une mesure précise de vitesse ne peut pas complètement réduire.
+
+C'est très différent du cas 2.3.3 où la mesure de position permettait de réduire 
+significativement $\sigma^2_x$ à $23.991106\,m^2$.
+
+Voici le graphique des termes de la matrice $P$.
+
+\begin{figure}[H]
+\includegraphics[width=1.0\linewidth]{img/2.4.png}
+\caption{Évolution des termes de la matrice $P$ sur 300 itérations}
+\end{figure}
+
+Notre analyse des trois courbes est la suivante~:
+
+Courbe bleue $\sigma^2_x$ (variance position)~:
+
+\begin{itemize}
+    \item Croissance quadratique avant $t=243$ due à l'accumulation d'incertitude sur la position.
+    \item Légère diminution à $t=243$ uniquement grâce à la corrélation position-vitesse.
+    \item Continue sa croissance quadratique après, mais à partir d'une valeur plus basse.
+\end{itemize}
+
+Courbe orange $\sigma^2_{\dot{x}}$ (variance vitesse)~:
+
+\begin{itemize}
+    \item Reste constante à $0.04 \,(m/s)^2$ avant $t=243$.
+    \item Chute brutale à $t=243$ à $0.000008 \,(m/s)^2$ grâce à la mesure précise de vitesse.
+    \item Reste constante après la mise à jour mais à cette valeur très faible.
+\end{itemize}
+
+Courbe verte $\sigma_{x\dot{x}}$ (covariance)~:
+
+\begin{itemize}
+    \item Croissance linéaire avant $t=243$.
+    \item Chute brutale à $t=243$ (proche de zéro) car l'incertitude sur la vitesse devient très faible.
+    \item Reste proche de zéro après la mise à jour.
+\end{itemize}
+
+
+
+\end{solution}
+
+
+\textbf{d) (2 pts)} 
+Refaite la question c) mais cette fois avec un bruit beaucoup plus grand sur la mesure~: $\sigma_R = 0.5\,km/h$. Commentez la différence entre les courbes des éléments de $P$ obtenues en d) par rapport à c). Commentez aussi sur les valeurs de position $x$ et vitesse $\dot{x}$ entre d) et c).
+
+\begin{solution}{}
+\textbf{Solution 2.4 d)}
+\smallskip
+
+Pour répondre à cette question, nous avons modifié le code de la question 2.3.3 avec les changements suivants~:
+
+\begin{lstlisting}[language=Python, caption=Corrections sur le code]
+Lambda = np.array([[0, 3.6]])  # Mesure de vitesse en km/h
+Cw = np.array([[0.25]])  # Bruit de mesure au carré (0.5 km/h)²
+z = np.array([[5]])      # Vitesse mesurée en km/h
+\end{lstlisting}
+
+Le code complet pour répondre à cette question 
+est fourni dans le notebook \texttt{Q1Q2.ipynb}.
+
+Voici le graphique des termes de la matrice $P$.
+
+\begin{figure}[H]
+\includegraphics[width=1.0\linewidth]{img/2.4.d.png}
+\caption{Évolution des termes de la matrice $P$}
+\end{figure}
+
+Nous obtenons ces résultats avec la mise à jour à l'itération 243.
+
+\begin{table}[H]
+\centering
+\resizebox{\textwidth}{!}{
+\begin{tabular}{|l|r|r|}
+\hline
+& \textbf{$\sigma_R = 0.01\,km/h$ (c)} & \textbf{$\sigma_R = 0.5\,km/h$ (d)} \\
+\hline
+Position après mise à jour & 168.753 m & 173.142 m \\
+\hline
+Vitesse après mise à jour & 1.389 m/s & 1.425 m/s \\
+\hline
+Variance position après mise à jour & 4.113884 m$^2$ & 196.116736 m$^2$ \\
+\hline
+Variance vitesse après mise à jour & 0.000008 (m/s)$^2$ & 0.013014 (m/s)$^2$ \\
+\hline
+Covariance position/vitesse après mise à jour & 0.000937 m$^2$/s & 1.581208 m$^2$/s \\
+\hline
+\end{tabular}
+}
+\caption{Comparaison des résultats entre $\sigma_R = 0.01\,km/h$ et $\sigma_R = 0.5\,km/h$}
+\label{tab:mise-a-jour}
+\end{table}
+
+Comparons les résultats avec $\sigma_R = 0.01 \,km/h$ (c) et $\sigma_R = 0.5 \,km/h$ (d).
+
+Différences dans les courbes de $P$~:
+
+\begin{itemize}
+    \item La variance de position ($\sigma^2_x$) est beaucoup plus basse dans le cas c) 
+    ($4.11 \,m^2$) que dans d) ($196.12 \,m^2$) car la mesure très précise de vitesse permet une meilleure correction indirecte de la position via la covariance.
+    \item La variance de vitesse ($\sigma^2_{\dot{x}}$) est beaucoup plus basse dans le 
+    cas c) ($0.000008 \,(m/s)^2$) que dans d) ($0.013014 \,(m/s)^2$) à cause de la précision de la mesure.
+    \item La covariance ($\sigma_{x\dot{x}}$) est très faible dans c) ($0.000937 \,m^2/s$) 
+    mais reste significative dans d) ($1.581208 \,m^2/s$).
+\end{itemize}
+
+Impact sur les estimés~:
+
+\begin{itemize}
+    \item Position $x$~: l'écart est faible ($168.753 \,m$ vs $173.142 \,m$) 
+    malgré la grande différence de précision.
+    \item Vitesse $\dot{x}$~: converge vers des valeurs proches dans les deux cas \\ 
+    ($1.389 \,m/s$ vs $1.425 \,m/s$) mais avec une incertitude beaucoup plus grande dans d).
+\end{itemize}
+
+En résumé, une mesure de vitesse moins précise ($\sigma_R = 0.5 \,km/h$) affecte principalement les incertitudes (variances et covariance) plutôt que les estimés eux-mêmes.
+
+\end{solution}
+
+
+
+
+
+
+% Section 3
+\section{Localisation globale par filtre à particules (20 pts) pour GLO-4001, (28 pts) GLO-7021}
+
+Vous avez un robot initialement perdu, dans un environnement dont la carte est connue. 
+Pour pouvoir le localiser, vous devrez donc utiliser un filtre à particules, puisque la distribution
+de croyance sur l'état du robot sera mulitmodale. Un aspect important de la question sera de trouver
+des bons paramètres, pour permettre au système de se localiser de manière robuste. Notez ici que
+nous ne chercherons pas à faire une solution qui puisse tourner en temps-réel~; ne vous
+préoccupez donc pas d'optimiser le code pour sa vitesse d'exécution.
+
+Pour tous les cas, nous allons utiliser un monde décrit par un polygone, contenu dans 
+le fichier \texttt{Carte.mat}. Le robot ponctuel (rayon=0) est équipé de 4 LiDARs, pointant dans 
+les directions $0$, $\pi/2$, $\pi$ et $1.5\pi$, tel qu'illustré à la figure. 
+Le robot est soumis
+aux bruits gaussiens suivants (avec le nom de la variable entre parenthèses)~:
+\begin{itemize}
+    \item LiDAR (\texttt{Lidar})~: $\sigma_L = 0.01\,m$~;
+    \item Vitesse linéaire (\texttt{V})~: $\sigma_V = 0.01\,m/s$~;
+    \item Vitesse angulaire (\texttt{omega})~: $\sigma_\omega = 0.05\,rad/s$~;
+    \item Compas magnétique (\texttt{Compas})~: $\sigma_C = 0.01\,rad$.
+\end{itemize}
+
+\begin{figure}[htb]
+    \centering
+    \includegraphics[width=1.0\linewidth]{img/fig_3.png}
+    \caption{Robot ponctuel dans un environnement décrit par un polygone. Les 4 lignes rouges indiquent les faisceaux laser.}
+    \label{fig:robot}
+\end{figure}
+
+Pour prédire les mesures LiDAR, vous allez utiliser des fonctions géométriques incluses dans la remise 
+de l'énoncé. Le faisceau LiDAR sera simplement un segment de droite partant du centre du robot et 
+allant à une distance maximale ($20\,m$), selon l'angle du LiDAR (et bien sûr l'angle du robot, 
+puisque le LiDAR est fixé sur ce dernier). Trouvez tous les points de cette droite qui interceptent 
+le polygone de la carte, en utilisant la fonction \texttt{fast\_four\_way\_raycast} fournie dans 
+le fichier \texttt{raycast.py}. Cette fonction simule un LiDAR pour chacune des quatre directions, 
+et retourne les intersections entre les rayons et la carte dans l'ordre suivant~: avant, gauche, 
+arrière et droite. La distance mesurée par un rayon LiDAR sera celle correspondante 
+à l'intersection rayon-monde le plus
+proche du centre du robot. Pour ceux qui ont déjà fait des travaux en graphisme 3D et jeux
+vidéos, vous reconnaîtrez une procédure de lancée de rayons.
+
+Pour l'initialisation des particules, vous pouvez les distribuer de manière uniforme dans un
+rectangle couvrant la carte au complet. Ne vous préoccupez pas des particules en dehors du
+polygone (essentiellement en dehors de l'environnement). Ils finiront par avoir des poids
+quasi-nuls et seront donc éliminé lors de la phase du resampling.
+
+Nous vous fournissons le code de base \texttt{Q3.py} qui permet de charger les données. Pour faire le ré-échantillonage des particules lors de l'appauvrissement, utilisez la fonction \texttt{random.choices} ainsi que de tracer certaines figures.
+
+Pour installer les dépendances, exécutez la commande \texttt{pip3 install -r requirements.txt}.
+
+\subsection{Cas 1~: l'angle est connu (GLO-4001~: 20 pts, GLO-7021~: 10 pts)}
+
+Afin d'y aller en douceur, nous allons commencer par un problème d'estimation à deux dimensions, où 
+l'état est simplement $X = [x\; y]^T$. En effet, la quantité de particules nécessaire est 
+exponentielle en nombre de dimensions. Pour l'angle du robot, vous allez simplement prendre 
+l'angle \texttt{Compas} mesuré par le compas magnétique (en rad, de $-\pi$ à $\pi$), et 
+ajouter un bruit $\sigma_{\text{angle}}$ aléatoire sur l'angle. Ce bruit permettra de ``brasser'' 
+les particules un peu, pour permettre une convergence plus rapide, en plus de tenir compte de 
+l'incertitude du compas. Faites un filtre à particules qui exploite les informations suivantes, 
+contenues dans le fichier \texttt{Q1Trajectoire.mat}~:
+
+\begin{itemize}
+   \item les 4 mesures LiDAR (\texttt{Lidar}), en $m$~;
+   \item la vitesse linéaire (\texttt{V}), en $m/s$~;
+   \item l'angle du compas magnétique (\texttt{Compas}), en $rad$.
+\end{itemize}
+
+Aussi, rappelez-vous qu'un des problèmes pour les filtres à particules est qu'ils ne 
+convergent pas bien si la fonction de capteur est trop précise. Gardez cela en tête, quand 
+viendra le moment de choisir la valeur de $\sigma_{lidar}$ dans la fonction de
+vraisemblance $p(z_{lidar}|x_t)$.
+
+Dans votre rapport, discutez des éléments suivants~:
+
+\begin{itemize}
+   \item une justification de votre choix $\sigma_{angle}$~;
+   \item les divers paramètres utilisés dans le filtre (pour GLO-7021, la question 3.2 vous demande d'élaborer sur certains de ces paramètres, alors ne pas dupliquer)~;
+   \item description qualitative de la distribution des particules au fil du temps.
+\end{itemize}
+
+Incluez deux tracés de trajectoires estimées par votre filtre, l'une pour une exécution réussie du
+filtre et l'autre pour une exécution qui n'a pas convergée. La trajectoire est basée sur le calcul,
+à chaque itération, de la moyenne des particules (pondérée par leur poids respectif). Dans le cas
+où le filtre a échoué, donnez une explication qualitative. Incluez aussi dans vos graphique la
+trajectoire vérité-terrain (\texttt{xPose,yPose,anglePose}) contenue dans le fichier 
+\texttt{Q1Trajectoire.mat}. Bien entendu, vous ne pouvez pas utiliser cette information 
+vérité-terrain dans le filtre à particules, seulement à titre de débuggage et du calcul des erreurs
+dans le rapport. N'oubliez pas d'appliquer \texttt{wrap\_to\_pi} lorsque vous calculez des erreurs
+sur les angles, afin de tous rammener entre $-\pi$ et $\pi$.
+
+Pour les étudiants de GLO-7021, votre note dépendra de la qualité des explications et
+justifications. Par exemple, il serait intéressant de voir des graphiques d'erreur en fonction
+du temps vs. choix de $\sigma_{angle}$.
+
+Pour les étudiants en GLO-4001, le TP se termine ici!
+
+\begin{solution}{}
+\textbf{Solution 3.1}
+\smallskip
+
+\textbf{Implémentation}
+
+Le code (\texttt{Q31.py}) implémente un filtre à particules pour estimer la position 2D d'un robot dans un environnement connu. Les principales fonctions développées sont~:
+
+\begin{description}
+  \item[load\_data()] charge les données de trajectoire (\texttt{Q1Trajectoire.mat}) et la carte,
+  comprenant le pas de temps $dt$, les positions réelles, les mesures des capteurs (vitesse, compas, LiDAR).
+  \item[run\_particle\_filter()] implémente le filtre à particules. Au début, les particules sont initialisées uniformément dans l'espace de la carte. À chaque étape, le filtre~:
+  \begin{itemize}
+    \item Applique le modèle de mouvement en utilisant la vitesse mesurée et l'angle du compas, tous deux bruités~;
+    \item Met à jour les poids des particules en comparant les mesures LiDAR réelles avec celles prédites via \texttt{fast\_four\_way\_raycast}~;
+    \item Rééchantillonne si nécessaire (lorsque le nombre effectif de particules est trop faible)
+    \item Estime la position comme la moyenne pondérée des particules.
+  \end{itemize}
+\end{description}
+
+Le code inclut aussi une visualisation à chaque 10 étapes et génère à la fin trois graphiques~: la trajectoire estimée vs réelle, l'erreur de position et la variance des particules au fil du temps.
+
+\textbf{Justification des paramètres}
+
+Nous avonc utilisé les bruits gaussiens suivants dont les valeurs sont spécifiées dans l'énoncé~:
+
+\begin{itemize}
+\item $\sigma_L = 0.01\,m$~: bruit du LiDAR~;
+\item $\sigma_V = 0.01\,m/s$~: bruit de la vitesse linéaire~;
+\item $\sigma_\omega = 0.05\,rad/s$~: bruit de la vitesse angulaire~;
+\item $\sigma_C = 0.01\,rad$~: bruit du compas magnétique.
+\end{itemize}
+
+Les autres paramètres clés sont~:
+
+\begin{itemize}
+\item Nombre de particules ($N=200$)~;
+\item Seuil de rééchantillonnage ($r_{eff}=0.5$)~; 
+\item Distance maximale du LiDAR ($20\,m$).
+\end{itemize}
+
+Le nombre de particules ($N=200$) a été choisi comme un compromis entre précision et coût computationnel. 
+Un nombre plus faible de particules ne permettrait pas une exploration suffisante de l'espace d'état 
+pour garantir la convergence, tandis qu'un nombre plus élevé augmenterait significativement le temps 
+de calcul sans amélioration notable des performances.
+
+Le seuil de rééchantillonnage $r_{eff}=0.5$ signifie que nous rééchantillonnons lorsque le nombre
+effectif de particules tombe en dessous de 50~\% du nombre total de particules. Cette valeur médiane
+offre un équilibre entre deux extrêmes~: un rééchantillonnage trop fréquent (seuil proche de 1)
+qui risquerait d'appauvrir la diversité des particules, et un rééchantillonnage trop rare
+(seuil proche de 0) qui laisserait le filtre opérer avec trop peu de particules effectives.
+
+La distance maximale du LiDAR a été fixée à $20\,m$, tel qu'indiqué dans l'énoncé.
+
+Concernant le bruit additionnel $\sigma_{angle}$, nous avons effectué une série de tests avec des 
+valeurs comprises entre $0.0$ et $2.0\,rad$ pour analyser son impact sur la convergence du filtre. 
+Les deux valeurs retenues ($0.01$ et $0.10\,rad$) sont représentatives des
+performances du filtre~: la première mène à une localisation réussie, tandis que la seconde entraîne un échec de l'estimation. Notons que le cas $\sigma_{angle} = 0.01$ produit des résultats pratiquement identiques au cas sans bruit additionnel ($\sigma_{angle} = 0.0$), suggérant qu'un faible
+bruit n'affecte pas significativement les performances du filtre.
+
+\textbf{Résultats}
+
+Voici les résultats obtenus pour ces deux valeurs de $\sigma_{angle}$. 
+
+La figure \ref{fig:success} présente les résultats aaa obtenus avec $\sigma_{angle} = 0.01$ et
+la figure \ref{fig:failure} avec $\sigma_{angle} = 0.10$. Pour chaque cas, trois graphiques
+sont affichés côte à côte~:
+
+
+\begin{itemize}
+    \item à gauche, la trajectoire estimée par le filtre (en bleu) comparée à la trajectoire réelle (en rouge)~;
+    \item au centre, l'évolution temporelle de l'erreur entre la position estimée et la position réelle~;
+    \item à droite, l'évolution de la variance des particules qui indique leur dispersion autour de la position estimée.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1.0\textwidth]{img/q31_success.png}
+    \caption{Résultats avec $\sigma_{angle} = 0.01$}
+    \label{fig:success}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1.0\textwidth]{img/q31_failure.png}
+    \caption{Résultats avec $\sigma_{angle} = 0.10$}
+    \label{fig:failure}
+\end{figure}
+
+
+\textbf{Analyse des résultats}
+
+Les graphiques montrent clairement la différence de performance entre les deux configurations de $\sigma_{\text{angle}}$ (0.01 et 0.10).
+
+Pour le \textbf{cas de succès} 
+avec $\sigma_{angle} = 0.01$ à la figure \ref{fig:success}, le filtre montre une excellente performance~:
+
+\begin{itemize}
+    \item La trajectoire estimée (en bleu) suit très fidèlement la vérité terrain (en rouge)~;
+    \item Après un pic d'erreur initial d'environ 8 m, le filtre converge rapidement~;
+    \item L'erreur de position se stabilise autour de 0.2-0.4 m pour le reste de la trajectoire~; 
+    \item La variance des particules montre un pic initial élevé ($\approx$ 30), puis diminue
+    rapidement et se maintient très proche de zéro, indiquant une forte concentration des particules
+    autour de l'estimation.
+\end{itemize}
+
+Pour le \textbf{cas d'échec} 
+avec $\sigma_{\text{angle}} = 0.10$ à la figure \ref{fig:failure}, le filtre échoue significativement~:
+
+\begin{itemize}
+    \item La trajectoire estimée diverge complètement de la vérité terrain dès le début~;
+    \item L'erreur de position est élevée et fluctue entre $13.2\,m$ et $13.4\,m$~;
+    \item Bien que la trajectoire soit incorrecte, la variance des particules reste faible mais augmente progressivement de $0$ à $0.015$, suggérant que les particules restent groupées mais ``suivent'' une mauvaise trajectoire.
+\end{itemize}
+
+L'\textbf{explication de l'échec} 
+avec $\sigma_{\text{angle}} = 0.10$ peut s'expliquer par plusieurs facteurs~:
+
+\begin{itemize}
+    \item Le bruit angulaire plus élevé perturbe significativement la prédiction de la trajectoire~;
+    \item Cette perturbation empêche le filtre de correctement associer les mesures LiDAR avec la carte~;
+    \item Une fois que les particules convergent vers une position incorrecte, le faible bruit du LiDAR ($\sigma_L = 0.01$) rend difficile la récupération car les particules qui pourraient explorer d'autres zones reçoivent des poids très faibles.
+\end{itemize}
+
+La comparaison des deux cas montre qu'un bruit angulaire additionnel de $0.10\,rad$ est suffisant pour compromettre la capacité du filtre à maintenir une estimation correcte de la position, alors qu'un
+bruit de $0.01\,rad$ permet une localisation précise et stable.
+
+Ces résultats soulignent l'importance critique de la précision angulaire dans la localisation
+par filtre à particules.
+
+\end{solution}
+
+\subsection{Impact du bruit utilisé dans la vraisemblance LiDAR (GLO-7021 seulement, 6 pts)}
+
+Lors de la mise-à-jour, vous devez choisir l'écart-type $\sigma_{LiDAR}$ pour évaluer la vraisemblance 
+des mesures du LiDAR dans la fonction $p(z|x)$. Quel est l'impact de cette valeur, en terme $a)$ du
+nombre nécessaire de particules pour converger et $b)$ de la vitesse de convergence du filtre.
+Pour $a)$, faites dix essais par nombre de particules, et rapportez le pourcentage de succès.
+Vous devrez trouver, par essai et erreur, des valeurs ``intéressantes'' de nombres de particules
+pour ces tests, i.e. pour lesquels le taux de succès change. Pour aller plus vite, ne laissez pas
+tourner le filtre sur toutes les itérations~: dès que vous voyez que les particules ont condensé
+en une région, vous pouvez établir si le filtre a divergé ou non par rapport à la vérité-terrain.L'utilisation de la variance \texttt{numpy.var()} vous permettra de détecter cette condensation.
+
+Prenez des mesures sur la vitesse d'appauvrissement, afin de voir l'impact de $\sigma_{LiDAR}$ sur cette vitesse.
+
+Selon vos résultats, en quoi serait-il intéressant d'augmenter ou de diminuer
+graduellement $\sigma_{LiDAR}$ au fil du temps~? Si vous comprenez bien cette question, cela vous sera utile pour la question 3.3 pour accélérer le filtrage.
+
+\begin{solution}{}
+\textbf{Solution 3.2}
+\smallskip
+
+\textbf{Implémentation}
+
+Pour étudier l'impact du bruit LiDAR sur les performances du filtre à particules, nous avons développé le code \texttt{Q32.py} en nous basant sur l'implémentation précédente \texttt{Q31.py}. Notre analyse se décompose en plusieurs aspects~:
+
+\begin{itemize}
+\item Une exploration systématique des paramètres clés~:
+\begin{itemize}
+\item Le bruit du LiDAR ($\sigma_L$) avec sept valeurs entre 0.001 et 1.0~;
+\item Le nombre de particules ($N$) variant de 25 à 1~000 particules.
+\end{itemize}
+\item Une évaluation des performances basée sur~:
+\begin{itemize}
+\item Le taux de succès de la localisation~;
+\item La vitesse de convergence du filtre~;
+\item La vitesse d'appauvrissement des particules.
+\end{itemize}
+\end{itemize}
+
+Pour évaluer le taux de succès, nous définissons deux critères~:
+
+\begin{itemize}
+\item La convergence~: les particules se concentrent dans une région (variance totale $< 0.5$)\;
+\item La précision~: la position estimée est proche de la vérité terrain (erreur $< 1.0\,m$).
+\end{itemize}
+
+Le taux de succès est calculé comme la proportion d'essais où les deux critères sont satisfaits simultanément. Cette évaluation est réalisée sur 10 essais pour chaque combinaison de paramètres ($\sigma_L$, $N$).
+
+Pour optimiser le temps d'exécution, nous avons implémenté une détection automatique de la convergence des particules, permettant d'arrêter la simulation dès qu'une solution stable est atteinte. Cette amélioration, suggérée dans l'énoncé, réduit considérablement la durée des tests tout en préservant la qualité des résultats.
+
+\textbf{Résultats}
+
+Pour évaluer l'impact du bruit LiDAR sur les performances du filtre à particules, nous avons mesuré trois métriques principales~: le taux de succès de la localisation, le temps de convergence (en nombre d'itérations) et le taux de rééchantillonnage moyen par itération. Les résultats pour différentes valeurs de $\sigma_{LiDAR}$ et nombres de particules $N$ sont présentés dans le tableau~\ref{tab:lidar_impact}.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+$\sigma_{LiDAR}$ & \begin{tabular}[c]{@{}c@{}}Nombre de\\particules\end{tabular} & \begin{tabular}[c]{@{}c@{}}Taux de\\succès\end{tabular} & \begin{tabular}[c]{@{}c@{}}Temps de\\convergence\end{tabular} & \begin{tabular}[c]{@{}c@{}}Taux de\\rééchantillonnage\end{tabular} \\
+\hline
+\multirow{5}{*}{0.001} & 50 & 0.0\,\% & $\infty$ & $\infty$ \\
+& 100 & 0.0\,\% & $\infty$ & $\infty$ \\
+& 200 & 0.0\,\% & $\infty$ & $\infty$ \\
+& 500 & 10.0\,\% & 122.0 & 0.008 \\
+& \textit{Moy.} & \textit{2.5\,\%} & \textit{122.0} & \textit{0.008} \\
+\hline
+\multirow{5}{*}{0.010} & 50 & 30.0\,\% & 1.7 & 0.417 \\
+& 100 & 50.0\,\% & 21.8 & 0.347 \\
+& 200 & 60.0\,\% & 2.8 & 0.383 \\
+& 500 & 80.0\,\% & 7.8 & 0.440 \\
+& \textit{Moy.} & \textit{55.0\,\%} & \textit{8.5} & \textit{0.397} \\
+\hline
+\multirow{5}{*}{0.100} & 50 & 30.0\,\% & 0.7 & 0.889 \\
+& 100 & 20.0\,\% & 0.0 & 1.000 \\
+& 200 & 20.0\,\% & 0.5 & 1.000 \\
+& 500 & 0.0\,\% & $\infty$ & $\infty$ \\
+& \textit{Moy.} & \textit{17.5\,\%} & \textit{0.4} & \textit{0.963} \\
+\hline
+\multirow{5}{*}{1.000} & 50 & 30.0\,\% & 27.3 & 0.234 \\
+& 100 & 30.0\,\% & 18.0 & 0.277 \\
+& 200 & 80.0\,\% & 23.6 & 0.312 \\
+& 500 & 70.0\,\% & 23.9 & 0.281 \\
+& \textit{Moy.} & \textit{52.5\,\%} & \textit{23.2} & \textit{0.276} \\
+\hline
+\end{tabular}
+\caption{Analyse comparative des performances du filtre à particules en fonction de $\sigma_{LiDAR}$ et du nombre de particules (10 essais par configuration)}
+\label{tab:lidar_impact}
+\end{table}
+
+\textbf{Analyse des résultats}
+
+L'analyse des trois métriques de performance révèle les comportements suivants~:
+
+\begin{itemize}
+    \item \textbf{Pour $\sigma_{LiDAR} = 0.001$}~:
+    \begin{itemize}
+        \item Taux de succès très faible (2.5\,\% en moyenne)~;
+        \item Convergence très lente quand elle survient (122.0 itérations)~;
+        \item Faible taux de rééchantillonnage (0.008) $\rightarrow$ La fonction de vraisemblance étant très étroite ($\sigma_{LiDAR}$ petit), presque toutes les particules reçoivent un poids nul, rendant le rééchantillonnage inutile.
+    \end{itemize}
+    \item \textbf{Pour $\sigma_{LiDAR} = 0.01$}~:
+    \begin{itemize}
+        \item Excellent taux de succès (55.0\,\% en moyenne)~;
+        \item Convergence rapide (8.5 itérations)~;
+        \item Taux de rééchantillonnage modéré (0.397) $\rightarrow$ Les poids restent bien distribués, permettant une exploration efficace.
+    \end{itemize}
+    \item \textbf{Pour $\sigma_{LiDAR} = 0.1$}~:
+    \begin{itemize}
+        \item Taux de succès faible (17.5\,\%)~;
+        \item Convergence immédiate quand elle survient (0.4 itération)~;
+        \item Taux de rééchantillonnage très élevé (0.963) $\rightarrow$ Les poids dégénèrent rapidement, forçant des rééchantillonnages fréquents qui perturbent la convergence.
+    \end{itemize}
+    \item \textbf{Pour $\sigma_{LiDAR} = 1.0$}~:
+    \begin{itemize}
+        \item Bon taux de succès (52.5\,\%)~;
+        \item Convergence lente (23.2 itérations)~;
+        \item Taux de rééchantillonnage modéré (0.276) $\rightarrow$ Les poids restent bien distribués mais la grande tolérance aux erreurs ralentit la convergence.
+    \end{itemize}
+\end{itemize}
+
+Ces résultats suggèrent qu'il serait intéressant d'utiliser une stratégie 
+d'évolution de $\sigma_{LiDAR}$ au fil du temps pour accélérer la convergence du filtre~:
+
+\begin{enumerate}
+    \item Commencer avec $\sigma_{LiDAR} = 1.0$ pour~:
+    \begin{itemize}
+        \item Assurer une bonne distribution initiale des poids~;
+        \item Permettre une exploration large de l'espace d'état~;
+        \item Maintenir un taux de rééchantillonnage modéré.
+    \end{itemize}
+    \item Diminuer progressivement vers $\sigma_{LiDAR} \approx 0.01$ pour~:
+    \begin{itemize}
+        \item Affiner la localisation~;
+        \item Accélérer la convergence finale~;
+        \item Maintenir une distribution efficace des poids.
+    \end{itemize}
+\end{enumerate}
+
+Cette approche permettrait une transition progressive de l'exploration vers l'exploitation, 
+évitant ainsi les problèmes des valeurs extrêmes de $\sigma_{LiDAR}$~: la dégénérescence 
+des poids avec des valeurs trop faibles (0.001) ou les rééchantillonnages excessifs avec
+des valeurs intermédiaires (0.1).
+
+\end{solution}
+
+
+
+
+
+
+
+
+\subsection{Cas 2~: l'angle est inconnu (GLO-7021 Seulement, 12 pts)}
+
+Pour ce cas-ci, la dimensionalité du problème va augmenter, car il vous faudra maintenant estimer 
+l'état en y incluant l'angle $\theta$ du robot~: $X = [x\; y\; \theta]^T$. Tel que vu en classe,
+le nombre de particules est exponentiel en dimension de l'état... Alors vous devrez probablement
+être patient lors de l'exécution de votre filtre! Le fichier de donnée pour ce cas d'estimation,
+\texttt{Q2Trajectoire.mat}, contient les commandes de vitesses linéaires et les commandes angulaires,
+les mesures LiDAR et la vérité-terrain. Notez ici que vous n'avez plus de données du compas. Vous
+pouvez partir de votre implémentation du filtre à particule de la section 3.1.
+
+Refaites les mêmes expérience qu'à la section 3.2 et commentez sur ces résultats.
+
+À partir de votre expérience de l'impact de $\sigma_{LiDAR}$ et du nombre de particules sur les
+chances de convergences, adaptez ces valeurs dynamiquement afin d'accélérer l'exécution du
+filtre à particules. Expliquez votre stratégies, notamment à l'aide de graphiques montrant le
+nombre de particules, la valeur de $\sigma_{LiDAR}$ et les erreur en distance/orientation
+en fonction du temps. Appuyez ausis votre réponse avec des histogrammes d'erreur correspondant
+au régime pour lequel le filtre a convergé. Comment pouvez-vous justifier votre approche, d'un
+point de vue théorique~?
+
+\begin{solution}{}
+\textbf{Solution 3.3}
+\smallskip
+
+
+\textbf{Implémentation}
+
+Pour répondre la présente question, nous avons créé le script \texttt{Q33.py} à partir du filtre à particules de \texttt{Q31.py} et des instructions pour l'analyse des performance de \texttt{Q32.py} et procédé aux modifications suivantes~:
+
+\begin{itemize}
+    \item Utilisation du fichier de données \texttt{Q2Trajectoire.mat}.
+    \item Augmentation de la dimensionalité~:
+    \begin{itemize}
+        \item Passage à l'état 3D $X=[x \; y \; \theta]^\top$ pour inclure l'angle inconnu~;
+        \item Le modèle de mouvement prend en compte la vitesse angulaire $\omega$~;
+        \item Les mesures du compas magnétique ont été retirées puisqu'elles ne sont plus disponibles.
+    \end{itemize}
+    \item D'abord, appliquer le filtre à particules sans adapaptation dynamique des paramètres et 
+          commenter les résultats obtenus.
+    \item Ensuite, ajuster dynamiquement $\sigma_{LiDAR}$ et le nombre de particules en fonction 
+    du nombre d'itération et de la variance des particules pour améliorer les performances en termes de convergence et de rapidité.
+    Pour ce faire, les paramètres sont ajustés selon deux phrases~:
+    \begin{itemize}
+        \item Phase d'exploration initiale avec $\sigma_{LiDAR}$ et nombre de particules relativement élevés pour favoriser l'exploration~; 
+        \item Phase de convergence avec réduction progressive $\sigma_{LiDAR}$ et du nombre de particules pour accélérer la convergence.
+    \end{itemize}
+    \item Ajout de graphiques pour visualiser les résultats~:
+    \begin{itemize}
+        \item Trajectoire prédite et la trajectoire réelle~;
+        \item Évolution des erreurs de position et d'angle au fil du temps~;
+        \item Évolution de la variance des particules au fil du temps~;
+        \item Évolution des paramètres $\sigma_{LiDAR}$ et nombre de particules~;
+        \item Histogramme des erreurs de position et d'angle après convergence
+    \end{itemize}
+\end{itemize}
+
+\textbf{Résultats sans adaptation dynamique}
+
+Le tableau \ref{tab:lidar_impact_3d} présente les résultats de l'analyse comparative du filtre
+à particules en trois dimensions, où l'état complet $X = [x\; y\; \theta]^\top$ inclut
+maintenant l'orientation du robot. 
+
+Pour chaque combinaison de $\sigma_{LiDAR}$ et du nombre de particules, nous avons effectué 
+10 essais en utilisant les données de \texttt{Q2Trajectoire.mat}. Les performances sont évaluées 
+selon quatre métriques~: le taux de succès de la localisation, le temps de convergence (en nombre d'itérations), la variance finale des particules et le taux de rééchantillonnage. 
+
+Contrairement au cas 2D, nous observons qu'un nombre beaucoup plus important de particules 
+(jusqu'à 5~000) est nécessaire pour obtenir des performances acceptables.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline
+$\sigma_{LiDAR}$ & \begin{tabular}[c]{@{}c@{}}Nombre de\\particules\end{tabular} & \begin{tabular}[c]{@{}c@{}}Taux de\\succès\end{tabular} & \begin{tabular}[c]{@{}c@{}}Temps de\\convergence\end{tabular} & \begin{tabular}[c]{@{}c@{}}Variance\end{tabular} & \begin{tabular}[c]{@{}c@{}}Taux de\\rééchantillonnage\end{tabular} \\
+\hline
+\multirow{5}{*}{0.010} & 500 & 0.0\,\% & $\infty$ & $\infty$ & $\infty$ \\
+& 1\,000 & 30.0\,\% & 0.3 & 0.000 & 0.833 \\
+& 2\,000 & 10.0\,\% & 0.0 & 0.000 & 1.000 \\
+& 5\,000 & 30.0\,\% & 0.0 & 0.000 & 1.000 \\
+& \textit{Moy.} & \textit{17.5\,\%} & \textit{0.1} & \textit{0.000} & \textit{0.944} \\
+\hline
+\multirow{5}{*}{0.100} & 500 & 20.0\,\% & 0.0 & 0.000 & 1.000 \\
+& 1\,000 & 20.0\,\% & 0.0 & 0.168 & 1.000 \\
+& 2\,000 & 60.0\,\% & 2.7 & 0.124 & 0.696 \\
+& 5\,000 & 70.0\,\% & 2.9 & 0.145 & 0.648 \\
+& \textit{Moy.} & \textit{42.5\,\%} & \textit{1.4} & \textit{0.109} & \textit{0.836} \\
+\hline
+\multirow{5}{*}{0.500} & 500 & 50.0\,\% & 7.2 & 0.078 & 0.504 \\
+& 1\,000 & 30.0\,\% & 6.3 & 0.298 & 0.484 \\
+& 2\,000 & 70.0\,\% & 12.3 & 0.114 & 0.395 \\
+& 5\,000 & 50.0\,\% & 12.6 & 0.004 & 0.443 \\
+& \textit{Moy.} & \textit{50.0\,\%} & \textit{9.6} & \textit{0.123} & \textit{0.457} \\
+\hline
+\multirow{5}{*}{1.000} & 500 & 50.0\,\% & 14.6 & 0.167 & 0.378 \\
+& 1\,000 & 60.0\,\% & 17.2 & 0.099 & 0.388 \\
+& 2\,000 & 70.0\,\% & 16.6 & 0.161 & 0.368 \\
+& 5\,000 & 90.0\,\% & 21.3 & 0.052 & 0.369 \\
+& \textit{Moy.} & \textit{67.5\,\%} & \textit{17.4} & \textit{0.120} & \textit{0.376} \\
+\hline
+\end{tabular}
+\caption{Analyse comparative des performances du filtre à particules 3D en fonction de $\sigma_{LiDAR}$ et du nombre de particules (10 essais par configuration)}
+\label{tab:lidar_impact_3d}
+\end{table}
+
+\textbf{Analyse des résultats sans adaptation dynamique}
+
+L'analyse des résultats en 3D met en évidence l'impact de l'ajout de la dimension angulaire~:
+
+\begin{itemize}
+    \item \textbf{Pour $\sigma_{LiDAR} = 0.01$} :
+    \begin{itemize}
+        \item Taux de succès très faible (17.5\,\% en moyenne)~;
+        \item Convergence rapide mais rare (0.1 itération)~;
+        \item Taux de rééchantillonnage très élevé (0.944) $\rightarrow$ Dégénérescence rapide des particules due à une fonction de vraisemblance trop étroite~;
+        \item Performance peu sensible au nombre de particules, même avec 5~000.
+    \end{itemize}
+    
+    \item \textbf{Pour $\sigma_{LiDAR} = 0.1$} :
+    \begin{itemize}
+        \item Taux de succès modéré (42.5\,\% en moyenne)~;
+        \item Convergence assez rapide (1.4 itération)~;
+        \item Taux de rééchantillonnage élevé (0.836) $\rightarrow$ Dégénérescence encore présente
+        \item Amélioration notable avec plus de particules (de 20\,\% à 70\,\%), mais coûteuse en calcul.
+    \end{itemize}
+    
+    \item \textbf{Pour $\sigma_{LiDAR} = 0.5$} :
+    \begin{itemize}
+        \item Bon taux de succès (50.0\,\%)~;
+        \item Convergence plus lente (9.6 itérations)~;
+        \item Taux de rééchantillonnage modéré (0.457) $\rightarrow$ Meilleure stabilité des particules
+        \item Variance stable (0.123 en moyenne) mais performance variable selon le nombre de particules.
+    \end{itemize}
+    
+    \item \textbf{Pour $\sigma_{LiDAR} = 1.0$} :
+    \begin{itemize}
+        \item Excellent taux de succès (67.5\,\%, jusqu'à 90\,\% avec 5~000 particules)~;
+        \item Convergence lente (17.4 itérations) mais très fiable~;
+        \item Taux de rééchantillonnage le plus bas (0.376) $\rightarrow$ Meilleure stabilité des poids
+        \item Performance croissante et robuste avec le nombre de particules.
+    \end{itemize}
+\end{itemize}
+
+Ces résultats, comparés à ceux de la version 2D, suggèrent la stratégie adaptative suivante~:
+
+\begin{enumerate}
+    \item Phase d'initialisation~:
+    \begin{itemize}
+        \item Utiliser $\sigma_{LiDAR} = 1.0$ pour assurer une exploration robuste~;
+        \item Maintenir 5~000 particules (configuration offrant les meilleures performances)~;
+        \item Exploiter la stabilité des poids (taux de rééchantillonnage de 0.376) pour une exploration efficace.
+    \end{itemize}
+    
+    \item Phase de convergence~:
+    \begin{itemize}
+        \item Réduire progressivement $\sigma_{LiDAR}$ vers 0.1 (meilleur compromis précision/stabilité avec beaucoup de particules)~;
+        \item Maintenir le nombre initial de particules pendant cette phase critique~;
+        \item Surveiller la variance pour détecter une éventuelle dégénérescence.
+    \end{itemize}
+    
+    \item Phase de suivi~:
+    \begin{itemize}
+        \item Réduire graduellement jusqu'à 2~000 particules pour l'efficacité computationnelle~;
+        \item Maintenir $\sigma_{LiDAR}$ entre 0.1 et 0.5 selon la variance observée~;
+        \item Adapter les paramètres selon les conditions de suivi.
+    \end{itemize}
+\end{enumerate}
+
+Cette approche adaptative devrait permettre de gérer efficacement la complexité accrue du problème 3D tout en maintenant un bon compromis entre temps de calcul et robustesse de la localisation.
+
+\textbf{Implémentation avec adaptation dynamique}
+
+Sur la base des résultats obtenus sans adaptation dynamique, nous avons implémenté une stratégie adaptative pour ajuster $\sigma_{LiDAR}$ et le nombre de particules en fonction du nombre d'itérations et de la variance des particules. Les paramètres sont ajustés selon les phases suivantes~:
+
+\begin{itemize}
+    \item Phase d'exploration initiale (0-200 itérations)~:
+    \begin{itemize}
+        \item Maintien de $\sigma_{LiDAR}$ à 1.0 pour maximiser l'exploration et éviter la dégénérescence précoce~;
+        \item Nombre de particules fixé au maximum (5000) pour assurer une couverture optimale de l'espace d'états.
+    \end{itemize}
+
+    \item Phase de convergence (après 200 itérations)~:
+    \begin{itemize}
+        \item Si la variance des particules est élevée ($>0.3$)~:
+            \begin{itemize}
+                \item Réduction progressive de $\sigma_{LiDAR}$ selon la fonction $\max(0.5, 1.0 - 0.0005 \times (n_{step} - 200))$~;
+                \item Maintien du nombre maximal de particules (5000) pour assurer la stabilité.
+            \end{itemize}
+        \item Si la variance des particules est faible ($\leq 0.3$)~:
+            \begin{itemize}
+                \item $\sigma_{LiDAR}$ fixé à 0.5 pour éviter la dégénérescence tout en maintenant la précision~;
+                \item Réduction graduelle du nombre de particules jusqu'à un minimum de 3000 selon la fonction $N_{max} \times (1 - 0.0001 \times (n_{step} - 200))$.
+            \end{itemize}
+    \end{itemize}
+\end{itemize}
+
+
+
+
+
+
+\subsubsection{Résultats avec adaptation dynamique}
+
+Voici les résultats obtenus avec l'adaptation dynamique des paramètres $\sigma_{LiDAR}$ et nombre de particules tel que décrit ci-dessus.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1.0\textwidth]{img/dynamic_filter_1.png}
+    \caption{Résultats du filtre à particules 3D avec $\sigma_\omega = 0.05$ et adaptation dynamique de $\sigma_{LiDAR}$ et du nombre de particules}
+    \label{fig:dynamic_filter_1}
+\end{figure}
+
+Dans la figure \ref{fig:dynamic_filter_1}, le filtre à particules converge vers une solution avec un décalage angulaire systématique par rapport à la trajectoire ``vérité terrain'', malgré une erreur de position relativement stable autour de 1-2 mètres.
+
+Considérant cela, nous avons répété l'expérience avec $\sigma_\omega = 0.5$ (au lieu de 0.05) pour évaluer l'impact de la précision angulaire sur les performances du filtre. Les résultats sont présentés dans la figure \ref{fig:dynamic_filter_2}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1.0\textwidth]{img/dynamic_filter_2.png}
+    \caption{Résultats du filtre à particules 3D avec $\sigma_\omega = 0.5$ et adaptation dynamique de $\sigma_{LiDAR}$ et du nombre de particules}
+    \label{fig:dynamic_filter_2}
+\end{figure}
+
+\subsubsection{Analyse des résultats avec adaptation dynamique}
+
+La comparaison des deux configurations révèle plusieurs aspects importants~:
+
+\begin{itemize}
+    \item \textbf{Erreur de position}~:
+    \begin{itemize}
+        \item Avec $\sigma_\omega = 0.05$, l'erreur oscille entre 1 et 2.5 mètres~;
+        \item Avec $\sigma_\omega = 0.5$, l'erreur se stabilise rapidement sous 0.5 mètres après la phase initiale.
+    \end{itemize}
+    
+    \item \textbf{Erreur d'angle}~:
+    \begin{itemize}
+        \item Avec $\sigma_\omega = 0.05$, l'erreur reste constamment autour de 0.4 radians~;
+        \item Avec $\sigma_\omega = 0.5$, l'erreur est généralement proche de 0, avec quelques pics ponctuels d'instabilité.
+    \end{itemize}
+    
+    \item \textbf{Variance des particules}~:
+    \begin{itemize}
+        \item Les deux configurations montrent une variance initiale élevée suivie d'une convergence rapide~;
+        \item La configuration avec $\sigma_\omega = 0.5$ montre des pics de variance correspondant aux moments d'instabilité angulaire.
+    \end{itemize}
+    
+    \item \textbf{Évolution des paramètres}~:
+    \begin{itemize}
+        \item Le nombre de particules (ligne rouge) reste stable à sa valeur maximale plus longtemps avec $\sigma_\omega = 0.5$~;
+        \item $\sigma_{LiDAR}$ (ligne bleue) montre des adaptations plus fréquentes en réponse aux instabilités avec $\sigma_\omega = 0.5$.
+    \end{itemize}
+\end{itemize}
+
+L'augmentation de $\sigma_\omega$ à 0.5 améliore significativement les performances du filtre en permettant une exploration plus agressive de l'espace des orientations. Cette configuration présente plusieurs avantages~:
+
+\begin{itemize}
+    \item Meilleure précision globale (erreur de position $< 0.5\,m$)~;
+    \item Absence de biais systématique dans l'estimation de l'angle.
+    \item Capacité à se corriger lors des pertes temporaires de précision.
+\end{itemize}
+
+Cette expérience souligne l'importance cruciale du paramétrage du bruit de processus dans un filtre à particules, particulièrement lors de la localisation globale où l'état initial est totalement inconnu. La capacité à explorer suffisamment l'espace des états, notamment angulaire, est essentielle pour éviter la convergence vers des minimums locaux.
+
+\end{solution}
+
+\fi
+
+\end{document}

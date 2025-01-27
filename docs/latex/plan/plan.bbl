@@ -1,0 +1,43 @@
+\begin{thebibliography}{1}
+
+\bibitem{hong2024next}
+Zijin Hong, Zheng Yuan, Qinggang Zhang, Hao Chen, Junnan Dong, Feiran Huang, and Xiao Huang.
+\newblock Next-generation database interfaces: A survey of llm-based text-to-sql.
+\newblock {\em arXiv preprint arXiv:2406.08426}, 2024.
+
+\bibitem{li2024can}
+Jinyang Li, Binyuan Hui, Ge~Qu, Jiaxi Yang, Binhua Li, Bowen Li, Bailin Wang, Bowen Qin, Ruiying Geng, Nan Huo, et~al.
+\newblock Can llm already serve as a database interface? a big bench for large-scale database grounded text-to-sqls.
+\newblock {\em Advances in Neural Information Processing Systems}, 36, 2024.
+
+\bibitem{liu2023agentbench}
+Xiao Liu, Hao Yu, Hanchen Zhang, Yifan Xu, Xuanyu Lei, Hanyu Lai, Yu~Gu, Hangliang Ding, Kaiwen Men, Kejuan Yang, et~al.
+\newblock Agentbench: Evaluating llms as agents.
+\newblock {\em arXiv preprint arXiv:2308.03688}, 2023.
+
+\bibitem{mohammadjafari2024natural}
+Ali Mohammadjafari, Anthony~S Maida, and Raju Gottumukkala.
+\newblock From natural language to sql: Review of llm-based text-to-sql systems.
+\newblock {\em arXiv preprint arXiv:2410.01066}, 2024.
+
+\bibitem{qiao2024benchmarking}
+Shuofei Qiao, Runnan Fang, Zhisong Qiu, Xiaobin Wang, Ningyu Zhang, Yong Jiang, Pengjun Xie, Fei Huang, and Huajun Chen.
+\newblock Benchmarking agentic workflow generation.
+\newblock {\em arXiv preprint arXiv:2410.07869}, 2024.
+
+\bibitem{xi2023rise}
+Zhiheng Xi, Wenxiang Chen, Xin Guo, Wei He, Yiwen Ding, Boyang Hong, Ming Zhang, Junzhe Wang, Senjie Jin, Enyu Zhou, et~al.
+\newblock The rise and potential of large language model based agents: A survey.
+\newblock {\em arXiv preprint arXiv:2309.07864}, 2023.
+
+\bibitem{yang2024synthesizing}
+Jiaxi Yang, Binyuan Hui, Min Yang, Jian Yang, Junyang Lin, and Chang Zhou.
+\newblock Synthesizing text-to-sql data from weak and strong llms.
+\newblock {\em arXiv preprint arXiv:2408.03256}, 2024.
+
+\bibitem{zhang2024evaluation}
+Fan Zhang, Shulin Tian, Ziqi Huang, Yu~Qiao, and Ziwei Liu.
+\newblock Evaluation agent: Efficient and promptable evaluation framework for visual generative models.
+\newblock {\em arXiv preprint arXiv:2412.09645}, 2024.
+
+\end{thebibliography}

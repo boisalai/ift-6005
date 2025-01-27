@@ -1,6 +1,8 @@
 # Document de travail
  
-## Créer l'environnement de travail
+## Phase 1
+
+### Créer l'environnement de développement
 
 Dans le terminal, créez et accédez au répertoire où vous voulez placer le projet.
 
@@ -37,6 +39,8 @@ votre-repo/
 ├── tests/
 ├── data/
 ├── docs/
+│   ├── latex/
+│   └── markdown/
 └── notebooks/
 ```
 
@@ -73,7 +77,7 @@ docs/latex/
 └── bibliography.bib      # Références
 ```
 
-## Télécharger les données d'Open Food Facts
+### Télécharger les données d'Open Food Facts
 
 Télécharger le fichier d'Open Food Facts depuis Hugging Face directement dans le dossier `data/` du projet.
 
@@ -89,7 +93,7 @@ $ ls -lh data/food.parquet | awk '{print $5}'
 5.5G
 ```
 
-## Lire les données 
+### Lire les données avec Pandas
 
 Nous pourrions normalement lire les données en utilisant la librairie `pandas` comme ceci.
 
@@ -100,6 +104,9 @@ df.describe()
 ```
 
 Cependant, le code précédent entraîne une erreur de mémoire insuffisante. Nous devons donc utiliser une autre approche.
+
+
+### Lire les donné.es avec DuckDB
 
 DuckDB offre plusieurs avantages majeurs par rapport à Pandas pour la manipulation de fichiers volumineux. Son traitement "out-of-core" permet d'analyser des fichiers plus grands que la RAM disponible, contrairement à Pandas qui doit charger l'intégralité des données en mémoire. 
 
@@ -129,38 +136,6 @@ Voir aussi :
 - [Parquet file hosted on Hugging Face (beta)](https://wiki.openfoodfacts.org/Reusing_Open_Food_Facts_Data#Parquet_file_hosted_on_Hugging_Face_.28beta.29)
 - [Data field](https://wiki.openfoodfacts.org/Data_fields)
 - [DuckDB Cheatsheet](https://wiki.openfoodfacts.org/DuckDB_Cheatsheet)
-
-## Agents
-
-- LlamaIndex, [AgentWorkflow Basic Introduction](https://docs.llamaindex.ai/en/stable/examples/agent/agent_workflow_basic/)
-
-
-
------
-
-
-
-## Document technique
-
-
-### Installation de DuckDB
-
-DuckDB is an analytical in-process SQL database management system.
-DuckDB is seamlessly integrated with major programming languages. 
-
-Comme j'utilise macOS, j'ai installé DuckDB avec Homebrew :
-
-```bash
-$ brew install duckdb
-```
-
-Pour vérifier l'installation, lancez la commande suivante :
-
-```bash
-$ duckdb --version
-v1.1.3 19864453f7
-```
-
 - [DuckDB](https://duckdb.org/)
 - [GitHub](https://github.com/duckdb/duckdb)
 - [awesome-duckdb](https://github.com/davidgasquez/awesome-duckdb)
@@ -170,11 +145,110 @@ v1.1.3 19864453f7
 - [Explore the Largest Open Food Database using DuckDB](https://blog.openfoodfacts.org/en/news/food-transparency-in-the-palm-of-your-hand-explore-the-largest-open-food-database-using-duckdb-%f0%9f%a6%86x%f0%9f%8d%8a)
 
 
+### Ollama
+
+Pour la liste des paramètres possibles, voir [Ollama Model File](https://github.com/ollama/ollama/blob/main/docs/modelfile.md#valid-parameters-and-values).
+
+```bash
+brew install ollama
+```
+
+Ensuite, vous devrez aussi télécharger le modèle mistral-7b :
+
+```bash
+ollama pull mistral:7b
+```
+
+Pour vérifier si Ollama est démarré sur Linux/Mac :
+
+```bash
+ps aux | grep ollama
+```
+
+Sur Windows, vérifiez dans le Task Manager ou exécutez :
+
+```powershell
+Get-Process | Where-Object {$_.Name -like "*ollama*"}
+```
+
+Vous pouvez aussi tester la connexion directement avec curl :
+
+```bash
+curl http://localhost:11434/api/tags
+```
+
+Si Ollama n'est pas démarré, lancez-le avec :
+
+```bash
+ollama serve
+```
+
+Pour arrêter le serveur Ollama, faire ceci sur Linux/Mac :
+
+```bash
+sudo pkill -9 ollama Ollama
+```
+
+
+## Agents
+
+- LlamaIndex, [AgentWorkflow Basic Introduction](https://docs.llamaindex.ai/en/stable/examples/agent/agent_workflow_basic/)
+- [Week 10](https://github.com/aishwaryanr/awesome-generative-ai-guide/blob/main/free_courses/Applied_LLMs_Mastery_2024/week10_research_trends.md)
+- Elasticsearch?
+- [What is Agentic RAG](https://weaviate.io/blog/what-is-agentic-rag)
+- [Introduction to LLM Agents](https://developer.nvidia.com/blog/introduction-to-llm-agents/)
+- [Agentic RAG 101 Guide](https://github.com/aishwaryanr/awesome-generative-ai-guide/blob/main/resources/agentic_rag_101.md) Ce site est très intéressant!!!
+- [Introducing AgentWorkflow: A Powerful System for Building AI Agent Systems](https://www.llamaindex.ai/blog/introducing-agentworkflow-a-powerful-system-for-building-ai-agent-systems)
+- [Agents 101 guide](https://github.com/aishwaryanr/awesome-generative-ai-guide/blob/main/resources/agents_101_guide.md)
+- [LlamaIndex | Text-To-SQL ( LlamaIndex + DuckDB)](https://www.youtube.com/watch?v=03KFt-XSqVI) on Youtube
+- [CrewAI ](https://x.com/akshay_pachaar/status/1882406721974624278)
+- [RAG, AI Agents, and Agentic RAG: An In-Depth Review and Comparative Analysis](https://www.digitalocean.com/community/conceptual-articles/rag-ai-agents-agentic-rag-comparative-analysis)
+- [Applied LLMs Mastery 2024](https://github.com/aishwaryanr/awesome-generative-ai-guide/blob/main/free_courses/Applied_LLMs_Mastery_2024/README.MD)
+
+
+## Mistral-7B
+
+- [Function calling](https://docs.mistral.ai/capabilities/function_calling/)
+
+## ElasticSearch
+
+- [ElasticsearchRetriever](https://python.langchain.com/docs/integrations/retrievers/elasticsearch_retriever/)
+
+Je dois décrire brièvement mon projet à réaliser dans le cadre du projet intégrateur d'un cours universitaire IFT-6005.
+
+Je dois notamment expliquer différentes approches à explorer pour interroger une base de données avec un agent conversationnel.
+Les différentes approches seraient RAG classique, ou Données SQL soit par représentation textuelle ou requêtes SQI dynamique, ou encore ElasticSearch, via un LLM.
+
+Faut expliquer les avantages et inconvénients de chaque approche.
+
+Aussi, je veux proposer une approche incrémentale pour le développement de l'agent conversationnel.
+
+D'abord, choisir un LLM capable de générer des requêtes SQL à partir de questions en langage naturel, et d'utiliser un outil comme DuckDB pour exécuter ces requêtes.
+
+
+Ensuite utiliser ElasticSearch pour exploiter à la fois la recherche sémantique et les requêtes structurées.
+
+Reformule tes réponses précédentes pour les rendre plus claires et plus concises, en paragraphes, sur deux pages.
+
+
+## SQL
+
+- [IA SQL](https://medium.com/@clicbiz/list/ia-sql-73e98bba4daf)
+- [SQL Query Engine with LlamaIndex + DuckDB](https://docs.llamaindex.ai/en/stable/examples/index_structs/struct_indices/duckdb_sql_query/)
+
+## LLM Web Crawler 
+
+- [Introducing DeepSeek R1 web crawler](https://x.com/ericciarla/status/1882471683560558870)
+- [Browse-use](https://x.com/hwchase17/status/1882502767312531954)
+
+## Autres références
+
+- [LLM-Engineers-Handbook](https://github.com/PacktPublishing/LLM-Engineers-Handbook)
+
+-----
 
 
 
-
-----
 
 
 ## Requêtes possibles
@@ -235,6 +309,23 @@ Pour mieux respecter l'architecture agent/RAG, il faudrait :
 1. Garder l'agent principal comme vrai agent planificateur
 2. Transformer les autres composants en outils/RAG que l'agent principal peut utiliser
 3. Clarifier les capacités de planification et d'action autonome de chaque composant
+
+## Données Open Foods Facts
+
+- brands
+- categories
+- categories_tags
+- compared_to_category (BEAUCOUP DE VALEURS NULLES)
+- countries_tags
+- ecoscore_grade
+- ingredients_without_ciqual_codes
+
+
+
+
+
+
+
 
 ## See also
 
@@ -799,32 +890,6 @@ Cela devrait vous montrer les documents que vous avez insérés (Alice, Bob et C
 
 Pour quitter le shell MongoDB, faire `quit()`.
 
-## Ollama
-
-```bash
-brew install ollama
-ollama serve
-```
-
-Ensuite, vous devrez aussi télécharger le modèle mistral-7b :
-
-```bash
-ollama pull mistral:7b
-```
-
-Pour arrêter le serveur Ollama, faire ceci :
-
-```bash
-$ pgrep ollama
-74877
-$ kill 74877
-```
-
-ou simplement
-
-```bash
-sudo pkill -9 ollama Ollama
-```
 
 ## Agents
 
@@ -1287,5 +1352,85 @@ https://github.com/PacktPublishing/LLM-Engineers-Handbook
 
 https://github.com/microsoft/generative-ai-for-beginners
 
+## Références 
+
+
+### Article Speech-to-SQL
+
+@article{song2024speech,
+  title={Speech-to-SQL: toward speech-driven SQL query generation from natural language question},
+  author={Song, Yuanfeng and Wong, Raymond Chi-Wing and Zhao, Xuefang},
+  journal={The VLDB Journal},
+  pages={1--23},
+  year={2024},
+  publisher={Springer}
+}
+
+Question: 
+
+Pour un travail dans un cours universitaire, je dois trouver des articles académiques qui s'intéressent à ll'utilisation de LLM pour la génération de requêtes SQL à partir de questions en langage naturel.  J'ai besoin de 8 articles pertinents. Classe les articles suivants en ordre de pertinence pour mon projet :
+
+
+
+
+
+
+Ces 5 articles sont pertinents. Ces articles réfèrent à d'autres articles cités en bibliographie qui peuvent être pertinents pour mon projet.
+
+Passe en revue ces articles et identifie 10 autres articles qui pourraient être pertinents pour mon projet.
+
+
+
+Cet article publié en 2022 présente un nouveau système nommé "Speech-to-SQL" qui permet de convertir directement la parole en requêtes SQL, sans passer par une transcription textuelle intermédiaire. Les points clés pertinents pour votre projet sont :
+
+1. Architecture :
+- Deux approches possibles : en cascade (parole → texte → SQL) ou directe (parole → SQL)
+- L'approche en cascade souffre d'erreurs qui se propagent entre les composants
+- L'approche directe obtient de meilleures performances en évitant ces erreurs
+
+1. Composants principaux :
+- Un encodeur de parole basé sur CNN
+- Un encodeur de schéma de base de données utilisant des réseaux de neurones graphiques (GNN)
+- Un décodeur SQL qui génère les requêtes
+- Des mécanismes d'attention pour lier la parole aux éléments du schéma
+
+1. Performances :
+- Précision de 54,15% sur les requêtes générées 
+- Gain de ~12% par rapport aux approches en cascade
+- Plus rapide que la saisie manuelle de requêtes
+
+Les enseignements pour votre projet :
+- L'importance d'une architecture bien intégrée pour gérer le langage naturel et les requêtes SQL
+- La nécessité de modéliser explicitement les relations entre les entrées en langage naturel et le schéma de la base de données
+- L'intérêt des mécanismes d'attention pour lier les éléments du langage naturel aux éléments de la base de données
+
+Est-ce que cet article utilise un LLM?
+
+Non, cet article de 2022 n'utilise pas de LLM. Il emploie une architecture basée sur des réseaux de neurones plus traditionnels (CNN, GNN, LSTM) et des mécanismes d'attention. Cela s'explique par le fait que les LLM n'étaient pas encore largement utilisés pour ce type de tâche au moment de la recherche.
+
+
+
+
+Oui exactement ! Le LLM devra analyser les données disponibles et raisonner sur la meilleure façon de fournir une réponse utile même en présence de données manquantes.
+
+Par exemple, prenons une requête demandant "Quels sont les céréales avec un bon Nutri-Score ?" :
+
+1. Le LLM générera d'abord une requête SQL pour obtenir les céréales avec leur Nutri-Score
+2. En analysant les résultats, s'il constate que de nombreux produits n'ont pas de Nutri-Score, il devra :
+   - Reconnaître que les données sont incomplètes
+   - Déterminer quelles autres colonnes pourraient aider à estimer la qualité nutritionnelle (sucres, graisses saturées, fibres, protéines, etc.)
+   - Générer une nouvelle requête SQL pour obtenir ces informations complémentaires
+   - Utiliser ces données pour estimer la qualité nutritionnelle des produits sans Nutri-Score
+3. Enfin, générer une réponse qui :
+   - Présente les produits avec un Nutri-Score connu
+   - Propose une estimation pour les autres produits
+   - Explique clairement la méthode utilisée
+
+Pour implémenter cela, il faudra :
+1. Inclure dans le prompt des instructions sur la gestion des données manquantes
+2. Donner au LLM accès à des informations sur les relations entre les différentes colonnes (par exemple, la formule du Nutri-Score)
+3. Permettre au LLM de faire plusieurs requêtes SQL successives pour explorer les données disponibles
+
+Cette approche rejoint les techniques mentionnées dans la littérature sur la robustesse des systèmes text-to-SQL face aux données incomplètes.
 
 

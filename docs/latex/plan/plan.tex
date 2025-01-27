@@ -1,30 +1,38 @@
 \documentclass[a4paper,11pt]{article}
 
-% Packages essentiels suggérés par DeepSeek-R1
+% Packages essentiels
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
+\usepackage[numbers]{natbib}
 \usepackage[french]{babel}
-\usepackage{csquotes}        % Pour les guillemets français
-\usepackage{xcolor}           % Pour la couleur dans le code
-\usepackage{graphicx}         % Pour les images
+\usepackage{csquotes}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{float}
+\usepackage{listings}
+\usepackage{tcolorbox}
+\usepackage{pgfplots}
+\usepackage{parskip}
+\usepackage[french]{datetime2}
+\usepackage{multirow}
+\usepackage{siunitx}
+\usepackage{mdframed}
+\usepackage{tocloft}  % Ajout du package pour la table des matières
+\usepackage[colorlinks=true,breaklinks=true]{hyperref}
+\usepackage[nameinlink]{cleveref}
+\usepackage{fontawesome5}
+\usepackage{adjustbox}
 
-\usepackage{tabularx}         % Pour les tableaux
-\usepackage{booktabs}         % Pour de beaux tableaux
+% Configuration de la table des matières
+\renewcommand{\cftsecleader}{\cftdotfill{\cftdotsep}}
+\renewcommand{\cftsecpagefont}{\normalfont}
+\renewcommand{\cftsecfont}{\normalfont}
 
-% Autres packages
-\bibliographystyle{plain} % Style de bibliographie
-\usepackage{amsmath,amssymb,amsfonts}  % Pour les mathématiques
-\usepackage{float}                     % Pour les images flottantes
-\usepackage{listings}                  % Pour le code source
-\usepackage{tcolorbox}                 % Pour créer des arrières plans colorés
-\usepackage{pgfplots}                  % Pour les graphiques
+% Configuration de pgfplots
 \pgfplotsset{compat=newest,compat/show suggested version=false}
-\usepackage{parskip}                   % Pour éliminer l'indentation des paragraphes
-\usepackage[french]{datetime2}         % Pour la date et l'heure
-\usepackage{multirow}                  % Pour les tableaux multi-lignes
-\usepackage{mdframed}                  % Pour les boîtes de texte colorées
-\usepackage{hyperref}         % Pour les liens hypertextes
-\usepackage{cleveref} % Si nécessaire, après hyperref
 
 % Configuration des boîtes de texte
 \newmdenv[
@@ -33,7 +41,6 @@
     bottomline=true,
     leftline=true,
     rightline=true,
-    % backgroundcolor=white,
     backgroundcolor=gray!5,
     innertopmargin=10pt,
     innerbottommargin=10pt,
@@ -47,8 +54,6 @@
 \lstset{
     language=Python,
     basicstyle=\ttfamily\small,
-    % numbers=left,
-    % numberstyle=\tiny\color{gray},
     frame=single,
     breaklines=true,
     keywordstyle=\color{blue},
@@ -67,166 +72,307 @@
     {⁶}{{$^6$}}1
     {⁵}{{$^5$}}1
     {⁴}{{$^4$}}1
-    {³}{{$^3$}}1,
+    {³}{{$^3$}}1
 }
 
 % Configuration des marges
 \usepackage[top=2cm, bottom=2cm, left=2.5cm, right=2.5cm]{geometry}
 
-% Alain: Couleur d'arrière-plan d'une section en gris très pâle
+% Définition des environnements personnalisés
 \newtcolorbox{graysection}[1]{
-  colback=gray!10,
-  colframe=white,
-  title=#1,
-  fonttitle=\bfseries\large,
-  boxrule=0pt,
-  arc=0pt,
-  boxsep=5pt,
-  left=10pt,right=10pt,top=10pt,bottom=10pt
+    colback=gray!10,
+    colframe=white,
+    title=#1,
+    fonttitle=\bfseries\large,
+    boxrule=0pt,
+    arc=0pt,
+    boxsep=5pt,
+    left=10pt,right=10pt,top=10pt,bottom=10pt
 }
 
-% Déclaration TODOs professionnelle
+% Commande TODO professionnelle
 \newcommand{\todo}[1]{\textcolor{red}{\bfseries [TODO: #1]}}
 
-% Page de présentation.
-\newcommand{\titre}{IFT-6005 - Projet intégrateur - H25 \\ 
+% Informations du document
+\newcommand{\titre}{
 Agent conversationnel pour l'interrogation de la base de données Open Food Facts \\
-Description et planification du projet}
+\vspace{1cm} Description et planification du projet}
 \newcommand{\auteurs}{Alain Boisvert}
 \newcommand{\matricules}{994 029 313}
-\newcommand{\destinataire}{ }
-\newcommand{\cours}{GLO-7021}
-\newcommand{\dateremise}{25 novembre 2024}
+\newcommand{\destinataire}{Luc Lamontagne}
+\newcommand{\cours}{IFT-6005 - Projet intégrateur}
+\newcommand{\dateremise}{28 janvier 2025}
 
-% Titre de première page
-\title{IFT-6005 - Projet intégrateur - H25 \\ Agent conversationnel pour l'interrogation de la base de données Open Food Facts}
+\title{IFT-6005 - Projet intégrateur - H25 \\ ~ \\ Agent conversationnel pour l'interrogation de la base de données Open Food Facts}
 \author{Alain Boisvert}
 \date{23 janvier 2025}
 
 \begin{document}
 
-\input{pagetitre} 
+\input{pagetitre}
+\newpage
+% \maketitle
 
+% Table des matières
+\tableofcontents
 \newpage
 
-\maketitle
-
 %----------------------------------------------------------------------------------------
-\section{Description du problème}
+\section{Description du problème}  
 \label{sec:probleme}
-L'accès à des informations nutritionnelles fiables et la comparaison de produits alimentaires sont des enjeux importants pour les consommateurs. 
 
-\og texte \fg{} ou utiliser le package csquotes
+L'accès aux bases de données relationnelles repose traditionnellement sur des langages de requête structurés (par exemple, SQL),
+excluant ainsi les utilisateurs dépourvus de compétences techniques. Cette contrainte limite l'exploitation optimale des
+données, particulièrement dans les domaines nécessitant une accessibilité grand public.
 
-Il existe des bases de données ouvertes telles qu'Open Food Facts qui fournissent des informations sur les produits alimentaires, y compris les ingrédients, les valeurs nutritionnelles et les labels.
-Toutefois, l'accès à ces données est souvent difficile pour les utilisateurs non techniques.
-Les interfaces Web ou mobiles actuelles nécessitent souvent des recherches manuelles fastidieuses pour obtenir des informations précises sur les produits.
+Un cas d'usage illustratif est la consultation d'informations nutritionnelles. Des plateformes comme \textit{Open Food Facts}\footnote{\url{https://world.openfoodfacts.org/}}
+agrègent des millions de fiches produits détaillées (composition, apports nutritifs, certifications), mais leur
+interface requiert des requêtes manuelles ou des filtres prédéfinis. Pour un consommateur souhaitant poser des questions
+plus complexes (\textit{\enquote{Quels en-cas sans allergènes ont un Nutri-score A ?}}), l'expérience utilisateur reste laborieuse.
 
-L’objectif de ce projet est de développer un agent conversationnel capable de répondre à des questions en langage naturel en interrogeant une base de données 
-sur les produits alimentaires canadiens.
+Ce projet explore l'utilisation des grands modèles de langage (LLM) pour faciliter l'accès aux bases de données.
+Les LLM peuvent comprendre les questions posées en langage naturel et les convertir en requêtes de base de données. Cette approche présente deux avantages majeurs :
 
-\todo{Compléter cette section}
+
+\begin{itemize}
+\item \textbf{Simplification de l'accès aux données :} Les utilisateurs peuvent poser des questions dans leur langage habituel, sans connaissances techniques.
+\item \textbf{Amélioration de la qualité des réponses :} En accédant directement aux sources de données structurées, le système peut fournir des réponses plus précises et fiables.
+\end{itemize}
+
+L'objectif de ce projet est de développer un agent conversationnel capable de répondre à des questions en langage naturel en interrogeant la base de données de produits alimentaires
+d'Open Food Facts.
 
 %----------------------------------------------------------------------------------------
 \section{Revue de littérature}
 \label{sec:revue}
 
-Résoudre ce problème nécessite un agent conversationel pour dialoguer avec l'utilisateur, 
-une capacité d'interpréter les recherches de l'utilisateur et de générer des requêtes SQL sur ue base de données, 
-ainsi qu'une capacité de synthèse des résultats pour les présenter à l'utilisateur.
-
-L'approche RAG (Retriever-Reader-Generator) est une architecture populaire pour les agents conversationnels qui combine un modèle de recherche (Retriever), un modèle de lecture (Reader) et un modèle de génération (Generator). Conçu pour des données non structurées (textes, PDF, etc.), où la recherche par similarité sémantique (via embeddings) est efficace.
-
-Les systèmes de RAG peuvent fonctionner avec des données structurées SQL, mais leur efficacité dépend de la manière dont les données sont préparées et intégrées au processus.
-Leur intégration dans RAG nécessite une transformation adaptée, par exemple :
+L'interaction en langage naturel avec les bases de données représente un défi majeur en intelligence artificielle. Les récents progrès des LLM ouvrent de nouvelles perspectives pour permettre aux utilisateurs de formuler des requêtes complexes sans connaître le langage SQL. Cette \enquote{très brève} 
+revue de littérature examine les avancées récentes dans ce domaine, en se concentrant particulièrement sur les systèmes de conversion texte-vers-SQL utilisant des LLM.
 
 \begin{itemize}
-    \item \textbf{Représentation textuelle} : Convertir les lignes de tables SQL en descriptions naturelles (ex: "Client: Jean, Commande: 123, Montant: 200€"). Cette approche peut ne pas être suffisante pour intégrer la structure relationnelle des données.
-    \item \textbf{Requêtes SQL dynamiques} : Utiliser un LLM pour générer des requêtes SQL pertinentes, puis injecter les résultats dans le modèle génératif (approche hybride).
+    \item L'étude de \citet{hong2024next} présente une revue complète de la conversion texte-vers-SQL basée sur les LLM et des défis techniques. Les auteurs présentent 
+    une analyse des avancées récentes dans la conversion texte-vers-SQL basée sur les LLM.
+    Les auteurs 
+    fournissent également une introduction détaillée aux jeux de données
+    et aux métriques conçus pour évaluer les systèmes de conversion texte-vers-SQL. 
+
+    \item \citet{mohammadjafari2024natural} examinent l'évolution des systèmes de conversion texte-vers-SQL, 
+    depuis les premiers modèles basés sur des règles jusqu'aux approches avancées utilisant les LLM, les jeux de test, les méthodes d'évaluation et les métriques d'évaluation. 
+    Ils discutent des techniques de fine-tuning, d'apprentissage zero-shot et few-shot, et de l'augmentation des données.
+    Ils étudient aussi le rôle de l'intégration des graphes de connaissances pour améliorer la précision contextuelle et la liaison des schémas dans ces systèmes. 
+
+    \item \citet{zhu2024large} classifient les approches de conversion texte-vers-SQL basées sur les LLM en groupes selon leurs stratégies d'entraînement : ingénierie des prompts, fine-tuning, pré-entraînement et agents. Ils présentent également un résumé complet des jeux de données et des métriques d'évaluation. 
+    
+    \item \citet{gao2023text} proposent DAIL-SQL, une méthode d'ingénierie des prompts pour améliorer la conversion de textes vers SQL basée sur les LLM. 
+    Les auteurs étudient l'ingénierie des prompts, incluant la représentation des questions, la sélection et l'organisation des exemples. 
+    Leur méthode atteint une précision remarquable de 86,6\% sur le jeu de test Spider, démontrant qu'une ingénierie des promts peut significativement améliorer la qualité des requêtes SQL générées. Ils explorent également le potentiel des LLM open source dans la conversion texte-vers-SQL et le fine-tuning supervisé pour améliorer les performances. 
+
+    \item \citet{biswal2024text2sql} présentent TAG (\textit{Table-Augmented Generation}, génération augmentée par table), une nouvelle approche pour interroger les bases de données en langage naturel. Ce modèle en trois étapes (synthèse de requêtes, exécution et génération de réponses) combine les capacités de raisonnement sémantique des LLM avec la puissance des systèmes de bases de données. 
+    Cette approche permet de traiter des questions plus complexes nécessitant une combinaison de raisonnement textuel, de calculs et de connaissances générales.
+    TAG surmonte les limitations des approches existantes comme Text2SQL et RAG (\textit{Retrieval-Augmented Generation}), offrant une amélioration de performance de 20-65\% dans les tests. 
+
+    \item \citet{li2024can} introduisent le jeu de test BIRD, conçu pour répondre aux limitations des jeux de test de conversion texte-vers-SQL existants (comme Spider et WikiSQL). 
+    BIRD contient 12~751~paires texte-vers-SQL et 95~bases de données d'une taille totale de 33,4~Go, couvrant 37~domaines professionnels. 
+    Les auteurs se concentrent sur les défis liés aux données bruitées, aux connaissances externes et à l'efficacité SQL. 
+    Les résultats montrent que même des LLM avancés comme GPT-4 n'atteignent que 54,89\% de précision d'exécution sur BIRD, significativement inférieur à la performance humaine (92,96\%).
+
+    \item \citet{malekpour2024towards}, de Polytechnique Montréal, proposent une approche de routage LLM pour la conversion texte-vers-SQL, qui sélectionne dynamiquement le LLM le plus rentable capable de générer du SQL précis pour chaque requête. Ils présentent deux stratégies de routage (basées sur le score et sur la classification) qui atteignent une précision comparable au LLM le plus performant tout en réduisant les coûts, facilitant l'entraînement et permettant une inférence efficace.
 \end{itemize}
 
-Ainsi, un LLM (Large Language Model) ayant la capacité d'utiliser un outil pour interroger une base de données 
-semble être une solution appropriée.
+Ces articles démontrent l'évolution rapide de la conversion texte-vers-SQL utilisant les LLM. 
+Ils mettent en évidence l'importance des jeux de test, d'une ingénierie des prompts, et des approches innovantes 
+pour rendre des systèmes plus performants.
 
-Many modern LLMs (e.g., GPT-4, Claude) can use tools via post-training adaptations (e.g., plugins, function calling), but only a subset (like Qwen) were directly trained for this purpose during pre-training or instruction tuning. 
+Ces travaux sont pertinents pour le projet d'agent conversationnel pour Open Food Facts. L'approche de DAIL-SQL pourrait être adaptée pour optimiser la conversion des questions nutritionnelles en requêtes SQL précises, tandis que l'approche TAG pourrait améliorer la qualité des réponses en combinant les données structurées avec le raisonnement sémantique. Les stratégies de routage LLM proposées par l'équipe de Polytechnique Montréal offrent des pistes pour optimiser les coûts. De plus, les méthodologies d'évaluation présentées dans ces articles, notamment dans le contexte de BIRD, pourront guider la création d'un jeu de test spécifique aux requêtes sur les produits alimentaires.
 
-Qwen-Chat has been optimized for tool usage and function calling capabilities. Users can develop agents, LangChain applications, and even augment Qwen with a Python Code Interpreter
-\footnote{See \href{https://github.com/QwenLM/Qwen/blob/main/README.md}{GitHub documentation}}.
-
-
-Les travaux suivants éclairent notre approche :
-
-\textcolor{red}{TODO: Cette section doit être bonifiée sinon complétée.}.
-
-%----------------------------------------------------------------------------------------
-\section{Approches proposées}
-
-Pour y parvenir, plusieurs approches sont possibles, chacune avec ses forces et ses limites.
-
-\subsection{Approche 1 : RAG classique}
-
-Le RAG classique repose sur l’analyse sémantique de données non structurées, comme des textes ou des documents. Un modèle de langue génère des réponses en s’appuyant sur des extraits pertinents trouvés dans ces données. Cette méthode fonctionne bien pour des questions ouvertes ou complexes, comme expliquer un concept à partir d’un manuel. Cependant, elle est peu adaptée aux bases de données structurées (ex: tables SQL), car elle ne gère pas efficacement les chiffres, les dates ou les relations entre tables.  
-
-\paragraph{Avantages} \mbox{} % Structure sémantique DeepSeek
-Idéal pour des réponses contextuelles et naturelles.  
-
-**Inconvénients** : Perte de précision sur les données organisées en tables.  
+Ces articles seront étudiés plus en détail au cours des prochaines semaines dans le cadre de ce projet afin d'identifier les meilleures pratiques à adopter.
 
 
-\textbf{Approche 2 : Conversion des données SQL en texte)} \\   
-Cette méthode transforme les lignes d’une base SQL en phrases simples (ex: « Client : Jean, Commande : 200€ ») pour les traiter comme du texte. Le modèle de langue peut alors utiliser ces phrases pour répondre aux questions. Cela permet d’exploiter des outils existants comme les chatbots, mais simplifie excessivement les relations entre les données (ex: jointures entre tables).  
-
-**Avantages** : Facile à mettre en place pour des schémas simples.  
-**Inconvénients** : Risque de dégradation des résultats pour des bases volumineuses ou complexes.  
 
 
-\textbf{Approche 3 : Génération dynamique de requêtes SQL)} \\  
-Ici, un modèle de langue comme GPT-4 ou Mistral est entraîné à traduire une question utilisateur en requête SQL. Par exemple, la question « Quel est le chiffre d’affaires de juillet 2023 ? » devient `SELECT SUM(montant) FROM ventes WHERE date BETWEEN '2023-07-01' AND '2023-07-31'`. La requête est exécutée directement sur la base de données, garantissant des résultats précis.  
-
-**Avantages** : Exploite pleinement la structure des données (dates, catégories, etc.).  
-**Inconvénients** : Dépend de la fiabilité du modèle pour générer des requêtes correctes.  
+% ----------------------------------------------------------------------------------------
+\section{Approche proposée}
+\label{sec:approche}
 
 
-\textbf{Approche 4 : Utilisation d’Elasticsearch)} \\  
-Elasticsearch est un outil de recherche qui combine filtres structurés (ex: « prix > 500€ ») et recherche sémantique (ex: « produits populaires »). En indexant les données SQL dans Elasticsearch, l’agent peut répondre à des questions hybrides, comme « Quels clients mécontents ont dépensé plus de 1000€ en 2023 ? ». Cette approche offre flexibilité, mais nécessite une préparation minutieuse des données.  
-
-**Avantages** : Réponses riches, mélangeant chiffres et contexte sémantique.  
-**Inconvénients** : Complexité d’intégration et maintenance accrue.  
-
-Dans le cadre du présent projet, je propose un développement incrémental basé sur ces approches, en commençant par une approche simple et évolutive vers des réponses plus nuancées.
-
-\textbf{Étape 1 : Valider la génération de requêtes SQL} \\  
-Pour commencer simplement, l’agent utilisera un modèle de langue (comme Mistral) pour convertir les questions en requêtes SQL. Une base légère, comme DuckDB, permettra d’exécuter ces requêtes sans infrastructure complexe. Par exemple, à la question « Quelles sont les ventes de décembre ? », le modèle générera `SELECT * FROM ventes WHERE mois = '12'`. Cette phase validera la capacité du système à comprendre les intentions de l’utilisateur et à produire des requêtes fiables.  
-
-\textbf{Étape 2 : Intégrer Elasticsearch pour enrichir les réponses} \\   
-Dans un second temps, les données SQL seront indexées dans Elasticsearch pour ajouter une couche sémantique. L’agent pourra alors répondre à des questions comme « Trouve les commandes récentes avec des retours négatifs ». Elasticsearch combinera automatiquement les filtres (ex: « date > 2023-01-01 ») et la recherche par similarité (ex: commentaires clients négatifs). Le modèle de langue synthétisera les résultats en une réponse claire, exploitant à la fois la structure des données et leur contexte.  
-
-\textbf{tape 3 : Optimisation et tests utilisateurs} \\ 
-Enfin, le système sera testé avec des scénarios réels pour ajuster les prompts du modèle, corriger les requêtes incorrectes, et améliorer la fluidité des réponses. L’accent sera mis sur la gestion des erreurs (ex: requêtes SQL invalides) et la personnalisation des réponses.  
-
-
-Ce projet suit une logique de simplicité avant complexité : commencer par des requêtes SQL basiques pour valider le cœur du système, puis ajouter Elasticsearch pour des réponses plus nuancées. Cette approche minimise les risques tout en explorant des techniques variées, idéales pour un projet universitaire visant à concilier innovation et pragmatisme.
-
-\textcolor{red}{TODO: Cette section doit être bonifiée sinon complétée.}.
-
-
-%----------------------------------------------------------------------------------------
-\section{Choix du modèle LLM}
-\label{sec:modele}
-Trois modèles seront évalués :
-
+Le système proposé repose sur une architecture modulaire pour faciliter le développement, l'entraînement et l'évaluation, qui 
+comprendra quatre composants clés interconnectés :
 
 \begin{itemize}
-    \item \textbf{Mistral-7B} :  À compléter
-    \item \textbf{DeepSeek-R1-7B} : 
-    \item \textbf{Qwen-7B} : 
+    \item \textbf{Module de dialogue :} Responsable de maintenir le contexte conversationnel et de gérer les interactions avec l'utilisateur. 
+    \item \textbf{Conversion texte-SQL :} Transforme les questions en langage naturel en requêtes SQL. 
+    \item \textbf{Connecteur de base de données :} Interface avec une base de données pour l'exécution des requêtes.
+    \item \textbf{Générateur de réponses :} Transforme les résultats bruts en réponses naturelles et contextuelles.
 \end{itemize}
 
-\textcolor{red}{TODO: Cette section doit être bonifiée sinon complétée.}.
+Un LLM pré-entraîné pour le dialogue et capable d'utiliser des outils sera utilisé. 
+Ce modèle sera probablement Qwen2-7B-Instruct\footnote{\url{https://huggingface.co/Qwen/Qwen2-7B-Instruct}} pour ses capacités natives d'appel de fonctions.
+
+La conversion texte-SQL sera réalisée en plusieurs étapes, inspirées de \citet{biswal2024text2sql}. 
+L'utilisation du one-shot et few-shot learning pour améliorer la performance et un outil comme sqlglot\footnote{\url{https://github.com/tobymao/sqlglot}} 
+pour valider la syntaxe des requêtes SQL sera considérée.
+
+Pour la base de données, une version simplifiée de la base de données Open Food Facts, stockée au format Parquet, sera utilisée.
+Ces données seront converties en une base DuckDB pour faciliter les requêtes SQL.
+
+Pour les validations, un ensemble de questions de référence, inspiré de BIRD, sera créé pour les données d'Open Food Facts.
+
+Un développement incrémental est prévu, en commençant par une approche simple et évolutive vers un système plus complet.
+Voici les étapes proposées :
+
+\begin{itemize}
+    \item Créer un système conversationnel avec un LLM open-source 
+    \item Convertir les questions en requêtes SQL
+    \item Créer un outil pour interroger la base de données via une requête SQL
+    \item Générer une réponse à partir des résultats de la requête
+    \item Évaluer la qualité des réponses et le temps d'exécution
+    \item Optimiser le système pour améliorer les performances (par exemple, optimiser les prompts, faire du one-shot ou few-shot learning)
+\end{itemize}
+
+Le système sera développé en Python, en utilisant des bibliothèques comme Hugging Face Transformers, Ollama, et DuckDB sur un MacBook Pro M1 16 Go.
+
+Cette approche modulaire permettra d'itérer rapidement tout en maintenant un haut niveau de fiabilité. 
 
 
-Avantages comparatifs :
+%----------------------------------------------------------------------------------------
+\section{Données utilisées}
+\label{sec:donnees}
 
+Les données Open Food Facts au format Parquet est disponible sur~\adjustimage{height=1.3em,valign=c,raise=0.35ex}{figures/hf-logo.png}\,Hugging 
+Face\footnote{\url{https://huggingface.co/datasets/openfoodfacts/product-database}}. 
+Ce format orienté colonnes est particulièrement efficace pour le stockage et l'analyse de grands jeux de données sur un ordinateur personnel avec une RAM limitée.
+
+La base complète contient 3\,601\,655~produits alimentaires décrits par 109`~colonnes, incluant :
+
+\begin{itemize}
+    \item Informations générales : nom, marque, quantité
+    \item Nutrition : nutriments, vitamines, minéraux
+    \item Composition : ingrédients, allergènes, additifs
+    \item Certifications : labels (bio, sans gluten), scores (Nutri-score, Eco-score)
+    \item Origine et distribution : pays de fabrication, lieux de vente
+\end{itemize}
+
+Les données se présentent sous différents formats (listes, chaînes de caractères, nombres) avec une proportion importante de valeurs manquantes. 
+Par exemple, l'Eco-score est absent dans 80\% des entrées.
+
+La figure~\ref{fig:missing-values} présente la distribution de la complétude des colonnes de la base de données. On observe une distribution bimodale avec un grand nombre de colonnes très complètes (>~95\%) et un second groupe de colonnes peu renseignées (<~30\%).
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.9\textwidth]{figures/missing_values.pdf}
+    \caption{Distribution de la complétude des colonnes de la base de données}
+    \label{fig:missing-values}
+\end{figure}
+
+Pour ce projet, un sous-ensemble de 94\,802~produits alimentaires canadiens sera utilisé afin de réduire les temps de traitement.
+
+%----------------------------------------------------------------------------------------
+\section{Évaluation du système}
+\label{sec:evaluation}
+
+L'évaluation du système s'appuiera sur trois métriques principales, inspirées des articles cités précédemment, tout en étant adaptées aux spécificités des données nutritionnelles :
+
+\begin{enumerate}
+   \item \textbf{Précision d'exécution (EX)} : Cette métrique, adoptée dans la littérature récente \citep{li2024can}, 
+évalue si les requêtes SQL générées produisent les résultats attendus. Pour notre cas d'usage, un jeu 
+de test de 100 questions nutritionnelles courantes avec leurs requêtes SQL de référence et les résultats attendus sera créé. 
+La précision 
+sera calculée en comparant les résultats d'exécution des requêtes générées avec ceux des requêtes de référence, plutôt 
+qu'en comparant directement le code SQL. Cette approche permet d'accepter des formulations SQL différentes tant qu'elles 
+produisent les mêmes résultats.
+
+   \item \textbf{Taux de couverture des données manquantes (TCM)} : Cette métrique évalue la capacité du système à fournir des réponses pertinentes malgré l'absence de certaines données. Trois stratégies sont employées :
+   \begin{itemize}
+       \item Utilisation d'attributs alternatifs : par exemple, estimer le Nutri-Score à partir des valeurs nutritionnelles
+       \item Reformulation des requêtes pour exploiter les données disponibles
+       \item Communication claire des limitations et du niveau de confiance des réponses
+   \end{itemize}
+   Le TCM sera évalué sur le même jeu de test de 100 questions, en calculant le pourcentage de cas où le système parvient 
+   à fournir une réponse exploitable malgré des données manquantes. Une réponse est considérée exploitable si elle utilise 
+   avec succès au moins une des trois stratégies mentionnées. Cette approche permet d'optimiser l'utilité des réponses 
+   même avec une base de données incomplète.
+
+   \item \textbf{Temps de réponse moyen (TRM)} : Cette métrique mesure le temps total nécessaire pour traiter une requête, depuis la réception de la question en langage naturel jusqu'à la génération de la réponse finale. Elle inclut :
+   \begin{itemize}
+       \item Le temps de conversion de la question en SQL
+       \item Le temps d'exécution de la requête sur la base de données
+       \item Le temps de génération de la réponse en langage naturel
+   \end{itemize}
+   Le TRM sera mesuré sur une configuration matérielle standardisée pour assurer la comparabilité des résultats au fil 
+   du développement. Cette métrique est particulièrement importante pour évaluer l'utilisabilité du système dans un 
+   contexte réel.
+\end{enumerate}
+
+Ces métriques seront évaluées sur différentes catégories de questions (simples, complexes, multiples critères) pour assurer une évaluation complète du système. 
+
+Ces tests d'évaluation seront intégrés tout au long du développement pour guider les améliorations du système.
+
+
+%----------------------------------------------------------------------------------------
+\section{Tâches à faire}
+\label{sec:taches}
+
+Cette planification de projet (230h) suit une approche incrémentale, permettant de développer et tester chaque composant de manière itérative :
+
+\begin{enumerate}
+    \item \textbf{Préparation et configuration (30h)}
+    \begin{itemize}
+        \item Mise en place de l'environnement de développement (5h)
+        \item Préparation de la base de données Open Food Facts canadienne (5h)
+        \item Créer un jeu de test de 100 questions de référence (10h)
+        \item Implémentation des scripts d'évaluation des trois métriques (10h)
+    \end{itemize}
+
+    \item \textbf{Développement du système de base (75h)}
+    \begin{itemize}
+        \item Implémentation du module de dialogue avec Qwen2-7B-Instruct (20h)
+        \item Développement de la conversion texte-SQL de base (25h)
+        \item Création du connecteur de base de données DuckDB (5h)
+        \item Implémentation du générateur de réponses simples (25h)
+    \end{itemize}
+
+    \item \textbf{Rapport de mi-session (25h)}
+    \begin{itemize}
+        \item Analyse des résultats (10h)
+        \item Rédaction du rapport de mi-session (15h)
+    \end{itemize}
+
+    \item \textbf{Optimisations et fonctionnalités avancées (55h)}
+    \begin{itemize}
+        \item Amélioration de la gestion des données manquantes (15h)
+        \item Implémentation du one-shot et few-shot learning (20h)
+        \item Optimisation des prompts et des requêtes SQL (20h)
+    \end{itemize}
+
+    \item \textbf{Documentation et finalisation (25h)}
+    \begin{itemize}
+        \item Rédaction du rapport final (15h)
+        \item Préparation de la présentation orale (5h)
+        \item Netoyage du code et de la documentation du dépôt GitHub (5h)
+    \end{itemize}
+\end{enumerate}
+
+Cette planification inclut des jalons de validation à chaque étape majeure pour s'assurer que le développement reste 
+aligné avec les objectifs du projet. Les heures allouées tiennent compte des défis potentiels liés à l'intégration 
+des composants et à la gestion des données incomplètes d'Open Food Facts.
+
+
+% Section Bibliographie
+\addcontentsline{toc}{section}{Références}
+\label{sec:biblio}
+\bibliographystyle{plainnat}
+\bibliography{refs}  % Fichier .bib sans l'extension
+
+
+\iffalse
+
+Cette section en commentaires contient des exemples de code LaTeX pour les tableaux, les figures, les listes, etc.
+
+Awesome-Text2SQL
+https://github.com/eosphoros-ai/Awesome-Text2SQL
+
+
+# Exemple de tableau
 \begin{tabularx}{\textwidth}{llX}
 \toprule
 \textbf{RAG} & \textbf{Agents} \\
@@ -236,24 +382,7 @@ Maintien du contexte court & Coordination multi-étapes \\
 \bottomrule
 \end{tabularx}
 
-%----------------------------------------------------------------------------------------
-\section{Données utilisées}
-\label{sec:donnees}
-Le jeu de données Open Food Facts (version canadienne) contient :
-
-\begin{itemize}
-    \item 94~782 produits alimentaires (mise à jour janvier 2024)
-    \item 156 attributs par produit regroupés en 8 catégories :
-    \begin{itemize}
-        \item Nutrition : 35 champs (dont 22\% manquants)
-        \item Ingrédients : Composition textuelle (78\% complète)
-        \item Labels : Certifications (Bio, Sans gluten...)
-    \end{itemize}
-\end{itemize}
-
-\textcolor{red}{TODO: Cette section doit être bonifiée sinon complétée.}.
-
-
+# Exemple de tableau
 \begin{table}[ht]
 \centering
 \caption{Exemple de données nutritionnelles}
@@ -268,52 +397,6 @@ Yaourt nature & 150 & 5 & 7 \\
 \end{tabular}
 \end{table}
 
-%----------------------------------------------------------------------------------------
-\section{Évaluation du système}
-\label{sec:evaluation}
-Métriques d'évaluation :
-
-\begin{enumerate}
-    \item Exactitude des réponses (F1-score sur 500 questions de référence)
-    \item Temps de réponse moyen (objectif < 3s)
-    \item Taux de réussite multilingue (FR/EN)
-    \item Robustesse aux données manquantes
-\end{enumerate}
-
-Méthodologie : Test A/B avec 50 utilisateurs et analyse des logs d'interaction.
-
-\textcolor{red}{TODO: Cette section doit être bonifiée sinon complétée.}.
-
-
-%----------------------------------------------------------------------------------------
-\section{Tâches à faire}
-\label{sec:taches}
-Planification détaillée (270h total) :
-
-\begin{itemize}
-    \item Intégration données (50h) : Nettoyage, validation, indexation
-    \item Développement agent principal (70h) : Mécanismes de décision et gestion d'erreurs
-    \item Implémentation RAG (80h) : Optimisation des embeddings et requêtes hybrides
-    \item Tests performance (40h) : Benchmark sur 4 configurations matérielles
-    \item Documentation (30h) : Guide technique et manuel utilisateur illustré
-\end{itemize}
-
-\textcolor{red}{TODO: Cette section doit être bonifiée sinon complétée.}.
-
-
-\LaTeX{} 
-
-
-% Exemple de citation dans le texte
-Comme démontré par \cite{xi2023rise}, les méthodes d'évaluation agentiques...
-
-% Section Bibliographie
-\label{sec:biblio}
-\bibliography{refs} % Fichier .bib sans l'extension
-
-
-\iffalse
-Mettre ici des commentaires...
 \fi
 
 \end{document}

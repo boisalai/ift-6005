@@ -1,43 +1,43 @@
-\begin{thebibliography}{1}
+\begin{thebibliography}{7}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
 
-\bibitem{hong2024next}
+\bibitem[Biswal et~al.(2024)Biswal, Patel, Jha, Kamsetty, Liu, Gonzalez, Guestrin, and Zaharia]{biswal2024text2sql}
+Asim Biswal, Liana Patel, Siddarth Jha, Amog Kamsetty, Shu Liu, Joseph~E Gonzalez, Carlos Guestrin, and Matei Zaharia.
+\newblock {Text2SQL is Not Enough: Unifying AI and Databases with TAG}.
+\newblock \emph{arXiv preprint arXiv:2408.14717}, 2024.
+
+\bibitem[Gao et~al.(2023)Gao, Wang, Li, Sun, Qian, Ding, and Zhou]{gao2023text}
+Dawei Gao, Haibin Wang, Yaliang Li, Xiuyu Sun, Yichen Qian, Bolin Ding, and Jingren Zhou.
+\newblock {Text-to-SQL Empowered by Large Language Models: A Benchmark Evaluation}.
+\newblock \emph{arXiv preprint arXiv:2308.15363}, 2023.
+
+\bibitem[Hong et~al.(2024)Hong, Yuan, Zhang, Chen, Dong, Huang, and Huang]{hong2024next}
 Zijin Hong, Zheng Yuan, Qinggang Zhang, Hao Chen, Junnan Dong, Feiran Huang, and Xiao Huang.
-\newblock Next-generation database interfaces: A survey of llm-based text-to-sql.
-\newblock {\em arXiv preprint arXiv:2406.08426}, 2024.
+\newblock {Next-Generation Database Interfaces: A Survey of LLM-based Text-to-SQL}.
+\newblock \emph{arXiv preprint arXiv:2406.08426}, 2024.
 
-\bibitem{li2024can}
+\bibitem[Li et~al.(2024)Li, Hui, Qu, Yang, Li, Li, Wang, Qin, Geng, Huo, et~al.]{li2024can}
 Jinyang Li, Binyuan Hui, Ge~Qu, Jiaxi Yang, Binhua Li, Bowen Li, Bailin Wang, Bowen Qin, Ruiying Geng, Nan Huo, et~al.
-\newblock Can llm already serve as a database interface? a big bench for large-scale database grounded text-to-sqls.
-\newblock {\em Advances in Neural Information Processing Systems}, 36, 2024.
+\newblock {Can LLM Already Serve as A Database Interface? A Big Bench for Large-Scale Database Grounded Text-to-SQLs}.
+\newblock \emph{Advances in Neural Information Processing Systems}, 36, 2024.
 
-\bibitem{liu2023agentbench}
-Xiao Liu, Hao Yu, Hanchen Zhang, Yifan Xu, Xuanyu Lei, Hanyu Lai, Yu~Gu, Hangliang Ding, Kaiwen Men, Kejuan Yang, et~al.
-\newblock Agentbench: Evaluating llms as agents.
-\newblock {\em arXiv preprint arXiv:2308.03688}, 2023.
+\bibitem[Malekpour et~al.(2024)Malekpour, Shaheen, Khomh, and Mhedhbi]{malekpour2024towards}
+Mohammadhossein Malekpour, Nour Shaheen, Foutse Khomh, and Amine Mhedhbi.
+\newblock {Towards Optimizing SQL Generation via LLM Routing}.
+\newblock \emph{arXiv preprint arXiv:2411.04319}, 2024.
 
-\bibitem{mohammadjafari2024natural}
+\bibitem[Mohammadjafari et~al.(2024)Mohammadjafari, Maida, and Gottumukkala]{mohammadjafari2024natural}
 Ali Mohammadjafari, Anthony~S Maida, and Raju Gottumukkala.
-\newblock From natural language to sql: Review of llm-based text-to-sql systems.
-\newblock {\em arXiv preprint arXiv:2410.01066}, 2024.
+\newblock {From Natural Language to SQL: Review of LLM-based Text-to-SQL Systems}.
+\newblock \emph{arXiv preprint arXiv:2410.01066}, 2024.
 
-\bibitem{qiao2024benchmarking}
-Shuofei Qiao, Runnan Fang, Zhisong Qiu, Xiaobin Wang, Ningyu Zhang, Yong Jiang, Pengjun Xie, Fei Huang, and Huajun Chen.
-\newblock Benchmarking agentic workflow generation.
-\newblock {\em arXiv preprint arXiv:2410.07869}, 2024.
-
-\bibitem{xi2023rise}
-Zhiheng Xi, Wenxiang Chen, Xin Guo, Wei He, Yiwen Ding, Boyang Hong, Ming Zhang, Junzhe Wang, Senjie Jin, Enyu Zhou, et~al.
-\newblock The rise and potential of large language model based agents: A survey.
-\newblock {\em arXiv preprint arXiv:2309.07864}, 2023.
-
-\bibitem{yang2024synthesizing}
-Jiaxi Yang, Binyuan Hui, Min Yang, Jian Yang, Junyang Lin, and Chang Zhou.
-\newblock Synthesizing text-to-sql data from weak and strong llms.
-\newblock {\em arXiv preprint arXiv:2408.03256}, 2024.
-
-\bibitem{zhang2024evaluation}
-Fan Zhang, Shulin Tian, Ziqi Huang, Yu~Qiao, and Ziwei Liu.
-\newblock Evaluation agent: Efficient and promptable evaluation framework for visual generative models.
-\newblock {\em arXiv preprint arXiv:2412.09645}, 2024.
+\bibitem[Zhu et~al.(2024)Zhu, Li, Cui, and Liu]{zhu2024large}
+Xiaohu Zhu, Qian Li, Lizhen Cui, and Yongkang Liu.
+\newblock {Large Language Model Enhanced Text-to-SQL Generation: A Survey}.
+\newblock \emph{arXiv preprint arXiv:2410.06011}, 2024.
 
 \end{thebibliography}

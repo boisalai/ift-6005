@@ -1,0 +1,8 @@
+\babel@toc {french}{}\relax 
+\contentsline {section}{\numberline {1}Description du problème}{3}{section.1}%
+\contentsline {section}{\numberline {2}Revue de littérature}{3}{section.2}%
+\contentsline {section}{\numberline {3}Approche proposée}{4}{section.3}%
+\contentsline {section}{\numberline {4}Données utilisées}{5}{section.4}%
+\contentsline {section}{\numberline {5}Évaluation du système}{6}{section.5}%
+\contentsline {section}{\numberline {6}Tâches à faire}{7}{section.6}%
+\contentsline {section}{Références}{7}{Item.8}%

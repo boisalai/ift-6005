@@ -9,35 +9,42 @@
 Asim Biswal, Liana Patel, Siddarth Jha, Amog Kamsetty, Shu Liu, Joseph~E Gonzalez, Carlos Guestrin, and Matei Zaharia.
 \newblock {Text2SQL is Not Enough: Unifying AI and Databases with TAG}.
 \newblock \emph{arXiv preprint arXiv:2408.14717}, 2024.
+\newblock URL \url{https://arxiv.org/abs/2408.14717}.
 
 \bibitem[Gao et~al.(2023)Gao, Wang, Li, Sun, Qian, Ding, and Zhou]{gao2023text}
 Dawei Gao, Haibin Wang, Yaliang Li, Xiuyu Sun, Yichen Qian, Bolin Ding, and Jingren Zhou.
 \newblock {Text-to-SQL Empowered by Large Language Models: A Benchmark Evaluation}.
 \newblock \emph{arXiv preprint arXiv:2308.15363}, 2023.
+\newblock URL \url{https://arxiv.org/abs/2308.15363}.
 
 \bibitem[Hong et~al.(2024)Hong, Yuan, Zhang, Chen, Dong, Huang, and Huang]{hong2024next}
 Zijin Hong, Zheng Yuan, Qinggang Zhang, Hao Chen, Junnan Dong, Feiran Huang, and Xiao Huang.
 \newblock {Next-Generation Database Interfaces: A Survey of LLM-based Text-to-SQL}.
 \newblock \emph{arXiv preprint arXiv:2406.08426}, 2024.
+\newblock URL \url{https://arxiv.org/abs/2406.08426}.
 
 \bibitem[Li et~al.(2024)Li, Hui, Qu, Yang, Li, Li, Wang, Qin, Geng, Huo, et~al.]{li2024can}
 Jinyang Li, Binyuan Hui, Ge~Qu, Jiaxi Yang, Binhua Li, Bowen Li, Bailin Wang, Bowen Qin, Ruiying Geng, Nan Huo, et~al.
 \newblock {Can LLM Already Serve as A Database Interface? A Big Bench for Large-Scale Database Grounded Text-to-SQLs}.
 \newblock \emph{Advances in Neural Information Processing Systems}, 36, 2024.
+\newblock URL \url{https://arxiv.org/abs/2305.03111}.
 
 \bibitem[Malekpour et~al.(2024)Malekpour, Shaheen, Khomh, and Mhedhbi]{malekpour2024towards}
 Mohammadhossein Malekpour, Nour Shaheen, Foutse Khomh, and Amine Mhedhbi.
 \newblock {Towards Optimizing SQL Generation via LLM Routing}.
 \newblock \emph{arXiv preprint arXiv:2411.04319}, 2024.
+\newblock URL \url{https://arxiv.org/abs/2411.04319}.
 
 \bibitem[Mohammadjafari et~al.(2024)Mohammadjafari, Maida, and Gottumukkala]{mohammadjafari2024natural}
 Ali Mohammadjafari, Anthony~S Maida, and Raju Gottumukkala.
 \newblock {From Natural Language to SQL: Review of LLM-based Text-to-SQL Systems}.
 \newblock \emph{arXiv preprint arXiv:2410.01066}, 2024.
+\newblock URL \url{https://arxiv.org/abs/2410.01066}.
 
 \bibitem[Zhu et~al.(2024)Zhu, Li, Cui, and Liu]{zhu2024large}
 Xiaohu Zhu, Qian Li, Lizhen Cui, and Yongkang Liu.
 \newblock {Large Language Model Enhanced Text-to-SQL Generation: A Survey}.
 \newblock \emph{arXiv preprint arXiv:2410.06011}, 2024.
+\newblock URL \url{https://arxiv.org/abs/2410.06011}.
 
 \end{thebibliography}

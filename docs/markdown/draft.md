@@ -200,8 +200,86 @@ Voir aussi :
 - [DuckDB](https://blog.openfoodfacts.org/en/news/food-transparency-in-the-palm-of-your-hand-explore-the-largest-open-food-database-using-duckdb-%f0%9f%a6%86x%f0%9f%8d%8a)
 - [Explore the Largest Open Food Database using DuckDB](https://blog.openfoodfacts.org/en/news/food-transparency-in-the-palm-of-your-hand-explore-the-largest-open-food-database-using-duckdb-%f0%9f%a6%86x%f0%9f%8d%8a)
 
+#### Créer un dictionnaire des données Open Food Facts en format JSON (2h)
+
+Le modèle de langage (LLM) devra comprendre la structure de la base de données Open Food Facts pour générer des requêtes SQL pertinentes. 
+Or, après plusieurs recherches, j'ai constaté qu'il n'existait pas de dictionnaire de données officiel et facilement accessible. 
+Pour résoudre ce problème, j'ai entrepris de créer mon propre dictionnaire de données en format JSON.
+
+Ma démarche s'est appuyée sur quatres sources principales d'information. Tout d'abord, j'ai utilisé un fichier 
+texte disponible sur le site d'Open Food Facts (https://static.openfoodfacts.org/data/data-fields.txt), qui fournit 
+des descriptions basiques des champs. Ensuite, j'ai exploité une page wiki d'Open Food 
+Facts (https://wiki.openfoodfacts.org/Data_fields) qui explique en détail les différents champs de données.
+Puis, une autre page wiki (https://wiki.openfoodfacts.org/DuckDB_Cheatsheet) présente le schéma Parquet. 
+Enfin, j'ai analysé directement la structure de ma base de données DuckDB pour obtenir des informations 
+techniques et statistiques sur chacune des colonnes de la base de données.
+
+Pour combiner ces sources d'information, j'ai développé un script Python (`dictionary.py`) qui génère automatiquement
+un dictionnaire de données au format JSON (`data_dictionary.json`). Ce script analyse chaque champ de la base de données et 
+rassemble des informations essentielles : le nom du champ, sa description, son type de données, le pourcentage 
+de données manquantes, et des exemples concrets de valeurs. Pour les champs contenant des données complexes 
+comme des objets JSON (par exemple, les champs `ecoscore_data` et `image`), j'ai mis en place un système 
+qui simplifie l'affichage des exemples tout en conservant leur structure.
+
+Pour chaque champ de la base de données, le dictionnaire fournit les informations suivantes :
+
+- `description` : une description textuelle du champ
+- `type` : le type de données (STRING, INTEGER, etc.)
+- `is_nullable` : indique si le champ peut contenir des valeurs nulles
+- `unique_values_count` : nombre de valeurs uniques distinctes
+- `completeness_score` : pourcentage de valeurs non nulles
+- `known_issues` : problèmes identifiés dans les données
+- `examples` : échantillon de valeurs représentatives
+
+Voici un exemple pour le champ "categories" :
+
+```json
+"categories_tags": {
+  "description": "Description of categories_tags",
+  "type": "VARCHAR[]",
+  "format": "",
+  "is_nullable": true,
+  "unique_values_count": 5829,
+  "completeness_score": 24.1,
+  "known_issues": [
+    "High percentage of null values: 75.9%"
+  ],
+  "examples": [
+    "[en:sweeteners, en:syrups, en:simple-syrups, en:maple-syrups]",
+    "[]",
+    "[en:plant-based-foods-and-beverages, en:plant-based-foods, en:cereals-and-potatoes, en:spreads, e...",
+    "[en:sweeteners, en:syrups, en:simple-syrups, en:agave-syrups]",
+    "[en:snacks, en:sweet-snacks, en:biscuits-and-cakes, en:cakes, en:chocolate-cakes]"
+  ]
+}
+```
+
+Cette approche permet d'avoir une vision plus claire et complète de la structure des 
+données d'Open Food Facts, qui facilitera ainsi l'interaction entre le modèle de langage et la base de données.
 
 #### Créer un jeu de test de 100 questions de référence (10h)
+
+Le benchmark BIRD (Big Bench for Large-Scale Database Grounded Text-to-SQLs) est conçu pour évaluer
+les modèles de langage dans la tâche de conversion du langage naturel en requêtes SQL sur de grandes
+bases de données issues de divers domaines professionnels. Il comprend plus de 12 751 paires
+question-SQL uniques et 95 bases de données totalisant 33,4 Go, couvrant plus de 37 domaines
+professionnels tels que la blockchain, le hockey, la santé et l'éducation.
+
+Les questions du benchmark BIRD sont formulées en langage naturel et sont accompagnées de requêtes
+SQL correspondantes. Les bases de données associées contiennent des données volumineuses et
+parfois "bruyantes", reflétant des scénarios réels où les données peuvent être incomplètes ou mal
+formatées. Cela oblige les modèles à comprendre et à traiter ces valeurs de base de données pour
+générer des requêtes SQL précises.
+
+Pour créer un ensemble de 100 questions-réponses similaire à BIRD, il faut formuler des
+questions en langage naturel couvrant divers domaines professionnels et fournir les requêtes 
+SQL correspondantes. Assurez-vous que les bases de données associées contiennent des données
+réalistes, y compris des valeurs manquantes ou mal formatées, pour simuler des scénarios du
+monde réel. Cela permettra d'évaluer la capacité des modèles à comprendre et à interroger
+efficacement des bases de données complexes et imparfaites.
+
+
+
 
 Voici des requêtes possibles que l'interface pourrait gérer :
 
@@ -209,6 +287,11 @@ Voici des requêtes possibles que l'interface pourrait gérer :
 - "Show me the repartition of NutriScore for Nestlé in Europe"
 - "Make me a graph of all breakfast cereals with NOVA groups, nutrition value and Nutri-Score"
 
+See also :
+
+- [BIRD-SQL](https://bird-bench.github.io/)
+- [Bird-SQL: A Benchmark for Text-to-SQL](https://arxiv.org/abs/2202.10700)
+- 
 #### Implémentation des scripts d’évaluation des trois métriques (10h)
 ### Développement du système de base (75h)
 #### Implémentation du module de dialogue avec Qwen2-7B-Instruct (20h)
@@ -379,14 +462,18 @@ Pour plus d'information sur les agents, voir :
 
 #### CrewAI
 
-Je suis rendu à la lesson 9 : https://learn.deeplearning.ai/courses/multi-ai-agent-systems-with-crewai/lesson/9/tools-for-a-customer-outreach-campaign-(code)
 
 - Mental framework for agent creation
   - What is the goal
   - What is the process
+  - Think like a manager
+  - What kind of individuals would I need to hire to get this done?
+  - Which processes and tasks do I expect the individuals on my teams to do?
 - Tools
   - Versatile, Fault-tolerant, Caching
   - Search the internet, Scrape a website, Connect to a database, LangChain tools
+- Les agents peuvent déléguer des tâches à d'autres agents
+- Les agents peuvent aussi collaborer entre eux
 
 Voir aussi :
 
@@ -396,7 +483,9 @@ Voir aussi :
   - Le code source est hébergé sur GitHub : joaomdmoura/crewAI
   - Il existe même un cours gratuit sur [DeepLearning.AI](https://learn.deeplearning.ai/courses/multi-ai-agent-systems-with-crewai/lesson/1/introduction)
 - [How to Build an Agentic RAG Recommendation Engine (Step-by-Step)](https://www.youtube.com/watch?v=2Fu_GgS-Q4s)
-
+- DeepLearning.AI [Multi AI Agents systems with crewAI](https://learn.deeplearning.ai/courses/multi-ai-agent-systems-with-crewai)
+- DeepLearning.AI [Practical Multi AI Agents and Advanced Use Cases with crewAI](https://learn.deeplearning.ai/courses/practical-multi-ai-agents-and-advanced-use-cases-with-crewai/lesson/1/introduction)
+- [CrewAI for Local AI Agents with Ollama: A Hands-On Tutorial](https://medium.com/@indradumnabanerjee/crewai-for-local-ai-agents-with-ollama-a-hands-on-tutorial-for-local-ai-agents-a59b6ba32fd1)
 
 #### Guide alimentaire canadien
 
@@ -411,6 +500,11 @@ Pour exploiter les informations du Guide alimentaire canadien, nous pourrions en
 - voir ce [post](https://x.com/akshay_pachaar/status/1883860089037369587) sur X
 - [Introducing DeepSeek R1 web crawler](https://x.com/ericciarla/status/1882471683560558870)
 
+#### Food Data Central
+
+Le Food Data Central (FDC) est une base de données de l'USDA qui fournit des informations détaillées sur les valeurs nutritionnelles des aliments. Il contient des données sur les nutriments, les ingrédients, les portions, les marques et les étiquettes nutritionnelles des aliments. Le FDC est une ressource précieuse pour les professionnels de la santé, les chercheurs, les développeurs d'applications et le grand public.
+
+Les données du Food Data Central sont disponibles [ici](https://fdc.nal.usda.gov/download-datasets).
 
 #### ElasticSearch
 
@@ -484,7 +578,7 @@ La recherche vectorielle, potentiellement intéressant :
 ### Documentation et finalisation (25h)
 #### Rédaction du rapport final (15h)
 #### Préparation de la présentation orale (5h)
-#### Netoyage du code et de la documentation du dépôt GitHub (5h)
+#### Nettoyage du code et de la documentation du dépôt GitHub (5h)
 
 ## Versions
 
@@ -539,6 +633,7 @@ Cette implémentation permet une meilleure maintenance et évolution du code tou
 
 ## Idées à explorer
 
+- DeepLearning.AI [Practical Multi AI Agents and Advanced Use Cases with crewAI](https://learn.deeplearning.ai/courses/practical-multi-ai-agents-and-advanced-use-cases-with-crewai/lesson/1/introduction) à écouter
 - [motherduckdb/DuckDB-NSQL-7B-v0.1](https://huggingface.co/motherduckdb/DuckDB-NSQL-7B-v0.1/blob/main/README.md?code=true#L17) et [ici](https://huggingface.co/motherduckdb/DuckDB-NSQL-7B-v0.1) et [ici](https://github.com/NumbersStationAI/DuckDB-NSQL)
 - Voir [ici](https://huggingface.co/spaces/cfahlgren1/duckdb-nsql-hard/blob/main/app.py#L2)
 - [Fine-tune SmolLM's on custom synthetic data](https://huggingface.co/blog/prithivMLmods/smollm2-ft) qui prévoit du 

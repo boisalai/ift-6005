@@ -14,7 +14,9 @@ venv/
 .vscode/
 
 # Data
-data/*
+data/*.csv
+data/*.parquet
+data/*.duckdb
 
 # Mac
 .DS_Store

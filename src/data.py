@@ -54,6 +54,11 @@ def create_filtered_db():
 def describe_db(db_path: Path):
     """
     Génère une description des données stockées dans la base de données DuckDB spécifiée.
+
+    La description est écrite dans un fichier Markdown.
+
+    Args:
+        db_path (Path): Chemin vers la base de données DuckDB.
     """
     output_file = Path("../docs/markdown/description.md")
 

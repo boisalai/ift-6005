@@ -356,7 +356,7 @@ def main():
     db_path = FILTERED_DB_PATH
     data_fields_path = DATA_DIR / "data-fields.txt"
     wiki_path = DATA_DIR / "Data_fields_wiki.pdf"
-    output_file = Path("../docs/data_dictionary.json")
+    output_file = DATA_DIR / "data_dictionary.json"
     
     # Création de l'extracteur d'informations
     field_info = FieldInfoExtractor(data_fields_path, wiki_path)

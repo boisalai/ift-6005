@@ -158,6 +158,17 @@ disable = C0111
 
 Ces hooks s'exécuteront automatiquement lors de chaque commit, vérifiant le formatage (black), le style (flake8) et la qualité du code (pylint).
 
+Pour ignorer temporairement les validations pre-commit, utilisez :
+
+```bash
+git commit -m "message" --no-verify
+```
+
+Ou l'option courte :
+```bash
+git commit -m "message" -n
+```
+
 
 #### Préparation de la base de données Open Food Facts canadienne (5h)
 
@@ -265,9 +276,13 @@ de données manquantes, et des exemples concrets de valeurs. Pour les champs con
 comme des objets JSON (par exemple, les champs `ecoscore_data` et `image`), j'ai mis en place un système 
 qui simplifie l'affichage des exemples tout en conservant leur structure.
 
+Ensuite, j'ai ajusté manuellement la description de chacun des champs et 
+j'ai ajouté des termes comparables dans différentes langues
+
 Pour chaque champ de la base de données, le dictionnaire fournit les informations suivantes :
 
 - `description` : une description textuelle du champ
+- `terms`: les termes associés au champ dans différentes langues
 - `type` : le type de données (STRING, INTEGER, etc.)
 - `is_nullable` : indique si le champ peut contenir des valeurs nulles
 - `unique_values_count` : nombre de valeurs uniques distinctes
@@ -300,6 +315,15 @@ Voici un exemple pour le champ "categories" :
 
 Cette approche permet d'avoir une vision plus claire et complète de la structure des 
 données d'Open Food Facts, qui facilitera ainsi l'interaction entre le modèle de langage et la base de données.
+
+<!--
+Ce fichier est très volumineux et contient des informations sur les catégories.
+Que faire avec cela...
+https://raw.githubusercontent.com/openfoodfacts/openfoodfacts-server/refs/heads/main/taxonomies/food/categories.txt
+
+
+
+-->
 
 #### Créer un jeu de test de 100 questions de référence (10h)
 
@@ -335,9 +359,11 @@ See also :
 
 - [BIRD-SQL](https://bird-bench.github.io/)
 - [Bird-SQL: A Benchmark for Text-to-SQL](https://arxiv.org/abs/2202.10700)
-- 
+
 #### Implémentation des scripts d’évaluation des trois métriques (10h)
+
 ### Développement du système de base (75h)
+
 #### Implémentation du module de dialogue avec Qwen2-7B-Instruct (20h)
 
 Pour débuter, j'utilise `mistral:7b` avec `Ollama`. 
@@ -401,6 +427,32 @@ Pour plus d'information sur les LLM, voir :
 
 
 #### Développement de la conversion texte-SQL de base (25h)
+
+Le script implémente les principaux composants du modèle TAG, mais avec quelques différences et limitations. Voici l'analyse :
+
+Points alignés avec TAG :
+
+1. Structure en 3 étapes :
+- `syn`: Méthode TAGSystem.syn() convertit la requête en SQL
+- `exec`: Méthode TAGSystem.exec() exécute la requête sur la base
+- `gen`: Méthode TAGSystem.gen() génère la réponse en langage naturel
+
+2. Utilisation de LLMs via une interface abstraite `BaseLLM` supportant différents modèles (Ollama, OpenAI, Anthropic)
+
+3. Gestion du contexte conversationnel via `conversation_history`
+
+Différences/limitations :
+
+1. Moins flexible que le TAG décrit dans l'article :
+- Limité aux requêtes SQL uniquement
+- Pas de support pour les opérateurs sémantiques complexes
+- Pas d'implémentation des patterns LLM itératifs/récursifs
+
+2. Pas d'optimisation des performances comme suggéré dans l'article pour le traitement de grands volumes de données
+
+3. Architecture plus simple que celle proposée dans l'article pour les cas d'utilisation avancés (raisonnement sémantique, connaissance du monde)
+
+Le script fournit une implémentation fonctionnelle mais simplifiée du modèle TAG, adaptée principalement aux requêtes SQL basiques plutôt qu'à l'ensemble des capacités décrites dans l'article.
 
 Pour plus d'information, voir :
 

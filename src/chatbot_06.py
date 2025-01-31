@@ -2,6 +2,7 @@
 from pathlib import Path
 import time
 import logging
+import json
 from typing import List, Dict, Tuple, Protocol
 from abc import ABC, abstractmethod
 
@@ -19,6 +20,7 @@ DATA_DIR = Path("../data")
 PARQUET_PATH = DATA_DIR / "food.parquet"
 FULL_DB_PATH = DATA_DIR / "food_full.duckdb"
 FILTERED_DB_PATH = DATA_DIR / "food_canada.duckdb"
+DATA_DICT_PATH = DATA_DIR / "data_dictionary.json"
 
 
 # Configuration du logging avec couleurs
@@ -154,51 +156,45 @@ class TAGSystem:
     """
     Implémentation du modèle TAG (Table-Augmented Generation).
     """
-
-    # Dictionnaire de mapping des colonnes
-    COLUMN_MAPPING = {
-        "marque": "brands",
-        "marques": "brands",
-        "brand": "brands",
-        "brands": "brands",
-        "nom": "product_name",
-        "produit": "product_name",
-        "product": "product_name",
-        "quantité": "product_quantity",
-        "quantity": "product_quantity",
-        "nutriscore": "nutriscore_grade",
-        "nutri-score": "nutriscore_grade",
-        "nutri_score": "nutriscore_grade",
-        "pays": "countries",
-        "country": "countries",
-        "magasins": "stores",
-        "stores": "stores",
-    }
-
-    def __init__(self, db_path: Path, llm: Protocol, table_name: str, schema: str):
+    def __init__(self, db_path: Path, llm: Protocol, table_name: str):
         self.db_path = db_path
         self.llm = llm
         self.conn = duckdb.connect(str(db_path))
         self.table_name = table_name
-        self.schema = schema
+        
+        # Charger le dictionnaire
+        with open(DATA_DICT_PATH, "r", encoding="utf-8") as f:
+            self.data_dict = json.load(f)
+        
+        # Plus besoin de _get_available_columns
+        self.available_columns = list(self.data_dict.keys())
+        
+        # Créer un schéma enrichi
+        self.schema = self._create_enriched_schema()
+        
+        # Créer un mapping de termes de colonnes
+        self.column_terms = self._build_column_terms()
 
-        # Récupère les colonnes réelles de la table
-        self.available_columns = self._get_available_columns()
         logger.info(f"Colonnes disponibles: {', '.join(self.available_columns)}")
 
-    def _get_available_columns(self) -> List[str]:
-        """Récupère la liste des colonnes disponibles dans la table."""
-        columns = self.conn.execute(f"DESCRIBE {self.table_name}").fetchdf()
-        return columns["column_name"].tolist()
+    def _build_column_terms(self) -> Dict[str, str]:
+        """Construit un dictionnaire de mapping à partir des terms du data_dictionary."""
+        mapping = {}
+        for column, info in self.data_dict.items():
+            if "terms" in info:
+                for lang, terms in info["terms"].items():
+                    for term in terms:
+                        mapping[term.lower()] = column
+        return mapping
 
-    def _map_column_name(self, column: str) -> str:
-        """Mappe un nom de colonne utilisateur vers le nom réel dans la base."""
-        column = column.lower()
-        if column in self.COLUMN_MAPPING:
-            mapped = self.COLUMN_MAPPING[column]
-            if mapped in self.available_columns:
-                return mapped
-        return column
+    def _create_enriched_schema(self) -> str:
+        schema = f"Table '{self.table_name}' avec les colonnes suivantes:\n"
+        for col, info in self.data_dict.items():
+            if info['completeness_score'] > 50:  # Filtrer les colonnes peu remplies
+                schema += f"- {col} ({info['type']}): {info['description']}\n"
+                if info['known_issues']:
+                    schema += f"  Note: {', '.join(info['known_issues'])}\n"
+        return schema
 
     def _format_dataframe(self, df: pd.DataFrame, max_rows: int = 10) -> str:
         """
@@ -266,8 +262,8 @@ class TAGSystem:
 
         # Tente de corriger les noms de colonnes
         for word in query.split():
-            if word in self.COLUMN_MAPPING:
-                mapped = self.COLUMN_MAPPING[word]
+            if word.lower() in self.column_terms:
+                mapped = self.column_terms[word.lower()]
                 if mapped in self.available_columns:
                     query = query.replace(word, mapped)
 
@@ -333,7 +329,7 @@ class FoodDatabaseBot:
         self.conversation_history: List[Dict[str, str]] = []
 
         # Initialisation du système TAG
-        self.tag_system = TAGSystem(db_path, llm, self.table_name, self.schema)
+        self.tag_system = TAGSystem(db_path, llm, self.table_name)
 
     def _get_table_name(self, db_path: Path) -> str:
         """Récupère le nom de la première table de la base de données."""

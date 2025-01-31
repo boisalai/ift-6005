@@ -1,35 +1,36 @@
-import os
+# Bibliothèque standard
 from pathlib import Path
 import time
-import json
+import logging
+from typing import List, Dict, Tuple, Protocol
+from abc import ABC, abstractmethod
+
+# Bibliothèques tierces
 import requests
 import pandas as pd
 import duckdb
-import sqlglot
-import logging
-from typing import List, Dict, Tuple, Optional, Protocol
-from abc import ABC, abstractmethod
 import openai
-# from anthropic import Anthropic
-# from langchain.chat_models import ChatOpenAI, ChatAnthropic, ChatOllama
-# from langchain.schema import HumanMessage, SystemMessage
+from anthropic import Anthropic
+from langchain.chat_models import ChatOpenAI, ChatAnthropic, ChatOllama
+from langchain.schema import HumanMessage, SystemMessage
 
-# Configuration
+# Configuration de l'environnement
 DATA_DIR = Path("../data")
 PARQUET_PATH = DATA_DIR / "food.parquet"
 FULL_DB_PATH = DATA_DIR / "food_full.duckdb"
 FILTERED_DB_PATH = DATA_DIR / "food_canada.duckdb"
 
+
 # Configuration du logging avec couleurs
 class ColorFormatter(logging.Formatter):
     COLORS = {
-        'INFO': '\033[92m',  # Vert
-        'DEBUG': '\033[94m',  # Bleu
-        'WARNING': '\033[93m',  # Jaune
-        'ERROR': '\033[91m',  # Rouge
-        'ENDC': '\033[0m'     # Reset
+        "INFO": "\033[92m",  # Vert
+        "DEBUG": "\033[94m",  # Bleu
+        "WARNING": "\033[93m",  # Jaune
+        "ERROR": "\033[91m",  # Rouge
+        "ENDC": "\033[0m",  # Reset
     }
-    
+
     def format(self, record):
         levelname = record.levelname  # Sauvegarde le niveau original
         if levelname in self.COLORS:
@@ -37,26 +38,15 @@ class ColorFormatter(logging.Formatter):
             record.msg = f"{color}{record.msg}{self.COLORS['ENDC']}"
         return super().format(record)
 
+
 # Configuration du logger
 logger = logging.getLogger(__name__)
 if not logger.handlers:  # Évite les handlers dupliqués
     handler = logging.StreamHandler()
-    handler.setFormatter(ColorFormatter('%(message)s'))
+    handler.setFormatter(ColorFormatter("%(message)s"))
     logger.addHandler(handler)
     logger.setLevel(logging.INFO)
 
-"""
-from langchain_openai import ChatOpenAI 
-from langchain_community.llms import Ollama
-models = {
-    "chatgpt3.5": ChatOpenAI(model="gpt-3.5-turbo", temperature=0, api_key=st.secrets["OPENAI_API_KEY"]),
-    "chatgpt-4o": ChatOpenAI(model="gpt-4o", temperature=0, api_key=st.secrets["OPENAI_API_KEY"]),
-    "duckdb-nsql": Ollama(model="duckdb-nsql", temperature=0),
-    "sqlcoder": Ollama(model="mannix/defog-llama3-sqlcoder-8b", temperature=0),
-    "codegemma":  Ollama(model="codegemma", temperature=0),
-    "llama3": Ollama(model="llama3", temperature=0),
-}
-"""
 
 # Schéma de la base de données
 DATABASE_SCHEMA = """
@@ -73,67 +63,72 @@ La base de données contient une table appelée `food_facts` avec les colonnes s
 - `stores` (texte) : Les magasins disponibles
 """
 
+
 class LLMInterface(Protocol):
     """Protocol définissant l'interface commune pour tous les LLMs."""
+
     def generate(self, prompt: str) -> str:
         """Génère une réponse basée sur le prompt."""
         pass
 
+
 class BaseLLM(ABC):
     """Classe de base abstraite pour les LLMs."""
+
     @abstractmethod
     def generate(self, prompt: str) -> str:
         """Méthode abstraite pour la génération de texte."""
         pass
 
+
 class OllamaLLM(BaseLLM):
     """Implémentation pour Ollama API."""
-    def __init__(self, model: str = "mistral:7b", base_url: str = "http://localhost:11434"):
+
+    def __init__(
+        self, model: str = "mistral:7b", base_url: str = "http://localhost:11434"
+    ):
         self.model = model
         self.base_url = base_url
-        
+
     def generate(self, prompt: str) -> str:
         response = requests.post(
             f"{self.base_url}/api/generate",
-            json={
-                "model": self.model,
-                "prompt": prompt,
-                "stream": False
-            }
+            json={"model": self.model, "prompt": prompt, "stream": False},
         )
         return response.json()["response"]
 
+
 class OpenAILLM(BaseLLM):
     """Implémentation pour OpenAI API."""
+
     def __init__(self, model: str = "gpt-3.5-turbo"):
         self.client = openai.OpenAI()
         self.model = model
-        
+
     def generate(self, prompt: str) -> str:
         response = self.client.chat.completions.create(
-            model=self.model,
-            messages=[{"role": "user", "content": prompt}]
+            model=self.model, messages=[{"role": "user", "content": prompt}]
         )
         return response.choices[0].message.content
 
+
 class AnthropicLLM(BaseLLM):
     """Implémentation pour Anthropic API."""
+
     def __init__(self, model: str = "claude-3-opus-20240229"):
         self.client = Anthropic()
         self.model = model
-        
+
     def generate(self, prompt: str) -> str:
         response = self.client.messages.create(
-            model=self.model,
-            messages=[{
-                "role": "user",
-                "content": prompt
-            }]
+            model=self.model, messages=[{"role": "user", "content": prompt}]
         )
         return response.content[0].text
 
+
 class LangChainLLM(BaseLLM):
     """Implémentation pour LangChain."""
+
     def __init__(self, model_name: str, provider: str = "ollama"):
         if provider == "ollama":
             self.model = ChatOllama(model=model_name)
@@ -143,14 +138,15 @@ class LangChainLLM(BaseLLM):
             self.model = ChatAnthropic(model=model_name)
         else:
             raise ValueError(f"Provider {provider} non supporté")
-        
+
     def generate(self, prompt: str) -> str:
         messages = [
             SystemMessage(content="Tu es un assistant expert en SQL."),
-            HumanMessage(content=prompt)
+            HumanMessage(content=prompt),
         ]
         response = self.model.invoke(messages)
         return response.content
+
 
 def create_llm(provider: str, **kwargs) -> BaseLLM:
     """Factory pour créer l'instance LLM appropriée."""
@@ -158,31 +154,31 @@ def create_llm(provider: str, **kwargs) -> BaseLLM:
         "ollama": OllamaLLM,
         "openai": OpenAILLM,
         "anthropic": AnthropicLLM,
-        "langchain": LangChainLLM
+        "langchain": LangChainLLM,
     }
-    
+
     if provider not in providers:
         raise ValueError(f"Provider {provider} non supporté")
-        
+
     # Filtrer les kwargs selon le provider
     if provider == "langchain":
         # LangChain a besoin de model_name et provider
         required_kwargs = {
             "model_name": kwargs.get("model"),
-            "provider": kwargs.get("model_provider")
+            "provider": kwargs.get("model_provider"),
         }
     else:
         # Les autres providers n'ont besoin que du model
-        required_kwargs = {
-            "model": kwargs.get("model")
-        }
-        
+        required_kwargs = {"model": kwargs.get("model")}
+
     return providers[provider](**required_kwargs)
+
 
 class TAGSystem:
     """
     Implémentation du modèle TAG (Table-Augmented Generation).
     """
+
     # Dictionnaire de mapping des colonnes
     COLUMN_MAPPING = {
         "marque": "brands",
@@ -200,7 +196,7 @@ class TAGSystem:
         "pays": "countries",
         "country": "countries",
         "magasins": "stores",
-        "stores": "stores"
+        "stores": "stores",
     }
 
     def __init__(self, db_path: Path, llm: Protocol, table_name: str, schema: str):
@@ -209,7 +205,7 @@ class TAGSystem:
         self.conn = duckdb.connect(str(db_path))
         self.table_name = table_name
         self.schema = schema
-        
+
         # Récupère les colonnes réelles de la table
         self.available_columns = self._get_available_columns()
         logger.info(f"Colonnes disponibles: {', '.join(self.available_columns)}")
@@ -217,7 +213,7 @@ class TAGSystem:
     def _get_available_columns(self) -> List[str]:
         """Récupère la liste des colonnes disponibles dans la table."""
         columns = self.conn.execute(f"DESCRIBE {self.table_name}").fetchdf()
-        return columns['column_name'].tolist()
+        return columns["column_name"].tolist()
 
     def _map_column_name(self, column: str) -> str:
         """Mappe un nom de colonne utilisateur vers le nom réel dans la base."""
@@ -237,31 +233,36 @@ class TAGSystem:
         """
         if df.empty:
             return "Aucun résultat"
-        
+
         # Pour les requêtes COUNT
-        if len(df.columns) == 1 and df.columns[0].lower() in ['count', 'total', 'n']:
+        if len(df.columns) == 1 and df.columns[0].lower() in ["count", "total", "n"]:
             return str(df.iloc[0, 0])
-            
+
         # Pour les autres résultats, limite l'affichage
         preview = df.head(max_rows)
         total_rows = len(df)
         preview_str = preview.to_string(index=False)
-        
+
         if total_rows > max_rows:
             preview_str += f"\n... ({total_rows-max_rows} lignes supplémentaires)"
-            
+
         return preview_str
 
-    def syn(self, request: str, conversation_history: List[Dict[str, str]] = None) -> str:
+    def syn(
+        self, request: str, conversation_history: List[Dict[str, str]] = None
+    ) -> str:
         """Query Synthesis: convertit la requête en langage naturel en SQL."""
-        context = "\n".join(
-            f"{msg['role']}: {msg['content']}" 
-            for msg in conversation_history[-3:]
-        ) if conversation_history else ""
-        
+        context = (
+            "\n".join(
+                f"{msg['role']}: {msg['content']}" for msg in conversation_history[-3:]
+            )
+            if conversation_history
+            else ""
+        )
+
         prompt = f"""
         Tu dois convertir cette question en une requête SQL simple et directe.
-        
+
         Schéma de la base:
         {self.schema}
         
@@ -284,16 +285,16 @@ class TAGSystem:
 
         Génère uniquement la requête SQL, sans explication ni commentaire.
         """
-        
-        query = self.llm.generate(prompt).strip().rstrip(';')
-        
+
+        query = self.llm.generate(prompt).strip().rstrip(";")
+
         # Tente de corriger les noms de colonnes
         for word in query.split():
             if word in self.COLUMN_MAPPING:
                 mapped = self.COLUMN_MAPPING[word]
                 if mapped in self.available_columns:
                     query = query.replace(word, mapped)
-        
+
         return query
 
     def exec(self, query: str) -> pd.DataFrame:
@@ -309,7 +310,9 @@ class TAGSystem:
                 col = str(e).split('"')[1] if '"' in str(e) else None
                 if col and col in self.COLUMN_MAPPING:
                     corrected_query = query.replace(col, self.COLUMN_MAPPING[col])
-                    logger.info(f"Tentative avec la colonne corrigée: {corrected_query}")
+                    logger.info(
+                        f"Tentative avec la colonne corrigée: {corrected_query}"
+                    )
                     return self.conn.execute(corrected_query).fetchdf()
             raise RuntimeError(f"Erreur d'exécution SQL: {str(e)}")
 
@@ -333,24 +336,26 @@ class TAGSystem:
         4. Ne fais PAS de comparaisons ou d'observations supplémentaires
         5. Reste factuel et précis
         """
-        
+
         return self.llm.generate(prompt)
+
 
 class FoodDatabaseBot:
     """
     Interface utilisateur avancée pour le système TAG appliqué à la base Open Food Facts.
     Conserve les fonctionnalités spécifiques tout en utilisant l'architecture TAG.
     """
+
     def __init__(self, db_path: Path, llm: BaseLLM):
         if not db_path.exists():
             raise FileNotFoundError(f"La base de données {db_path} n'existe pas.")
-    
+
         print(f"Utilisation de la base de données: {db_path}.")
         self.table_name = self._get_table_name(db_path)
         self.schema = self._get_schema(db_path)
         self.llm = llm
         self.conversation_history: List[Dict[str, str]] = []
-        
+
         # Initialisation du système TAG
         self.tag_system = TAGSystem(db_path, llm, self.table_name, self.schema)
 
@@ -361,23 +366,23 @@ class FoodDatabaseBot:
         if tables.empty:
             raise ValueError("La base de données ne contient aucune table.")
         conn.close()
-        
+
         print(f"Tables disponibles: {tables['name'].tolist()}")
         print(f"Utilisation de la première table: {tables.iloc[0]['name']}")
-        return tables.iloc[0]['name']
+        return tables.iloc[0]["name"]
 
     def _get_schema(self, db_path: Path) -> str:
         """Récupère le schéma réel de la table."""
         conn = duckdb.connect(str(db_path))
         columns = conn.execute(f"DESCRIBE {self.table_name}").fetchdf()
         conn.close()
-        
+
         schema = f"""
         La base de données contient une table appelée `{self.table_name}` avec les colonnes suivantes :
         """
         for _, row in columns.iterrows():
             schema += f"\n- `{row['column_name']}` ({row['column_type']}) : Colonne de la table"
-            
+
         return schema
 
     def determine_query_type(self, user_input: str) -> Tuple[str, str]:
@@ -393,7 +398,7 @@ class FoodDatabaseBot:
         Réponse (un seul mot):"""
 
         response = self.llm.generate(prompt).strip().lower()
-        
+
         # Simplifie la logique de détection
         if "greeting" in response:
             return "greeting", "Salutation"
@@ -414,7 +419,7 @@ class FoodDatabaseBot:
         
         Réponds de manière naturelle et utile, sans accéder à la base de données.
         """
-        
+
         return self.llm.generate(prompt)
 
     def handle_greeting(self) -> str:
@@ -422,7 +427,7 @@ class FoodDatabaseBot:
         try:
             sql_query = f"SELECT COUNT(*) as total FROM {self.table_name}"
             results = self.tag_system.exec(sql_query)
-            total = results.iloc[0]['total']
+            total = results.iloc[0]["total"]
             return f"Bonjour ! Je suis votre assistant pour explorer la base de données des produits alimentaires. Elle contient {total} produits. Comment puis-je vous aider ?"
         except Exception:
             return "Bonjour ! Je suis votre assistant pour explorer la base de données des produits alimentaires. Comment puis-je vous aider ?"
@@ -432,13 +437,13 @@ class FoodDatabaseBot:
         try:
             # 1. Query Synthesis avec contexte de conversation
             sql_query = self.tag_system.syn(user_input, self.conversation_history)
-            
+
             # 2. Query Execution
             results = self.tag_system.exec(sql_query)
-            
+
             # 3. Answer Generation
             return self.tag_system.gen(user_input, results)
-            
+
         except ValueError as e:
             return f"Erreur de synthèse SQL: {str(e)}"
         except RuntimeError as e:
@@ -449,8 +454,7 @@ class FoodDatabaseBot:
     def _format_history(self) -> str:
         """Formate l'historique récent de la conversation."""
         return "\n".join(
-            f"{msg['role']}: {msg['content']}" 
-            for msg in self.conversation_history[-3:]
+            f"{msg['role']}: {msg['content']}" for msg in self.conversation_history[-3:]
         )
 
     def process_user_input(self, user_input: str) -> str:
@@ -458,7 +462,7 @@ class FoodDatabaseBot:
         try:
             # Détermine le type de question
             query_type, _ = self.determine_query_type(user_input)
-            
+
             # Traite selon le type
             if query_type == "greeting":
                 response = self.handle_greeting()
@@ -466,15 +470,16 @@ class FoodDatabaseBot:
                 response = self.handle_conversation(user_input)
             else:  # sql
                 response = self.handle_sql_query(user_input)
-            
+
             # Met à jour l'historique
             self.conversation_history.append({"role": "user", "content": user_input})
             self.conversation_history.append({"role": "assistant", "content": response})
-            
+
             return response
-            
+
         except Exception as e:
             return f"Désolé, une erreur s'est produite : {str(e)}"
+
 
 def create_test_set() -> List[Dict]:
     """Crée un ensemble de test avec des questions et réponses attendues."""
@@ -482,15 +487,16 @@ def create_test_set() -> List[Dict]:
         {
             "question": "Quels sont les produits avec un Nutri-score A ?",
             "sql": "SELECT product_name, brands, nutri_score FROM food_facts WHERE nutri_score = 'A' LIMIT 5",
-            "expected_response_contains": ["produits", "Nutri-score A"]
+            "expected_response_contains": ["produits", "Nutri-score A"],
         },
         {
             "question": "Combien y a-t-il de produits sans allergènes ?",
             "sql": "SELECT COUNT(*) as count FROM food_facts WHERE allergens = 'None' OR allergens IS NULL",
-            "expected_response_contains": ["produits", "sans allergènes"]
+            "expected_response_contains": ["produits", "sans allergènes"],
         }
         # Ajoutez d'autres cas de test ici
     ]
+
 
 def evaluate_system(bot: FoodDatabaseBot, test_set: List[Dict]) -> Dict:
     """Évalue les performances du système sur l'ensemble de test."""
@@ -499,40 +505,41 @@ def evaluate_system(bot: FoodDatabaseBot, test_set: List[Dict]) -> Dict:
         "successful_queries": 0,
         "response_quality": 0,
         "average_response_time": 0,
-        "errors": []
+        "errors": [],
     }
-    
+
     total_time = 0
-    
+
     for test_case in test_set:
         start_time = time.time()
-        
+
         try:
             # Traite la question
             response = bot.process_user_input(test_case["question"])
-            
+
             # Vérifie la présence des éléments attendus dans la réponse
             quality_score = sum(
-                1 for phrase in test_case["expected_response_contains"]
+                1
+                for phrase in test_case["expected_response_contains"]
                 if phrase.lower() in response.lower()
             ) / len(test_case["expected_response_contains"])
-            
+
             results["successful_queries"] += 1
             results["response_quality"] += quality_score
-            
+
         except Exception as e:
-            results["errors"].append({
-                "question": test_case["question"],
-                "error": str(e)
-            })
-        
+            results["errors"].append(
+                {"question": test_case["question"], "error": str(e)}
+            )
+
         total_time += time.time() - start_time
-    
+
     # Calcule les moyennes
     results["response_quality"] /= results["total_tests"]
     results["average_response_time"] = total_time / results["total_tests"]
-    
+
     return results
+
 
 # --------------------------------------------------------------------------------
 # 7. Main interactive loop
@@ -543,9 +550,9 @@ def chatbot():
     config = {
         "provider": "ollama",  # ou "langchain", "ollama", "openai", "anthropic"
         "model": "mistral:7b",  # ou "mistral:7b", "deepseek-r1:7b", "qwen:14b"
-        "model_provider": "ollama"  # Utilisé uniquement avec LangChain
+        "model_provider": "ollama",  # Utilisé uniquement avec LangChain
     }
-    
+
     # Pour utiliser différents LLMs :
     # Pour Ollama
     # config = {"provider": "ollama", "model": "mistral:7b"}
@@ -558,25 +565,26 @@ def chatbot():
     try:
         llm = create_llm(**config)
         bot = FoodDatabaseBot(FILTERED_DB_PATH, llm)
-        
+
         print("Bienvenue dans le chatbot Open Food Facts!")
         print(f"Utilisation du LLM: {config['provider']} - {config['model']}")
         print("Tapez 'exit' pour quitter.")
-        
+
         while True:
             user_input = input("\nVous: ").strip()
-            
+
             if user_input.lower() == "exit":
                 break
-                
+
             try:
                 response = bot.process_user_input(user_input)
                 print(f"\nAssistant: {response}")
             except Exception as e:
                 print(f"\nDésolé, une erreur s'est produite: {str(e)}")
-                
+
     except Exception as e:
         print(f"Erreur d'initialisation: {str(e)}")
+
 
 if __name__ == "__main__":
     chatbot()

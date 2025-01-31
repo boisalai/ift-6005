@@ -115,6 +115,50 @@ docs/latex/
 └── bibliography.bib      # Références
 ```
 
+##### Qualité du code
+
+Pour maintenir la qualité du code Python selon les standards, voici les outils essentiels :
+
+1. **Linters et formatters principaux** :
+```bash
+# Installation
+pip install black flake8 pylint pre-commit
+
+# Configuration pre-commit
+pre-commit install
+```
+
+2. Créer un fichier `.pre-commit-config.yaml` à la racine :
+```yaml
+repos:
+-   repo: https://github.com/psf/black
+    rev: 23.12.1
+    hooks:
+    -   id: black
+-   repo: https://github.com/pycqa/flake8
+    rev: 7.0.0
+    hooks:
+    -   id: flake8
+-   repo: https://github.com/pycqa/pylint
+    rev: v3.0.3
+    hooks:
+    -   id: pylint
+```
+
+3. Créer un fichier `setup.cfg` pour la configuration :
+```ini
+[flake8]
+max-line-length = 88
+extend-ignore = E203
+
+[pylint]
+max-line-length = 88
+disable = C0111
+```
+
+Ces hooks s'exécuteront automatiquement lors de chaque commit, vérifiant le formatage (black), le style (flake8) et la qualité du code (pylint).
+
+
 #### Préparation de la base de données Open Food Facts canadienne (5h)
 
 [Open Food Facts](https://en.openfoodfacts.org/) is a non-profit organisation that collects and shares information on food products from around the world. It is a collaborative project that relies on volunteers to collect data. Open Food Facts is the largest open food products database in the world, with over 3 million products in 200 countries.

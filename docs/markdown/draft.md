@@ -538,7 +538,6 @@ Pour plus d'information sur les agents, voir :
 - [Introducing AgentWorkflow: A Powerful System for Building AI Agent Systems](https://www.llamaindex.ai/blog/introducing-agentworkflow-a-powerful-system-for-building-ai-agent-systems) from LlamaIndex, and 
   [here](https://docs.llamaindex.ai/en/stable/understanding/agent/multi_agents/)
 - [Introduction to Agents](https://huggingface.co/docs/smolagents/conceptual_guides/intro_agents)
-- [smolagents](https://huggingface.co/docs/smolagents/index)
 - [Beginner's Guide to RAG Agents with Prof. Tom Yeh](https://www.youtube.com/watch?v=181Esb2Ba8w)
 - [Building effective agents](https://www.anthropic.com/research/building-effective-agents)
 - [Building Effective Agents Cookbook](https://github.com/anthropics/anthropic-cookbook/tree/main/patterns/agents) and [here](https://github.com/intellectronica/building-effective-agents-with-pydantic-ai) using Pydantic
@@ -556,8 +555,26 @@ Pour plus d'information sur les agents, voir :
 - [RAG, AI Agents, and Agentic RAG: An In-Depth Review and Comparative Analysis](https://www.digitalocean.com/community/conceptual-articles/rag-ai-agents-agentic-rag-comparative-analysis)
 - [Applied LLMs Mastery 2024](https://github.com/aishwaryanr/awesome-generative-ai-guide/blob/main/free_courses/Applied_LLMs_Mastery_2024/README.MD)
 
-#### CrewAI
+#### Smolagents
 
+Smolagents de Hugging Face est une nouvelle bibliothèque Python qui simplifie la création d'agents IA.
+
+smolagents possède des qualités qui le rendent très prometteur pour ces applications agentiques :
+
+Les abstractions du framework sont maintenues au minimum.
+Alors que la plupart des frameworks font définir leurs actions aux agents en format JSON/texte, l'approche principale de smolagents est celle des Agents de Code où les actions sont écrites sous forme de snippets de code Python (ce qui est différent des agents qui écrivent du code).
+En tant que framework Hugging Face, smolagents s'intègre bien avec le Hub et la bibliothèque Transformers. Vous pouvez utiliser de nombreux modèles du hub (certains uniquement accessibles aux utilisateurs Pro), et vous pouvez également travailler avec des modèles propriétaires d'OpenAI, Anthropic, etc.
+Vous pouvez facilement utiliser les outils déjà fournis ou définir vos outils personnalisés avec un minimum d'effort, presque aussi simplement qu'en écrivant une fonction Python.
+
+Pour plus d'information sur Smolagents, voir :
+
+- [Introducing smolagents, a simple library to build agents](https://huggingface.co/blog/smolagents)
+- [smolagents](https://huggingface.co/docs/smolagents/index)
+- [Hugging Face's Smolagents: A Guide With Examples](https://www.datacamp.com/tutorial/smolagents)
+- [SmolAgents by Hugging Face: Build AI Agents in Less than 30 Lines](https://www.analyticsvidhya.com/blog/2025/01/smolagents/)
+- [GitHub](https://github.com/huggingface/smolagents/blob/main/examples/multiple_tools.py)
+- 
+#### CrewAI
 
 - Mental framework for agent creation
   - What is the goal
@@ -571,10 +588,15 @@ Pour plus d'information sur les agents, voir :
 - Les agents peuvent déléguer des tâches à d'autres agents
 - Les agents peuvent aussi collaborer entre eux
 
+
+```bash
+pip install 'crewai[tools]'
+```
+
 Voir aussi :
 
 - [Post X](https://x.com/akshay_pachaar/status/1882111286127038926) 
-- [CrewAI ](https://x.com/akshay_pachaar/status/1882406721974624278)
+- [CrewAI](https://x.com/akshay_pachaar/status/1882406721974624278)
 - [CrewAI](https://www.crewai.com/) A cutting-edge framework for orchestrating role-playing, autonomous AI agents that work together seamlessly to tackle complex tasks.
   - Le code source est hébergé sur GitHub : joaomdmoura/crewAI
   - Il existe même un cours gratuit sur [DeepLearning.AI](https://learn.deeplearning.ai/courses/multi-ai-agent-systems-with-crewai/lesson/1/introduction)

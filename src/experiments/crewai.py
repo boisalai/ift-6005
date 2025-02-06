@@ -7,7 +7,11 @@ from typing import List, Dict
 # Bibliothèques tierces
 import pandas as pd
 import duckdb
-from crewai import Agent, Task, Crew, Process, LLM
+from experiments.crewai import Agent, Task, Crew, Process, LLM
+
+# You need to install the crewai package to run this code
+# pip install 'crewai[tools]'
+# See https://docs.crewai.com/installation
 from crewai.tools import BaseTool
 
 # Configuration de l'environnement

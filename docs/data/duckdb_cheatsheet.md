@@ -1,64 +1,11 @@
-# DuckDB Guide for Open Food Facts
 
-## Introduction
-
-Open Food Facts stores its data in a Parquet file that contains various formats (string, list, struct, timestamp). This guide explains how to use DuckDB to analyze this data.
-
-## Prerequisites
-
-1. Download the Parquet file:
-```bash
-wget -P data/ https://huggingface.co/datasets/openfoodfacts/product-database/resolve/main/food.parquet
-```
-
-2. Convert to DuckDB database:
-
-```python
-from pathlib import Path
-import duckdb
-
-DATA_DIR = Path("../data")
-PARQUET_PATH = DATA_DIR / "food.parquet"
-FULL_DB_PATH = DATA_DIR / "food_full.duckdb"
-
-def create_full_db():
-    """Creates a DuckDB database containing all data from the Parquet file."""    
-    con = duckdb.connect(str(FULL_DB_PATH), config={'memory_limit': '8GB'})
-    con.execute(f"CREATE TABLE products AS SELECT * FROM '{PARQUET_PATH}'")
-    con.close()
-```
-
-To create adatabase with only Canadian products, you can use the following code:
-
-```python
-FILTERED_DB_PATH = DATA_DIR / "food_canada.duckdb"
-
-def create_filtered_db():
-    con = duckdb.connect(str(FILTERED_DB_PATH))
-
-    try:
-        con.execute(f"ATTACH DATABASE '{FULL_DB_PATH}' AS full_db")
-        con.execute(f"""
-            CREATE TABLE products AS 
-            SELECT * FROM full_db.products
-            WHERE array_contains(countries_tags, 'en:canada')
-        """)
-        count = con.execute("SELECT COUNT(*) FROM products").fetchone()[0]
-        print(f"✅ {count} Canadian products transferred.")
-    finally:
-        con.execute("DETACH full_db")
-        con.close()
-```
-
-## Basic Queries
-
-### 1. Exploring the structure
-
+### List all tables in the database
 ```sql
--- List all tables
-SELECT table_name 
-FROM information_schema.tables 
+-- List all tables in the database
+SELECT table_name
+FROM information_schema.tables
 WHERE table_schema = 'main';
+```
 ```text
 ┌────────────┐
 │ table_name │
@@ -67,167 +14,6 @@ WHERE table_schema = 'main';
 │ products   │
 └────────────┘
 ```
-
-```sql
--- Show columns in products table
-SELECT column_name, data_type
-FROM information_schema.columns
-WHERE table_name = 'products';
-```
-| column_name | data_type |
-| --- | --- |
-| additives_n | INTEGER |
-| additives_tags | VARCHAR[] |
-| allergens_tags | VARCHAR[] |
-| brands_tags | VARCHAR[] |
-| brands | VARCHAR |
-... (truncated for brevity)
-
-See complete results in appendix.
-
-
-### 2. Working with arrays and structs
-
-```sql
--- Filter products by category (using list_contains)
-SELECT
-    code,
-    unnest(list_filter(product_name, x -> x.lang == 'main'))['text'] AS name
-FROM products
-WHERE list_contains(categories_tags, 'en:milks');
-
--- Search in array (using array_to_string)
-SELECT count(code) as nb, allergens_tags
-FROM products
-WHERE regexp_matches(array_to_string(allergens_tags, ','), 'fr:')
-GROUP BY allergens_tags
-ORDER BY nb DESC;
-```
-
-### 3. Nutrition analysis
-
-```sql
--- Products by NOVA group
-SELECT nova_group, count(*) AS count
-FROM products
-WHERE nova_group IS NOT NULL
-GROUP BY nova_group
-ORDER BY nova_group;
-
--- Products with good Nutri-Score and no palm oil
-SELECT code, 
-    unnest(list_filter(product_name, x -> x.lang == 'main'))['text'] AS name,
-    nutriscore_grade
-FROM products 
-WHERE ingredients_from_palm_oil_n = 0
-AND nutriscore_grade IN ('a','b')
-LIMIT 10;
-```
-
-### 4. Product analysis
-
-```sql
--- Most common vitamins
-SELECT 
-    unnest AS vitamin,
-    count(*) AS count
-FROM products,
-    unnest(vitamins_tags) AS unnest
-GROUP BY vitamin
-ORDER BY count DESC;
-
--- Product completeness
-SELECT 
-    complete,
-    count(*) as count,
-    avg(completeness) as avg_completeness
-FROM products
-GROUP BY complete;
-```
-
-## Advanced features
-
-### Working with JSON
-
-Example with vegan ingredients:
-```sql
--- Find products with all ingredients marked as vegan (no non-vegan or maybe-vegan ingredients)
--- The ingredients column contains a JSON array where each ingredient has a "vegan" property
--- that can be "yes", "no", or "maybe". We extract and clean the "text" field of each ingredient.
---
--- Example of ingredients JSON structure:
--- [{"text": "water", "vegan": "yes"}, {"text": "sugar", "vegan": "yes"}]
---
--- The query:
--- 1. Filters for products with only vegan ingredients using LIKE on the raw JSON
--- 2. Extracts the text field for each ingredient using json_extract
--- 3. Cleans up the extracted text by removing brackets and quotes
--- 4. Returns the brand and a comma-separated list of ingredients
-WITH ingredient_array AS (
-    SELECT 
-        brands,
-        TRY_CAST(ingredients AS JSON) AS ingredients_json
-    FROM products
-    WHERE ingredients IS NOT NULL
-    AND ingredients != '[]'
-    AND ingredients LIKE '%"vegan":"yes"%'    -- Has at least one vegan ingredient
-    AND NOT ingredients LIKE '%"vegan":"no"%'  -- No non-vegan ingredients
-    AND NOT ingredients LIKE '%"vegan":"maybe"%' -- No maybe-vegan ingredients
-),
-clean_ingredients AS (
-    SELECT 
-        brands,
-        REGEXP_REPLACE(
-            REGEXP_REPLACE(
-                json_extract(ingredients_json, '$[*].text')::VARCHAR,
-                '[\[\]]',
-                ''
-            ),
-            '"',
-            ''
-        ) as ingredients_list
-    FROM ingredient_array
-)
-SELECT 
-    brands,
-    ingredients_list
-FROM clean_ingredients
-WHERE LENGTH(ingredients_list) > 0
-LIMIT 10;
-```
-
-### Time-based analysis
-
-```sql
--- Product creation trends by month
-SELECT 
-    DATE_TRUNC('month', to_timestamp(created_t)) AS month,
-    COUNT(*) as new_products
-FROM products
-WHERE created_t >= 1704067200  -- Jan 1, 2024
-GROUP BY month
-ORDER BY month;
-```
-
-## Best Practices
-
-1. Use `list_filter` for structured arrays with language codes
-2. Convert arrays to strings with `array_to_string` for text searches
-3. Use `unnest` to work with array elements
-4. Cast timestamps using `to_timestamp` for date operations
-5. Handle NULL values appropriately in aggregations
-
-## Schema Reference
-
-Key data types in the products table:
-- VARCHAR[]: Used for tags and lists
-- STRUCT: For complex data like product names and images
-- INTEGER/FLOAT: For numerical values and scores
-- BOOLEAN: For binary flags
-- BIGINT: For timestamps
-
-## Appendix
-
 ### List all tables in the database
 ```sql
 -- List all tables in the database
@@ -369,12 +155,12 @@ Total number of rows: 109
 SELECT COUNT(*) AS count FROM products;
 ```
 ```text
-┌─────────┐
-│  count  │
-│  int64  │
-├─────────┤
-│ 3601655 │
-└─────────┘
+┌───────┐
+│ count │
+│ int64 │
+├───────┤
+│ 94802 │
+└───────┘
 ```
 ### Product names sample and type
 ```sql
@@ -386,33 +172,33 @@ FROM products
 LIMIT 20;
 ```
 ```text
-┌──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┬────────────────────────────────────────┐
-│                                                                     product_name                                                                     │              type_colonne              │
-│                                                        struct(lang varchar, "text" varchar)[]                                                        │                varchar                 │
-├──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼────────────────────────────────────────┤
-│ [{'lang': main, 'text': Véritable pâte à tartiner noisettes chocolat noir}, {'lang': fr, 'text': Véritable pâte à tartiner noisettes chocolat noir}] │ STRUCT(lang VARCHAR, "text" VARCHAR)[] │
-│ [{'lang': main, 'text': Lagg's, chamomile herbal tea}, {'lang': en, 'text': Lagg's, chamomile herbal tea}]                                           │ STRUCT(lang VARCHAR, "text" VARCHAR)[] │
-│ [{'lang': main, 'text': Lagg's, herbal tea, peppermint}, {'lang': en, 'text': Lagg's, herbal tea, peppermint}]                                       │ STRUCT(lang VARCHAR, "text" VARCHAR)[] │
-│ [{'lang': main, 'text': Linden Flowers Tea}, {'lang': en, 'text': Linden Flowers Tea}]                                                               │ STRUCT(lang VARCHAR, "text" VARCHAR)[] │
-│ [{'lang': main, 'text': Herbal Tea, Hibiscus}, {'lang': en, 'text': Herbal Tea, Hibiscus}]                                                           │ STRUCT(lang VARCHAR, "text" VARCHAR)[] │
-│ [{'lang': main, 'text': Apple & Cinnamon Tea}, {'lang': en, 'text': Apple & Cinnamon Tea}]                                                           │ STRUCT(lang VARCHAR, "text" VARCHAR)[] │
-│ [{'lang': main, 'text': Lagg's, green tea}, {'lang': en, 'text': Lagg's, green tea}]                                                                 │ STRUCT(lang VARCHAR, "text" VARCHAR)[] │
-│ [{'lang': main, 'text': Lagg's, shave grass herbal tea}, {'lang': en, 'text': Lagg's, shave grass herbal tea}]                                       │ STRUCT(lang VARCHAR, "text" VARCHAR)[] │
-│ [{'lang': main, 'text': Lagg's, herbal tea, chamomile * mint}, {'lang': en, 'text': Lagg's, herbal tea, chamomile * mint}]                           │ STRUCT(lang VARCHAR, "text" VARCHAR)[] │
-│ [{'lang': main, 'text': Artichoke Herbal Tea}, {'lang': en, 'text': Artichoke Herbal Tea}]                                                           │ STRUCT(lang VARCHAR, "text" VARCHAR)[] │
-│ [{'lang': main, 'text': Lagg's, dieter's herbal tea}, {'lang': en, 'text': Lagg's, dieter's herbal tea}]                                             │ STRUCT(lang VARCHAR, "text" VARCHAR)[] │
-│ [{'lang': main, 'text': Lagg's, kidneytea, herbal tea}, {'lang': en, 'text': Lagg's, kidneytea, herbal tea}]                                         │ STRUCT(lang VARCHAR, "text" VARCHAR)[] │
-│ [{'lang': main, 'text': Lagg's, bronchtea}, {'lang': en, 'text': Lagg's, bronchtea}]                                                                 │ STRUCT(lang VARCHAR, "text" VARCHAR)[] │
-│ [{'lang': main, 'text': 100% Pure Canola Oil}, {'lang': en, 'text': 100% Pure Canola Oil}]                                                           │ STRUCT(lang VARCHAR, "text" VARCHAR)[] │
-│ [{'lang': main, 'text': Original Buttery Spread}, {'lang': la, 'text': Original Buttery Spread}, {'lang': en, 'text': Original Buttery Spread}]      │ STRUCT(lang VARCHAR, "text" VARCHAR)[] │
-│ [{'lang': main, 'text': Canola harvest, buttery spread, with flaxseed oil}, {'lang': en, 'text': Canola harvest, buttery spread, with flaxseed oil}] │ STRUCT(lang VARCHAR, "text" VARCHAR)[] │
-│ [{'lang': main, 'text': Today's temptations, lithuanian rye bread}, {'lang': en, 'text': Today's temptations, lithuanian rye bread}]                 │ STRUCT(lang VARCHAR, "text" VARCHAR)[] │
-│ [{'lang': main, 'text': Escalope de dinde}, {'lang': fr, 'text': Escalope de dinde}]                                                                 │ STRUCT(lang VARCHAR, "text" VARCHAR)[] │
-│ [{'lang': main, 'text': Madeleine Framboise}, {'lang': fr, 'text': Madeleine Framboise}]                                                             │ STRUCT(lang VARCHAR, "text" VARCHAR)[] │
-│ [{'lang': main, 'text': Croissants margarine}, {'lang': fr, 'text': Croissants margarine}]                                                           │ STRUCT(lang VARCHAR, "text" VARCHAR)[] │
-├──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┴────────────────────────────────────────┤
-│ 20 rows                                                                                                                                                                             2 columns │
-└───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┬────────────────────────────────────────┐
+│                                                                       product_name                                                                       │              type_colonne              │
+│                                                          struct(lang varchar, "text" varchar)[]                                                          │                varchar                 │
+├──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼────────────────────────────────────────┤
+│ [{'lang': main, 'text': Organic Vermont Maple Syrup Grade A Dark Color Robust Taste}, {'lang': en, 'text': Organic Vermont Maple Syrup Grade A Dark Co…  │ STRUCT(lang VARCHAR, "text" VARCHAR)[] │
+│ [{'lang': main, 'text': Imitation vanilla flavor}, {'lang': en, 'text': Imitation vanilla flavor}]                                                       │ STRUCT(lang VARCHAR, "text" VARCHAR)[] │
+│ [{'lang': main, 'text': 1% low-fat milk}, {'lang': en, 'text': 1% low-fat milk}]                                                                         │ STRUCT(lang VARCHAR, "text" VARCHAR)[] │
+│ [{'lang': main, 'text': Fresh udon bowl}, {'lang': fr, 'text': Fresh udon bowl}]                                                                         │ STRUCT(lang VARCHAR, "text" VARCHAR)[] │
+│ [{'lang': main, 'text': Seto fumi furikake}, {'lang': en, 'text': Seto fumi furikake}]                                                                   │ STRUCT(lang VARCHAR, "text" VARCHAR)[] │
+│ [{'lang': main, 'text': Assaisonnement pour riz}, {'lang': fr, 'text': Assaisonnement pour riz}]                                                         │ STRUCT(lang VARCHAR, "text" VARCHAR)[] │
+│ [{'lang': main, 'text': Sushi Ginger Gari}, {'lang': en, 'text': Sushi Ginger Gari}]                                                                     │ STRUCT(lang VARCHAR, "text" VARCHAR)[] │
+│ [{'lang': main, 'text': Chef d'oeuf™avec fromage sur muffin anglais}, {'lang': fr, 'text': Chef d'oeuf™avec fromage sur muffin anglais}]                 │ STRUCT(lang VARCHAR, "text" VARCHAR)[] │
+│ []                                                                                                                                                       │ STRUCT(lang VARCHAR, "text" VARCHAR)[] │
+│ []                                                                                                                                                       │ STRUCT(lang VARCHAR, "text" VARCHAR)[] │
+│ [{'lang': main, 'text': Organic Blue Agave}, {'lang': fr, 'text': Organic Blue Agave Syrup}, {'lang': en, 'text': Organic Blue Agave}]                   │ STRUCT(lang VARCHAR, "text" VARCHAR)[] │
+│ [{'lang': main, 'text':  Gâteau double chocolat }, {'lang': fr, 'text':  Gâteau double chocolat }]                                                       │ STRUCT(lang VARCHAR, "text" VARCHAR)[] │
+│ [{'lang': main, 'text': Macaroni & Cheese Classic Cheddar}, {'lang': en, 'text': Macaroni & Cheese Classic Cheddar}]                                     │ STRUCT(lang VARCHAR, "text" VARCHAR)[] │
+│ [{'lang': main, 'text': Truvia}, {'lang': fr, 'text': Truvia}]                                                                                           │ STRUCT(lang VARCHAR, "text" VARCHAR)[] │
+│ [{'lang': main, 'text': Goldfish Baked Snack Cracker Flavour Blasted Xtreme Chedar}, {'lang': en, 'text': Goldfish Baked Snack Cracker Flavour Blasted…  │ STRUCT(lang VARCHAR, "text" VARCHAR)[] │
+│ [{'lang': main, 'text': Goldfish Cheddar Baked Snack Cracker}, {'lang': en, 'text': Goldfish Cheddar Baked Snack Cracker}, {'lang': fr, 'text': Goldfi…  │ STRUCT(lang VARCHAR, "text" VARCHAR)[] │
+│ [{'lang': main, 'text': Craquelins Goldfish Trio Fromage}, {'lang': fr, 'text': Craquelins Goldfish Trio Fromage}]                                       │ STRUCT(lang VARCHAR, "text" VARCHAR)[] │
+│ [{'lang': main, 'text': Gmills hny nut cheerios sweetened whl grn oat cereal}, {'lang': en, 'text': Gmills hny nut cheerios sweetened whl grn oat cere…  │ STRUCT(lang VARCHAR, "text" VARCHAR)[] │
+│ [{'lang': main, 'text': Nature Valley Crunchy Oats 'N Honey}, {'lang': en, 'text': Nature Valley Crunchy Oats 'N Honey}]                                 │ STRUCT(lang VARCHAR, "text" VARCHAR)[] │
+│ [{'lang': main, 'text': Lychee}, {'lang': fr, 'text': Lychee}, {'lang': en, 'text': Lychee in Syrup}]                                                    │ STRUCT(lang VARCHAR, "text" VARCHAR)[] │
+├──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┴────────────────────────────────────────┤
+│ 20 rows                                                                                                                                                                                 2 columns │
+└───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 ### Gets distinct data types from the products table
 ```sql
@@ -449,13 +235,44 @@ SELECT
     code,
     unnest(
         list_filter (product_name, x -> x.lang == 'main')
-    )['text'] AS product_name
+    )['text'] AS product_name,
+categories_tags
 FROM products
-WHERE list_contains(lower(categories_tags), 'en:%milks%')
-   OR list_contains(lower(categories_tags), 'fr:%laits%')
-LIMIT 20;
+WHERE array_to_string(categories_tags, ',') LIKE 'en:%milk%' 
+   OR array_to_string(categories_tags, ',') LIKE 'fr:%lait%' 
 ```
-
+```text
+┌────────────────┬──────────────────────┬───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+│      code      │     product_name     │                                                                      categories_tags                                                                      │
+│    varchar     │       varchar        │                                                                         varchar[]                                                                         │
+├────────────────┼──────────────────────┼───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ 0016229001704  │ COCONUT MILK         │ [en:beverages-and-beverages-preparations, en:plant-based-foods-and-beverages, en:beverages, en:plant-based-foods, en:dairy-substitutes, en:milk-substit…  │
+│ 0025293001008  │ Almond Original Be…  │ [en:plant-based-foods-and-beverages, en:beverages, en:plant-based-foods, en:dairy-substitutes, en:milk-substitutes, en:nuts-and-their-products, en:plan…  │
+│ 0025293001503  │ Almond, Unsweetene…  │ [en:beverages-and-beverages-preparations, en:plant-based-foods-and-beverages, en:beverages, en:plant-based-foods, en:dairy-substitutes, en:milk-substit…  │
+│ 0025293001886  │ Almond Vanilla, Un…  │ [en:beverages-and-beverages-preparations, en:plant-based-foods-and-beverages, en:beverages, en:plant-based-foods, en:dairy-substitutes, en:milk-substit…  │
+│ 0025293003903  │ Unsweetened Cultur…  │ [en:dairies, en:fermented-foods, en:fermented-milk-products, en:desserts, en:dairy-desserts, en:fermented-dairy-desserts, en:yogurts]                     │
+│ 0025293600713  │ Soy Original Organ…  │ [en:plant-based-foods-and-beverages, en:beverages, en:dairies, en:plant-based-foods, en:legumes-and-their-products, en:dairy-substitutes, en:milk-subst…  │
+│ 0025293600737  │ Soy Vanilla Organi…  │ [en:beverages-and-beverages-preparations, en:plant-based-foods-and-beverages, en:beverages, en:plant-based-foods, en:legumes-and-their-products, en:dai…  │
+│ 0025293600751  │ Soy Chocolate Fort…  │ [en:beverages-and-beverages-preparations, en:plant-based-foods-and-beverages, en:beverages, en:plant-based-foods, en:legumes-and-their-products, en:dai…  │
+│ 0037014242317  │ 48% Milk Chocolate…  │ [en:snacks, en:sweet-snacks, en:cocoa-and-its-products, en:confectioneries, en:chocolate-candies, en:chocolates, en:milk-chocolates]                      │
+│ 0037466019871  │ Hazelnut Swiss Cla…  │ [en:snacks, en:sweet-snacks, en:cocoa-and-its-products, en:chocolates, en:milk-chocolates, en:chocolates-with-hazelnuts, en:milk-chocolates-with-hazeln…  │
+│    ·           │          ·           │                                                                             ·                                                                             │
+│    ·           │          ·           │                                                                             ·                                                                             │
+│    ·           │          ·           │                                                                             ·                                                                             │
+│ 09000810       │ Goodfood table salt  │ [en:dairies, en:fermented-foods, en:fermented-milk-products, en:desserts, en:dairy-desserts, en:fermented-dairy-desserts, en:yogurts, en:groceries, en:…  │
+│ 0059749998468  │ Oat Milk Original    │ [en:beverages-and-beverages-preparations, en:plant-based-foods-and-beverages, en:beverages, en:dairy-substitutes, en:milk-substitutes, en:plant-based-b…  │
+│ 0063667201197  │ Barista avoine san…  │ [en:beverages-and-beverages-preparations, en:plant-based-foods-and-beverages, en:beverages, en:plant-based-foods, en:cereals-and-potatoes, en:dairy-sub…  │
+│ 0850050030294  │ Good Start Plus Re…  │ [en:baby-foods, en:baby-milks, en:infant-formulas, en:ready-to-feed-baby-milks, en:ready-to-feed-baby-first-milk]                                         │
+│ 0056796905913  │ Ready to Feed Milk…  │ [en:baby-foods, en:baby-milks]                                                                                                                            │
+│ 10055325577499 │ Similac Advance St…  │ [en:baby-foods, en:baby-milks, en:infant-formulas, en:ready-to-feed-baby-milks]                                                                           │
+│ 0056796906699  │ Enfamil A+ Neuro Pro │ [en:baby-foods, en:baby-milks, en:infant-formulas, en:ready-to-feed-baby-milks, en:ready-to-feed-baby-first-milk]                                         │
+│ 0060383715540  │ 2% MF Cow’s Milk     │ [en:beverages-and-beverages-preparations, en:beverages, en:dairies, en:dairy-drinks, en:organic-2-percent-mf-cow-s-milk]                                  │
+│ 4980655952021  │ Memorial Pure        │ [en:cookies-biscuits-individually-wrapped, en:milk-flavour-sweets-wafer-cookies-rolls]                                                                    │
+│ 5900102025794  │ Malaga Smietankowa…  │ [en:snacks, en:sweet-snacks, en:cocoa-and-its-products, en:chocolates, en:milk-chocolates, en:filled-chocolates, en:filled-milk-chocolates]               │
+├────────────────┴──────────────────────┴───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ 1958 rows (20 shown)                                                                                                                                                                    3 columns │
+└───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+```
 ### Search categories with 'chocolat' or 'chocolate'
 ```sql
 
@@ -470,23 +287,23 @@ ORDER BY category
 LIMIT 10;
 ```
 ```text
-┌──────────────────────────────────────────────────────────────┐
-│                           category                           │
-│                           varchar                            │
-├──────────────────────────────────────────────────────────────┤
-│ en:100-calories-per-bar-milk-chocolate-no-artificial-colours │
-│ en:100-cocoa-solids-dark-chocolate                           │
-│ en:45-cocoa-dark-milk-chocolate                              │
-│ en:50-dark-chocolate-drops                                   │
-│ en:70-dark-chocolate-bar                                     │
-│ en:70-dark-chocolate-topped-butter-biscuits-cookies          │
-│ en:70-dark-chocolate-with-raspberry-and-meringue-pieces      │
-│ en:70-dk-chocolate-topped-butter-cookies-biscuits            │
-│ en:75-dark-columbia-sierra-nevada-drinking-chocolate         │
-│ en:85-chocolate                                              │
-├──────────────────────────────────────────────────────────────┤
-│                           10 rows                            │
-└──────────────────────────────────────────────────────────────┘
+┌────────────────────────────────────────────────────────────────────────────────┐
+│                                    category                                    │
+│                                    varchar                                     │
+├────────────────────────────────────────────────────────────────────────────────┤
+│ en:70-dark-chocolate-topped-butter-biscuits-cookies                            │
+│ en:70-dk-chocolate-topped-butter-cookies-biscuits                              │
+│ en:animal-crackers-covered-in-peanut-butter-candy-and-dipped-in-milk-chocolate │
+│ en:assorted-chocolate-candies                                                  │
+│ en:assorted-chocolates                                                         │
+│ en:assorted-luxury-chocolates-in-a-clear-gift-box                              │
+│ en:bars-covered-with-chocolate                                                 │
+│ en:biscuit-cookie-snack-w-chocolate-filling                                    │
+│ en:biscuit-with-a-chocolate-bar-covering                                       │
+│ en:biscuit-with-a-milk-chocolate-bar-covering                                  │
+├────────────────────────────────────────────────────────────────────────────────┤
+│                                    10 rows                                     │
+└────────────────────────────────────────────────────────────────────────────────┘
 ```
 ### Products containing 'chocolat' or 'chocolate' in their French/English categories
 ```sql
@@ -501,21 +318,21 @@ OR array_to_string(categories_tags, ',') LIKE 'en:%chocolate%'
 LIMIT 10;
 ```
 ```text
-┌───────────────┬──────────────────────┬────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
-│     code      │         name         │                                                                      categories_tags                                                                       │
-│    varchar    │       varchar        │                                                                         varchar[]                                                                          │
-├───────────────┼──────────────────────┼────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
-│ 0085239814383 │ Dark chocolate alm…  │ [en:snacks, en:sweet-snacks, en:cocoa-and-its-products, en:chocolates, en:dark-chocolates, en:chocolates-with-almonds, en:dark-chocolates-with-almonds]    │
-│ 0086158472005 │ M&M's                │ [en:snacks, en:sweet-snacks, en:cocoa-and-its-products, en:confectioneries, en:chocolate-candies, en:bonbons, en:chocolate-covered-nuts, en:chocolate-co…  │
-│ 0086232310032 │ Gerrit J. Verburg …  │ [en:snacks, en:sweet-snacks, en:cocoa-and-its-products, en:confectioneries, en:chocolate-candies]                                                          │
-│ 0086232310254 │ Milk Chocolate       │ [en:snacks, en:sweet-snacks, en:cocoa-and-its-products, en:confectioneries, en:chocolate-candies, en:chocolates, en:milk-chocolates]                       │
-│ 0088468573069 │ Minz Taler Pepperm…  │ [en:snacks, en:sweet-snacks, en:cocoa-and-its-products, en:confectioneries, en:chocolate-candies]                                                          │
-│ 0088671105071 │ Almond Bark Milk C…  │ [en:snacks, en:sweet-snacks, en:cocoa-and-its-products, en:confectioneries, en:chocolate-candies]                                                          │
-│ 0088671110020 │ Gardners Candies, …  │ [en:snacks, en:sweet-snacks, en:cocoa-and-its-products, en:confectioneries, en:chocolate-candies]                                                          │
-│ 0088671110051 │ Milk Chocolate Cov…  │ [en:milk-chocolate-covered-pretzel]                                                                                                                        │
-│ 0089449700016 │ Milk chocolate       │ [en:snacks, en:sweet-snacks, en:cocoa-and-its-products, en:confectioneries, en:chocolate-candies]                                                          │
-│ 0089449925945 │ Milk Chocolate       │ [en:snacks, en:sweet-snacks, en:cocoa-and-its-products, en:confectioneries, en:chocolate-candies, en:chocolates, en:milk-chocolates]                       │
-├───────────────┴──────────────────────┴────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+┌───────────────┬──────────────────────────┬────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+│     code      │           name           │                                                                    categories_tags                                                                     │
+│    varchar    │         varchar          │                                                                       varchar[]                                                                        │
+├───────────────┼──────────────────────────┼────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ 0037466082714 │ Swiss Classic Milk Cho…  │ [en:snacks, en:sweet-snacks, en:cocoa-and-its-products, en:chocolates, en:milk-chocolates]                                                             │
+│ 0058496434175 │ Mars Bites               │ [en:snacks, en:sweet-snacks, en:cocoa-and-its-products, en:confectioneries, en:chocolate-candies]                                                      │
+│ 0060383042400 │ 40% Dark Chocolate       │ [en:snacks, en:sweet-snacks, en:cocoa-and-its-products, en:chocolates, en:dark-chocolates]                                                             │
+│ 0060383197520 │ Cocoa Powder             │ [en:cocoa-and-its-products, en:cocoa-and-chocolate-powders, en:cocoa-powders]                                                                          │
+│ 0062020000842 │ Nutella                  │ [en:breakfasts, en:spreads, en:sweet-spreads, fr:pates-a-tartiner, en:hazelnut-spreads, en:chocolate-spreads, en:cocoa-and-hazelnuts-spreads]          │
+│ 0063675007392 │ Tartinade Chocolat Noir  │ [en:breakfasts, en:spreads, en:sweet-spreads, fr:pates-a-tartiner, en:hazelnut-spreads, en:chocolate-spreads, en:cocoa-and-hazelnuts-spreads]          │
+│ 0066721020581 │ Snak Paks Mini Oreo      │ [en:snacks, en:sweet-snacks, en:biscuits-and-cakes, en:biscuits, en:filled-biscuits, en:chocolate-sandwich-cookies]                                    │
+│ 0067300860758 │ Maple Crunch milk choc…  │ [en:snacks, en:sweet-snacks, en:cocoa-and-its-products, en:confectioneries, en:bars, en:chocolate-candies, en:candies, en:bars-covered-with-chocolate] │
+│ 0068000702270 │ Cherry Blossom           │ [en:snacks, en:sweet-snacks, en:cocoa-and-its-products, en:confectioneries, en:chocolate-candies, en:bonbons]                                          │
+│ 0070221011116 │ Swiss milk chocolate bar │ [en:snacks, en:sweet-snacks, en:cocoa-and-its-products, en:confectioneries, en:chocolate-candies, en:chocolates, en:candies, en:milk-chocolates]       │
+├───────────────┴──────────────────────────┴────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
 │ 10 rows                                                                                                                                                                                 3 columns │
 └───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -530,27 +347,27 @@ ORDER BY nb DESC
 LIMIT 10
 ```
 ```text
-┌───────┬───────────────┬──────────────────────────────────────────────┐
-│  nb   │     code      │                allergens_tags                │
-│ int64 │    varchar    │                  varchar[]                   │
-├───────┼───────────────┼──────────────────────────────────────────────┤
-│   343 │ 00818964      │ [en:gluten, fr:avoine]                       │
-│   131 │ 3445731110364 │ [fr:non]                                     │
-│   116 │ 00842990      │ [en:gluten, en:milk, en:soybeans, fr:avoine] │
-│   104 │ 00964395      │ [en:gluten, en:milk, fr:avoine]              │
-│   104 │ 2000000024279 │ [en:gluten, en:nuts, fr:avoine]              │
-│    55 │ 2020000338741 │ [en:gluten, en:soybeans, fr:avoine]          │
-│    55 │ 3700389705158 │ [fr:non-renseigne]                           │
-│    50 │ 0203251017050 │ [en:gluten, en:sesame-seeds, fr:avoine]      │
-│    49 │ 0065633433281 │ [en:gluten, fr:avoine, fr:avoine]            │
-│    40 │ 2225653026636 │ [en:milk, fr:ferments]                       │
-├───────┴───────────────┴──────────────────────────────────────────────┤
-│ 10 rows                                                    3 columns │
-└──────────────────────────────────────────────────────────────────────┘
+┌───────┬───────────────┬───────────────────────────────────────────────────────────────────────────────────────────────────┐
+│  nb   │     code      │                                          allergens_tags                                           │
+│ int64 │    varchar    │                                             varchar[]                                             │
+├───────┼───────────────┼───────────────────────────────────────────────────────────────────────────────────────────────────┤
+│     3 │ 0064100111257 │ [en:gluten, fr:avoine]                                                                            │
+│     2 │ 0061077765667 │ [en:gluten, en:soybeans, fr:avoine]                                                               │
+│     1 │ 0774756204905 │ [en:celery, en:gluten, en:milk, en:peanuts, en:sesame-seeds, en:soybeans, fr:citron]              │
+│     1 │ 0062639333164 │ [fr:avertissement-peut-contenir-des-noyaux]                                                       │
+│     1 │ 0055577105450 │ [en:gluten, en:milk, en:nuts, en:soybeans, fr:avoine]                                             │
+│     1 │ 0065633074712 │ [en:peanuts, en:soybeans, fr:avoine]                                                              │
+│     1 │ 0071921689568 │ [en:gluten, en:milk, en:soybeans, en:milk, fr:substance-laitiere, en:milk, fr:substance-laitiere] │
+│     1 │ 0626114120023 │ [en:gluten, en:orange, fr:avoine]                                                                 │
+│     1 │ 0067311020332 │ [fr:ki]                                                                                           │
+│     1 │ 0855005872474 │ [en:soybeans, fr:coconut]                                                                         │
+├───────┴───────────────┴───────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ 10 rows                                                                                                         3 columns │
+└───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
 ```
-### Products avec allergies aux arachides
+### Products with peanut allergies
 ```sql
--- Products avec allergies aux arachides
+-- Products with peanut allergies
 SELECT
     code,
     unnest(list_filter(product_name, x -> x.lang == 'main'))['text'] AS name,
@@ -561,23 +378,23 @@ OR list_contains(allergens_tags, 'fr:arachides')
 LIMIT 10;
 ```
 ```text
-┌───────────────┬─────────────────────────────────────────────────────────────────┬────────────────────────────────────────────────────────┐
-│     code      │                              name                               │                     allergens_tags                     │
-│    varchar    │                             varchar                             │                       varchar[]                        │
-├───────────────┼─────────────────────────────────────────────────────────────────┼────────────────────────────────────────────────────────┤
-│ 0000281756504 │ Piasten, Chocolate Assortment                                   │ [en:eggs, en:gluten, en:milk, en:nuts, en:peanuts]     │
-│ 0000433821500 │ The Best Peanut Butter Cookies                                  │ [en:eggs, en:peanuts]                                  │
-│ 0000790430018 │ Welch's, pb&j trail mix, grape                                  │ [en:milk, en:peanuts, en:soybeans]                     │
-│ 0000790430063 │ Welch's, pb & j trail mix, strawberry                           │ [en:milk, en:peanuts, en:soybeans]                     │
-│ 0000790430070 │ Welch's, pb&j trail mix, grape                                  │ [en:milk, en:peanuts, en:soybeans]                     │
-│ 0002859037565 │ Maitre truffout, assorted pralines chocolates                   │ [en:gluten, en:milk, en:nuts, en:peanuts, en:soybeans] │
-│ 0002859063557 │ Maitre truffout, assorted pralines                              │ [en:gluten, en:milk, en:nuts, en:peanuts, en:soybeans] │
-│ 0008346048953 │ Peanut Butter                                                   │ [en:milk, en:peanuts, en:soybeans]                     │
-│ 0008346640027 │ Dark chocolate sea salt meal replacement bars                   │ [en:gluten, en:milk, en:nuts, en:peanuts, en:soybeans] │
-│ 0008346800025 │ Peanut butter chocolate flavored advanced nutrition snack bites │ [en:milk, en:peanuts, en:soybeans]                     │
-├───────────────┴─────────────────────────────────────────────────────────────────┴────────────────────────────────────────────────────────┤
-│ 10 rows                                                                                                                        3 columns │
-└──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+┌───────────────┬─────────────────────────────────────────────────────────┬────────────────────────────────────────────────────────────────────────┐
+│     code      │                          name                           │                             allergens_tags                             │
+│    varchar    │                         varchar                         │                               varchar[]                                │
+├───────────────┼─────────────────────────────────────────────────────────┼────────────────────────────────────────────────────────────────────────┤
+│ 0018627100997 │ Dark chocolate Almond and Sea salt                      │ [en:gluten, en:nuts, en:peanuts, en:soybeans]                          │
+│ 0018627104858 │ Cherry Dark Chocolate                                   │ [en:gluten, en:milk, en:nuts, en:peanuts, en:soybeans]                 │
+│ 0031146033324 │ Zha Wang Chajang noodle dish with oyster flavored sauce │ [en:crustaceans, en:fish, en:gluten, en:milk, en:peanuts, en:soybeans] │
+│ 0055000681834 │ Strawberry Ice Cream                                    │ [en:eggs, en:milk, en:nuts, en:peanuts]                                │
+│ 0055577110218 │ Barres tendres au quinoa chocolat et noix               │ [en:gluten, en:milk, en:nuts, en:peanuts, en:soybeans, fr:avoine]      │
+│ 0055653170259 │ Ultimate Maple Creme Filled Cookies                     │ [en:gluten, en:milk, en:nuts, en:peanuts, en:soybeans]                 │
+│ 0055653670506 │ Vivant Italian Bruschetta                               │ [en:celery, en:gluten, en:milk, en:peanuts, en:soybeans]               │
+│ 0055742348279 │ Smooth Peanut Butter                                    │ [en:peanuts, en:soybeans]                                              │
+│ 0055742539462 │ Naturally Simple Smooth Peanut Butter                   │ [en:peanuts]                                                           │
+│ 0056600620742 │ Reese's  minis                                          │ [en:milk, en:peanuts, en:soybeans]                                     │
+├───────────────┴─────────────────────────────────────────────────────────┴────────────────────────────────────────────────────────────────────────┤
+│ 10 rows                                                                                                                                3 columns │
+└──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 ### Number of products per NOVA group
 ```sql
@@ -589,15 +406,15 @@ GROUP BY nova_group
 ORDER BY nova_group;
 ```
 ```text
-┌────────────┬────────┐
-│ nova_group │ count  │
-│   int32    │ int64  │
-├────────────┼────────┤
-│          1 │ 108854 │
-│          2 │  60427 │
-│          3 │ 180500 │
-│          4 │ 592498 │
-└────────────┴────────┘
+┌────────────┬───────┐
+│ nova_group │ count │
+│   int32    │ int64 │
+├────────────┼───────┤
+│          1 │  1278 │
+│          2 │  1349 │
+│          3 │  1783 │
+│          4 │ 10317 │
+└────────────┴───────┘
 ```
 ### Average Nutri-Score by brand with more than 100 products
 ```sql
@@ -613,36 +430,36 @@ HAVING count(*) > 100
 ORDER BY avg_score;
 ```
 ```text
-┌────────────────────────────┬─────────────────────┬──────────┐
-│           brand            │      avg_score      │ products │
-│          varchar           │       double        │  int64   │
-├────────────────────────────┼─────────────────────┼──────────┤
-│ muller-s-muhle             │  -8.248175182481752 │      179 │
-│ alliance-bio               │              -7.425 │      116 │
-│ sabarot                    │ -6.6369426751592355 │      288 │
-│ vivien-paille              │  -6.504424778761062 │      163 │
-│ driscoll-s                 │  -5.516129032258065 │      147 │
-│ terra-e-sole               │                -5.5 │      117 │
-│ grain-de-frais             │ -4.9186046511627906 │      119 │
-│ les-fermiers-de-loue       │  -4.793103448275862 │      115 │
-│ once-again                 │  -4.041666666666667 │      172 │
-│ edora                      │                -4.0 │      105 │
-│   ·                        │                  ·  │       ·  │
-│   ·                        │                  ·  │       ·  │
-│   ·                        │                  ·  │       ·  │
-│ tiesta-tea                 │                NULL │      125 │
-│ rsw-home                   │                NULL │      154 │
-│ セブンイレブン             │                NULL │      115 │
-│ botanical-interests        │                NULL │      693 │
-│ now-essential-oils         │                NULL │      172 │
-│ convar-feldkuche           │                NULL │      102 │
-│ la-cave-d-augustin-florent │                NULL │      101 │
-│ apta                       │                NULL │      155 │
-│ franklin-baker             │                NULL │      493 │
-│ messegue                   │                NULL │      119 │
-├────────────────────────────┴─────────────────────┴──────────┤
-│ 3120 rows (20 shown)                              3 columns │
-└─────────────────────────────────────────────────────────────┘
+┌────────────────┬────────────────────┬──────────┐
+│     brand      │     avg_score      │ products │
+│    varchar     │       double       │  int64   │
+├────────────────┼────────────────────┼──────────┤
+│ bob-s-red-mill │              0.375 │      102 │
+│ danone         │               1.66 │      113 │
+│ liberte        │ 2.9523809523809526 │      130 │
+│ naturalia      │ 3.1666666666666665 │      118 │
+│ prana          │  4.894736842105263 │      102 │
+│ del-monte      │  5.071428571428571 │      104 │
+│ starbucks      │  5.785714285714286 │      107 │
+│ cedar          │            6.09375 │      156 │
+│ ilios          │  6.142857142857143 │      111 │
+│ metro          │  6.885714285714286 │      151 │
+│   ·            │          ·         │       ·  │
+│   ·            │          ·         │       ·  │
+│   ·            │          ·         │       ·  │
+│ christie       │  15.51923076923077 │      157 │
+│ club-house     │  15.88888888888889 │      173 │
+│ knorr          │            16.8125 │      140 │
+│ kraft          │ 17.552083333333332 │      248 │
+│ dare           │ 18.945205479452056 │      209 │
+│ nestle         │  21.62406015037594 │      375 │
+│ leclerc        │               22.6 │      183 │
+│ lindt          │ 25.589473684210525 │      179 │
+│ hershey-s      │ 28.457142857142856 │      129 │
+│ cadbury        │ 30.678571428571427 │      104 │
+├────────────────┴────────────────────┴──────────┤
+│ 41 rows (20 shown)                   3 columns │
+└────────────────────────────────────────────────┘
 ```
 ### Products without palm oil and good Nutri-Score
 ```sql
@@ -656,23 +473,23 @@ AND nutriscore_grade IN ('a','b')
 LIMIT 10;
 ```
 ```text
-┌───────────────┬────────────────────────────────────────────┬──────────────────┐
-│     code      │                    name                    │ nutriscore_grade │
-│    varchar    │                  varchar                   │     varchar      │
-├───────────────┼────────────────────────────────────────────┼──────────────────┤
-│ 0000651003214 │ Romaine Hearts                             │ a                │
-│ 0000651041001 │ Romaine lettuce                            │ a                │
-│ 0000651041025 │ Green Leaf Lettuce                         │ a                │
-│ 0000651213019 │ Fresh Spinach                              │ a                │
-│ 0000651213026 │ Cooking Spinach                            │ a                │
-│ 0000651319018 │ Quick cook sprout halves, brussels sprouts │ a                │
-│ 0000651511016 │ Celery                                     │ a                │
-│ 0000850600108 │ Raw Shrimp                                 │ a                │
-│ 0000946909078 │ Augason Farms, Vital Wheat Gluten          │ a                │
-│ 0002000000714 │ Yaourt nature brebis                       │ a                │
-├───────────────┴────────────────────────────────────────────┴──────────────────┤
-│ 10 rows                                                             3 columns │
-└───────────────────────────────────────────────────────────────────────────────┘
+┌───────────────┬────────────────────────────────────┬──────────────────┐
+│     code      │                name                │ nutriscore_grade │
+│    varchar    │              varchar               │     varchar      │
+├───────────────┼────────────────────────────────────┼──────────────────┤
+│ 0030000012000 │ Quick 1-minute Oats imp            │ a                │
+│ 0033383653259 │ Celery                             │ a                │
+│ 0040822027045 │ Classic Hummus                     │ a                │
+│ 0041390050039 │ Panko                              │ a                │
+│ 0041508963985 │ Carbonated natural mineral water   │ a                │
+│ 0051651092869 │ Beurre d'amandes                   │ a                │
+│ 0052603054379 │ Low Sodium Organic Vegetable Broth │ a                │
+│ 0055577101018 │ Large Flake Oats (Canada)          │ a                │
+│ 0055577102053 │ 1-Minute Oats (Canada)             │ a                │
+│ 0055577102459 │ Oat Bran                           │ a                │
+├───────────────┴────────────────────────────────────┴──────────────────┤
+│ 10 rows                                                     3 columns │
+└───────────────────────────────────────────────────────────────────────┘
 ```
 ### Products by ecoscore grade
 ```sql
@@ -687,20 +504,20 @@ GROUP BY ecoscore_grade
 ORDER BY avg_score DESC;
 ```
 ```text
-┌────────────────┬─────────┬────────────────────┐
-│ ecoscore_grade │  count  │     avg_score      │
-│    varchar     │  int64  │       double       │
-├────────────────┼─────────┼────────────────────┤
-│ a-plus         │   41590 │  99.06446261120462 │
-│ a              │   94699 │  79.42858953104046 │
-│ b              │  161568 │  67.84212839176074 │
-│ c              │  119697 │  51.63913047110621 │
-│ d              │  152004 │  37.51514433830689 │
-│ e              │  117800 │ 21.908870967741937 │
-│ f              │   57740 │  2.854970557672324 │
-│ unknown        │ 2249705 │               NULL │
-│ not-applicable │   33622 │               NULL │
-└────────────────┴─────────┴────────────────────┘
+┌────────────────┬───────┬────────────────────┐
+│ ecoscore_grade │ count │     avg_score      │
+│    varchar     │ int64 │       double       │
+├────────────────┼───────┼────────────────────┤
+│ a-plus         │   159 │  95.12578616352201 │
+│ a              │  1664 │   78.6454326923077 │
+│ b              │  3088 │  68.37402849740933 │
+│ c              │  1791 │  52.03740926856505 │
+│ d              │  2403 │ 37.943820224719104 │
+│ e              │  1829 │  21.74302897758338 │
+│ f              │   773 │ 3.4139715394566625 │
+│ unknown        │ 79208 │               NULL │
+│ not-applicable │   825 │               NULL │
+└────────────────┴───────┴────────────────────┘
 ```
 ### Products with palm oil
 ```sql
@@ -713,36 +530,36 @@ FROM products
 WHERE ingredients_from_palm_oil_n > 0;
 ```
 ```text
-┌───────────────┬───────────────────────────────────────────────────────┬─────────────────────────────┐
-│     code      │                         name                          │ ingredients_from_palm_oil_n │
-│    varchar    │                        varchar                        │            int32            │
-├───────────────┼───────────────────────────────────────────────────────┼─────────────────────────────┤
-│ 0003004032145 │ Chinois Nature Décongelé                              │                           1 │
-│ 00023092      │ 4 Indulgent & Chewy Maple Syrup & Pecan Giant Cookies │                           1 │
-│ 00027083      │ Made Without Wheat Blueberry Muffins                  │                           1 │
-│ 00027137      │ Paupiette de volaille sauce forestière brocolis purée │                           1 │
-│ 00035460      │ 6 Breaded Jumbo Tiger Prawns                          │                           1 │
-│ 00052283      │ Arachides enrobées chocolat au lait                   │                           1 │
-│ 00087728      │ Lemon meringue fudge                                  │                           1 │
-│ 00088749      │ Dolly Mixtures                                        │                           1 │
-│ 00088992      │ Blackcurrant sponge roll                              │                           1 │
-│ 00096225      │ Made Without Wheat New York Cheesecake                │                           1 │
-│    ·          │          ·                                            │                           · │
-│    ·          │          ·                                            │                           · │
-│    ·          │          ·                                            │                           · │
-│ 8003340095134 │ Lait assorti de Noël                                  │                           1 │
-│ 8003340095172 │ Lindor Noix De Coco                                   │                           1 │
-│ 8003340095233 │ Bonbons chocolat lait Lindor                          │                           1 │
-│ 8003340095288 │ Cornet lindor blanc fraise                            │                           1 │
-│ 8003340095301 │ Lindor Blanc Fraise                                   │                           1 │
-│ 8003340095318 │ Lindor                                                │                           1 │
-│ 8003340095325 │ Lindor Assortiment fondant                            │                           1 │
-│ 8003340095400 │ Pushbag Œufs Moyens Lindor Lait                       │                           1 │
-│ 8003340095417 │ Œufs Lindor Assorti                                   │                           1 │
-│ 8003340095424 │ LINDOR NOIR                                           │                           1 │
-├───────────────┴───────────────────────────────────────────────────────┴─────────────────────────────┤
-│ ? rows (>9999 rows, 20 shown)                                                             3 columns │
-└─────────────────────────────────────────────────────────────────────────────────────────────────────┘
+┌───────────────┬─────────────────────────────────────────────┬─────────────────────────────┐
+│     code      │                    name                     │ ingredients_from_palm_oil_n │
+│    varchar    │                   varchar                   │            int32            │
+├───────────────┼─────────────────────────────────────────────┼─────────────────────────────┤
+│ 0012009012168 │ Chef d'oeuf™avec fromage sur muffin anglais │                           1 │
+│ 00109031      │ Crispy Crunchy Oatmeal Raisin Cookies       │                           1 │
+│ 0051651293716 │ Tartinade aux amandes et au Chocolat noir   │                           1 │
+│ 0055577109632 │ Chewy Raspberry Fruit Crumble Granola Bars  │                           1 │
+│ 0055577110218 │ Barres tendres au quinoa chocolat et noix   │                           1 │
+│ 0055598977609 │ Mini Chocolatine                            │                           1 │
+│ 0055742528411 │ Biscuit avoine et raisins secs              │                           1 │
+│ 0056600620742 │ Reese's  minis                              │                           1 │
+│ 0056600816190 │ Twists torsades                             │                           1 │
+│ 0056600902053 │ Tartinades Chocolat et Beurre d'Arachides   │                           1 │
+│       ·       │            ·                                │                           · │
+│       ·       │            ·                                │                           · │
+│       ·       │            ·                                │                           · │
+│ 0008563995085 │ Belgium Coconut Cookies                     │                           1 │
+│ 69905971      │ caramel                                     │                           1 │
+│ 0006120001216 │ caramilk                                    │                           1 │
+│ 0006840036409 │ becel margarine                             │                           1 │
+│ 09000439      │ Biscuits miniatures pépites de chocolat     │                           1 │
+│ 09000530      │ Margarine                                   │                           1 │
+│ 09000597      │ Tartinade aux noisettes                     │                           1 │
+│ 09001102      │ Biscuits sandwich canne de bonbon           │                           1 │
+│ 09001184      │ Assortiment de biscuits                     │                           1 │
+│ 00290616      │ Salade Cesar                                │                           1 │
+├───────────────┴─────────────────────────────────────────────┴─────────────────────────────┤
+│ 482 rows (20 shown)                                                             3 columns │
+└───────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 ### Products with most ingredients
 ```sql
@@ -757,23 +574,23 @@ ORDER BY ingredients_n DESC
 LIMIT 10;
 ```
 ```text
-┌──────────────────────┬──────────────────────────────────┬───────────────┐
-│         code         │               name               │ ingredients_n │
-│       varchar        │             varchar              │     int32     │
-├──────────────────────┼──────────────────────────────────┼───────────────┤
-│ 9340784007491        │ Lo bros kombucha                 │           751 │
-│ 80247937043707854551 │ qauwi                            │           684 │
-│ 5400265040899        │ Chocolats caramel                │           414 │
-│ 0732346467239        │ hot sauce                        │           410 │
-│ 5601066602013        │ + Linha                          │           386 │
-│ 5900915026759        │ Chilli flavoured dark chocholate │           373 │
-│ 0072470003225        │ Krispy Kreme Donuts              │           373 │
-│ 9002859091872        │ Marshmallow Konfekt              │           367 │
-│ 8720812770107        │ Sun Kissed Tomato Flavour Ramen  │           360 │
-│ 6935133800682        │ Mondkuchen Mixer Obst und Tee    │           358 │
-├──────────────────────┴──────────────────────────────────┴───────────────┤
-│ 10 rows                                                       3 columns │
-└─────────────────────────────────────────────────────────────────────────┘
+┌───────────────┬──────────────────────────────────┬───────────────┐
+│     code      │               name               │ ingredients_n │
+│    varchar    │             varchar              │     int32     │
+├───────────────┼──────────────────────────────────┼───────────────┤
+│ 06481016      │ Kellogg’s nutri grain            │           289 │
+│ 8904004440263 │ Punnjabi Samosa                  │           188 │
+│ 0658010120449 │ All in one nutritional shake     │           185 │
+│ 0066701010328 │ Millefeuille                     │           165 │
+│ 0628456570054 │ Pizza internationale Mike's      │           163 │
+│ 0670452777074 │ Red Dragon Roll                  │           156 │
+│ 0055577331071 │ Chewy fruity fun                 │           151 │
+│ 0065000570106 │ Chocolat chaud                   │           147 │
+│ 0060383647384 │ Cheese H'ors Douevres Collection │           146 │
+│ 8801073142961 │ Kimchi Budak                     │           143 │
+├───────────────┴──────────────────────────────────┴───────────────┤
+│ 10 rows                                                3 columns │
+└──────────────────────────────────────────────────────────────────┘
 ```
 ### Most common vitamins
 ```sql
@@ -787,36 +604,36 @@ GROUP BY vitamin
 ORDER BY count DESC;
 ```
 ```text
-┌──────────────────────────────────────┬───────┐
-│               vitamin                │ count │
-│               varchar                │ int64 │
-├──────────────────────────────────────┼───────┤
-│ en:niacin                            │ 69821 │
-│ en:folic-acid                        │ 64349 │
-│ en:riboflavin                        │ 63139 │
-│ en:thiamin-mononitrate               │ 52584 │
-│ en:thiamin                           │ 32385 │
-│ en:l-ascorbic-acid                   │ 28630 │
-│ en:vitamin-c                         │ 21479 │
-│ en:retinyl-palmitate                 │ 16669 │
-│ en:vitamin-b6                        │ 16387 │
-│ en:vitamin-b12                       │ 16227 │
-│       ·                              │     · │
-│       ·                              │     · │
-│       ·                              │     · │
-│ en:beta-carotene-dye                 │    29 │
-│ en:d-alpha-tocopheryl-acid-succinate │    12 │
-│ en:dexpanthenol                      │    11 │
-│ en:potassium-l-ascorbate             │     8 │
-│ en:hydroxocobalamin                  │     6 │
-│ en:l-ascorbyl-6-palmitate            │     5 │
-│ en:pyridoxine-5-phosphate            │     3 │
-│ en:vitamin-k3                        │     2 │
-│ da:vitamin-a-og-d                    │     2 │
-│ en:pyridoxine-dipalmitate            │     1 │
-├──────────────────────────────────────┴───────┤
-│ 50 rows (20 shown)                 2 columns │
-└──────────────────────────────────────────────┘
+┌─────────────────────────────┬───────┐
+│           vitamin           │ count │
+│           varchar           │ int64 │
+├─────────────────────────────┼───────┤
+│ en:l-ascorbic-acid          │   852 │
+│ en:riboflavin               │   486 │
+│ en:niacin                   │   460 │
+│ en:pyridoxine-hydrochloride │   449 │
+│ en:folic-acid               │   445 │
+│ en:vitamin-c                │   370 │
+│ en:retinyl-palmitate        │   360 │
+│ en:cholecalciferol          │   338 │
+│ en:vitamin-b6               │   309 │
+│ en:vitamin-b12              │   307 │
+│       ·                     │     · │
+│       ·                     │     · │
+│       ·                     │     · │
+│ en:phylloquinone            │    10 │
+│ en:nicotinamide             │    10 │
+│ en:d-biotin                 │     7 │
+│ en:vitamin-k                │     6 │
+│ en:calcium-l-ascorbate      │     5 │
+│ en:d-alpha-tocopherol       │     4 │
+│ en:folacin                  │     2 │
+│ en:pyridoxine-dipalmitate   │     1 │
+│ en:vitamin-b8               │     1 │
+│ en:nicotinic-acid           │     1 │
+├─────────────────────────────┴───────┤
+│ 37 rows (20 shown)        2 columns │
+└─────────────────────────────────────┘
 ```
 ### Products by serving size
 ```sql
@@ -833,16 +650,16 @@ LIMIT 10;
 │   serving_size    │ count │
 │      varchar      │ int64 │
 ├───────────────────┼───────┤
-│ 100.0g            │ 49266 │
-│ 100g              │ 24521 │
-│ 100 g             │ 20767 │
-│ 1 ONZ (28 g)      │ 19482 │
-│ 30.0g             │ 11742 │
-│ 30 g              │ 10802 │
-│ 1 portion (100 g) │ 10542 │
-│ 8 OZA (240 ml)    │  8281 │
-│ 50.0g             │  7533 │
-│ 30g               │  6043 │
+│ 30 g              │   393 │
+│ 1 portion (100 g) │   380 │
+│ 40 g              │   363 │
+│ 50 g              │   275 │
+│ 30g               │   200 │
+│ 250 mL            │   184 │
+│ 85 g              │   166 │
+│ 188 mL            │   163 │
+│ 355 mL            │   160 │
+│ 100 g             │   157 │
 ├───────────────────┴───────┤
 │ 10 rows         2 columns │
 └───────────────────────────┘
@@ -860,23 +677,23 @@ ORDER BY count DESC
 LIMIT 10;
 ```
 ```text
-┌──────────────────────────────┬────────┐
-│            label             │ count  │
-│           varchar            │ int64  │
-├──────────────────────────────┼────────┤
-│ en:organic                   │ 254493 │
-│ en:no-gluten                 │ 191498 │
-│ en:eu-organic                │ 169186 │
-│ en:green-dot                 │ 136851 │
-│ en:vegetarian                │ 127835 │
-│ en:vegan                     │ 112530 │
-│ en:nutriscore                │  89326 │
-│ en:no-gmos                   │  78665 │
-│ fr:ab-agriculture-biologique │  72633 │
-│ en:no-preservatives          │  70093 │
-├──────────────────────────────┴────────┤
-│ 10 rows                     2 columns │
-└───────────────────────────────────────┘
+┌──────────────────────────┬───────┐
+│          label           │ count │
+│         varchar          │ int64 │
+├──────────────────────────┼───────┤
+│ en:no-gluten             │  7568 │
+│ en:no-gmos               │  4717 │
+│ en:non-gmo-project       │  4366 │
+│ en:organic               │  4246 │
+│ en:vegetarian            │  3846 │
+│ en:vegan                 │  3646 │
+│ en:kosher                │  3605 │
+│ en:no-colorings          │  3176 │
+│ en:canada-organic        │  2653 │
+│ en:no-artificial-flavors │  2152 │
+├──────────────────────────┴───────┤
+│ 10 rows                2 columns │
+└──────────────────────────────────┘
 ```
 ### Organic products
 ```sql
@@ -888,23 +705,23 @@ WHERE list_contains(labels_tags, 'en:organic')
 LIMIT 10;
 ```
 ```text
-┌───────────────┬────────────────────────────────────────────────────────┐
-│     code      │                          name                          │
-│    varchar    │                        varchar                         │
-├───────────────┼────────────────────────────────────────────────────────┤
-│ 0000557910210 │ Flocon d'avoine - complète                             │
-│ 0000682009841 │ Pain de campagne bio nature                            │
-│ 0000764114944 │ Ryan's, Organic Juice, Apple                           │
-│ 0000901000017 │ All Natural Baked Not Fried Yellow Corn Tortilla Chips │
-│ 0000901005005 │ Guiltless Gourmet, Organic Unsweetened Coconut Water   │
-│ 0001390000007 │ Espirulina En Comprimidos Ecologica Salud Viva         │
-│ 0002000000448 │ Jabra Jabra JX-10 Xtra Earhook Bulk                    │
-│ 0002000000592 │ Ravioli                                                │
-│ 0002000000608 │ Le bio                                                 │
-│ 0002000000714 │ Yaourt nature brebis                                   │
-├───────────────┴────────────────────────────────────────────────────────┤
-│ 10 rows                                                      2 columns │
-└────────────────────────────────────────────────────────────────────────┘
+┌───────────────┬─────────────────────────────────────────────────────────────┐
+│     code      │                            name                             │
+│    varchar    │                           varchar                           │
+├───────────────┼─────────────────────────────────────────────────────────────┤
+│ 0008577002786 │ Organic Vermont Maple Syrup Grade A Dark Color Robust Taste │
+│ 0012511472313 │ Organic Blue Agave                                          │
+│ 0018627597513 │ Whole Wheat Cinnamon Harvest                                │
+│ 0025293600713 │ Soy Original Organic Fortified Beverage                     │
+│ 0025293600737 │ Soy Vanilla Organic Beverage                                │
+│ 0030963304013 │ Mlo sport nutrition                                         │
+│ 0033776011840 │ Earth Balance Organic Whipped                               │
+│ 0036192127157 │ Organic Pure Lemon Juice                                    │
+│ 0041143029336 │ Raisins secs biologiques                                    │
+│ 0049568289465 │ Organic Vegenaise                                           │
+├───────────────┴─────────────────────────────────────────────────────────────┤
+│ 10 rows                                                           2 columns │
+└─────────────────────────────────────────────────────────────────────────────┘
 ```
 ### Products by store
 ```sql
@@ -919,16 +736,16 @@ ORDER BY count DESC
 LIMIT 5;
 ```
 ```text
-┌──────────────┬───────┐
-│  store_name  │ count │
-│   varchar    │ int64 │
-├──────────────┼───────┤
-│ carrefour    │ 29799 │
-│ magasins-u   │ 23588 │
-│ lidl         │ 21200 │
-│ carrefour-fr │ 20158 │
-│ auchan       │ 19192 │
-└──────────────┴───────┘
+┌──────────────────────────┬───────┐
+│        store_name        │ count │
+│         varchar          │ int64 │
+├──────────────────────────┼───────┤
+│ walmart                  │  1646 │
+│ safeway                  │   946 │
+│ costco                   │   798 │
+│ real-canadian-superstore │   685 │
+│ dollarama                │   404 │
+└──────────────────────────┴───────┘
 ```
 ### Complete vs incomplete products
 ```sql
@@ -941,13 +758,13 @@ FROM products
 GROUP BY complete;
 ```
 ```text
-┌──────────┬─────────┬─────────────────────┐
-│ complete │  count  │  avg_completeness   │
-│  int32   │  int64  │       double        │
-├──────────┼─────────┼─────────────────────┤
-│        0 │ 3586082 │ 0.42028756940551326 │
-│        1 │   15573 │  1.0050086700479197 │
-└──────────┴─────────┴─────────────────────┘
+┌──────────┬───────┬────────────────────┐
+│ complete │ count │  avg_completeness  │
+│  int32   │ int64 │       double       │
+├──────────┼───────┼────────────────────┤
+│        0 │ 94634 │ 0.3689723067026311 │
+│        1 │   168 │ 0.9315476027272996 │
+└──────────┴───────┴────────────────────┘
 ```
 ### Products by food group
 ```sql
@@ -961,36 +778,36 @@ GROUP BY food_group
 ORDER BY count DESC;
 ```
 ```text
-┌─────────────────────────────────────┬────────┐
-│             food_group              │ count  │
-│               varchar               │ int64  │
-├─────────────────────────────────────┼────────┤
-│ en:sugary-snacks                    │ 257611 │
-│ en:fish-meat-eggs                   │ 165182 │
-│ en:cereals-and-potatoes             │ 160465 │
-│ en:milk-and-dairy-products          │ 153141 │
-│ en:sweets                           │ 117731 │
-│ en:fats-and-sauces                  │ 114765 │
-│ en:beverages                        │ 113193 │
-│ en:biscuits-and-cakes               │ 100602 │
-│ en:fruits-and-vegetables            │  93543 │
-│ en:composite-foods                  │  85396 │
-│       ·                             │     ·  │
-│       ·                             │     ·  │
-│       ·                             │     ·  │
-│ en:sandwiches                       │   7627 │
-│ en:fruit-juices                     │   6980 │
-│ en:eggs                             │   6321 │
-│ en:waters-and-flavored-waters       │   5597 │
-│ en:potatoes                         │   5533 │
-│ en:soups                            │   4687 │
-│ en:teas-and-herbal-teas-and-coffees │   3571 │
-│ en:lean-fish                        │   1819 │
-│ en:offals                           │   1759 │
-│ en:fruit-nectars                    │   1675 │
-├─────────────────────────────────────┴────────┤
-│ 52 rows (20 shown)                 2 columns │
-└──────────────────────────────────────────────┘
+┌───────────────────────────────┬───────┐
+│          food_group           │ count │
+│            varchar            │ int64 │
+├───────────────────────────────┼───────┤
+│ en:sugary-snacks              │  3834 │
+│ en:cereals-and-potatoes       │  2968 │
+│ en:fats-and-sauces            │  2118 │
+│ en:beverages                  │  1958 │
+│ en:milk-and-dairy-products    │  1699 │
+│ en:sweets                     │  1695 │
+│ en:dressings-and-sauces       │  1550 │
+│ en:biscuits-and-cakes         │  1422 │
+│ en:fruits-and-vegetables      │  1314 │
+│ en:cereals                    │  1263 │
+│     ·                         │    ·  │
+│     ·                         │    ·  │
+│     ·                         │    ·  │
+│ en:pastries                   │   152 │
+│ en:dried-fruits               │   149 │
+│ en:eggs                       │    79 │
+│ en:fruit-juices               │    78 │
+│ en:potatoes                   │    75 │
+│ en:waters-and-flavored-waters │    66 │
+│ en:dairy-desserts             │    48 │
+│ en:soups                      │    46 │
+│ en:lean-fish                  │    10 │
+│ en:fruit-nectars              │     6 │
+├───────────────────────────────┴───────┤
+│ 51 rows (20 shown)          2 columns │
+└───────────────────────────────────────┘
 ```
 ### Recently added products
 ```sql
@@ -1004,23 +821,23 @@ ORDER BY created_t DESC
 LIMIT 10;
 ```
 ```text
-┌───────────────┬──────────────────────────────────┬──────────────────────────┐
-│     code      │               name               │        added_date        │
-│    varchar    │             varchar              │ timestamp with time zone │
-├───────────────┼──────────────────────────────────┼──────────────────────────┤
-│ 4532789991188 │ 玄米100%お米ニョッキ にょっこ    │ 2025-01-22 05:33:39-05   │
-│ 5607047008966 │ amêndoas chocolate negro e leite │ 2025-01-22 05:33:27-05   │
-│ 8906009071138 │ Unibic butter cookies            │ 2025-01-22 05:31:27-05   │
-│ 4909368396113 │ pl barni blag                    │ 2025-01-22 05:30:57-05   │
-│ 5941865007283 │ Castraveti Rondele In Otet       │ 2025-01-22 05:30:17-05   │
-│ 8008703162256 │ Zuppa con Pomodoro e Farro       │ 2025-01-22 05:29:43-05   │
-│ 5607047008935 │ Amêndoas chocolate negro         │ 2025-01-22 05:29:35-05   │
-│ 8906009079356 │ unibic choco nut cookies         │ 2025-01-22 05:26:26-05   │
-│ 0035046135843 │ Organic Super Greens             │ 2025-01-22 05:24:01-05   │
-│ 8908003115375 │ Rusk crispy and fresh            │ 2025-01-22 05:23:57-05   │
-├───────────────┴──────────────────────────────────┴──────────────────────────┤
-│ 10 rows                                                           3 columns │
-└─────────────────────────────────────────────────────────────────────────────┘
+┌───────────────┬─────────────────────────────────────────┬──────────────────────────┐
+│     code      │                  name                   │        added_date        │
+│    varchar    │                 varchar                 │ timestamp with time zone │
+├───────────────┼─────────────────────────────────────────┼──────────────────────────┤
+│ 0665553228235 │ Carbion blue bomb pop with electrolytes │ 2025-01-22 03:37:31-05   │
+│ 0067400826159 │ Camembert Cheese                        │ 2025-01-22 02:16:16-05   │
+│ 8852023668895 │ Peanuts BBQ Flavour                     │ 2025-01-22 00:05:14-05   │
+│ 0060410079256 │ Lays Cheesy Garlic Bread                │ 2025-01-21 23:21:08-05   │
+│ 0316114104504 │ Thin Tortilla                           │ 2025-01-21 22:37:47-05   │
+│ 0850006067527 │ Cauliflower Rice                        │ 2025-01-21 22:12:06-05   │
+│ 0062273552358 │ Frozen Green Peas                       │ 2025-01-21 21:14:49-05   │
+│ 0627987436075 │ Margherita pizza                        │ 2025-01-21 21:13:05-05   │
+│ 0057316192936 │ Pitted Green Olives                     │ 2025-01-21 19:50:48-05   │
+│ 0217208605498 │ Chicken Salad Sandwich - White          │ 2025-01-21 18:59:12-05   │
+├───────────────┴─────────────────────────────────────────┴──────────────────────────┤
+│ 10 rows                                                                  3 columns │
+└────────────────────────────────────────────────────────────────────────────────────┘
 ```
 ### Top 10 best contributors in Open Food Facts
 ```sql
@@ -1032,23 +849,23 @@ ORDER BY count DESC
 LIMIT 10;
 ```
 ```text
-┌────────────────────────────┬─────────┐
-│          creator           │  count  │
-│          varchar           │  int64  │
-├────────────────────────────┼─────────┤
-│ kiliweb                    │ 1900284 │
-│ foodvisor                  │  212103 │
-│ openfoodfacts-contributors │  210729 │
-│ usda-ndb-import            │  169562 │
-│ macrofactor                │  142320 │
-│ org-database-usda          │  134463 │
-│ prepperapp                 │  124195 │
-│ foodless                   │  101234 │
-│ smoothie-app               │   85346 │
-│ inf                        │   38483 │
-├────────────────────────────┴─────────┤
-│ 10 rows                    2 columns │
-└──────────────────────────────────────┘
+┌────────────────────────────┬───────┐
+│          creator           │ count │
+│          varchar           │ int64 │
+├────────────────────────────┼───────┤
+│ kiliweb                    │ 69800 │
+│ macrofactor                │  8312 │
+│ openfoodfacts-contributors │  6015 │
+│ inf                        │  2135 │
+│ anonymous-s7co2zv64u       │   998 │
+│ smoothie-app               │   925 │
+│ waistline-app              │   809 │
+│ foodless                   │   691 │
+│ date-limite-app            │   422 │
+│ halal-app-chakib           │   417 │
+├────────────────────────────┴───────┤
+│ 10 rows                  2 columns │
+└────────────────────────────────────┘
 ```
 ### Number of added products per year
 ```sql
@@ -1060,29 +877,27 @@ GROUP BY year
 ORDER BY year DESC;
 ```
 ```text
-┌─────────┬────────┐
-│  year   │ count  │
-│ varchar │ int64  │
-├─────────┼────────┤
-│ 2025    │  42783 │
-│ 2024    │ 559704 │
-│ 2023    │ 358791 │
-│ 2022    │ 596429 │
-│ 2021    │ 511976 │
-│ 2020    │ 465690 │
-│ 2019    │ 363708 │
-│ 2018    │ 317786 │
-│ 2017    │ 279691 │
-│ 2016    │  44567 │
-│ 2015    │  33906 │
-│ 2014    │  12851 │
-│ 2013    │   9554 │
-│ 2012    │   4215 │
-│ 1970    │      3 │
-│ NULL    │      1 │
-├─────────┴────────┤
-│     16 rows      │
-└──────────────────┘
+┌─────────┬───────┐
+│  year   │ count │
+│ varchar │ int64 │
+├─────────┼───────┤
+│ 2025    │  1312 │
+│ 2024    │  9429 │
+│ 2023    │  9955 │
+│ 2022    │ 31527 │
+│ 2021    │ 19724 │
+│ 2020    │ 15269 │
+│ 2019    │  2716 │
+│ 2018    │  3294 │
+│ 2017    │   561 │
+│ 2016    │   467 │
+│ 2015    │   335 │
+│ 2014    │    84 │
+│ 2013    │    94 │
+│ 2012    │    35 │
+├─────────┴───────┤
+│     14 rows     │
+└─────────────────┘
 ```
 ### Products containing 'café', 'cafe', or 'coffee' in their generic name
 ```sql
@@ -1098,31 +913,25 @@ WHERE lower(generic_name::VARCHAR) LIKE '%café%'
 │     product_name     │                                                                                generic_name                                                                                │
 │ struct(lang varcha…  │                                                                   struct(lang varchar, "text" varchar)[]                                                                   │
 ├──────────────────────┼────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
-│ [{'lang': main, 't…  │ [{'lang': main, 'text': chilled coffee drink caramel flavored.}, {'lang': en, 'text': chilled coffee drink caramel flavored.}]                                             │
-│ [{'lang': main, 't…  │ [{'lang': main, 'text': energy coffee beverage}, {'lang': en, 'text': energy coffee beverage}]                                                                             │
-│ [{'lang': main, 't…  │ [{'lang': main, 'text': Premium Coffee Beverage}, {'lang': en, 'text': Premium Coffee Beverage}]                                                                           │
-│ [{'lang': main, 't…  │ [{'lang': main, 'text': Sparkling green coffee energy beverage}, {'lang': en, 'text': Sparkling green coffee energy beverage}]                                             │
-│ [{'lang': main, 't…  │ [{'lang': main, 'text': chilled coffee drink.}, {'lang': en, 'text': chilled coffee drink.}]                                                                               │
-│ [{'lang': main, 't…  │ [{'lang': main, 'text': Bière britannique au café - Flat White Porter}, {'lang': fr, 'text': Bière britannique au café - Flat White Porter}]                               │
-│ [{'lang': main, 't…  │ [{'lang': main, 'text': Ground coffee}, {'lang': en, 'text': Ground coffee}]                                                                                               │
-│ [{'lang': main, 't…  │ [{'lang': main, 'text': ground coffee}, {'lang': en, 'text': ground coffee}]                                                                                               │
-│ [{'lang': main, 't…  │ [{'lang': main, 'text': Instant Coffee}, {'lang': fr, 'text': Instant Coffee}]                                                                                             │
-│ [{'lang': main, 't…  │ [{'lang': main, 'text': Coffee cookie crumble ice cream}, {'lang': en, 'text': Coffee cookie crumble ice cream}]                                                           │
-│          ·           │                                                        ·                                                                                                                   │
-│          ·           │                                                        ·                                                                                                                   │
-│          ·           │                                                        ·                                                                                                                   │
-│ [{'lang': main, 't…  │ [{'lang': main, 'text': 18 capsules de café torréfié et moulu pour système NESPRESSO.}, {'lang': fr, 'text': 18 capsules de café torréfié et moulu pour système NESPRESS…  │
-│ [{'lang': main, 't…  │ [{'lang': main, 'text': 10 capsules de café torréfié et moulu pour système NESPRESSO.}, {'lang': fr, 'text': 10 capsules de café torréfié et moulu pour système NESPRESS…  │
-│ [{'lang': main, 't…  │ [{'lang': main, 'text': Preparado à Base de Leite em Pó, com Açúcar e Café Solúvel}, {'lang': pt, 'text': Preparado à Base de Leite em Pó, com Açúcar e Café Solúvel}]     │
-│ [{'lang': main, 't…  │ [{'lang': main, 'text': 10 capsules de café décaféiné torréfié et moulu pour système Nespresso.}, {'lang': fr, 'text': 10 capsules de café décaféiné torréfié et moulu p…  │
-│ [{'lang': th, 'tex…  │ [{'lang': th, 'text': INSTANT COFFEE MIXED POWDER}]                                                                                                                        │
-│ [{'lang': main, 't…  │ [{'lang': main, 'text': 20 capsules de café torréfié et moulu pour système Nespresso}, {'lang': fr, 'text': 20 capsules de café torréfié et moulu pour système Nespresso}] │
-│ [{'lang': main, 't…  │ [{'lang': main, 'text': 20 capsules de café torréfié et moulu pour système Nespresso}, {'lang': fr, 'text': 20 capsules de café torréfié et moulu pour système Nespresso}] │
-│ [{'lang': fr, 'tex…  │ [{'lang': fr, 'text': Préparation instantanée pour boisson au café}]                                                                                                       │
-│ [{'lang': main, 't…  │ [{'lang': main, 'text': Capsules de café moulu.}, {'lang': it, 'text': Capsule di caffè macinato.}, {'lang': ro, 'text': Capsule cu cafea măcinată.}, {'lang': fr, 'text…  │
-│ [{'lang': main, 't…  │ [{'lang': main, 'text': helado de crema de leche con café.}, {'lang': es, 'text': helado de crema de leche con café.}]                                                     │
+│ [{'lang': main, 't…  │ [{'lang': main, 'text': Coffee beverage - McCafé Frappé Caramel}, {'lang': fr, 'text': Coffee beverage - McCafé Frappé Caramel}]                                           │
+│ [{'lang': main, 't…  │ [{'lang': en, 'text': Nescafe Taster's Choice Classic Instant Coffee}]                                                                                                     │
+│ [{'lang': main, 't…  │ [{'lang': main, 'text': Vanilla Fortified Coffee Drink}, {'lang': en, 'text': Vanilla Fortified Coffee Drink}]                                                             │
+│ [{'lang': main, 't…  │ [{'lang': main, 'text': Folgers Classic Roast Coffee}, {'lang': en, 'text': Folgers Classic Roast Coffee}]                                                                 │
+│ [{'lang': main, 't…  │ [{'lang': fr, 'text': Boissons énergétiques au café}]                                                                                                                      │
+│ [{'lang': main, 't…  │ [{'lang': main, 'text': mezcla para preparar café capiccino moca}, {'lang': es, 'text': mezcla para preparar café capiccino moca}]                                         │
+│ [{'lang': main, 't…  │ [{'lang': en, 'text': LAYERED DESSERT WITH SPONGE CAKE SOAKED IN COFFEE, MASCARPONE CREAM AND COCOA POWDER}]                                                               │
+│ [{'lang': main, 't…  │ [{'lang': main, 'text': Almond Beverage for Coffee}, {'lang': en, 'text': Almond Beverage for Coffee}]                                                                     │
+│ [{'lang': main, 't…  │ [{'lang': main, 'text': 1% M.F. Coffee Partly Skimmed Milk}, {'lang': en, 'text': 1% M.F. Coffee Partly Skimmed Milk}]                                                     │
+│ [{'lang': main, 't…  │ [{'lang': main, 'text': Coffee Syrup}, {'lang': fr, 'text': Coffee Syrup}]                                                                                                 │
+│ [{'lang': main, 't…  │ [{'lang': main, 'text': lait sucré, crème à cafe}, {'lang': fr, 'text': lait sucré, crème à cafe}]                                                                         │
+│ [{'lang': main, 't…  │ [{'lang': main, 'text': French Vanilla Fortified Coffee Drink}, {'lang': en, 'text': French Vanilla Fortified Coffee Drink}]                                               │
+│ [{'lang': main, 't…  │ [{'lang': main, 'text': Alternating layers of cheesecake and coffee ice cream with espresso sauce and crispy layers made with milk chocolate}, {'lang': en, 'text': Alte…  │
+│ [{'lang': main, 't…  │ [{'lang': main, 'text': Caffé Mocha Fortified Coffee Drink}, {'lang': en, 'text': Caffé Mocha Fortified Coffee Drink}]                                                     │
+│ [{'lang': main, 't…  │ [{'lang': main, 'text': Pure cream blended with coffee brewed from Brazilian beans}, {'lang': en, 'text': Pure cream blended with coffee brewed from Brazilian beans}]     │
+│ [{'lang': main, 't…  │ [{'lang': main, 'text': Organic Fair Trade Chocolate with Cracked Coffee Beans}, {'lang': en, 'text': Organic Fair Trade Chocolate with Cracked Coffee Beans}]             │
+│ [{'lang': main, 't…  │ [{'lang': main, 'text': Coffee light ice cream with espresso swirls and chocolate cookies}, {'lang': en, 'text': Coffee light ice cream with espresso swirls and chocola…  │
 ├──────────────────────┴────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
-│ 2282 rows (20 shown)                                                                                                                                                                    2 columns │
+│ 17 rows                                                                                                                                                                                 2 columns │
 └───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 ### Find products with all ingredients marked as vegan (no non-vegan or maybe-vegan ingredients)
@@ -1172,23 +981,23 @@ WHERE LENGTH(ingredients_list) > 0
 LIMIT 10;
 ```
 ```text
-┌────────────────────────────────────────┬────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
-│                 brands                 │                                                ingredients_list                                                │
-│                varchar                 │                                                    varchar                                                     │
-├────────────────────────────────────────┼────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
-│ Lagg's                                 │ Chamomile flowers"]                                                                                            │
-│ Lagg's                                 │ Peppermint"]                                                                                                   │
-│ Lagg's                                 │ Hibiscus flowers"]                                                                                             │
-│ Lagg's                                 │ Green tea"]                                                                                                    │
-│ Lagg's                                 │ Andropogon citratus", "uva ursi", "hibiscus flowers", "cinnamon", "equisetum arvense", "flourensia cernua"]    │
-│ Lagg's                                 │ Shave grass", "corn silk", "uva ursi", "juliana adstringen", "boldo", "hibiscus flowers", "orange blossom"]    │
-│ Today's Temptations                    │ Rye flour", "water", "wheat", "flour", "malt", "molasses", "sugar", "onion", "yeast", "caraway seeds", "salt"] │
-│ Sharwood's                             │ Black chickpea gram flour", "salt", "raising agent", "calcium oxide", "rice flour", "sunflower oil"]           │
-│ Tetley,  American Power Products  Inc. │ tea", "passion"]                                                                                               │
-│ Chio                                   │ Wheat flour", "salt", "palm oil", "acidity regulator", "malted wheat flour", "emulsifier"]                     │
-├────────────────────────────────────────┴────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
-│ 10 rows                                                                                                                                       2 columns │
-└─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+┌────────────────────────────────────────────────────────────┬──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+│                           brands                           │                                                           ingredients_list                                                           │
+│                          varchar                           │                                                               varchar                                                                │
+├────────────────────────────────────────────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ usda organic Butternut Mountain Farm,Butternut Mountain …  │ maple syrup"]                                                                                                                        │
+│ Wel-Pac                                                    │ Ginger", "water", "salt", "acetic acid", "citric acid", "aspartame", "potassium sorbate", "and fd&c red no", "40"]                   │
+│ Aroy d,Aroy-D                                              │ Eau", "lychee", "sucre", "régulateur d'acidité"]                                                                                     │
+│ Aroy-D,aroy                                                │ COCONUT", "WATER"]                                                                                                                   │
+│ Foco                                                       │ natural coconut water"]                                                                                                              │
+│ Casa Fiesta                                                │ Green chili peppers", "water", "salt", "citric acid"]                                                                                │
+│ Larabar                                                    │ Dates", "coconut", "Cashews", "Almonds"]                                                                                             │
+│ Clément Faugier                                            │ Châtaignes", "sucre", "marrons glacés", "sirop de glucose", "eau", "extrait naturel de vanille"]                                     │
+│ Clément Faugier                                            │ Châtaignes", "sucre", "marrons glacés", "sirop de glucose", "eau", "extrait de vanille Madagascar"]                                  │
+│ Sriracha                                                   │ chili", "sugar", "salt", "garlic", "distilled vinegar", "potassium sorbate", "sodium bisulfite as preservatives", "and xanthan gum"] │
+├────────────────────────────────────────────────────────────┴──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ 10 rows                                                                                                                                                                                 2 columns │
+└───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
 ``````sql
 SELECT last_editor, COUNT(*) as frequency
 FROM products 
@@ -1198,23 +1007,23 @@ ORDER BY frequency DESC
 LIMIT 10;
 ```
 ```text
-┌───────────────────┬───────────┐
-│    last_editor    │ frequency │
-│      varchar      │   int64   │
-├───────────────────┼───────────┤
-│ kiliweb           │    541094 │
-│ roboto-app        │    498702 │
-│ org-database-usda │    214760 │
-│ macrofactor       │    182845 │
-│ foodvisor         │    161875 │
-│ teolemon          │    153758 │
-│ prepperapp        │    112412 │
-│ packbot           │    108171 │
-│ telperion87       │     97837 │
-│ foodless          │     94433 │
-├───────────────────┴───────────┤
-│ 10 rows             2 columns │
-└───────────────────────────────┘
+┌───────────────────────────┬───────────┐
+│        last_editor        │ frequency │
+│          varchar          │   int64   │
+├───────────────────────────┼───────────┤
+│ kiliweb                   │     32134 │
+│ roboto-app                │     13355 │
+│ macrofactor               │     10482 │
+│ teolemon                  │      3940 │
+│ anonymous-s7co2zv64u      │      3302 │
+│ org-label-non-gmo-project │      2647 │
+│ naruyoko                  │      1990 │
+│ navig491                  │      1780 │
+│ inf                       │      1736 │
+│ segundo                   │      1691 │
+├───────────────────────────┴───────────┤
+│ 10 rows                     2 columns │
+└───────────────────────────────────────┘
 ``````sql
 SELECT 
     COUNT(*) as total_products,
@@ -1227,7 +1036,7 @@ FROM products;
 │ total_products │ unique_editors │ products_with_editor │
 │     int64      │     int64      │        int64         │
 ├────────────────┼────────────────┼──────────────────────┤
-│        3601655 │          40701 │              3486909 │
+│          94802 │           1515 │                93157 │
 └────────────────┴────────────────┴──────────────────────┘
 ```
 ### Find popular products (>100 scans) with good nutrition score (A or B)
@@ -1245,23 +1054,13 @@ ORDER BY scans_n DESC
 LIMIT 10;
 ```
 ```text
-┌───────────────┬──────────────────────────────┬─────────┬──────────────────┐
-│     code      │             name             │ scans_n │ nutriscore_grade │
-│    varchar    │           varchar            │  int32  │     varchar      │
-├───────────────┼──────────────────────────────┼─────────┼──────────────────┤
-│ 3274080005003 │ Eau de source                │    2536 │ a                │
-│ 3268840001008 │ Eau de source                │     911 │ a                │
-│ 5411188112709 │ Geröstete Mandel Ohne Zucker │     801 │ b                │
-│ 20724696      │ Almonds                      │     759 │ a                │
-│ 7300400481588 │ FIBRES                       │     754 │ a                │
-│ 8002270014901 │ S. Pellegrino Water          │     751 │ a                │
-│ 3168930163480 │ Alvalle Gazpacho l'original  │     740 │ a                │
-│ 20267605      │ Cashewkerne Naturbelassen    │     672 │ b                │
-│ 3057640257773 │ Volvic                       │     667 │ a                │
-│ 3068320123264 │ La salvetat                  │     667 │ a                │
-├───────────────┴──────────────────────────────┴─────────┴──────────────────┤
-│ 10 rows                                                         4 columns │
-└───────────────────────────────────────────────────────────────────────────┘
+┌───────────────┬───────────────────────┬─────────┬──────────────────┐
+│     code      │         name          │ scans_n │ nutriscore_grade │
+│    varchar    │        varchar        │  int32  │     varchar      │
+├───────────────┼───────────────────────┼─────────┼──────────────────┤
+│ 80042556      │ Pulpe fine de tomates │     409 │ a                │
+│ 8076800376999 │ Lasagne all'uovo      │     141 │ a                │
+└───────────────┴───────────────────────┴─────────┴──────────────────┘
 ```
 ### Average number of additives by brand (for brands with >50 products)
 ```sql
@@ -1279,23 +1078,23 @@ ORDER BY avg_additives DESC
 LIMIT 10;
 ```
 ```text
-┌──────────────────────┬────────────────────┬────────────────┐
-│        brand         │   avg_additives    │ total_products │
-│       varchar        │       double       │     int64      │
-├──────────────────────┼────────────────────┼────────────────┤
-│ mrs-freshley-s       │ 14.598130841121495 │            107 │
-│ entenmann-s          │  14.18867924528302 │            106 │
-│ tastykake            │ 12.967948717948717 │            156 │
-│ tasty-baking-company │  12.89344262295082 │            122 │
-│ hostess              │  12.88950276243094 │            181 │
-│ flowers-foods-inc    │ 12.047297297297296 │            148 │
-│ lofthouse-cookies    │ 11.709090909090909 │             55 │
-│ bakehuset-direkte    │ 11.402985074626866 │             67 │
-│ lofthouse-foods      │  11.18840579710145 │             69 │
-│ totino-s             │  11.02020202020202 │             99 │
-├──────────────────────┴────────────────────┴────────────────┤
-│ 10 rows                                          3 columns │
-└────────────────────────────────────────────────────────────┘
+┌───────────────┬────────────────────┬────────────────┐
+│     brand     │   avg_additives    │ total_products │
+│    varchar    │       double       │     int64      │
+├───────────────┼────────────────────┼────────────────┤
+│ christie      │ 3.3866666666666667 │             75 │
+│ dare          │ 3.3536585365853657 │             82 │
+│ nestle        │                3.3 │            190 │
+│ general-mills │  3.230769230769231 │             78 │
+│ kraft         │ 2.6576576576576576 │            111 │
+│ lay-s         │ 2.6481481481481484 │             54 │
+│ knorr         │ 2.6153846153846154 │             52 │
+│ kellogg-s     │ 2.5514018691588785 │            107 │
+│ quaker        │  2.539473684210526 │             76 │
+│ null          │   2.49290780141844 │            282 │
+├───────────────┴────────────────────┴────────────────┤
+│ 10 rows                                   3 columns │
+└─────────────────────────────────────────────────────┘
 ```
 ### Product creation trends by month in 2024
 ```sql
@@ -1313,20 +1112,20 @@ ORDER BY month;
 │          month           │ new_products │
 │ timestamp with time zone │    int64     │
 ├──────────────────────────┼──────────────┤
-│ 2023-12-01 00:00:00-05   │           33 │
-│ 2024-01-01 00:00:00-05   │        33422 │
-│ 2024-02-01 00:00:00-05   │        29689 │
-│ 2024-03-01 00:00:00-05   │        31773 │
-│ 2024-04-01 00:00:00-04   │        38917 │
-│ 2024-05-01 00:00:00-04   │        42571 │
-│ 2024-06-01 00:00:00-04   │        81527 │
-│ 2024-07-01 00:00:00-04   │        49811 │
-│ 2024-08-01 00:00:00-04   │        47053 │
-│ 2024-09-01 00:00:00-04   │        48895 │
-│ 2024-10-01 00:00:00-04   │        54394 │
-│ 2024-11-01 00:00:00-04   │        47107 │
-│ 2024-12-01 00:00:00-05   │        54667 │
-│ 2025-01-01 00:00:00-05   │        42631 │
+│ 2023-12-01 00:00:00-05   │            1 │
+│ 2024-01-01 00:00:00-05   │          116 │
+│ 2024-02-01 00:00:00-05   │          169 │
+│ 2024-03-01 00:00:00-05   │          218 │
+│ 2024-04-01 00:00:00-04   │          678 │
+│ 2024-05-01 00:00:00-04   │          830 │
+│ 2024-06-01 00:00:00-04   │         1165 │
+│ 2024-07-01 00:00:00-04   │          951 │
+│ 2024-08-01 00:00:00-04   │          773 │
+│ 2024-09-01 00:00:00-04   │         1046 │
+│ 2024-10-01 00:00:00-04   │         1138 │
+│ 2024-11-01 00:00:00-04   │         1245 │
+│ 2024-12-01 00:00:00-05   │         1105 │
+│ 2025-01-01 00:00:00-05   │         1306 │
 ├──────────────────────────┴──────────────┤
 │ 14 rows                       2 columns │
 └─────────────────────────────────────────┘
@@ -1346,23 +1145,23 @@ ORDER BY completeness DESC
 LIMIT 10;
 ```
 ```text
-┌───────────────┬──────────────────────────────────────────┬──────────────┐
-│     code      │                   name                   │ completeness │
-│    varchar    │                 varchar                  │    float     │
-├───────────────┼──────────────────────────────────────────┼──────────────┤
-│ 4021234402336 │ Barnhouse Cornflakes, 375 GR Packung     │          1.1 │
-│ 4036300005311 │ Müritzer                                 │          1.1 │
-│ 4044889000610 │ Edel Bitter 70% Cacao                    │          1.1 │
-│ 4044889002119 │ Edel Bitter Cranberry 70% Ecuador-Caribe │          1.1 │
-│ 4044889002904 │ Feine Bitter 99% Cacao Panama            │          1.1 │
-│ 4045317058593 │ Frische Milch 3,8% Fett                  │          1.1 │
-│ 4045357008190 │ Sahnig mit Allgäuer Milch laktosfrei     │          1.1 │
-│ 4046700004265 │ BIO Sahne                                │          1.1 │
-│ 4046700500972 │ Bio Frische fettarme Milch 🍀            │          1.1 │
-│ 4062300163904 │ Petits Macaroni, Tomates, Colin d'Alaska │          1.1 │
-├───────────────┴──────────────────────────────────────────┴──────────────┤
-│ 10 rows                                                       3 columns │
-└─────────────────────────────────────────────────────────────────────────┘
+┌───────────────┬───────────────────────────────────────────────────────────┬──────────────┐
+│     code      │                           name                            │ completeness │
+│    varchar    │                          varchar                          │    float     │
+├───────────────┼───────────────────────────────────────────────────────────┼──────────────┤
+│ 0025293001503 │ Almond, Unsweetened Beverage,                             │          1.1 │
+│ 26043579      │ Maïs                                                      │          1.1 │
+│ 3245390084422 │ Palets bretons                                            │          1.1 │
+│ 3560070475711 │ Lait frais demi-écrémé                                    │          1.1 │
+│ 5400101173224 │ Petits pois                                               │          1.1 │
+│ 7802215505140 │ Costa Choco Chips                                         │          1.1 │
+│ 8711327385603 │ CARTE D'OR Glace Crème Glacée Vanille de Madagascar 900ml │          1.1 │
+│ 7802215515019 │ Gretel Chocolate                                          │          1.1 │
+│ 0022314015174 │ Crème de Marrons de L'Ardèche                             │          1.0 │
+│ 0041508963985 │ Carbonated natural mineral water                          │          1.0 │
+├───────────────┴───────────────────────────────────────────────────────────┴──────────────┤
+│ 10 rows                                                                        3 columns │
+└──────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 ### Correlation between Nutri-Score and Eco-Score
 ```sql
@@ -1378,36 +1177,36 @@ GROUP BY nutriscore_grade, ecoscore_grade
 ORDER BY nutriscore_grade, ecoscore_grade;
 ```
 ```text
-┌──────────────────┬────────────────┬─────────┐
-│ nutriscore_grade │ ecoscore_grade │  count  │
-│     varchar      │    varchar     │  int64  │
-├──────────────────┼────────────────┼─────────┤
-│ a                │ a              │   16965 │
-│ a                │ a-plus         │    9206 │
-│ a                │ b              │   15060 │
-│ a                │ c              │    6653 │
-│ a                │ d              │    8405 │
-│ a                │ e              │   12564 │
-│ a                │ f              │    3809 │
-│ a                │ not-applicable │    6340 │
-│ a                │ unknown        │   61929 │
-│ b                │ a              │   11220 │
-│ ·                │ ·              │     ·   │
-│ ·                │ ·              │     ·   │
-│ ·                │ ·              │     ·   │
-│ not-applicable   │ unknown        │   19991 │
-│ unknown          │ a              │   22448 │
-│ unknown          │ a-plus         │    9712 │
-│ unknown          │ b              │   32950 │
-│ unknown          │ c              │   19157 │
-│ unknown          │ d              │   23063 │
-│ unknown          │ e              │   20748 │
-│ unknown          │ f              │   13974 │
-│ unknown          │ not-applicable │    7886 │
-│ unknown          │ unknown        │ 1797394 │
-├──────────────────┴────────────────┴─────────┤
-│ 63 rows (20 shown)                3 columns │
-└─────────────────────────────────────────────┘
+┌──────────────────┬────────────────┬───────┐
+│ nutriscore_grade │ ecoscore_grade │ count │
+│     varchar      │    varchar     │ int64 │
+├──────────────────┼────────────────┼───────┤
+│ a                │ a              │   341 │
+│ a                │ a-plus         │    38 │
+│ a                │ b              │   252 │
+│ a                │ c              │    77 │
+│ a                │ d              │   139 │
+│ a                │ e              │   188 │
+│ a                │ f              │    47 │
+│ a                │ not-applicable │   104 │
+│ a                │ unknown        │   898 │
+│ b                │ a              │   191 │
+│ ·                │ ·              │    ·  │
+│ ·                │ ·              │    ·  │
+│ ·                │ ·              │    ·  │
+│ not-applicable   │ unknown        │   343 │
+│ unknown          │ a              │   408 │
+│ unknown          │ a-plus         │    34 │
+│ unknown          │ b              │   660 │
+│ unknown          │ c              │   280 │
+│ unknown          │ d              │   403 │
+│ unknown          │ e              │   278 │
+│ unknown          │ f              │   179 │
+│ unknown          │ not-applicable │   176 │
+│ unknown          │ unknown        │ 72748 │
+├──────────────────┴────────────────┴───────┤
+│ 63 rows (20 shown)              3 columns │
+└───────────────────────────────────────────┘
 ```
 ### Average number of ingredients by food group
 ```sql
@@ -1429,16 +1228,16 @@ LIMIT 10;
 │        food_group         │  avg_ingredients   │ min_ingredients │ max_ingredients │
 │          varchar          │       double       │      int32      │      int32      │
 ├───────────────────────────┼────────────────────┼─────────────────┼─────────────────┤
-│ en:sandwiches             │ 49.196983758700696 │               1 │             327 │
-│ en:pizza-pies-and-quiches │  41.50930362116991 │               0 │             252 │
-│ en:composite-foods        │ 31.888402544651964 │               0 │             327 │
-│ en:one-dish-meals         │ 27.927298680842686 │               0 │             327 │
-│ en:biscuits-and-cakes     │ 26.591992815984433 │               0 │             386 │
-│ en:ice-cream              │ 25.647228062410093 │               0 │             233 │
-│ en:pastries               │  24.36563209689629 │               1 │             341 │
-│ en:sugary-snacks          │  19.69416375852909 │               0 │             386 │
-│ en:bread                  │ 19.520799871506586 │               0 │             165 │
-│ en:breakfast-cereals      │  17.98976313233206 │               0 │             266 │
+│ en:pizza-pies-and-quiches │  43.93478260869565 │               6 │             163 │
+│ en:composite-foods        │ 30.296903460837886 │               1 │             163 │
+│ en:one-dish-meals         │               30.0 │               1 │             129 │
+│ en:biscuits-and-cakes     │ 25.455216016859854 │               1 │             165 │
+│ en:pastries               │ 24.854166666666668 │               9 │              58 │
+│ en:poultry                │ 23.939393939393938 │               1 │             108 │
+│ en:ice-cream              │ 22.489878542510123 │               1 │              69 │
+│ en:breakfast-cereals      │ 20.664688427299705 │               1 │              95 │
+│ en:sandwiches             │  20.18421052631579 │               2 │              95 │
+│ en:bread                  │  19.14782608695652 │               1 │             142 │
 ├───────────────────────────┴────────────────────┴─────────────────┴─────────────────┤
 │ 10 rows                                                                  4 columns │
 └────────────────────────────────────────────────────────────────────────────────────┘
@@ -1457,23 +1256,23 @@ ORDER BY count DESC
 LIMIT 10;
 ```
 ```text
-┌──────────────────────────────────────┬────────┐
-│               category               │ count  │
-│               varchar                │ int64  │
-├──────────────────────────────────────┼────────┤
-│ en:plant-based-foods-and-beverages   │ 167357 │
-│ en:plant-based-foods                 │ 146812 │
-│ en:cereals-and-potatoes              │  52271 │
-│ en:beverages                         │  49383 │
-│ en:snacks                            │  48712 │
-│ en:dairies                           │  45488 │
-│ en:fruits-and-vegetables-based-foods │  43761 │
-│ en:cereals-and-their-products        │  38927 │
-│ en:fermented-foods                   │  34061 │
-│ en:fermented-milk-products           │  33123 │
-├──────────────────────────────────────┴────────┤
-│ 10 rows                             2 columns │
-└───────────────────────────────────────────────┘
+┌──────────────────────────────────────┬───────┐
+│               category               │ count │
+│               varchar                │ int64 │
+├──────────────────────────────────────┼───────┤
+│ en:plant-based-foods-and-beverages   │  2186 │
+│ en:plant-based-foods                 │  1987 │
+│ en:cereals-and-potatoes              │   657 │
+│ en:fruits-and-vegetables-based-foods │   608 │
+│ en:cereals-and-their-products        │   475 │
+│ en:beverages                         │   475 │
+│ en:snacks                            │   473 │
+│ en:dairies                           │   384 │
+│ en:condiments                        │   340 │
+│ en:fruits-based-foods                │   314 │
+├──────────────────────────────────────┴───────┤
+│ 10 rows                            2 columns │
+└──────────────────────────────────────────────┘
 ```
 ### Most common conservation conditions
 ```sql
@@ -1507,16 +1306,16 @@ LIMIT 10;
 │     code      │         name         │ allergen_count │                                                              allergens_tags                                                               │
 │    varchar    │       varchar        │     int64      │                                                                 varchar[]                                                                 │
 ├───────────────┼──────────────────────┼────────────────┼───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
-│ 8711812407285 │ 20 Kruiden oplosthee │             45 │ [en:gluten, nl:braamblad, nl:druivensuiker, nl:duizendbladbloesem, nl:eucalyptus, nl:goudbloembloesem, nl:heemst, nl:kaasjeskruidbloese…  │
-│ 2317689111773 │ Pastrami Beef, Roa…  │             37 │ [en:eggs, de:くん-液, de:さけ大豆-鶏肉-豚肉-りんご, de:アルギン酸エステル, de:カゼインna, de:カラメル-色素, de:クチナシ色素, de:ゼラ-チ…  │
-│ 3368955876369 │ Poêlée de St Jacqu…  │             33 │ [en:crustaceans, en:fish, en:milk, en:molluscs, fr:4, en:molluscs, fr:jacques, fr:saint, fr:ail-en-puree, fr:amidon-transforme-de-riz-o…  │
-│ 4902105901120 │ 日清ラ王　たれたっ…  │             28 │ [en:chicken, en:eggs, en:milk, en:sesame-seeds, en:soybeans, ja:かんすい, ja:しょうゆ, ja:たん白加水分解物, ja:ねりごま-加工でん粉, ja:…  │
-│ 8410416005063 │ Paella marinera      │             24 │ [en:crustaceans, en:fish, en:molluscs, es:aroma, es:calmars, es:crevettes, es:crustace, es:fruits-de-mer, es:marisco, es:mollusques, es…  │
-│ 8710482532174 │ Oerknäck waldkorn    │             23 │ [en:gluten, en:sesame-seeds, en:soybeans, nl:gerstegrutten, en:gluten, en:gluten, nl:havermeel, nl:havervlokken, nl:roggebloem, nl:rogg…  │
-│ 2134025004496 │ Bageta šunková       │             22 │ [en:gluten, en:milk, cs:kvásek, cs:majonéza, cs:mléčné, en:gluten, cs:pšeničná-sladová-mouka, cs:pšeničný-kvas, en:gluten, en:milk, en:…  │
-│ 3270160890507 │ Couronne de Noël A…  │             21 │ [en:crustaceans, en:eggs, en:fish, en:gluten, en:milk, en:molluscs, en:mustard, en:nuts, en:sesame-seeds, en:milk, fr:chevre, fr:farine…  │
-│ 2000000132402 │ Cubic 19 Grains Sa…  │             19 │ [en:gluten, en:milk, en:peanuts, en:sesame-seeds, en:soybeans, th:ข้าวโพด, th:ข้าวโอ๊ต, th:งาขาว, th:งาดำ, th:งานม่อน, th:ถั่วขาว, th:ถั่วดำ-ถั่วเขี…  │
-│ 2100100082062 │ Крекер ржаной        │             19 │ [en:gluten, en:milk, en:peanuts, en:sesame-seeds, ru:концентрат-солодовый-ржаной, en:gluten, en:gluten, ru:мука-ржаная-обдирная, ru:про…  │
+│ 0242297115924 │ Quesadillas au pou…  │             11 │ [en:crustaceans, en:eggs, en:fish, en:gluten, en:milk, en:mustard, en:nuts, en:peanuts, en:sesame-seeds, en:soybeans, en:sulphur-dioxid…  │
+│ 0883259010194 │ General Tao chicke…  │             11 │ [en:crustaceans, en:eggs, en:fish, en:gluten, en:milk, en:molluscs, en:mustard, en:nuts, en:sesame-seeds, en:soybeans, en:sulphur-dioxi…  │
+│ 8801073142961 │ Kimchi Budak         │             11 │ [en:crustaceans, en:eggs, en:fish, en:gluten, en:milk, en:molluscs, en:mustard, en:nuts, en:peanuts, en:sesame-seeds, en:soybeans]        │
+│ 0031146023103 │ Soupe aux nouilles…  │             11 │ [en:crustaceans, en:eggs, en:fish, en:gluten, en:milk, en:molluscs, en:mustard, en:nuts, en:peanuts, en:sesame-seeds, en:soybeans]        │
+│ 0059491000358 │ Beef flavour insta…  │             10 │ [en:eggs, en:fish, en:gluten, en:milk, en:nuts, en:peanuts, en:sesame-seeds, en:soybeans, en:sulphur-dioxide-and-sulphites, en:shellfish] │
+│ 0098308002963 │ Better Than Bouill…  │             10 │ [en:crustaceans, en:soybeans, en:lagosta, en:alho, en:cebola, en:milho, en:paprica, pt:alho, pt:cebola, pt:milho]                         │
+│ 0628456830530 │ Tempura chicken br…  │             10 │ [en:crustaceans, en:eggs, en:fish, en:gluten, en:milk, en:mustard, en:nuts, en:sesame-seeds, en:soybeans, en:sulphur-dioxide-and-sulphi…  │
+│ 8801073114814 │ Buldak Cream Carbo…  │             10 │ [en:crustaceans, en:fish, en:gluten, en:milk, en:molluscs, en:mustard, en:nuts, en:peanuts, en:sesame-seeds, en:soybeans]                 │
+│ 8801073115088 │ quattro cheese hot…  │             10 │ [en:celery, en:crustaceans, en:eggs, en:fish, en:gluten, en:milk, en:mustard, en:nuts, en:peanuts, en:soybeans]                           │
+│ 0880107310415 │ Sutah Ramen Hot & …  │             10 │ [en:crustaceans, en:eggs, en:fish, en:gluten, en:milk, en:molluscs, en:mustard, en:nuts, en:peanuts, en:sesame-seeds]                     │
 ├───────────────┴──────────────────────┴────────────────┴───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
 │ 10 rows                                                                                                                                                                                 4 columns │
 └───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
@@ -1537,71 +1336,16 @@ ORDER BY unique_brands DESC
 LIMIT 10;
 ```
 ```text
-┌───────────────────┬───────────────┬────────────────┐
-│      country      │ unique_brands │ total_products │
-│      varchar      │     int64     │     int64      │
-├───────────────────┼───────────────┼────────────────┤
-│ en:france         │         68548 │         668870 │
-│ en:united-states  │         54879 │         408434 │
-│ en:germany        │         47079 │         286493 │
-│ en:spain          │         22865 │         191249 │
-│ en:ireland        │         16032 │          51203 │
-│ en:united-kingdom │         14126 │          93316 │
-│ en:italy          │         13186 │         173862 │
-│ en:switzerland    │          9551 │          74438 │
-│ en:canada         │          8995 │          43146 │
-│ en:japan          │          7931 │          16411 │
-├───────────────────┴───────────────┴────────────────┤
-│ 10 rows                                  3 columns │
-└────────────────────────────────────────────────────┘
-```
-### Filter products by category (using list_contains)
-```sql
--- Filter products by category (using list_contains)
-SELECT
-    code,
-    unnest(list_filter(product_name, x -> x.lang == 'main'))['text'] AS name
-FROM products
-WHERE list_contains(categories_tags, 'en:milks');
-
--- Search in array (using array_to_string)
-SELECT count(code) as nb, allergens_tags
-FROM products
-WHERE regexp_matches(array_to_string(allergens_tags, ','), 'fr:')
-GROUP BY allergens_tags
-ORDER BY nb DESC;
-```
-```text
-┌───────┬─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
-│  nb   │                                                                 allergens_tags                                                                  │
-│ int64 │                                                                    varchar[]                                                                    │
-├───────┼─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
-│   343 │ [en:gluten, fr:avoine]                                                                                                                          │
-│   131 │ [fr:non]                                                                                                                                        │
-│   116 │ [en:gluten, en:milk, en:soybeans, fr:avoine]                                                                                                    │
-│   104 │ [en:gluten, en:nuts, fr:avoine]                                                                                                                 │
-│   104 │ [en:gluten, en:milk, fr:avoine]                                                                                                                 │
-│    55 │ [fr:non-renseigne]                                                                                                                              │
-│    55 │ [en:gluten, en:soybeans, fr:avoine]                                                                                                             │
-│    50 │ [en:gluten, en:sesame-seeds, fr:avoine]                                                                                                         │
-│    49 │ [en:gluten, fr:avoine, fr:avoine]                                                                                                               │
-│    40 │ [en:milk, fr:ferments]                                                                                                                          │
-│     · │           ·                                                                                                                                     │
-│     · │           ·                                                                                                                                     │
-│     · │           ·                                                                                                                                     │
-│     1 │ [en:milk, fr:lactoserique]                                                                                                                      │
-│     1 │ [en:eggs, en:gluten, en:milk, en:nuts, en:soybeans, fr:cajou, fr:fruits-a-coques-moulus, en:milk, fr:cajou, fr:fruits-a-coques-moulus, en:milk] │
-│     1 │ [en:eggs, en:gluten, en:milk, en:nuts, en:soybeans, fr:cajou, fr:fruit-a-coque-moulus, en:milk]                                                 │
-│     1 │ [en:milk, fr:laitlait-et-produit-a-base-de-lait-y-compris-le-lactose]                                                                           │
-│     1 │ [en:eggs, en:gluten, en:milk, en:sesame-seeds, en:soybeans, en:sulphur-dioxide-and-sulphites, fr:avoine]                                        │
-│     1 │ [en:gluten, en:milk, en:soybeans, fr:citron]                                                                                                    │
-│     1 │ [en:milk, fr:noisettes-20]                                                                                                                      │
-│     1 │ [en:gluten, en:milk, fr:specialite-fromagere]                                                                                                   │
-│     1 │ [en:eggs, en:gluten, en:milk, en:nuts, fr:proteine-de-lait-de-vache]                                                                            │
-│     1 │ [en:gluten, en:milk, en:soybeans, fr:一部に-乳成分, fr:大豆を含む, fr:小麦]                                                                     │
-├───────┴─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
-│ 2294 rows (20 shown)                                                                                                                          2 columns │
-└─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+┌──────────────────┬───────────────┬────────────────┐
+│     country      │ unique_brands │ total_products │
+│     varchar      │     int64     │     int64      │
+├──────────────────┼───────────────┼────────────────┤
+│ en:canada        │          8995 │          43146 │
+│ en:world         │           815 │           3957 │
+│ en:france        │           700 │           1363 │
+│ en:united-states │           448 │            619 │
+│ en:germany       │           167 │            220 │
+└──────────────────┴───────────────┴────────────────┘
 ```
 ### Products by NOVA group
 ```sql
@@ -1613,15 +1357,15 @@ GROUP BY nova_group
 ORDER BY nova_group;
 ```
 ```text
-┌────────────┬────────┐
-│ nova_group │ count  │
-│   int32    │ int64  │
-├────────────┼────────┤
-│          1 │ 108854 │
-│          2 │  60427 │
-│          3 │ 180500 │
-│          4 │ 592498 │
-└────────────┴────────┘
+┌────────────┬───────┐
+│ nova_group │ count │
+│   int32    │ int64 │
+├────────────┼───────┤
+│          1 │  1278 │
+│          2 │  1349 │
+│          3 │  1783 │
+│          4 │ 10317 │
+└────────────┴───────┘
 ```
 ### Products with good Nutri-Score and no palm oil
 ```sql
@@ -1635,23 +1379,23 @@ AND nutriscore_grade IN ('a','b')
 LIMIT 10;
 ```
 ```text
-┌───────────────┬────────────────────────────────────────────┬──────────────────┐
-│     code      │                    name                    │ nutriscore_grade │
-│    varchar    │                  varchar                   │     varchar      │
-├───────────────┼────────────────────────────────────────────┼──────────────────┤
-│ 0000651003214 │ Romaine Hearts                             │ a                │
-│ 0000651041001 │ Romaine lettuce                            │ a                │
-│ 0000651041025 │ Green Leaf Lettuce                         │ a                │
-│ 0000651213019 │ Fresh Spinach                              │ a                │
-│ 0000651213026 │ Cooking Spinach                            │ a                │
-│ 0000651319018 │ Quick cook sprout halves, brussels sprouts │ a                │
-│ 0000651511016 │ Celery                                     │ a                │
-│ 0000850600108 │ Raw Shrimp                                 │ a                │
-│ 0000946909078 │ Augason Farms, Vital Wheat Gluten          │ a                │
-│ 0002000000714 │ Yaourt nature brebis                       │ a                │
-├───────────────┴────────────────────────────────────────────┴──────────────────┤
-│ 10 rows                                                             3 columns │
-└───────────────────────────────────────────────────────────────────────────────┘
+┌───────────────┬────────────────────────────────────┬──────────────────┐
+│     code      │                name                │ nutriscore_grade │
+│    varchar    │              varchar               │     varchar      │
+├───────────────┼────────────────────────────────────┼──────────────────┤
+│ 0030000012000 │ Quick 1-minute Oats imp            │ a                │
+│ 0033383653259 │ Celery                             │ a                │
+│ 0040822027045 │ Classic Hummus                     │ a                │
+│ 0041390050039 │ Panko                              │ a                │
+│ 0041508963985 │ Carbonated natural mineral water   │ a                │
+│ 0051651092869 │ Beurre d'amandes                   │ a                │
+│ 0052603054379 │ Low Sodium Organic Vegetable Broth │ a                │
+│ 0055577101018 │ Large Flake Oats (Canada)          │ a                │
+│ 0055577102053 │ 1-Minute Oats (Canada)             │ a                │
+│ 0055577102459 │ Oat Bran                           │ a                │
+├───────────────┴────────────────────────────────────┴──────────────────┤
+│ 10 rows                                                     3 columns │
+└───────────────────────────────────────────────────────────────────────┘
 ```
 ### Most common vitamins
 ```sql
@@ -1665,36 +1409,36 @@ GROUP BY vitamin
 ORDER BY count DESC;
 ```
 ```text
-┌──────────────────────────────────────┬───────┐
-│               vitamin                │ count │
-│               varchar                │ int64 │
-├──────────────────────────────────────┼───────┤
-│ en:niacin                            │ 69821 │
-│ en:folic-acid                        │ 64349 │
-│ en:riboflavin                        │ 63139 │
-│ en:thiamin-mononitrate               │ 52584 │
-│ en:thiamin                           │ 32385 │
-│ en:l-ascorbic-acid                   │ 28630 │
-│ en:vitamin-c                         │ 21479 │
-│ en:retinyl-palmitate                 │ 16669 │
-│ en:vitamin-b6                        │ 16387 │
-│ en:vitamin-b12                       │ 16227 │
-│       ·                              │     · │
-│       ·                              │     · │
-│       ·                              │     · │
-│ en:beta-carotene-dye                 │    29 │
-│ en:d-alpha-tocopheryl-acid-succinate │    12 │
-│ en:dexpanthenol                      │    11 │
-│ en:potassium-l-ascorbate             │     8 │
-│ en:hydroxocobalamin                  │     6 │
-│ en:l-ascorbyl-6-palmitate            │     5 │
-│ en:pyridoxine-5-phosphate            │     3 │
-│ da:vitamin-a-og-d                    │     2 │
-│ en:vitamin-k3                        │     2 │
-│ en:pyridoxine-dipalmitate            │     1 │
-├──────────────────────────────────────┴───────┤
-│ 50 rows (20 shown)                 2 columns │
-└──────────────────────────────────────────────┘
+┌─────────────────────────────┬───────┐
+│           vitamin           │ count │
+│           varchar           │ int64 │
+├─────────────────────────────┼───────┤
+│ en:l-ascorbic-acid          │   852 │
+│ en:riboflavin               │   486 │
+│ en:niacin                   │   460 │
+│ en:pyridoxine-hydrochloride │   449 │
+│ en:folic-acid               │   445 │
+│ en:vitamin-c                │   370 │
+│ en:retinyl-palmitate        │   360 │
+│ en:cholecalciferol          │   338 │
+│ en:vitamin-b6               │   309 │
+│ en:vitamin-b12              │   307 │
+│       ·                     │     · │
+│       ·                     │     · │
+│       ·                     │     · │
+│ en:phylloquinone            │    10 │
+│ en:nicotinamide             │    10 │
+│ en:d-biotin                 │     7 │
+│ en:vitamin-k                │     6 │
+│ en:calcium-l-ascorbate      │     5 │
+│ en:d-alpha-tocopherol       │     4 │
+│ en:folacin                  │     2 │
+│ en:nicotinic-acid           │     1 │
+│ en:vitamin-b8               │     1 │
+│ en:pyridoxine-dipalmitate   │     1 │
+├─────────────────────────────┴───────┤
+│ 37 rows (20 shown)        2 columns │
+└─────────────────────────────────────┘
 ```
 ### Product completeness
 ```sql
@@ -1707,13 +1451,13 @@ FROM products
 GROUP BY complete;
 ```
 ```text
-┌──────────┬─────────┬─────────────────────┐
-│ complete │  count  │  avg_completeness   │
-│  int32   │  int64  │       double        │
-├──────────┼─────────┼─────────────────────┤
-│        0 │ 3586082 │ 0.42028756940551326 │
-│        1 │   15573 │  1.0050086700479197 │
-└──────────┴─────────┴─────────────────────┘
+┌──────────┬───────┬────────────────────┐
+│ complete │ count │  avg_completeness  │
+│  int32   │ int64 │       double       │
+├──────────┼───────┼────────────────────┤
+│        0 │ 94634 │ 0.3689723067026311 │
+│        1 │   168 │ 0.9315476027272996 │
+└──────────┴───────┴────────────────────┘
 ```
 ### Product creation trends by month
 ```sql
@@ -1731,20 +1475,20 @@ ORDER BY month;
 │          month           │ new_products │
 │ timestamp with time zone │    int64     │
 ├──────────────────────────┼──────────────┤
-│ 2023-12-01 00:00:00-05   │           33 │
-│ 2024-01-01 00:00:00-05   │        33422 │
-│ 2024-02-01 00:00:00-05   │        29689 │
-│ 2024-03-01 00:00:00-05   │        31773 │
-│ 2024-04-01 00:00:00-04   │        38917 │
-│ 2024-05-01 00:00:00-04   │        42571 │
-│ 2024-06-01 00:00:00-04   │        81527 │
-│ 2024-07-01 00:00:00-04   │        49811 │
-│ 2024-08-01 00:00:00-04   │        47053 │
-│ 2024-09-01 00:00:00-04   │        48895 │
-│ 2024-10-01 00:00:00-04   │        54394 │
-│ 2024-11-01 00:00:00-04   │        47107 │
-│ 2024-12-01 00:00:00-05   │        54667 │
-│ 2025-01-01 00:00:00-05   │        42631 │
+│ 2023-12-01 00:00:00-05   │            1 │
+│ 2024-01-01 00:00:00-05   │          116 │
+│ 2024-02-01 00:00:00-05   │          169 │
+│ 2024-03-01 00:00:00-05   │          218 │
+│ 2024-04-01 00:00:00-04   │          678 │
+│ 2024-05-01 00:00:00-04   │          830 │
+│ 2024-06-01 00:00:00-04   │         1165 │
+│ 2024-07-01 00:00:00-04   │          951 │
+│ 2024-08-01 00:00:00-04   │          773 │
+│ 2024-09-01 00:00:00-04   │         1046 │
+│ 2024-10-01 00:00:00-04   │         1138 │
+│ 2024-11-01 00:00:00-04   │         1245 │
+│ 2024-12-01 00:00:00-05   │         1105 │
+│ 2025-01-01 00:00:00-05   │         1306 │
 ├──────────────────────────┴──────────────┤
 │ 14 rows                       2 columns │
 └─────────────────────────────────────────┘

@@ -135,11 +135,11 @@ def sql(duckdb_path: Path, index: int, output_file: Path) -> None:
             code,
             unnest(
                 list_filter (product_name, x -> x.lang == 'main')
-            )['text'] AS product_name
+            )['text'] AS product_name,
+        categories_tags
         FROM products
-        WHERE list_contains(lower(categories_tags), 'en:%milks%')
-           OR list_contains(lower(categories_tags), 'fr:%laits%')
-        LIMIT 20;
+        WHERE array_to_string(categories_tags, ',') LIKE 'en:%milk%' 
+           OR array_to_string(categories_tags, ',') LIKE 'fr:%lait%' 
         """)
         execute_query(duckdb_path, query, output_file)
     
@@ -184,7 +184,7 @@ def sql(duckdb_path: Path, index: int, output_file: Path) -> None:
         execute_query(duckdb_path, query, output_file)
     elif index == 10:
         query = dedent("""\
-        -- Products avec allergies aux arachides
+        -- Products with peanut allergies
         SELECT
             code,
             unnest(list_filter(product_name, x -> x.lang == 'main'))['text'] AS name,
@@ -639,25 +639,6 @@ def sql(duckdb_path: Path, index: int, output_file: Path) -> None:
         """)
         execute_query(duckdb_path, query, output_file)
 
-
-    elif index == 40:
-        query = dedent("""\
-        -- Filter products by category (using list_contains)
-        SELECT
-            code,
-            unnest(list_filter(product_name, x -> x.lang == 'main'))['text'] AS name
-        FROM products
-        WHERE list_contains(categories_tags, 'en:milks');
-
-        -- Search in array (using array_to_string)
-        SELECT count(code) as nb, allergens_tags
-        FROM products
-        WHERE regexp_matches(array_to_string(allergens_tags, ','), 'fr:')
-        GROUP BY allergens_tags
-        ORDER BY nb DESC;
-        """)
-        execute_query(duckdb_path, query, output_file)
-
     elif index == 41:
         query = dedent("""\
         -- Products by NOVA group
@@ -723,9 +704,10 @@ def sql(duckdb_path: Path, index: int, output_file: Path) -> None:
     
 if __name__ == "__main__":
     output_file = OUTPUT_PATH
-    duckdb_path = FILTERED_DB_PATH
     duckdb_path = FULL_DB_PATH
+    duckdb_path = FILTERED_DB_PATH
 
     open(output_file, 'w').close()
-    for index in range(1, 46):
+    sql(duckdb_path, 1, output_file)
+    for index in range(1, 50):
         sql(duckdb_path, index, output_file)

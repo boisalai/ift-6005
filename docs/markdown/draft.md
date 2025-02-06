@@ -1,7 +1,8 @@
-# Document de travail
+# Work Document
 
-Document de travail pour le projet intégrateur du cours IFT-6005.
-À la fin de ce projet, je devrais réécrire le texte de façon structurée.
+Working document for the IFT-6005 integration project.
+This document also contains draft notes and rough ideas.
+At the end of this project, I should rewrite the text in a structured way.
 
 ## Description du projet 
 

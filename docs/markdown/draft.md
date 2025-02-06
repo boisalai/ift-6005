@@ -56,6 +56,10 @@ Créez un environnement virtuel Python et installer les dépendances.
 python -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
+pip install 'smolagents[litellm]'
+pip install litellm
+pip install smolagents python-dotenv sqlalchemy --upgrade -q
+pip install markdownify duckduckgo-search smolagents --upgrade -q
 ```
 
 Les librairies utilisées sont les suivantes :
@@ -416,6 +420,7 @@ J'utilise le modèle `mistral:7b` (ou `qwen2-7b-instruct` à vérifier) pour ses
 
 Pour plus d'information sur Ollama, voir :
 
+- [DeepSeek R-1: A Game-Changer in AI and How to Use It Locally...](https://medium.com/@Shamimw/deepseek-r-1-a-game-changer-in-ai-and-how-to-use-it-locally-with-ollama-and-open-webui-09562e844866)
 - [Running LLMs Locally using Ollama](https://ai.gopubby.com/running-llms-locally-using-ollama-f17197f60450)
 - [Même article sur Archive.is](https://archive.is/https://ai.gopubby.com/running-llms-locally-using-ollama-f17197f60450)
 - https://lmstudio.ai/docs/advanced/tool-use
@@ -481,11 +486,16 @@ Voir aussi :
 - [Doriandarko deepseek-engineer](https://github.com/Doriandarko/deepseek-engineer/tree/main) : ce projet m'intrigue et pourrait être intéressant pour la suite.
 - Claude offre un outil pour améliorer les prompts, mais je crois qu'il faut acheter des crédits pour l'utiliser.
 
+#### Analyse de données
+
+Voir https://huggingface.co/learn/cookbook/en/agent_data_analyst
+
 #### Sélection dynamique de LLM pour accroître la performace et réduire les coûts (10h)
 
 #### Agents 
 
-Selon le document "Introduction to Agents.pdf", un agent est défini comme "un programme où les sorties du LLM contrôlent le workflow". Il présente différents niveaux d'agentivité :
+Selon le document "Introduction to Agents.pdf", un agent est défini comme "un programme où les sorties du LLM contrôlent le workflow" (*AI Agents are programs where LLM outputs control the workflow* en anglais). 
+Il présente différents niveaux d'agentivité :
 
 1. ☆☆☆ Simple processeur : Le LLM n'a pas d'impact sur le flux du programme
 2. ★☆☆ Routeur : Le LLM détermine un switch if/else 
@@ -533,7 +543,9 @@ Voir le livre de Chip Huyen Ai Enginering
 
 Pour plus d'information sur les agents, voir :
 
-
+- [What's next for AI agentic workflows ft. Andrew Ng of AI Fund](https://www.youtube.com/watch?v=sal78ACtGTc&t=52s)
+- [Gradio](https://freedium.cfd/https://medium.com/ai-simplified-in-plain-english/smolagents-deepseek-v3-web-scraping-multi-agent-system-for-data-automation-solution-5ae8d2d7f405)
+- [Alpine Agent: An AI Agent to Navigate Your Winter Mountain Adventures](https://huggingface.co/blog/florentgbelidji/alpine-agent)
 - [Building Effective Agents Cookbook](https://github.com/anthropics/anthropic-cookbook/tree/main/patterns/agents) from Anthropics
 - [Introducing AgentWorkflow: A Powerful System for Building AI Agent Systems](https://www.llamaindex.ai/blog/introducing-agentworkflow-a-powerful-system-for-building-ai-agent-systems) from LlamaIndex, and 
   [here](https://docs.llamaindex.ai/en/stable/understanding/agent/multi_agents/)
@@ -557,9 +569,45 @@ Pour plus d'information sur les agents, voir :
 
 #### Smolagents
 
+
+Le texte fourni détaille `smolagents`, une bibliothèque Python destinée à la création de systèmes agents. Elle met l'accent sur la simplicité et le support natif des agents de code, qui utilisent les LLM pour générer des actions en code, se révélant plus efficaces que les approches traditionnelles basées sur JSON. La documentation comprend des tutoriels, des guides conceptuels et des références d'API, ainsi que des instructions pour contribuer et respecter le code de conduite du projet. Les résultats des tests de performance soulignent la performance supérieure des agents de code. Un guide du contributeur et des instructions d'installation sont également fournis.
+
+==-=-=-=-=-=-=-
+
+Voici la traduction :
+
+`smolagents` est une bibliothèque permettant d'exécuter des agents puissants en quelques lignes de code. Elle fournit des outils pour créer et personnaliser des agents pour différents cas d'usage.
+
+Voici comment utiliser la bibliothèque `smolagents` :
+
+* **Installation :** Installation via pip : `pip install smolagents`. Certaines fonctionnalités nécessitent des installations supplémentaires (ex : `pip install smolagents[transformers]`).
+* **Création d'un Agent :**
+   * Pour initialiser un agent, il faut un **modèle de génération de texte** (`model`) et une liste d'**outils** utilisables (`tools`).
+   * Possibilité d'utiliser des modèles de diverses sources : API Hugging Face (`HfApiModel`), `transformers` (`TransformersModel`), `LiteLLM` (`LiteLLMModel`), etc.
+   * On peut utiliser un `CodeAgent` qui écrit ses actions en code, ou un `ToolCallingAgent` qui utilise un format JSON.
+* **Exécution d'un Agent :** Une fois initialisé, l'agent s'exécute via la méthode `.run()` en lui passant la tâche sous forme de chaîne de caractères.
+* **Outils :**
+   * Les outils sont des fonctions atomiques utilisables par l'agent, avec nom, description, types d'entrée et de sortie.
+   * Utilisation possible d'outils intégrés comme `DuckDuckGoSearchTool`, création personnalisée via le décorateur `@tool`, ou import depuis le Hub.
+   * Les outils peuvent être appelés manuellement avec leurs arguments.
+* **Systèmes Multi-Agents :** Support des systèmes multi-agents via l'objet `ManagedAgent` qui encapsule un agent dans un agent gestionnaire.
+* **Interface en Ligne de Commande :** Exécution via les commandes `smolagent` (tâches générales) et `webagent` (navigation web).
+
+**Concepts Clés :**
+* **Agents de Code :** Les agents écrivent leurs actions en code, plus efficace que le JSON standard.
+* **Framework ReAct :** Basé sur un cycle de raisonnement et d'action.
+* **Prompt Système :** Guide personnalisable pour les actions de l'agent.
+* **Description des Outils :** Nom, description, types d'entrée/sortie pour informer l'agent.
+* **Collections d'Outils :** Support des collections depuis Hugging Face Hub ou serveurs MCP.
+
+La bibliothèque offre aussi la journalisation, l'exécution sécurisée via E2B, et l'optimisation des performances.
+
+=-==-=-=--
+
+=-==-=-=-
+
 Smolagents de Hugging Face est une nouvelle bibliothèque Python qui simplifie la création d'agents IA.
 
-smolagents possède des qualités qui le rendent très prometteur pour ces applications agentiques :
 
 Les abstractions du framework sont maintenues au minimum.
 Alors que la plupart des frameworks font définir leurs actions aux agents en format JSON/texte, l'approche principale de smolagents est celle des Agents de Code où les actions sont écrites sous forme de snippets de code Python (ce qui est différent des agents qui écrivent du code).

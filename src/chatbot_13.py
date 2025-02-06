@@ -5,7 +5,7 @@ pip install smolagents python-dotenv sqlalchemy --upgrade -q
 
 https://huggingface.co/learn/cookbook/en/agent_data_analyst
 
-Ce code fonctionne très bien, le 3 février 2025.
+Ce code fonctionne très bien.
 """
 
 import warnings
@@ -13,6 +13,7 @@ warnings.filterwarnings("ignore", category=UserWarning)
 
 import json
 from pathlib import Path
+from typing import Dict, Any
 import os
 from dotenv import load_dotenv
 import duckdb
@@ -26,6 +27,7 @@ os.environ['LITELLM_LOG'] = 'DEBUG'
 
 DATA_DIR = Path("../data")
 FILTERED_DB_PATH = DATA_DIR / "food_canada.duckdb"
+DATA_DICT_PATH = DATA_DIR / "data_dictionary.json"
 
 class DuckDBTool(Tool):
     name = "sql_engine"
@@ -47,37 +49,65 @@ class DuckDBTool(Tool):
     }
     output_type = "string"
 
-    def setup(self):
-        self.is_initialized = True
+    def __init__(self, db_path: Path):
+        super().__init__()
+        self.db_path = db_path
+        self.connection = None
+        
+    def setup(self) -> None:
+        """Initialise la connexion à la base de données"""
+        if not self.db_path.exists():
+            print(f"Le fichier de base de données n'existe pas: {self.db_path}")
+        try:
+            self.connection = duckdb.connect(str(self.db_path))
+            self.is_initialized = True
+        except Exception as e:
+            print(f"Erreur de connexion : {str(e)}")
+            raise
+
+    def validate_query(self, query: str) -> None:
+        """Valide basiquement la requête SQL"""
+        if not query.strip():
+            raise ValueError("Requête vide")
+        if not query.lower().startswith(('select', 'with')):
+            raise ValueError("Seules les requêtes SELECT sont autorisées")
+
+    def format_output(self, columns: list, rows: list) -> Dict[str, Any]:
+        """Formate la sortie en dictionnaire JSON"""
+        return {
+            "columns": columns,
+            "rows": [tuple(str(item) for item in row) for row in rows],
+            "row_count": len(rows)
+        } 
 
     def forward(self, query: str) -> str:
-        if not query.strip():
-            return json.dumps({"error": "Requête vide"})
-
+        """Exécute la requête SQL et retourne les résultats"""
         try:
-            with duckdb.connect(str(FILTERED_DB_PATH)) as con:
-                # Exécution de la requête
-                result = con.sql(query)
-                
-                # Récupération des résultats
-                rows = result.fetchall()
-                columns = result.columns
-                
-                # Construction de la sortie
-                output = {
-                    "columns": columns,
-                    "rows": [tuple(str(item) for item in row) for row in rows],
-                    "row_count": len(rows)
-                }
+            self.validate_query(query)
             
-                return json.dumps(output)
+            if not self.connection:
+                self.setup()
                 
+            result = self.connection.sql(query)
+            output = self.format_output(result.columns, result.fetchall())
+            
+            return json.dumps(output)
+            
+        except (ValueError, DatabaseError) as e:
+            return json.dumps({"error": str(e)})
         except duckdb.Error as e:
             return json.dumps({"error": f"Erreur DuckDB: {str(e)}"})
         except Exception as e:
             return json.dumps({"error": f"Erreur inattendue: {str(e)}"})
 
+    def __del__(self):
+        """Ferme proprement la connexion à la base de données"""
+        if self.connection:
+            self.connection.close()
+
 # Initialisation du modèle
+# Éventuellement, utiliser qwen2.5-coder:3b pour un modèle plus rapide
+# Voir https://ollama.com/library/qwen2.5-coder:3b
 model = LiteLLMModel(
     model_id="ollama/phi4:latest",
     api_base="http://localhost:11434",
@@ -86,14 +116,12 @@ model = LiteLLMModel(
 )
 
 # Création de l'agent
-sql_engine = DuckDBTool()
+sql_engine = DuckDBTool(db_path=FILTERED_DB_PATH)
 agent = CodeAgent(tools=[sql_engine], model=model, 
     additional_authorized_imports=['json'])
 
 # Instructions pour l'agent
 ADDITIONAL_NOTES = """
-TU PARLES FRANÇAIS. Réponds toujours dans la langue de l'utilisateur.
-
 Procédure d'analyse :
 1. Exécuter la requête SQL avec sql_engine()
 2. Charger le résultat avec json.loads(result)
@@ -103,6 +131,7 @@ Procédure d'analyse :
    - Si row_count == 1 et 1 colonne → Valeur unique
    - Si plusieurs colonnes → Tableau de résultats
 5. Formater la réponse de manière claire et professionnelle
+6. Répondre dans la langue de l'utilisateur
 
 Exemples de code valides :
 ```py
@@ -160,6 +189,7 @@ def test():
 
 if __name__ == "__main__":
     test()
+
     # print(load_dict())
     # result = sql_engine("SELECT COUNT(*) FROM products")                                                                         
     # data = json.loads(result)

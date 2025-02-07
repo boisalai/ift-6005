@@ -68,18 +68,15 @@ GROUP BY nova_group;
 - For multilingual fields (`STRUCT[lang VARCHAR, "text" VARCHAR][]`):
   - Use `LIST_FILTER()` to select language
   - Access text with ['text']
-
 - For arrays (`VARCHAR[]`):
   - Use `LIST_CONTAINS()` for exact matches
   - Use `UNNEST() WITH column_alias` for detailed search with `LIKE`
   - Be aware that `UNNEST` can duplicate rows - use `DISTINCT` if needed
-
 - For text searches:
   - Use `LOWER()` for case-insensitive search
   - Use `LIKE` with wildcards (`%`) for partial matches
   - Prefer `UNNEST` with `LIKE` over `ARRAY_TO_STRING()`
-
-- Best practices:
+- Other tips:
   - Handle NULLs with `COALESCE()`
   - Cast timestamps using `TO_TIMESTAMP()`
   - Add `LIMIT` for large results

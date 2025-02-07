@@ -24,14 +24,25 @@ pip install -r requirements.txt
 ## Usage
 
 ```python
-from src.agent import FoodAgent
+def run(prompt: str) -> None:
+    response = manager_agent.run(
+        prompt,
+        additional_args={
+            "additional_notes": ADDITIONAL_NOTES,
+        }
+    )
+    print(f"Results:\n{response}")
 
-# Initialize the agent
-agent = FoodAgent()
-
-# Example query
-response = agent.query("Find organic products with high protein content")
+if __name__ == "__main__":
+    prompt = "Combien de produits dans la base de données?"
+    run(prompt)
 ```
+
+This will run the conversational agent with the specified prompt. You should see the results like this:
+
+![fig_01](img/fig_01.png)
+
+```bash
 
 ## Project Structure
 

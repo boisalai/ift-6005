@@ -81,6 +81,24 @@ class DuckDBSearchTool(Tool):
        HAVING count(*) > threshold
        ```
     
+    BEST PRACTICES
+    - For multilingual fields (`STRUCT[lang VARCHAR, "text" VARCHAR][]`):
+        - Use `LIST_FILTER()` to select language
+        - Access text with ['text']
+    - For arrays (`VARCHAR[]`):
+        - Use `LIST_CONTAINS()` for exact matches
+        - Use `UNNEST() WITH column_alias` for detailed search with `LIKE`
+        - Be aware that `UNNEST` can duplicate rows - use `DISTINCT` if needed
+    - For text searches:
+        - Use `LOWER()` for case-insensitive search
+        - Use `LIKE` with wildcards (`%`) for partial matches
+        - Prefer `UNNEST` with `LIKE` over `ARRAY_TO_STRING()`
+    - Other tips:
+        - Handle NULLs with `COALESCE()`
+        - Cast timestamps using `TO_TIMESTAMP()`
+        - Add `LIMIT` for large results
+        - Use column aliases in `UNNEST` with format: `UNNEST(array) AS alias(column)`
+                         
     KEY COLUMNS AND THEIR USAGE:
     - product_name: Multilingual product names (use list_filter for language selection)
     - categories_tags: Food category tags (e.g., 'en:snacks', 'fr:biscuits')
@@ -335,7 +353,7 @@ def run(prompt: str) -> None:
     print(f"Results:\n{response}")
 
 if __name__ == "__main__":
-    prompt = "Combien de produits dans la base de données?"
     prompt = "Quelles sont les qualités nutritives des pommes?"
     prompt = "Bonjour"
+    prompt = "Combien de produits dans la base de données?"
     run(prompt)

@@ -40,9 +40,7 @@ if __name__ == "__main__":
 
 This will run the conversational agent with the specified prompt. You should see the results like this:
 
-![fig_01](img/docs/fig_01.png)
-
-```bash
+![fig_01](docs/img/fig_01.png)
 
 ## Project Structure
 

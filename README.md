@@ -63,8 +63,7 @@ ift-6005/
 
 ## Development
 
-- Code formatting: Black
-- Type checking: mypy
+- Code quality and formatting: Black, Flake8, Pylint 
 - Testing: pytest
 
 ## Contributing

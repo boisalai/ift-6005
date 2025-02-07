@@ -57,10 +57,10 @@ Créez un environnement virtuel Python et installer les dépendances.
 python -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
-pip install 'smolagents[litellm]'
 pip install litellm
-pip install smolagents python-dotenv sqlalchemy --upgrade -q
-pip install markdownify duckduckgo-search smolagents --upgrade -q
+pip install smolagents==1.7.0 python-dotenv sqlalchemy --upgrade -q
+pip install 'smolagents[litellm]'
+pip install duckduckgo-search --upgrade -q
 ```
 
 Les librairies utilisées sont les suivantes :

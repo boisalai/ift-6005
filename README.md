@@ -5,11 +5,13 @@ Developed as part of IFT-6005 Integration Project at Université Laval.
 
 ## Features
 
-- Built with Hugging Face's smolagents library
+- Built with 🤗 Hugging Face's [smolagents](https://github.com/huggingface/smolagents) library
 - Support for complex food-related queries
-- Data visualization capabilities
-- Interactive conversation history
-
+- Semantic search in database (coming soon)
+- Search for complementary information in the Canada Food Guide
+- Data visualization capabilities (coming soon)
+- Interactive conversation history (coming soon)
+  
 ## Installation
 
 ```bash

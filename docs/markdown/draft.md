@@ -374,6 +374,7 @@ See also :
 Pour débuter, j'utilise `mistral:7b` avec `Ollama`. 
 Pour la liste des paramètres possibles, voir [Ollama Model File](https://github.com/ollama/ollama/blob/main/docs/modelfile.md#valid-parameters-and-values).
 
+Éventuellement, je devrais utiliser Qwen/Qwen2.5-Coder-32B-Instruct · Hugging Face
 
 ```bash
 brew install ollama
@@ -494,6 +495,9 @@ Voir https://huggingface.co/learn/cookbook/en/agent_data_analyst
 #### Sélection dynamique de LLM pour accroître la performace et réduire les coûts (10h)
 
 #### Agents 
+
+See https://www.analyticsvidhya.com/blog/2025/01/agentic-rag-with-smolagents/
+
 
 Selon le document "Introduction to Agents.pdf", un agent est défini comme "un programme où les sorties du LLM contrôlent le workflow" (*AI Agents are programs where LLM outputs control the workflow* en anglais). 
 Il présente différents niveaux d'agentivité :

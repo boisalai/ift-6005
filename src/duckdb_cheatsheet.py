@@ -11,7 +11,7 @@ FULL_DB_PATH = DATA_DIR / "food_full.duckdb"
 FILTERED_DB_PATH = DATA_DIR / "food_canada.duckdb"
 
 DOCS_DATA_DIR = Path("../docs/data")
-OUTPUT_PATH = DOCS_DATA_DIR / "duckdb_cheatsheet.md"
+OUTPUT_PATH = DOCS_DATA_DIR / "foo.md"
 DATA_DICT_PATH = DOCS_DATA_DIR / "data_dict.json"
 
 def load_dict() -> None:
@@ -751,18 +751,32 @@ def sql(duckdb_path: Path, index: int, output_file: Path) -> None:
     elif index == 50:
         query = dedent("""\
         SELECT brands 
-FROM products 
-WHERE brands 
-LIKE '%organic%';
+        FROM products 
+        WHERE brands 
+        LIKE '%organic%';
                        """)
+        
+    elif index == 51:
+        query = dedent("""\
+        SELECT product_name
+        FROM products 
+        LIMIT 5;
+        """)
+        execute_query(duckdb_path, query, output_file)
+
+        query = dedent("""\
+        SELECT * 
+        FROM pragma_table_info('products') 
+        WHERE name = 'product_name';
+        """)
         execute_query(duckdb_path, query, output_file)
 
     
 if __name__ == "__main__":
     output_file = OUTPUT_PATH
-    duckdb_path = FILTERED_DB_PATH
     duckdb_path = FULL_DB_PATH
+    duckdb_path = FILTERED_DB_PATH
 
     open(output_file, 'w').close()
-    for index in range(1, 99):
+    for index in range(51, 52):
         sql(duckdb_path, index, output_file)

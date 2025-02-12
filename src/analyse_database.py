@@ -60,8 +60,7 @@ class DuckDBSearchTool(Tool):
     AND column_name = '[column_name]';
 
     -- Show detailed information about columns in the products table
-    PRAGMA table_info(products)
-    WHERE name = '[column_name]';
+    SELECT * FROM pragma_table_info('products') WHERE name = 'column_name';
 
     -- Sample values
     SELECT DISTINCT [column_name]
@@ -237,19 +236,19 @@ class WriteTool(Tool):
     }
     output_type = "string"
 
+    def __init__(self, docs_dir: Path):
+        super().__init__()
+        self.docs_dir = docs_dir
+        self.docs_dir.mkdir(exist_ok=True)
+        self.file_path = self.docs_dir / "columns_documentation.md"
+
     def forward(self, column_name: str, description: str, data_type: str, 
                 structure: str, purpose: str, analysis: str, 
                 web_research: str) -> str:
         try:
-            # Create a docs directory if it doesn't exist
-            docs_dir = DATA_DIR / "docs"
-            docs_dir.mkdir(exist_ok=True)
-            
-            # Single documentation file for all columns
-            file_path = docs_dir / "columns_documentation.md"
-            
             # Format the content
             formatted_content = dedent(f"""\
+                ## {column_name}
                 - Description: {description}
                 - Data Type: {data_type}
                 - Structure: {structure}
@@ -258,16 +257,8 @@ class WriteTool(Tool):
                 - Web Research: {web_research}
             """)
             
-            # Add separator and timestamp for better organization
-            from datetime import datetime
-            separator = "\n" + "="*80 + "\n"
-            timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            
-            header = f"{separator}## Column: {column_name} (Documentation added: {timestamp})\n\n"
-            
             # Append content to file
-            with open(file_path, "a", encoding="utf-8") as f:
-                f.write(header)
+            with open(self.file_path, "a", encoding="utf-8") as f:
                 f.write(formatted_content)
                 f.write("\n")
                             
@@ -315,7 +306,7 @@ def create_model(
         # Requires an API key from Anthropic
         # $4/MTok (see https://www.anthropic.com/pricing#anthropic-api)
         return LiteLLMModel(
-            model_id="anthropic/claude-3.5-haiku",
+            model_id="anthropic/claude-3-haiku-20240307",
             max_tokens=1024,
         )
 
@@ -341,7 +332,8 @@ def create_model(
 web_search_tool = FoodGuideSearchTool()
 sql_tool = DuckDBSearchTool(db_path=FILTERED_DB_PATH)
 
-model = create_model("claude-sonnet") # "claude-sonnet" or "claude-haiku" or "ollama/phi4:latest" ou "ollama/qwen:14b"
+# model = create_model("claude-sonnet") # "claude-sonnet" or "claude-haiku" or "ollama/phi4:latest" ou "ollama/qwen:14b"
+model = create_model("claude-haiku") # "claude-sonnet" or "claude-haiku" or "ollama/phi4:latest" ou "ollama/qwen:14b"
 
 web_agent = ToolCallingAgent(
     tools=[web_search_tool, visit_webpage], model=model, max_steps=3
@@ -367,7 +359,7 @@ managed_sql_agent = ManagedAgent(
     ),
 )
 
-write_tool = WriteTool()
+write_tool = WriteTool(docs_dir=DATA_DIR/"docs")
 write_agent = ToolCallingAgent(tools=[write_tool], model=model, max_steps=1)
 managed_write_agent = ManagedAgent(
     agent=write_agent,

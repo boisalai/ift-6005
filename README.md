@@ -23,6 +23,15 @@ source venv/bin/activate  # On macOS/Linux
 pip install -r requirements.txt
 ```
 
+Setup your secrets in a `.env` file:
+
+```bash
+HUGGINGFACEHUB_API_TOKEN
+SERPAPI_API_KEY
+OPENAI_API_KEY
+ANTHROPIC_API_KEY
+```
+
 ## Usage
 
 ```python
@@ -66,13 +75,9 @@ ift-6005/
 - Code quality and formatting: Black, Flake8, Pylint 
 - Testing: pytest
 
-## Contributing
+## Contributions are welcome
 
-- Fork the repository
-- Create feature branch
-- Commit changes
-- Push to branch
-- Open pull request
+If you found a bug 🐛 in this site, please [open an issue](https://github.com/boisalai/ift-6005/issues) and describe the problem.
 
 ## License
 

@@ -369,7 +369,18 @@ See also :
 
 ### Développement du système de base (75h)
 
+#### NEW Agents
+
+As shown by [Wang et al. (2024)](https://huggingface.co/papers/2402.01030), letting the agent express its actions in code has several advantages compared to using dictionary-like outputs such as JSON. For us, the main advantage is that **code is a very optimized way to express complex sequences of actions**. Arguably if there had been a better way to rigorously express detailed actions than our current programming languages, it would have become a new programming language!
+
+See [https://huggingface.co/blog/beating-gaia](https://huggingface.co/blog/beating-gaia)
+
+See also [https://weaviate.io/blog/ai-agents](https://weaviate.io/blog/ai-agents).
+
 #### Implémentation du module de dialogue avec Qwen2-7B-Instruct (20h)
+
+Je devrais commencer par utiliser un modèle de langage pour générer des requêtes SQL à partir des questions posées par l'utilisateur.
+It uses Qwen/Qwen2.5-Coder-32B-Instruct as the LLM engine. This is a very capable model
 
 Pour débuter, j'utilise `mistral:7b` avec `Ollama`. 
 Pour la liste des paramètres possibles, voir [Ollama Model File](https://github.com/ollama/ollama/blob/main/docs/modelfile.md#valid-parameters-and-values).
@@ -473,7 +484,10 @@ Pour plus d'information, voir :
 #### Création du connecteur de base de données DuckDB (5h)
 #### Implémentation du générateur de réponses simples (25h)
 
+#### NEW Guide alimentaire canadien
 
+TODO: See [https://huggingface.co/blog/beating-gaia](https://huggingface.co/blog/beating-gaia) il utilise un outil
+pour naviger dans les pages Web...
 
 ### Rapport de mi-session (25h)
 #### Analyse des résultats (10h)
@@ -748,6 +762,18 @@ La recherche vectorielle, potentiellement intéressant :
 
 ### Documentation et finalisation (25h)
 #### Rédaction du rapport final (15h)
+
+<!--
+From Andriy Burkov
+I regularly receive direct messages from people wondering what's wrong with the so-called agents and agentic frameworks. Here's my answer.
+
+The main topic of my PhD was agents and multi-agent systems. What they currently call "agents" (LLMs that were instructed to do something) aren't agents. LLMs hallucinate too much to be trusted with any important task, even if you have 100 "agents" to do the job and 100 to validate it. And even in this case, you can simply use an LLM directly, without using any "agentic" framework, and you will get the same deplorable result.
+
+LLMs are only good under two conditions: 1) they are used on data similar to the Web data (which literally means the input must be some Web data) and 2) their output is always used as a recommendation to a human expert (which means that they cannot be programmed to work autonomously, as these framework creators want you to believe).
+
+If you only apply agentic swarms under conditions 1) and 2), you will quickly realize you don't have much use cases and you don't need agentic swarms.
+-->
+
 #### Préparation de la présentation orale (5h)
 #### Nettoyage du code et de la documentation du dépôt GitHub (5h)
 

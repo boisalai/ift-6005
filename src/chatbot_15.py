@@ -380,7 +380,5 @@ def run(prompt: str) -> None:
 
 
 if __name__ == "__main__":
-    # prompt = "Quelles sont les qualités nutritives des pommes?"
-    # prompt = "Bonjour"
     PROMPT = "Combien de produits dans la base de données?"
     run(PROMPT)

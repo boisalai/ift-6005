@@ -1,0 +1,168 @@
+\documentclass[12pt]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{enumitem}
+\usepackage[margin=2.5cm]{geometry}
+
+\title{IFT-6005 Rapport de suivi d'avancement\\Agent conversationnel Open Food Facts}
+\author{Alain Boisvert\\
+Matricule: 994 029 313}
+\date{13 février 2025}
+
+\begin{document}
+\maketitle
+
+\section{Rappel du projet}
+
+Le projet vise à développer un agent conversationnel permettant d'interroger la base de données Open Food Facts. L'objectif est de permettre aux utilisateurs de poser des questions en langage naturel sur les produits alimentaires, sans avoir besoin de connaissances en SQL ou en bases de données.
+
+Le système repose sur une architecture modulaire comprenant :
+\begin{itemize}
+    \item Un module de dialogue basé sur un LLM
+    \item Un convertisseur de langage naturel vers SQL
+    \item Un connecteur de base de données DuckDB
+    \item Un générateur de réponses naturelles
+\end{itemize}
+
+\section{Rappel des tâches planifiées}
+
+Selon la planification initiale, les tâches à réaliser sont regroupées en cinq phases principales :
+
+\begin{enumerate}
+    \item Préparation et configuration (30h)
+    \begin{itemize}
+        \item Configuration de l'environnement
+        \item Préparation de la base de données
+        \item Création du jeu de test
+        \item Implémentation des métriques d'évaluation
+    \end{itemize}
+
+    \item Développement du système de base (75h)
+    \item Rapport de mi-session (25h)
+    \item Optimisations et fonctionnalités avancées (60h)
+    \item Documentation et finalisation (25h)
+\end{enumerate}
+
+\section{Avancement des tâches}
+
+\subsection{Tâches complétées}
+\begin{itemize}
+    \item Mise en place de l'environnement de développement (Visual Studio Code, Python, \LaTeX, \href{https://github.com/boisalai/ift-6005}{GitHub})
+    \item Création de la base de données DuckDB pour Open Food Facts à partir du fichier Parquet
+    \item Exploration et analyse de la structure de la base de données
+    \item Développement d'un premier agent conversationnel utilisant \href{https://github.com/huggingface/smolagents}{smolagents}
+        \begin{itemize}
+            \item Capable de répondre à des requêtes simples
+            \item Outil pour interroger une base de données DuckDB
+            \item Outil pour chercher des informations sur le site Web du Guide alimentaire canadien 
+        \end{itemize}
+\end{itemize}
+
+\subsection{Tâches en cours}
+\begin{itemize}
+    \item Documentation détaillée de la base de données pour améliorer la compréhension du modèle
+    \item Apprentissage de smolagents
+    \item Optimisation des prompts pour réduire les coûts d'utilisation
+\end{itemize}
+
+\subsection{Tâches à débuter}
+\begin{itemize}
+    \item Création du jeu de test de 100 questions
+    \item Implémentation des scripts d'évaluation (EX, TCM, TRM)
+    \item Lire plus attentivement les articles sélectionnés dans la revue de littérature et indentifier les points importants à retenir pour le présent projet
+\end{itemize}
+
+\section{Problèmes rencontrés}
+
+\subsection{Gestion des données volumineuses}
+La taille importante du fichier Parquet source a posé des défis techniques pour le traitement sur mon MacBook Pro M1 16 Go RAM. 
+La gestion efficace de ce volume de données nécessitait une approche optimisée.
+
+\subsection{Sélection des technologies}
+Le choix du framework pour l'agent conversationnel a nécessité une analyse comparative approfondie, notamment 
+entre \href{https://github.com/crewAIInc/crewAI}{CrewAI} et \href{https://github.com/huggingface/smolagents}{smolagents}. 
+Les critères de sélection incluaient :
+\begin{itemize}
+    \item La facilité d'intégration
+    \item Les capacités d'exécution de code
+    \item La flexibilité du système
+\end{itemize}
+
+\subsection{Performance des modèles}
+Les premiers tests avec des modèles plus légers (Qwen2-7B-Instruct) ont révélé des limitations dans l'interprétation des prompts et l'interaction avec DuckDB, nécessitant l'utilisation de modèles plus puissants mais plus coûteux.
+
+\section{Solutions proposées}
+
+\subsection{Gestion des données}
+Adoption de DuckDB comme solution de base de données, offrant :
+\begin{itemize}
+    \item Une excellente performance pour les requêtes SQL
+    \item Une gestion efficace de la mémoire
+    \item Une intégration simple avec Python
+\end{itemize}
+
+\subsection{Framework d'agent}
+Choix de smolagents de Hugging Face pour :
+\begin{itemize}
+    \item Sa simplicité d'utilisation
+    \item Son approche optimisée pour les "agents de code", c'est-à-dire les agents qui génèrent et exécutent du code Python
+\end{itemize}
+
+\subsection{Optimisation des modèles}
+\begin{itemize}
+    \item Utilisation temporaire de Claude Sonnet pour le développement initial
+    \item Travail en cours sur l'optimisation des prompts pour permettre l'utilisation de modèles plus légers
+    \item Documentation améliorée de la base de données pour faciliter la compréhension du modèle
+\end{itemize}
+
+\section{Plan d'action}
+
+Pour les deux prochaines semaines, les priorités sont :
+
+\begin{enumerate}
+    \item Création du jeu de test
+        \begin{itemize}
+            \item Développer 100 questions de référence
+            \item Assurer une diversité des cas d'utilisation
+            \item Inclure des questions en français et en anglais
+        \end{itemize}
+    
+    \item Implémentation des métriques d'évaluation
+        \begin{itemize}
+            \item Précision d'exécution (EX)
+            \item Taux de couverture des données manquantes (TCM)
+            \item Temps de réponse moyen (TRM)
+        \end{itemize}
+    
+    \item Optimisation des prompts
+        \begin{itemize}
+            \item Réduire la dépendance aux modèles LLM coûteux
+            \item Améliorer la précision des réponses
+        \end{itemize}
+    
+    \item Documentation de la base de données
+        \begin{itemize}
+            \item Compléter la documentation des colonnes de la table sur les produits alimentaires
+            \item Optimiser les instructions données au LLM pour les requêtes SQL
+        \end{itemize}
+
+    \item Revue de la littérature
+        \begin{itemize}
+            \item Lire attentivement les articles sélectionnés
+            \item Identifier les points importants à retenir pour le projet
+        \end{itemize}
+\end{enumerate}
+
+\section{Conclusion}
+
+Le projet progresse selon le plan initial. Les défis rencontrés sont gérés au fur et à mesure.
+
+Les prochaines étapes se concentreront sur la création du jeu de test et l'implémentation des métriques d'évaluation. L'optimisation des prompts et la documentation approfondie de la base de données permettront d'améliorer les performances tout en réduisant les coûts d'exploitation.
+
+La base technique établie jusqu'à présent devrait fournir une base solide pour le développement des fonctionnalités plus avancées prévues dans les phases ultérieures du projet.
+
+\end{document}

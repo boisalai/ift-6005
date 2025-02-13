@@ -13,6 +13,7 @@ from smolagents import (
     Tool,
     CodeAgent,
     ManagedAgent,
+    ToolCallingAgent,
     DuckDuckGoSearchTool,
     VisitWebpageTool,
     HfApiModel,
@@ -262,29 +263,37 @@ class FoodGuideSearchTool(DuckDuckGoSearchTool):
 model = create_model("claude-sonnet")
 
 sql_tool = DuckDBSearchTool(db_path=FILTERED_DB_PATH)
-sql_agent = ManagedAgent(
-    model=model, 
-    tools=[sql_tool], 
-    max_steps=3
+sql_agent = ToolCallingAgent(tools=[sql_tool], model=model, max_steps=3)
+managed_sql_agent = ManagedAgent(
+    agent=sql_agent,
+    name="search",
+    description=dedent(
+        """\
+    Queries the Open Food Facts Canadian products database using DuckDB SQL syntax.
+    Input a valid DuckDB SQL query to search product information."""
+    ),
 )
 
 web_search_tool = FoodGuideSearchTool()
 visit_webpage = VisitWebpageTool()
-web_agent = ManagedAgent(
-    model=model, 
-    tools=[web_search_tool, visit_webpage], 
-    max_steps=3
+web_agent = ToolCallingAgent(
+    tools=[web_search_tool, visit_webpage], model=model, max_steps=3
+)
+managed_web_agent = ManagedAgent(
+    agent=web_agent,
+    name="search",
+    description=dedent(
+        """\
+    Searches Canada's Food Guide website for nutrition and dietary guidance.
+    Accepts natural language queries in English and French."""
+    ),
 )
 
 agent = CodeAgent(
+    tools=[],
     model=model,
-    managed_agents=[sql_agent, web_agent],
-    max_steps=6,
-    verbosity_level=1,
-    grammar=None,
-    planning_interval=None,
-    name=None,
-    description=None
+    managed_agents=[managed_web_agent, managed_sql_agent],
+    additional_authorized_imports=["json"],
 )
 
 # Additional instructions for the agent

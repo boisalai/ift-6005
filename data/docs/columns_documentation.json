@@ -917,6 +917,243 @@
               "sql": "SELECT CASE ingredients_from_palm_oil_n WHEN 0 THEN 'No Palm Oil' WHEN 1 THEN 'One Palm Oil Ingredient' WHEN 2 THEN 'Two Palm Oil Ingredients' END as category, COUNT(*) as count FROM products WHERE ingredients_from_palm_oil_n IS NOT NULL GROUP BY ingredients_from_palm_oil_n ORDER BY ingredients_from_palm_oil_n"
             }
           ]
+        },
+        "ingredients": {
+          "type": "VARCHAR",
+          "description": "JSON array containing detailed information about product ingredients. Each ingredient is stored as a JSON object containing properties such as ingredient name (text), percentage information (percent_min, percent_max, percent_estimate), taxonomy identification (id, is_in_taxonomy), ingredient rank, and dietary information (vegan status).",
+          "examples": [
+            {
+              "text": "whole grain wheat flour",
+              "percent_min": 60,
+              "percent_max": 100,
+              "percent_estimate": 80,
+              "id": "en:whole-grain-wheat-flour",
+              "rank": 1,
+              "is_in_taxonomy": true
+            },
+            {
+              "text": "milk",
+              "percent_estimate": 95,
+              "id": "en:milk",
+              "rank": 1,
+              "is_in_taxonomy": true,
+              "vegan": "no"
+            },
+            {
+              "text": "sugar",
+              "percent_estimate": 30,
+              "id": "en:sugar",
+              "rank": 2,
+              "is_in_taxonomy": true
+            }
+          ],
+          "is_nullable": true,
+          "common_queries": [
+            {
+              "description": "Find products containing a specific ingredient (e.g., milk) using text search",
+              "sql": "SELECT code, ingredients FROM products WHERE ingredients IS NOT NULL AND ingredients LIKE '%\"text\":\"milk\"%' LIMIT 1000"
+            },
+            {
+              "description": "List products sorted by number of ingredients",
+              "sql": "WITH ingredient_counts AS (SELECT code, (LENGTH(ingredients) - LENGTH(REPLACE(ingredients, '{\"text\":', ''))) / LENGTH('{\"text\":') as ingredient_count FROM products WHERE ingredients IS NOT NULL) SELECT code, ingredient_count FROM ingredient_counts ORDER BY ingredient_count DESC LIMIT 1000"
+            },
+            {
+              "description": "Find products with high percentage of main ingredient (over 90%)",
+              "sql": "SELECT code, ingredients FROM products WHERE ingredients IS NOT NULL AND ingredients LIKE '%\"percent_estimate\":9%' AND ingredients LIKE '%\"rank\":1%' LIMIT 1000"
+            }
+          ]
+        },
+        "ingredients_n": {
+          "type": "INTEGER",
+          "description": "Number of ingredients in a product. Represents the total count of distinct ingredients used in the product's composition. Values range from 0 to 289, with an average of about 17 ingredients per product.",
+          "examples": [
+            1,
+            4,
+            17
+          ],
+          "is_nullable": true,
+          "common_queries": [
+            {
+              "description": "Find products with ingredient counts above the 90th percentile (complex products)",
+              "sql": "WITH stats AS ( SELECT PERCENTILE_CONT(0.9) WITHIN GROUP (ORDER BY ingredients_n) as p90 FROM products WHERE ingredients_n IS NOT NULL ) SELECT code, product_name, ingredients_n FROM products, stats WHERE ingredients_n > stats.p90 ORDER BY ingredients_n DESC LIMIT 1000"
+            },
+            {
+              "description": "Get distribution of products by ingredient count ranges",
+              "sql": "SELECT CASE WHEN ingredients_n BETWEEN 0 AND 5 THEN '0-5' WHEN ingredients_n BETWEEN 6 AND 10 THEN '6-10' WHEN ingredients_n BETWEEN 11 AND 20 THEN '11-20' ELSE '21+' END as ingredient_range, COUNT(*) as product_count, ROUND(COUNT(*) * 100.0 / SUM(COUNT(*)) OVER (), 2) as percentage FROM products WHERE ingredients_n IS NOT NULL GROUP BY 1 ORDER BY MIN(ingredients_n)"
+            },
+            {
+              "description": "Find products with abnormally high or low ingredient counts (potential data quality issues)",
+              "sql": "WITH stats AS ( SELECT AVG(ingredients_n) as avg_ingredients, STDDEV(ingredients_n) as stddev_ingredients FROM products WHERE ingredients_n IS NOT NULL ) SELECT code, product_name, ingredients_n FROM products, stats WHERE ingredients_n IS NOT NULL AND (ingredients_n = 0 OR ingredients_n > avg_ingredients + 2 * stddev_ingredients) ORDER BY ingredients_n DESC LIMIT 1000"
+            }
+          ]
+        },
+        "ingredients_percent_analysis": {
+          "type": "INTEGER",
+          "description": "A flag indicating the status of ingredients percentage analysis. Value 1 indicates successful parsing of ingredients percentages, -1 indicates failed parsing, and NULL indicates no analysis was performed.",
+          "examples": [
+            1,
+            -1,
+            null
+          ],
+          "is_nullable": true,
+          "common_queries": [
+            {
+              "description": "Get distribution of ingredients percentage analysis status",
+              "sql": "SELECT ingredients_percent_analysis, COUNT(*) as count, ROUND(COUNT(*) * 100.0 / (SELECT COUNT(*) FROM products), 2) as percentage FROM products GROUP BY ingredients_percent_analysis ORDER BY ingredients_percent_analysis"
+            },
+            {
+              "description": "Find products with successful ingredients percentage analysis and their ingredients",
+              "sql": "SELECT code, ingredients_text FROM products WHERE ingredients_percent_analysis = 1 LIMIT 1000"
+            },
+            {
+              "description": "Compare products with failed vs successful ingredients percentage analysis by product category",
+              "sql": "SELECT categories_tags[1] as main_category, ingredients_percent_analysis, COUNT(*) as count FROM products WHERE ingredients_percent_analysis IS NOT NULL GROUP BY categories_tags[1], ingredients_percent_analysis ORDER BY main_category, ingredients_percent_analysis LIMIT 1000"
+            }
+          ]
+        },
+        "ingredients_original_tags": {
+          "type": "VARCHAR[]",
+          "description": "An array of standardized ingredient tags, typically prefixed with language codes (e.g., 'en:', 'fr:'). Each tag represents a single ingredient in its normalized form, making it easier to search and analyze product compositions. The tags follow the Open Food Facts taxonomy.",
+          "examples": [
+            "['en:water', 'en:sugar', 'en:carbon-dioxide']",
+            "['en:fortified-wheat-flour', 'en:sugar', 'en:vegetable-oil', 'en:salt']",
+            "['en:milk-chocolate', 'en:sugar', 'en:cocoa-butter', 'en:cocoa-paste', 'en:milk-powder']"
+          ],
+          "is_nullable": true,
+          "common_queries": [
+            {
+              "description": "Find the most common ingredients in products and their frequency of use",
+              "sql": "SELECT unnest(ingredients_original_tags) as ingredient, COUNT(*) as frequency FROM products WHERE ingredients_original_tags IS NOT NULL GROUP BY ingredient ORDER BY frequency DESC LIMIT 1000;"
+            },
+            {
+              "description": "Find all products containing a specific ingredient (e.g., sugar)",
+              "sql": "SELECT code, product_name, ingredients_original_tags FROM products WHERE array_contains(ingredients_original_tags, 'en:sugar') LIMIT 1000;"
+            },
+            {
+              "description": "Find products with the most ingredients, sorted by ingredient count",
+              "sql": "SELECT code, product_name, array_length(ingredients_original_tags) as ingredient_count, ingredients_original_tags FROM products WHERE ingredients_original_tags IS NOT NULL ORDER BY array_length(ingredients_original_tags) DESC LIMIT 1000;"
+            }
+          ]
+        },
+        "ingredients_tags": {
+          "type": "VARCHAR[]",
+          "description": "An array of standardized ingredient tags in English, using the Open Food Facts taxonomy. Each tag is prefixed with 'en:' and represents either a specific ingredient or a category. The tags are hierarchically organized, meaning an ingredient may be tagged both specifically (e.g., 'en:wheat-flour') and categorically (e.g., 'en:cereal').",
+          "examples": [
+            "['en:blue-agave-syrup']",
+            "['en:water', 'en:sugar', 'en:salt']",
+            "['en:fortified-wheat-flour', 'en:cereal', 'en:wheat']"
+          ],
+          "is_nullable": true,
+          "common_queries": [
+            {
+              "description": "Find the most common ingredients in products",
+              "sql": "SELECT unnest(ingredients_tags) as ingredient, COUNT(*) as count FROM products WHERE ingredients_tags IS NOT NULL GROUP BY ingredient ORDER BY count DESC LIMIT 1000"
+            },
+            {
+              "description": "Find products containing a specific ingredient (e.g., water)",
+              "sql": "SELECT code, product_name, ingredients_tags FROM products WHERE ingredients_tags IS NOT NULL AND array_contains(ingredients_tags, 'en:water') LIMIT 1000"
+            },
+            {
+              "description": "Find products by number of ingredients, ordered by complexity",
+              "sql": "SELECT code, product_name, array_length(ingredients_tags) as ingredient_count FROM products WHERE ingredients_tags IS NOT NULL ORDER BY ingredient_count DESC LIMIT 1000"
+            }
+          ]
+        },
+        "ingredients_with_specified_percent_n": {
+          "type": "INTEGER",
+          "description": "Counts the number of ingredients in a product that have their percentage explicitly specified. This helps track transparency in ingredient labeling, ranging from 0 to 15.",
+          "examples": [
+            0,
+            1,
+            3
+          ],
+          "is_nullable": true,
+          "common_queries": [
+            {
+              "description": "Find products with the most detailed ingredient percentage information (top 1000 products with highest number of specified percentages)",
+              "sql": "SELECT code, product_name, ingredients_with_specified_percent_n FROM products WHERE ingredients_with_specified_percent_n > 0 ORDER BY ingredients_with_specified_percent_n DESC LIMIT 1000"
+            },
+            {
+              "description": "Get the distribution of products based on number of ingredients with specified percentages",
+              "sql": "SELECT ingredients_with_specified_percent_n, COUNT(*) as product_count FROM products WHERE ingredients_with_specified_percent_n IS NOT NULL GROUP BY ingredients_with_specified_percent_n ORDER BY ingredients_with_specified_percent_n"
+            },
+            {
+              "description": "Calculate the percentage of products that have at least one ingredient with specified percentage",
+              "sql": "SELECT ROUND(COUNT(CASE WHEN ingredients_with_specified_percent_n > 0 THEN 1 END) * 100.0 / COUNT(*), 2) as percentage_with_specs FROM products WHERE ingredients_with_specified_percent_n IS NOT NULL"
+            }
+          ]
+        },
+        "ingredients_text": {
+          "type": "STRUCT(lang VARCHAR, text VARCHAR)[]",
+          "description": "Multi-language ingredient lists for products. Each entry in the array contains a language identifier and the corresponding ingredients text in that language. Common languages include 'en' (English), 'fr' (French), and 'main' (primary language).",
+          "examples": [
+            "[{'lang': 'en', 'text': 'Pure organic maple syrup'}, {'lang': 'main', 'text': 'Pure organic maple syrup'}]",
+            "[{'lang': 'en', 'text': 'water, sugar, propylene glycol caramel color, ethyl vanillin, artificial flavor'}]",
+            "[{'lang': 'en', 'text': 'lowfat milk, vitamin A palmitate, vitamin D3'}, {'lang': 'fr', 'text': 'lait faible en gras, palmitate de vitamine A, vitamine D3'}]"
+          ],
+          "is_nullable": true,
+          "common_queries": [
+            {
+              "description": "Get product ingredients in English, falling back to main language if English is not available",
+              "sql": "SELECT code, COALESCE( UNNEST(LIST_FILTER(ingredients_text, x -> x.lang = 'en'))['text'], UNNEST(LIST_FILTER(ingredients_text, x -> x.lang = 'main'))['text'] ) AS ingredients FROM products WHERE ingredients_text IS NOT NULL LIMIT 1000;"
+            },
+            {
+              "description": "Get products with ingredients in both English and French",
+              "sql": "SELECT code, UNNEST(LIST_FILTER(ingredients_text, x -> x.lang = 'en'))['text'] as en_ingredients, UNNEST(LIST_FILTER(ingredients_text, x -> x.lang = 'fr'))['text'] as fr_ingredients FROM products WHERE ingredients_text IS NOT NULL AND EXISTS ( SELECT 1 FROM UNNEST(ingredients_text) t WHERE t.lang = 'en' ) AND EXISTS ( SELECT 1 FROM UNNEST(ingredients_text) t WHERE t.lang = 'fr' ) LIMIT 1000;"
+            },
+            {
+              "description": "Count number of products with missing ingredients text",
+              "sql": "SELECT COUNT(*) as total_products, COUNT(CASE WHEN ingredients_text IS NULL THEN 1 END) as missing_ingredients, ROUND(COUNT(CASE WHEN ingredients_text IS NULL THEN 1 END) * 100.0 / COUNT(*), 2) as missing_percentage FROM products;"
+            }
+          ]
+        },
+        "ingredients_with_unspecified_percent_n": {
+          "type": "INTEGER",
+          "description": "Counts the number of ingredients in a product that don't have their percentages specified. This metric is important for assessing product transparency and data completeness in ingredient listings.",
+          "examples": [
+            5,
+            44,
+            271
+          ],
+          "is_nullable": true,
+          "common_queries": [
+            {
+              "description": "Find products with the highest number of unspecified ingredient percentages, which might need attention for transparency improvement",
+              "sql": "SELECT code, product_name, ingredients_with_unspecified_percent_n FROM products WHERE ingredients_with_unspecified_percent_n > 50 ORDER BY ingredients_with_unspecified_percent_n DESC LIMIT 1000;"
+            },
+            {
+              "description": "Analyze the distribution of products based on their number of unspecified ingredients to understand overall transparency levels",
+              "sql": "SELECT CASE WHEN ingredients_with_unspecified_percent_n <= 10 THEN '1-10' WHEN ingredients_with_unspecified_percent_n <= 20 THEN '11-20' WHEN ingredients_with_unspecified_percent_n <= 30 THEN '21-30' ELSE 'Over 30' END as range, COUNT(*) as count FROM products WHERE ingredients_with_unspecified_percent_n IS NOT NULL GROUP BY 1 ORDER BY 1;"
+            },
+            {
+              "description": "Identify products where all ingredients lack percentage specifications, calculated as a ratio of unspecified to total ingredients",
+              "sql": "SELECT code, product_name, ingredients_with_unspecified_percent_n, ingredients_n, ROUND(CAST(ingredients_with_unspecified_percent_n AS FLOAT) / NULLIF(ingredients_n, 0) * 100, 2) as unspecified_percentage FROM products WHERE ingredients_with_unspecified_percent_n > 0 AND ingredients_n > 0 ORDER BY unspecified_percentage DESC LIMIT 1000;"
+            }
+          ]
+        },
+        "ingredients_without_ciqual_codes_n": {
+          "type": "INTEGER",
+          "description": "Count of ingredients in the product that do not have associated CIQUAL codes. CIQUAL codes are standardized references used in food composition databases. This metric indicates how many ingredients in a product lack standardized classification.",
+          "examples": [
+            0,
+            1,
+            136
+          ],
+          "is_nullable": true,
+          "common_queries": [
+            {
+              "description": "Get distribution of products by number of ingredients without CIQUAL codes",
+              "sql": "SELECT ingredients_without_ciqual_codes_n, COUNT(*) as product_count FROM products WHERE ingredients_without_ciqual_codes_n IS NOT NULL GROUP BY ingredients_without_ciqual_codes_n ORDER BY ingredients_without_ciqual_codes_n"
+            },
+            {
+              "description": "Find products with unusually high number of uncoded ingredients (more than 50)",
+              "sql": "SELECT code, product_name, ingredients_without_ciqual_codes_n FROM products WHERE ingredients_without_ciqual_codes_n > 50 ORDER BY ingredients_without_ciqual_codes_n DESC"
+            },
+            {
+              "description": "Calculate data completeness statistics for this field",
+              "sql": "SELECT COUNT(*) as total_products, COUNT(ingredients_without_ciqual_codes_n) as products_with_data, ROUND(COUNT(ingredients_without_ciqual_codes_n) * 100.0 / COUNT(*), 2) as completion_rate FROM products"
+            }
+          ]
         }
       }
     }

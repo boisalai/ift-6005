@@ -1,3 +1,8 @@
+"""
+Changes:
+- Version 17:
+    - Added sqlglot and validate_query() function
+"""
 import os
 import re
 import json
@@ -7,6 +12,7 @@ from textwrap import dedent
 from typing import Dict, Any, Union
 
 import duckdb
+import sqlglot
 from dotenv import load_dotenv
 from smolagents import tool
 from smolagents import (
@@ -210,6 +216,17 @@ class DuckDBSearchTool(Tool):
             print(f"Connection error: {str(e)}")
             raise
 
+    def validate_query(query: str) -> tuple[bool, str]:
+        """
+        Valide une requête SQL et retourne (succès, message d'erreur)
+        """
+        try:
+            # Parse la requête pour vérifier la syntaxe
+            sqlglot.parse_one(query, dialect='duckdb')
+            return True, ""
+        except sqlglot.errors.ParseError as e:
+            return False, f"Erreur de syntaxe SQL: {str(e)}"
+    
     def format_output(self, columns: list, rows: list) -> Dict[str, Any]:
         """Format output as JSON dictionary"""
         return {
@@ -220,6 +237,11 @@ class DuckDBSearchTool(Tool):
 
     def forward(self, query: str) -> str:
         """Execute SQL query and return results"""
+        # Validation de la requête avant exécution
+        is_valid, error_msg = self.validate_query(query)
+        if not is_valid:
+            return json.dumps({"error": error_msg})
+    
         try:
             result = self.connection.sql(query)
             output = self.format_output(result.columns, result.fetchall())

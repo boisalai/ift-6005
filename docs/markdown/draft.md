@@ -66,7 +66,7 @@ pip install duckduckgo-search --upgrade -q
 Les librairies utilisées sont les suivantes :
 
 - `ollama` pour l'agent conversationnel
-- `sqlglot[rs]` pour la conversion texte-SQL
+- `pip3 install "sqlglot[rs]"` pour la conversion texte-SQL
 
 
 Voici la structure du projet :
@@ -482,6 +482,16 @@ Pour plus d'information, voir :
   - Intéressant.
   
 #### Création du connecteur de base de données DuckDB (5h)
+
+Dans le contexte de votre projet, sqlglot serait particulièrement utile pour :
+
+- Vérifier que les requêtes SQL générées par le LLM sont syntaxiquement correctes avant de les exécuter
+- Standardiser le format des requêtes SQL générées
+- Assurer la compatibilité des requêtes avec DuckDB, qui est la base de données choisie pour le projet
+
+C'est un outil de sécurité important car il permet de valider les requêtes avant leur exécution, évitant ainsi des erreurs potentielles ou des problèmes de sécurité.
+
+
 #### Implémentation du générateur de réponses simples (25h)
 
 #### NEW Guide alimentaire canadien

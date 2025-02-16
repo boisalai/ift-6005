@@ -124,6 +124,10 @@ docs/latex/
 
 Pour maintenir la qualité du code Python selon les standards, voici les outils essentiels :
 
+
+respecte mieux les conventions Python (PEP 8) 
+
+
 1. **Linters et formatters principaux** :
 ```bash
 # Installation
@@ -377,6 +381,8 @@ See [https://huggingface.co/blog/beating-gaia](https://huggingface.co/blog/beati
 
 See also [https://weaviate.io/blog/ai-agents](https://weaviate.io/blog/ai-agents).
 
+Voir ici [agent-leaderboard](https://huggingface.co/spaces/galileo-ai/agent-leaderboard) pour le choix du modèle fonctionnant avec l'agent.
+
 #### Implémentation du module de dialogue avec Qwen2-7B-Instruct (20h)
 
 Je devrais commencer par utiliser un modèle de langage pour générer des requêtes SQL à partir des questions posées par l'utilisateur.
@@ -498,6 +504,151 @@ C'est un outil de sécurité important car il permet de valider les requêtes av
 
 TODO: See [https://huggingface.co/blog/beating-gaia](https://huggingface.co/blog/beating-gaia) il utilise un outil
 pour naviger dans les pages Web...
+
+#### NEW Dictionnaire de données
+
+Voici une analyse approfondie des deux approches :
+
+Approche avec Claude (solution proposée) :
+
+Avantages :
+- Meilleure compréhension sémantique du contexte et de l'intention de l'utilisateur 
+- Capacité à comprendre les nuances et implications
+- Peut combiner intelligemment plusieurs sections de documentation
+- S'adapte aux questions complexes nécessitant de croiser plusieurs concepts
+- Génère des requêtes SQL adaptées au contexte spécifique
+- Gestion naturelle du multilinguisme (FR/EN)
+
+Inconvénients :
+- Plus coûteux en termes d'appels API
+- Plus lent à l'exécution (latence de l'API)
+- Dépendance à un service externe 
+- Utilisation plus intensive de ressources
+
+Approche avec base vectorielle :
+
+
+
+Avantages de l'approche vectorielle :
+- Plus rapide à l'exécution (recherche locale)
+- Moins coûteux (pas d'appels API continus)
+- Plus léger en ressources
+- Fonctionne hors ligne
+- Performances prévisibles et stables
+
+Inconvénients :
+- Compréhension plus limitée du contexte
+- Difficulté à gérer les questions complexes ou ambiguës
+- Moins adaptable aux variations linguistiques
+- Risque de manquer des relations implicites entre colonnes
+- Nécessite une maintenance des embeddings
+- Peut retourner des résultats moins pertinents basés uniquement sur la similarité lexicale
+
+Solution hybride possible :
+1. Utiliser d'abord la recherche vectorielle pour identifier rapidement les colonnes pertinentes
+2. N'utiliser le LLM que pour :
+   - Les questions complexes nécessitant plus de contexte
+   - La génération de requêtes SQL complexes
+   - La validation/raffinement des résultats
+
+Cette approche hybride permettrait de :
+- Réduire les coûts d'API tout en gardant la qualité
+- Optimiser la performance pour les requêtes simples
+- Garder la flexibilité du LLM pour les cas complexes
+
+Proposition d'implémentation hybride :
+```python
+def smart_search(query: str, complexity_threshold: float = 0.7):
+    # First try vector search
+    vector_results = vector_docs_tool.search_columns(query)
+    
+    # Check result quality and query complexity
+    best_similarity = max(col["similarity"] for col in vector_results)
+    
+    if best_similarity >= complexity_threshold:
+        # Good vector results - use them directly
+        return vector_results
+    else:
+        # Complex query - fall back to LLM
+        return llm_docs_tool.forward(query)
+```
+
+Cette approche me semble offrir un bon compromis entre performance et qualité. Qu'en pensez-vous ? Souhaitez-vous explorer davantage certains aspects spécifiques ?
+
+Oui, l'utilisation de FAISS (Facebook AI Similarity Search) serait plus efficace que la solution actuelle. Voici une analyse et une proposition d'implémentation :
+
+
+
+Avantages d'utiliser FAISS par rapport à l'implémentation précédente :
+
+1. Performance :
+   - Recherche plus rapide grâce à l'indexation optimisée
+   - Meilleures performances avec beaucoup de données
+   - Support du GPU pour les calculs (si disponible)
+
+2. Scalabilité :
+   - Gestion efficace de la mémoire
+   - Support de millions de vecteurs 
+   - Différents types d'index selon les besoins (exact, approximatif)
+
+3. Fonctionnalités :
+   - Possibilité de mettre à jour l'index de manière incrémentale
+   - Support de différentes métriques de similarité
+   - Cache persistant des index
+
+4. Optimisations :
+   - Recherche approximative pour plus de vitesse
+   - Compression des vecteurs
+   - Parallélisation native
+
+Pour intégrer cette solution :
+
+```python
+# Configuration
+docs_path = DATA_DIR / "columns_documentation.json"
+cache_dir = DATA_DIR / "cache"
+
+# Création de l'outil
+docs_tool = initialize_faiss_index(docs_path, cache_dir)
+
+# Intégration avec l'agent existant
+sql_agent = ToolCallingAgent(
+    tools=[docs_tool, sql_tool],
+    model=model,
+    max_steps=3
+)
+```
+
+On pourrait aussi ajouter des optimisations supplémentaires :
+
+1. Index plus sophistiqué :
+```python
+# Pour de meilleures performances avec plus de données
+index = faiss.IndexIVFFlat(quantizer, dimension, n_clusters)
+```
+
+2. Compression des vecteurs :
+```python
+# Réduire l'empreinte mémoire
+index = faiss.IndexIVFPQ(quantizer, dimension, n_clusters, m, bits)
+```
+
+3. Support GPU :
+```python
+# Accélération GPU si disponible
+res = faiss.StandardGpuResources()
+gpu_index = faiss.index_cpu_to_gpu(res, 0, index)
+```
+
+Voulez-vous que j'approfondisse certains aspects spécifiques de cette implémentation ?
+
+```bash
+pip install faiss-cpu
+pip install sentence-transformers
+```
+
+
+
 
 ### Rapport de mi-session (25h)
 #### Analyse des résultats (10h)

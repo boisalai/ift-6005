@@ -56,7 +56,6 @@ import duckdb
 from dotenv import load_dotenv
 from smolagents import (
     CodeAgent,
-    ManagedAgent,
     Tool,
     ToolCallingAgent,
     DuckDuckGoSearchTool,
@@ -332,47 +331,13 @@ class WriteTool(Tool):
 model = LiteLLMModel("anthropic/claude-3-5-sonnet-latest")
 
 sql_tool = DuckDBSearchTool(db_path=FILTERED_DB_PATH)
-sql_agent = ToolCallingAgent(tools=[sql_tool], model=model, max_steps=3)
-managed_sql_agent = ManagedAgent(
-    agent=sql_agent,
-    name="search",
-    description=dedent(
-        """\
-    Queries the Open Food Facts products database using DuckDB SQL syntax.
-    Input a valid DuckDB SQL query to search product information."""
-    ),
-)
-
 web_search_tool = FoodGuideSearchTool()
 visit_webpage = VisitWebpageTool()
-web_agent = ToolCallingAgent(
-    tools=[web_search_tool, visit_webpage], model=model, max_steps=3
-)
-managed_web_agent = ManagedAgent(
-    agent=web_agent,
-    name="search",
-    description=dedent(
-        """\
-    Search the Open Food Facts site for information about the data and columns in the database
-    """
-    ),
-)
-
 write_tool = WriteTool(docs_dir=DOCS_DIR)
-write_agent = ToolCallingAgent(tools=[write_tool], model=model, max_steps=1)
-managed_write_agent = ManagedAgent(
-    agent=write_agent,
-    name="write",
-    description=dedent(
-        """\
-    Writes column documentation to a documentation file."""
-    ),
-)
 
 manager_agent = CodeAgent(
-    tools=[],
+    tools=[sql_tool, web_search_tool, visit_webpage, write_tool],
     model=model,
-    managed_agents=[managed_web_agent, managed_sql_agent, managed_write_agent],
     additional_authorized_imports=["json"],
 )
 
@@ -525,19 +490,26 @@ def get_documented_columns(docs_dir: Path) -> set:
 def clean_sql_queries(json_file: Path):
     """Remove newline characters and extra spaces from SQL queries in JSON file."""
     try:
+        # Read the JSON file
         with open(json_file, 'r', encoding='utf-8') as f:
             doc_data = json.load(f)
         
+        # Process each column's documentation
         for column in doc_data.get("tables", {}).get("products", {}).get("columns", {}).values():
             if "common_queries" in column:
-                for query in column["common_queries"]:
-                    query["sql"] = " ".join(query["sql"].split())  # Remove newlines and extra spaces
+                for query_obj in column["common_queries"]:
+                    if isinstance(query_obj, dict) and "sql" in query_obj:
+                        # Clean the SQL query string
+                        query_obj["sql"] = " ".join(query_obj["sql"].split())
         
+        # Write back the cleaned data
         with open(json_file, 'w', encoding='utf-8') as f:
             json.dump(doc_data, f, indent=2, ensure_ascii=False)
         print("SQL queries cleaned successfully.")
     except json.JSONDecodeError:
         print("Error: Invalid JSON format in columns_documentation.json")
+    except Exception as e:
+        print(f"Error cleaning SQL queries: {str(e)}")
 
 if __name__ == "__main__":
     duckdb_path = FILTERED_DB_PATH

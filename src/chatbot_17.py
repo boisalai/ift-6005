@@ -216,7 +216,7 @@ class DuckDBSearchTool(Tool):
             print(f"Connection error: {str(e)}")
             raise
 
-    def validate_query(query: str) -> tuple[bool, str]:
+    def validate_query(self, query: str) -> tuple[bool, str]:
         """
         Valide une requête SQL et retourne (succès, message d'erreur)
         """
@@ -364,6 +364,6 @@ def run(prompt: str) -> None:
     print(f"Results:\n{response}")
 
 if __name__ == "__main__":
-    #PROMPT = "Combien de produits dans la base de données?"
-    #run(PROMPT)
-    run_interactive()
+    PROMPT = "Combien de produits dans la base de données?"
+    run(PROMPT)
+    # run_interactive()

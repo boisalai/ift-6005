@@ -1385,9 +1385,18 @@
           ],
           "is_nullable": true,
           "common_queries": [
-            "\n                SELECT code, last_modified_t \n                FROM products \n                ORDER BY last_modified_t DESC \n                LIMIT 50\n            ",
-            "\n                SELECT code, last_modified_t \n                FROM products \n                WHERE last_modified_t < EXTRACT(epoch FROM CURRENT_DATE - INTERVAL '1 month')\n                LIMIT 50\n            ",
-            "\n                SELECT \n                    EXTRACT(year FROM TO_TIMESTAMP(last_modified_t)) as mod_year,\n                    COUNT(*) as product_count\n                FROM products\n                GROUP BY mod_year\n                ORDER BY mod_year DESC\n                LIMIT 50\n            "
+            {
+              "description": "Find the most recently modified products with their last modified timestamps",
+              "sql": "SELECT code, product_name, last_modified_t FROM products WHERE last_modified_t IS NOT NULL ORDER BY last_modified_t DESC LIMIT 50"
+            },
+            {
+              "description": "Find products modified in the last month",
+              "sql": "SELECT code, product_name, last_modified_t FROM products WHERE last_modified_t > EXTRACT(epoch FROM CURRENT_DATE - INTERVAL '1 month') ORDER BY last_modified_t DESC LIMIT 50"
+            },
+            {
+              "description": "Get product update frequency statistics",
+              "sql": "SELECT COUNT(*) as product_count, MIN(last_modified_t) as oldest_update, MAX(last_modified_t) as newest_update, COUNT(DISTINCT last_modified_t) as unique_update_times FROM products WHERE last_modified_t IS NOT NULL LIMIT 50"
+            }
           ]
         },
         "last_updated_t": {
@@ -2046,9 +2055,18 @@
           ],
           "is_nullable": true,
           "common_queries": [
-            "\n                SELECT \n                    code,\n                    packaging_recycling_tags,\n                    array_length(packaging_recycling_tags) as instruction_count\n                FROM products \n                WHERE array_length(packaging_recycling_tags) > 1\n                LIMIT 50\n            ",
-            "\n                SELECT \n                    code,\n                    packaging_recycling_tags\n                FROM products \n                WHERE packaging_recycling_tags IS NOT NULL\n                AND array_contains(packaging_recycling_tags, 'en:recycle-with-plastics')\n                LIMIT 50\n            ",
-            "\n                SELECT \n                    code,\n                    packaging_recycling_tags\n                FROM products \n                WHERE packaging_recycling_tags IS NOT NULL\n                AND array_contains(packaging_recycling_tags, 'en:discard')\n                LIMIT 50\n            "
+            {
+              "description": "Find products with multiple recycling instructions",
+              "sql": "SELECT code, packaging_recycling_tags, array_length(packaging_recycling_tags) as instruction_count FROM products WHERE array_length(packaging_recycling_tags) > 1 LIMIT 50"
+            },
+            {
+              "description": "Find products with specific recycling tag (recycle with plastics)",
+              "sql": "SELECT code, packaging_recycling_tags FROM products WHERE packaging_recycling_tags IS NOT NULL AND array_contains(packaging_recycling_tags, 'en:recycle-with-plastics') LIMIT 50"
+            },
+            {
+              "description": "Find products with discard instructions",
+              "sql": "SELECT code, packaging_recycling_tags FROM products WHERE packaging_recycling_tags IS NOT NULL AND array_contains(packaging_recycling_tags, 'en:discard') LIMIT 50"
+            }
           ]
         },
         "packaging_shapes_tags": {
@@ -2120,9 +2138,18 @@
           ],
           "is_nullable": true,
           "common_queries": [
-            "SELECT code, packagings FROM products WHERE list_contains(list_transform(packagings, x -> x.material), 'en:glass') LIMIT 50",
-            "SELECT code, packagings FROM products WHERE packagings IS NOT NULL AND array_length(packagings) > 1 LIMIT 50",
-            "SELECT code, packagings FROM products WHERE packagings IS NOT NULL AND packagings[1].number_of_units > 1 LIMIT 50"
+            {
+              "description": "Find products with glass packaging",
+              "sql": "SELECT code, product_name, packagings FROM products WHERE list_contains(list_transform(packagings, x -> x.material), 'en:glass') LIMIT 50"
+            },
+            {
+              "description": "Find products with multiple packagings",
+              "sql": "SELECT code, packagings FROM products WHERE packagings IS NOT NULL AND array_length(packagings) > 1 LIMIT 50"
+            },
+            {
+              "description": "Find products with packagings containing more than 1 unit",
+              "sql": "SELECT code, packagings FROM products WHERE packagings IS NOT NULL AND packagings[1].number_of_units > 1 LIMIT 50"
+            }
           ]
         },
         "packagings_complete": {

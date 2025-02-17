@@ -61,6 +61,7 @@ pip install litellm
 pip install smolagents==1.7.0 python-dotenv sqlalchemy --upgrade -q
 pip install 'smolagents[litellm]'
 pip install duckduckgo-search --upgrade -q
+pip install "smolagents[mlx-lm]"
 ```
 
 Les librairies utilisées sont les suivantes :
@@ -368,6 +369,26 @@ See also :
 
 - [BIRD-SQL](https://bird-bench.github.io/)
 - [Bird-SQL: A Benchmark for Text-to-SQL](https://arxiv.org/abs/2202.10700)
+
+------
+
+Oui, je comprends parfaitement votre démarche qui est très méthodique. Vous voulez :
+
+1. Exploiter le fichier de documentation JSON qui contient déjà de nombreuses requêtes SQL dans la section "common_queries" de chaque colonne
+2. Créer un programme qui va :
+   - Extraire et exécuter chaque requête SQL
+   - Analyser la pertinence du résultat via un LLM
+   - Pour les requêtes jugées pertinentes, générer une paire question/réponse bilingue
+
+C'est une approche intelligente car :
+- Elle part d'un ensemble de requêtes SQL déjà validées techniquement
+- Elle automatise le processus de sélection et de génération
+- Elle assure la cohérence entre la question, la requête SQL et la réponse
+- Elle garantit que chaque requête produit effectivement des résultats exploitables
+
+
+
+
 
 #### Implémentation des scripts d’évaluation des trois métriques (10h)
 

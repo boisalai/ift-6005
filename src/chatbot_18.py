@@ -29,6 +29,7 @@ from smolagents import (
     VisitWebpageTool,
     HfApiModel,
     LiteLLMModel,
+    MLXModel
 )
 
 # Disable specific warnings
@@ -76,6 +77,9 @@ def create_model(
             api_base="http://localhost:11434",
             num_ctx=8192
         )
+
+    if type_engine == "mlx":
+        return MLXModel("mlx-community/Qwen2.5-Coder-32B-Instruct-4bit")
 
     if type_engine == "hf_api":
         # Requires an API key from Hugging Face
@@ -136,7 +140,7 @@ class FaissDocumentationTool(Tool):
         5. Consider data structure notes for complex fields
         
         RESPONSE FORMAT:
-        The tool returns a JSON object with this structure:
+        The tool returns a JSON-formatted string that must be parsed using json.loads() before use. The parsed structure will be:
         ```json
         {
             "columns": [
@@ -160,6 +164,16 @@ class FaissDocumentationTool(Tool):
             }
         }
         ```
+        
+        IMPORTANT: Since this tool returns a JSON-formatted string, you must first parse it with:
+        ```python
+        import json
+        columns_info_str = faiss_docs(query) 
+        columns_info = json.loads(columns_info_str)
+        relevant_columns = [column['name'] for column in columns_info.get('columns', []) if column.get('similarity') > 0.7]
+        ```
+
+        After parsing, you can access the relevant columns and their metadata to construct SQL queries.
         
         QUERY CONSTRUCTION GUIDELINES:
         1. Multilingual Fields:
@@ -386,18 +400,6 @@ class DuckDBSearchTool(Tool):
     Execute SQL queries using DuckDB syntax. The database contains a single table named `products` with
     detailed information about food items.
 
-    KEY COLUMNS AND THEIR USAGE:
-    - product_name: Multilingual product names (use list_filter for language selection)
-    - categories_tags: Food category tags (e.g., 'en:snacks', 'fr:biscuits')
-    - ingredients_tags: Ingredient classification tags
-    - allergens_tags: Present allergens (e.g., 'en:milk', 'en:nuts')
-    - labels_tags: Product certifications and claims (e.g., 'en:organic')
-    - brands_tags: Brand identifiers
-    - stores_tags: Retail store identifiers
-    - nova_group: Processing level (1-4, where 1=unprocessed, 4=ultra-processed)
-    - nutriscore_grade: Nutritional quality (A-E, where A=best)
-    - ecoscore_grade: Environmental impact (A-E, where A=best)
-
     IMPORTANT QUERY GUIDELINES:
     1. Toujours planifier les requêtes avant de les exécuter pour éviter les résultats volumineux 
     2. Use list_contains() for array columns (e.g., categories_tags, labels_tags)
@@ -533,7 +535,47 @@ class DuckDBSearchTool(Tool):
 
 
 class FoodGuideSearchTool(DuckDuckGoSearchTool):
-    name = "food_guide"
+    name = "web_search"
+    description = dedent(
+        """\
+    Searches Canada's Food Guide official websites (English and French) for nutrition and dietary information.
+    
+    PURPOSE:
+    This tool helps find official Canadian dietary guidelines and recommendations by:
+    - Searching both English and French versions of Canada's Food Guide
+    - Verifying URL availability
+    - Returning relevant content with links
+    
+    USAGE:
+    - Input simple keywords or phrases related to your nutrition question
+    - The tool will search:
+      * English site: https://food-guide.canada.ca/en/
+      * French site: https://guide-alimentaire.canada.ca/fr/
+    
+    SEARCH TIPS:
+    - Use clear, specific terms (e.g., "protein recommendations" rather than just "protein")
+    - Try both English and French keywords for better results
+    - Keep queries concise (2-4 words typically work best)
+    
+    RESPONSE FORMAT:
+    Returns results in Markdown format with:
+    - Article titles with clickable links
+    - Brief content descriptions
+    - Each result separated by newlines
+    
+    Example usage:
+    query="daily vegetable servings"
+    query="recommandations fruits légumes"
+    query="healthy protein sources"
+    """
+    )
+    inputs = {
+        "query": {
+            "type": "string",
+            "description": "Keywords to search in Canada's Food Guide websites (English and French versions)"
+        }
+    }
+    output_type = "string"
 
     def url_exists(self, url: str) -> bool:
         """Vérifie si une URL existe"""
@@ -572,9 +614,9 @@ class FoodGuideSearchTool(DuckDuckGoSearchTool):
         return "## Search Results\n\n" + "\n\n".join(postprocessed_results)
 
 
-model = create_model("claude-sonnet")
+# model = create_model("claude-sonnet")
 # model = create_model("claude-haiku")
-# model = create_model("ollama/llama3.1:8b-instruct-q8_0")
+model = create_model("ollama/llama3.1:8b-instruct-q8_0")
 
 docs_path = DOCS_DIR / "data" / "columns_documentation.json"
 cache_dir = DOCS_DIR / "data" / "cache"
@@ -583,11 +625,11 @@ faiss_docs = FaissDocumentationTool(docs_path, cache_dir)
 filtered_db_path = DATA_DIR / "food_canada.duckdb"
 sql_db = DuckDBSearchTool(db_path=filtered_db_path)
 
-food_guide = FoodGuideSearchTool()
+search_webpage = FoodGuideSearchTool()
 visit_webpage = VisitWebpageTool()
 
 agent = CodeAgent(
-    tools=[faiss_docs, sql_db, food_guide, visit_webpage],
+    tools=[faiss_docs, sql_db, search_webpage, visit_webpage],
     model=model,
     additional_authorized_imports=["json"]
 )

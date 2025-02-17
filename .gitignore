@@ -7,16 +7,15 @@ __pycache__/
 .env
 
 # Data
+data/*.csv
+data/*.parquet
+data/*.duckdb
+
 # Notebooks
 .ipynb_checkpoints
 
 # VS Code
 .vscode/
-
-# Data
-data/*.csv
-data/*.parquet
-data/*.duckdb
 
 # Mac
 .DS_Store

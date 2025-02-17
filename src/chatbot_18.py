@@ -35,6 +35,8 @@ from smolagents import (
 # Disable specific warnings
 warnings.filterwarnings("ignore", category=UserWarning)
 
+# Configure logging
+# See https://docs.python.org/3/library/logging.html
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
@@ -46,7 +48,6 @@ os.environ["LITELLM_LOG"] = "INFO"  # Change to 'DEBUG' for more details
 
 # Define file paths
 DATA_DIR = Path("../data")
-DOCS_DIR = Path("../docs")
 
 
 def create_model(
@@ -479,6 +480,7 @@ class DuckDBSearchTool(Tool):
         super().__init__()
         self.db_path = db_path
         self.connection = None
+        # self.setup() TODO Je devrais avoir besoin de cela...
 
     def setup(self) -> None:
         """Initialize database connection"""
@@ -614,12 +616,12 @@ class FoodGuideSearchTool(DuckDuckGoSearchTool):
         return "## Search Results\n\n" + "\n\n".join(postprocessed_results)
 
 
-# model = create_model("claude-sonnet")
+model = create_model("claude-sonnet")
 # model = create_model("claude-haiku")
-model = create_model("ollama/llama3.1:8b-instruct-q8_0")
+# model = create_model("ollama/llama3.1:8b-instruct-q8_0")
 
-docs_path = DOCS_DIR / "data" / "columns_documentation.json"
-cache_dir = DOCS_DIR / "data" / "cache"
+docs_path = DATA_DIR / "columns_documentation.json"
+cache_dir = DATA_DIR /  "cache"
 faiss_docs = FaissDocumentationTool(docs_path, cache_dir)
 
 filtered_db_path = DATA_DIR / "food_canada.duckdb"

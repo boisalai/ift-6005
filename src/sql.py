@@ -20,6 +20,6 @@ if __name__ == "__main__":
     duckdb_path = FILTERED_DB_PATH
 
     query = dedent("""\
-        SELECT unnested_category, COUNT(*) as product_count FROM products, UNNEST(categories_tags) as unnested_category GROUP BY unnested_category ORDER BY product_count DESC LIMIT 1000;
+        WITH unnested AS ( SELECT unnest(additives_tags) as additive FROM products WHERE additives_tags IS NOT NULL ) SELECT additive, COUNT(*) as frequency FROM unnested GROUP BY additive ORDER BY frequency DESC LIMIT 10;
         """)
     execute_query(duckdb_path, query)

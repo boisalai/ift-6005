@@ -678,7 +678,6 @@ pip install sentence-transformers
 #### Amélioration de la gestion des données manquantes (15h)
 #### Implémentation du one-shot et few-shot learning (20h)
 #### Optimisation des prompts et des requêtes SQL (15h)
-
 Voir aussi :
 
 - [Doriandarko deepseek-engineer](https://github.com/Doriandarko/deepseek-engineer/tree/main) : ce projet m'intrigue et pourrait être intéressant pour la suite.
@@ -942,6 +941,13 @@ La recherche vectorielle, potentiellement intéressant :
 - https://x.com/helloiamleonie/status/1884554441514459435
 - 
 
+#### NEW Taxonomies
+
+Ajouter un outil pour consulter les fiches taxonomiques des produits alimentaires.
+https://raw.githubusercontent.com/openfoodfacts/openfoodfacts-server/refs/heads/main/taxonomies/additives.properties.txt
+
+Résourdre le problème entre brands et brands_tags
+
 ### Documentation et finalisation (25h)
 #### Rédaction du rapport final (15h)
 
@@ -1125,3 +1131,33 @@ Text-to-SQL Generation : A Survey. arXiv preprint arXiv :2410.06011, 2024.
 - [Anthropic has a pretty useful prompt generator](https://x.com/kregenrek/status/1881422133659840911)
 - [Hands-On Large Language Models](https://learning.oreilly.com/library/view/hands-on-large-language/9781098150952/)
   - [https://github.com/HandsOnLLM/Hands-On-Large-Language-Models](https://github.com/HandsOnLLM/Hands-On-Large-Language-Models)
+
+
+## Others texts
+
+
+[!CAUTION]
+> Document de travail en cours de rédaction.
+
+Les principales différences entre RAG et agents :
+
+RAG (Retrieval-Augmented Generation)[^1] :
+- Se concentre sur l'enrichissement du contexte en récupérant des informations pertinentes depuis des sources externes
+- Processus en 2 étapes : récupération puis génération
+- Utilise principalement la recherche documentaire comme outil
+
+Agents[^1] :
+- Peuvent utiliser de nombreux outils différents, dont RAG n'est qu'un exemple
+- Capables de planifier et d'exécuter des séquences d'actions complexes
+- Peuvent interagir directement avec leur environnement via des actions de lecture/écriture
+- Nécessitent des capacités de planification et de réflexion
+- Peuvent combiner plusieurs outils pour accomplir des tâches complexes
+
+En résumé, RAG est un cas particulier d'agent où l'outil principal est la recherche documentaire. Les agents sont plus polyvalents car ils peuvent utiliser divers outils et planifier des séquences d'actions pour atteindre leurs objectifs.
+
+[^1]: Huyen, C. (2025). *AI Engineering: Building Applications with Foundation Models*. O'Reilly Media.
+
+## References
+
+- [Gitingest](https://gitingest.com/boisalai/ift-6005) 
+- [Quickstart for writing on GitHub](https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/quickstart-for-writing-on-github#introduction)

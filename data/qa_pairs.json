@@ -1,1 +1,1322 @@
-[]
+[
+  {
+    "column": "additives_n",
+    "sql": "SELECT code, product_name FROM products WHERE additives_n = 0",
+    "questions": {
+      "fr": "Quels sont les produits alimentaires sans additifs disponibles dans la base de données?",
+      "en": "What food products without additives are available in the database?"
+    },
+    "answers": {
+      "fr": "La base de données contient 5843 produits sans additifs, incluant des produits comme le sirop d'érable biologique du Vermont, le lait faible en gras, l'agave bleu biologique, et le lait de coco.",
+      "en": "The database contains 5843 products without additives, including items such as organic Vermont maple syrup, low-fat milk, organic blue agave, and coconut milk."
+    }
+  },
+  {
+    "column": "additives_n",
+    "sql": "SELECT additives_n, COUNT(*) as product_count FROM products WHERE additives_n IS NOT NULL GROUP BY additives_n ORDER BY additives_n",
+    "questions": {
+      "fr": "Quelle est la répartition des produits alimentaires en fonction du nombre d'additifs qu'ils contiennent ?",
+      "en": "What is the distribution of food products based on the number of additives they contain?"
+    },
+    "answers": {
+      "fr": "D'après les données, environ 62.99556681443952% des produits contiennent au moins un additif. La majorité des produits contiennent entre 0 et 4 additifs, avec une diminution progressive du nombre de produits à mesure que le nombre d'additifs augmente. Par exemple, 5843 produits ne contiennent aucun additif, tandis que 2946 produits contiennent un seul additif.",
+      "en": "According to the data, approximately 62.99556681443952% of products contain at least one additive. The majority of products contain between 0 and 4 additives, with a gradual decrease in the number of products as the number of additives increases. For example, 5843 products contain no additives, while 2946 products contain a single additive."
+    }
+  },
+  {
+    "column": "additives_n",
+    "sql": "SELECT code, product_name, additives_n FROM products WHERE additives_n > 10 ORDER BY additives_n DESC",
+    "questions": {
+      "fr": "Quels sont les produits alimentaires contenant le plus grand nombre d'additifs dans la base de données ?",
+      "en": "Which food products in the database contain the highest number of additives?"
+    },
+    "answers": {
+      "fr": "D'après notre base de données, les produits alimentaires contenant le plus grand nombre d'additifs sont les 'Raspberry Flavoured Mini Cakes' avec 24 additifs, suivis des 'Snowballs' et 'Kitchen Sink Brownies' avec 22 additifs chacun. Il est important de noter que tous les produits listés contiennent plus de 20 additifs.",
+      "en": "According to our database, the food products containing the highest number of additives are 'Raspberry Flavoured Mini Cakes' with 24 additives, followed by 'Snowballs' and 'Kitchen Sink Brownies' with 22 additives each. It's important to note that all listed products contain more than 20 additives."
+    }
+  },
+  {
+    "column": "additives_n",
+    "sql": "SELECT ROUND(COUNT(CASE WHEN additives_n = 0 THEN 1 END) * 100.0 / COUNT(*), 2) as percent_no_additives, ROUND(COUNT(CASE WHEN additives_n > 0 THEN 1 END) * 100.0 / COUNT(*), 2) as percent_with_additives FROM products WHERE additives_n IS NOT NULL",
+    "questions": {
+      "fr": "Quel est le pourcentage de produits alimentaires avec et sans additifs dans la base de données Open Food Facts ?",
+      "en": "What is the percentage of food products with and without additives in the Open Food Facts database?"
+    },
+    "answers": {
+      "fr": "Selon les données d'Open Food Facts, 36.17% des produits alimentaires n'ont pas d'additifs, tandis que 63.83% en contiennent.",
+      "en": "According to the Open Food Facts data, 36.17% of food products have no additives, while 63.83% contain additives."
+    }
+  },
+  {
+    "column": "additives_tags",
+    "sql": "WITH unnested AS ( SELECT unnest(additives_tags) as additive FROM products WHERE additives_tags IS NOT NULL ) SELECT additive, COUNT(*) as frequency FROM unnested GROUP BY additive ORDER BY frequency DESC LIMIT 10;",
+    "questions": {
+      "fr": "Quels sont les 10 additifs alimentaires les plus couramment utilisés dans les produits alimentaires?",
+      "en": "What are the 10 most commonly used food additives in food products?"
+    },
+    "answers": {
+      "fr": "Les 10 additifs alimentaires les plus couramment utilisés sont : E330 (acide citrique), E322 (lécithines), E322i (lécithine), E500 (carbonates de sodium), E500ii (carbonate acide de sodium), E415 (gomme xanthane), E202 (sorbate de potassium), E412 (gomme de guar), E471 (mono- et diglycérides d'acides gras), et E407 (carraghénanes). L'additif le plus fréquent, E330, est présent dans 3517 produits de notre base de données.",
+      "en": "The 10 most commonly used food additives are: E330 (citric acid), E322 (lecithins), E322i (lecithin), E500 (sodium carbonates), E500ii (sodium hydrogen carbonate), E415 (xanthan gum), E202 (potassium sorbate), E412 (guar gum), E471 (mono- and diglycerides of fatty acids), and E407 (carrageenan). The most frequent additive, E330, is present in 3517 products in our database."
+    }
+  },
+  {
+    "column": "additives_tags",
+    "sql": "SELECT code, product_name, additives_tags FROM products WHERE array_contains(additives_tags, 'en:e330') LIMIT 1000;",
+    "questions": {
+      "fr": "Quels produits alimentaires contiennent de l'acide citrique (E330) comme additif ?",
+      "en": "Which food products contain citric acid (E330) as an additive?"
+    },
+    "answers": {
+      "fr": "La requête a trouvé 1000 produits contenant de l'acide citrique (E330). Parmi eux, on trouve des produits variés tels que du gingembre pour sushi, des plats préparés comme le macaroni au fromage, des fruits en conserve comme le litchi, des boissons gazeuses aromatisées, du bœuf séché (jerky), et des piments verts en dés. L'acide citrique est couramment utilisé comme conservateur et régulateur d'acidité dans divers types d'aliments.",
+      "en": "The query found 1000 products containing citric acid (E330). These include a variety of products such as sushi ginger, prepared meals like macaroni and cheese, canned fruits like lychee, flavored sparkling beverages, beef jerky, and diced green chilies. Citric acid is commonly used as a preservative and acidity regulator in various types of food products."
+    }
+  },
+  {
+    "column": "additives_tags",
+    "sql": "SELECT array_length(additives_tags) as num_additives, COUNT(*) as product_count FROM products WHERE additives_tags IS NOT NULL GROUP BY array_length(additives_tags) ORDER BY num_additives;",
+    "questions": {
+      "fr": "Quelle est la répartition des produits alimentaires en fonction du nombre d'additifs qu'ils contiennent ?",
+      "en": "What is the distribution of food products based on the number of additives they contain?"
+    },
+    "answers": {
+      "fr": "Selon les données, environ 48.59200720252088% des produits contiennent des additifs. La majorité des produits avec additifs en contiennent entre 1 et 5. Par exemple, 2170 produits contiennent 1 additif, tandis que 971 produits contiennent 5 additifs.",
+      "en": "According to the data, approximately 48.59200720252088% of products contain additives. The majority of products with additives contain between 1 and 5. For example, 2170 products contain 1 additive, while 971 products contain 5 additives."
+    }
+  },
+  {
+    "column": "allergens_tags",
+    "sql": "WITH RECURSIVE unnested AS ( SELECT unnest(allergens_tags) as allergen FROM products WHERE allergens_tags IS NOT NULL ) SELECT allergen, COUNT(*) as count FROM unnested GROUP BY allergen ORDER BY count DESC LIMIT 10;",
+    "questions": {
+      "fr": "Quel est l'allergène le plus courant dans les produits alimentaires, et dans combien de produits est-il présent ?",
+      "en": "What is the most common allergen found in food products, and how many products contain it?"
+    },
+    "answers": {
+      "fr": "L'allergène le plus courant dans les produits alimentaires est le Milk. Il est présent dans 4466 produits de notre base de données.",
+      "en": "The most common allergen found in food products is Milk. It is present in 4466 products in our database."
+    }
+  },
+  {
+    "column": "allergens_tags",
+    "sql": "SELECT code, product_name, allergens_tags FROM products WHERE allergens_tags IS NOT NULL AND array_contains(allergens_tags, 'en:milk') AND array_contains(allergens_tags, 'en:nuts') LIMIT 1000;",
+    "questions": {
+      "fr": "Quels produits alimentaires contiennent à la fois du lait et des noix comme allergènes?",
+      "en": "Which food products contain both milk and nuts as allergens?"
+    },
+    "answers": {
+      "fr": "Nous avons trouvé 567 produits contenant à la fois du lait et des noix comme allergènes. Quelques exemples incluent: [{'lang': 'main', 'text': 'Cherry Dark Chocolate'}, {'lang': 'en', 'text': 'Cherry Dark Chocolate'}, {'lang': 'fr', 'text': 'Cerise et Chocolat Noir Barres tenders de céréales entières'}] (code: 0018627104858), [{'lang': 'main', 'text': 'Hazelnut Swiss Classic'}, {'lang': 'en', 'text': 'Hazelnut Swiss Classic'}, {'lang': 'fr', 'text': 'Chocolat lait noisettes'}] (code: 0037466019871), et [{'lang': 'main', 'text': 'Fruit & Nut Swiss Classic'}, {'lang': 'en', 'text': 'Fruit & Nut Swiss Classic'}] (code: 0037466082523). Ces produits contiennent également d'autres allergènes potentiels.",
+      "en": "We found 567 products containing both milk and nuts as allergens. Some examples include: [{'lang': 'main', 'text': 'Cherry Dark Chocolate'}, {'lang': 'en', 'text': 'Cherry Dark Chocolate'}, {'lang': 'fr', 'text': 'Cerise et Chocolat Noir Barres tenders de céréales entières'}] (code: 0018627104858), [{'lang': 'main', 'text': 'Hazelnut Swiss Classic'}, {'lang': 'en', 'text': 'Hazelnut Swiss Classic'}, {'lang': 'fr', 'text': 'Chocolat lait noisettes'}] (code: 0037466019871), and [{'lang': 'main', 'text': 'Fruit & Nut Swiss Classic'}, {'lang': 'en', 'text': 'Fruit & Nut Swiss Classic'}] (code: 0037466082523). These products also contain other potential allergens."
+    }
+  },
+  {
+    "column": "allergens_tags",
+    "sql": "SELECT code, product_name, allergens_tags FROM products WHERE array_length(allergens_tags) >= 3 ORDER BY array_length(allergens_tags) DESC LIMIT 1000;",
+    "questions": {
+      "fr": "Quels sont les produits alimentaires contenant le plus grand nombre d'allergènes potentiels ?",
+      "en": "Which food products contain the highest number of potential allergens?"
+    },
+    "answers": {
+      "fr": "\nD'après notre base de données, les produits contenant le plus grand nombre d'allergènes potentiels sont :\n1. Quesadillas au poulet (11 allergènes)\n2. General Tao chicken breast pieces (11 allergènes)\n3. Soupe aux nouilles Kimchi (11 allergènes)\n4. Kimchi Budak (11 allergènes)\n5. Tempura chicken breast fillets (10 allergènes)\n\nCes produits contiennent souvent des allergènes communs tels que les crustacés, les œufs, le poisson, le gluten, le lait, la moutarde, les noix, les arachides, le sésame et le soja. Il est important pour les consommateurs ayant des allergies alimentaires de lire attentivement les étiquettes de ces produits.\n",
+      "en": "\nAccording to our database, the products containing the highest number of potential allergens are:\n1. Chicken Quesadillas (11 allergens)\n2. General Tao chicken breast pieces (11 allergens)\n3. Kimchi Noodle Soup (11 allergens)\n4. Kimchi Budak (11 allergens)\n5. Tempura chicken breast fillets (10 allergens)\n\nThese products often contain common allergens such as crustaceans, eggs, fish, gluten, milk, mustard, nuts, peanuts, sesame, and soy. It's important for consumers with food allergies to carefully read the labels of these products.\n"
+    }
+  },
+  {
+    "column": "brands_tags",
+    "sql": "SELECT code, brands_tags FROM products WHERE array_length(brands_tags) > 1 LIMIT 1000",
+    "questions": {
+      "fr": "Quels sont quelques exemples de produits alimentaires co-marqués ou associés à plusieurs marques ?",
+      "en": "What are some examples of co-branded or multi-brand associated food products?"
+    },
+    "answers": {
+      "fr": "D'après notre base de données, il existe de nombreux produits alimentaires associés à plusieurs marques. Par exemple, nous avons trouvé des produits liés à 'usda-organic-butternut-mountain-farm' et 'butternut-mountain-farm', ainsi que des produits associés à 'annie-s-homegrown' et 'annie-s'. Ces associations peuvent représenter des collaborations entre marques ou différentes lignes de produits d'une même entreprise.",
+      "en": "According to our database, there are many food products associated with multiple brands. For example, we found products linked to 'usda-organic-butternut-mountain-farm' and 'butternut-mountain-farm', as well as products associated with 'annie-s-homegrown' and 'annie-s'. These associations may represent collaborations between brands or different product lines from the same company."
+    }
+  },
+  {
+    "column": "categories",
+    "sql": "SELECT code, product_name, categories FROM products WHERE categories LIKE '%Snacks%' LIMIT 1000",
+    "questions": {
+      "fr": "Quels sont quelques exemples de produits de grignotage disponibles dans la base de données ?",
+      "en": "What are some examples of snack products available in the database?"
+    },
+    "answers": {
+      "fr": "La base de données contient une variété de produits de grignotage, y compris des options sucrées et salées. Quelques exemples sont les gâteaux au chocolat, les craquelins Goldfish de différentes saveurs (comme le Cheddar et le Trio Fromage), et les barres Nature Valley Crunchy Oats 'N Honey.",
+      "en": "The database contains a variety of snack products, including sweet and savory options. Some examples are chocolate cakes, Goldfish crackers in different flavors (like Cheddar and Trio Cheese), and Nature Valley Crunchy Oats 'N Honey bars."
+    }
+  },
+  {
+    "column": "brands",
+    "sql": "SELECT brands, COUNT(*) as product_count FROM products WHERE brands IS NOT NULL GROUP BY brands ORDER BY product_count DESC LIMIT 1000;",
+    "questions": {
+      "fr": "Quelles sont les marques de produits alimentaires les plus courantes dans notre base de données ?",
+      "en": "What are the most common food product brands in our database?"
+    },
+    "answers": {
+      "fr": "Les cinq marques de produits alimentaires les plus courantes dans notre base de données sont : Compliments, Great Value, Western Family, President's Choice.",
+      "en": "The five most common food product brands in our database are: Compliments, Great Value, Western Family, President's Choice."
+    }
+  },
+  {
+    "column": "brands",
+    "sql": "SELECT brands, COUNT(*) as count FROM products WHERE brands LIKE '%,%' GROUP BY brands ORDER BY count DESC LIMIT 1000;",
+    "questions": {
+      "fr": "Quels sont les principaux produits alimentaires bilingues ou multi-marques dans la base de données ?",
+      "en": "What are the top bilingual or multi-brand food products in the database?"
+    },
+    "answers": {
+      "fr": "Les principaux produits alimentaires bilingues ou multi-marques dans la base de données sont :\n- No Name, Sans nom (79 produits)\n- Minçavi,Bravodeli (59 produits)\n- Sans nom, No Name (51 produits)\n- President's Choice,Le choix du président (28 produits)\n- Made Good, MadeGood (26 produits)\n",
+      "en": "The top bilingual or multi-brand food products in the database are:\n- No Name, Sans nom (79 products)\n- Minçavi,Bravodeli (59 products)\n- Sans nom, No Name (51 products)\n- President's Choice,Le choix du président (28 products)\n- Made Good, MadeGood (26 products)\n"
+    }
+  },
+  {
+    "column": "brands",
+    "sql": "SELECT code, brands FROM products WHERE LOWER(brands) LIKE LOWER('%Nestlé%') LIMIT 1000;",
+    "questions": {
+      "fr": "Quels sont les différents produits de la marque Nestlé disponibles dans la base de données?",
+      "en": "What are the different Nestlé brand products available in the database?"
+    },
+    "answers": {
+      "fr": "La base de données contient 320 produits de la marque Nestlé. Parmi eux, on trouve des produits Nestlé, Nesquik, Gerber, et Maggi. Chaque produit est identifié par un code unique.",
+      "en": "The database contains 320 Nestlé brand products. Among them are products from Nestlé, Nesquik, Gerber, and Maggi. Each product is identified by a unique code."
+    }
+  },
+  {
+    "column": "categories_tags",
+    "sql": "SELECT unnested_category, COUNT(*) as product_count FROM products, UNNEST(categories_tags) as unnested_category GROUP BY unnested_category ORDER BY product_count DESC LIMIT 1000;",
+    "questions": {
+      "fr": "Quelles sont les 5 catégories d'aliments les plus courantes dans la base de données ?",
+      "en": "What are the top 5 most common food categories in the database?"
+    },
+    "answers": {
+      "fr": "Selon les données, les 5 catégories d'aliments les plus courantes sont : 1) Aliments et boissons d'origine végétale (7 664 produits), 2) Aliments d'origine végétale (6 990 produits), 3) Snacks (3 999 produits), 4) Snacks sucrés (3 142 produits), et 5) Boissons (2 730 produits).",
+      "en": "Based on the data, the top 5 most common food categories are: 1) Plant-based foods and beverages (7,664 products), 2) Plant-based foods (6,990 products), 3) Snacks (3,999 products), 4) Sweet snacks (3,142 products), and 5) Beverages (2,730 products)."
+    }
+  },
+  {
+    "column": "categories_tags",
+    "sql": "SELECT code, product_name, categories_tags FROM products WHERE array_contains(categories_tags, 'en:plant-based-foods-and-beverages') LIMIT 1000;",
+    "questions": {
+      "fr": "Quels sont les produits alimentaires à base de plantes disponibles dans la base de données?",
+      "en": "What plant-based food products are available in the database?"
+    },
+    "answers": {
+      "fr": "La base de données contient une large gamme de produits alimentaires à base de plantes, notamment des céréales pour le petit-déjeuner, des pâtes, des fruits en conserve, des boissons végétales comme le lait de coco et l'eau de coco, des en-cas comme des barres de céréales, et des aliments en conserve comme des piments verts. Cette sélection variée offre de nombreuses options pour ceux qui recherchent des alternatives végétales.",
+      "en": "The database contains a wide range of plant-based food products, including breakfast cereals, pasta, canned fruits, plant-based beverages such as coconut milk and coconut water, snacks like granola bars, and canned foods like green chilies. This diverse selection offers many options for those seeking plant-based alternatives."
+    }
+  },
+  {
+    "column": "categories_tags",
+    "sql": "SELECT code, product_name, array_length(categories_tags) as category_count, categories_tags FROM products WHERE categories_tags IS NOT NULL ORDER BY array_length(categories_tags) DESC LIMIT 1000;",
+    "questions": {
+      "fr": "Quels sont les produits alimentaires avec la catégorisation la plus détaillée dans la base de données Open Food Facts?",
+      "en": "Which food products have the most detailed categorization in the Open Food Facts database?"
+    },
+    "answers": {
+      "fr": "D'après les résultats de la requête, les produits alimentaires avec la catégorisation la plus détaillée incluent:\n    1. 'Tomates italienne' avec 25 catégories\n    2. 'Pains a Sandwich, Multigrains' avec 22 catégories\n    3. 'La Rassembleuse' (un sirop) avec 22 catégories\n    Ces produits ont une grande variété de tags, allant des catégories générales comme 'aliments d'origine végétale' aux spécificités comme 'sans OGM' ou 'biologique'.",
+      "en": "According to the query results, the food products with the most detailed categorization include:\n    1. 'Italian Tomatoes' with 25 categories\n    2. 'Multigrain Sandwich Buns' with 22 categories\n    3. 'La Rassembleuse' (a syrup) with 22 categories\n    These products have a wide variety of tags, ranging from general categories like 'plant-based foods' to specifics such as 'non-GMO' or 'organic'."
+    }
+  },
+  {
+    "column": "checkers_tags",
+    "sql": "SELECT code, product_name, checkers_tags FROM products WHERE array_length(checkers_tags) > 1 LIMIT 1000",
+    "questions": {
+      "fr": "Quels produits alimentaires ont été vérifiés par plusieurs contrôleurs ?",
+      "en": "Which food products have been verified by multiple checkers?"
+    },
+    "answers": {
+      "fr": "Le produit 'Chocolat Noir Pépites' (code 3179140923061) a été vérifié par au moins deux contrôleurs : pommeorange147 et october-food-facts.",
+      "en": "The product 'Chocolat Noir Pépites' (Dark Chocolate Chips, code 3179140923061) has been verified by at least two checkers: pommeorange147 and october-food-facts."
+    }
+  },
+  {
+    "column": "ciqual_food_name_tags",
+    "sql": "SELECT code, product_name, ciqual_food_name_tags FROM products WHERE ciqual_food_name_tags[1] = 'bread-average' LIMIT 1000",
+    "questions": {
+      "fr": "Quels sont quelques exemples de produits de boulangerie classés comme 'pain moyen' dans la base de données CIQUAL ?",
+      "en": "What are some examples of bakery products classified as 'average bread' in the CIQUAL database?"
+    },
+    "answers": {
+      "fr": "La base de données contient 66 produits classés comme 'pain moyen'. Quelques exemples incluent : Unknown product, Unknown product, Unknown product.",
+      "en": "The database contains 66 products classified as 'average bread'. Some examples include: Unknown product, Unknown product, Unknown product."
+    }
+  },
+  {
+    "column": "ciqual_food_name_tags",
+    "sql": "SELECT code, product_name, ciqual_food_name_tags FROM products WHERE array_contains(array_transform(ciqual_food_name_tags, x -> contains(x, 'cheese')), true) LIMIT 1000",
+    "questions": {
+      "fr": "Quels sont les différents types de fromages disponibles dans la base de données des produits alimentaires?",
+      "en": "What are the different types of cheese products available in the food product database?"
+    },
+    "answers": {
+      "fr": "La base de données contient 120 produits liés au fromage, incluant des variétés comme La Vache Qui Rit, du fromage cottage, du fromage parmesan râpé, et des sauces au fromage pour risotto ou pâtes. Cette diversité permet aux consommateurs de choisir parmi une large gamme de produits fromagers pour répondre à leurs besoins culinaires et préférences gustatives.",
+      "en": "The database contains 120 cheese-related products, including varieties such as La Vache Qui Rit, cottage cheese, grated Parmesan cheese, and cheese sauces for risotto or pasta. This diversity allows consumers to choose from a wide range of cheese products to suit their culinary needs and taste preferences."
+    }
+  },
+  {
+    "column": "compared_to_category",
+    "sql": "SELECT compared_to_category, COUNT(*) as product_count FROM products WHERE compared_to_category IS NOT NULL GROUP BY compared_to_category ORDER BY product_count DESC LIMIT 1000",
+    "questions": {
+      "fr": "Quelle est la catégorie de comparaison de produits la plus courante dans la base de données, et combien de produits appartiennent à cette catégorie ?",
+      "en": "What is the most common product comparison category in the database, and how many products are in this category?"
+    },
+    "answers": {
+      "fr": "La catégorie de comparaison de produits la plus courante est 'groceries', avec 917 produits dans cette catégorie.",
+      "en": "The most common product comparison category is 'groceries', with 917 products in this category."
+    }
+  },
+  {
+    "column": "compared_to_category",
+    "sql": "SELECT code, product_name, compared_to_category FROM products WHERE compared_to_category = 'en:breakfast-cereals' LIMIT 1000",
+    "questions": {
+      "fr": "Quelles sont les différentes options de céréales pour le petit-déjeuner disponibles dans la base de données ?",
+      "en": "What are the different breakfast cereal options available in the database?"
+    },
+    "answers": {
+      "fr": "La base de données contient 148 produits de céréales pour le petit-déjeuner, incluant des options comme 'Unknown product', 'Unknown product', et 'Unknown product'.",
+      "en": "The database contains 148 breakfast cereal products, including options such as 'Unknown product', 'Unknown product', and 'Unknown product'."
+    }
+  },
+  {
+    "column": "compared_to_category",
+    "sql": "SELECT DISTINCT compared_to_category FROM products WHERE compared_to_category IS NOT NULL AND compared_to_category LIKE '%chocolate%' ORDER BY compared_to_category LIMIT 1000",
+    "questions": {
+      "fr": "Quelles sont les différentes catégories de produits liés au chocolat disponibles dans la base de données?",
+      "en": "What are the different chocolate-related product categories available in the database?"
+    },
+    "answers": {
+      "fr": "La base de données contient 115 catégories de produits liés au chocolat, notamment des assortiments de chocolats, des barres chocolatées, des biscuits avec du chocolat, et des brioches au chocolat.",
+      "en": "The database contains 115 chocolate-related product categories, including assorted chocolates, chocolate bars, chocolate-covered biscuits, and chocolate-filled brioche."
+    }
+  },
+  {
+    "column": "ecoscore_grade",
+    "sql": "SELECT ecoscore_grade, COUNT(*) as count, ROUND(COUNT(*) * 100.0 / SUM(COUNT(*)) OVER(), 2) as percentage FROM products WHERE ecoscore_grade IS NOT NULL GROUP BY ecoscore_grade ORDER BY count DESC;",
+    "questions": {
+      "fr": "Quelle est la répartition des notes Eco-Score pour les produits alimentaires dans la base de données ?",
+      "en": "What is the distribution of Eco-Score grades for food products in the database?"
+    },
+    "answers": {
+      "fr": "D'après les données, la majorité des produits (86,34%) n'ont pas de note Eco-Score connue. Parmi les produits notés, la répartition est la suivante : B (3,37%), D (2,62%), E (1,99%), C (1,95%), A (1,81%), F (0,84%), et A+ (0,17%). 0,9% des produits sont marqués comme 'non applicable'.",
+      "en": "According to the data, the majority of products (86.34%) do not have a known Eco-Score grade. Among the graded products, the distribution is as follows: B (3.37%), D (2.62%), E (1.99%), C (1.95%), A (1.81%), F (0.84%), and A+ (0.17%). 0.9% of products are marked as 'not applicable'."
+    }
+  },
+  {
+    "column": "ecoscore_grade",
+    "sql": "SELECT code, product_name, ecoscore_grade FROM products WHERE ecoscore_grade = 'a-plus' ORDER BY code;",
+    "questions": {
+      "fr": "Quels sont les produits alimentaires ayant le meilleur impact environnemental ?",
+      "en": "Which food products have the best environmental impact?"
+    },
+    "answers": {
+      "fr": "Les produits alimentaires ayant le meilleur impact environnemental (note Eco-score A+) comprennent des aliments variés tels que le miel, le thé vert biologique, les pommes, les citrons, les pommes de terre, les oignons et les lentilles vertes. Ces produits ont reçu la meilleure note possible en termes d'impact environnemental.",
+      "en": "Food products with the best environmental impact (Eco-score grade A+) include a variety of items such as honey, organic green tea, apples, lemons, potatoes, onions, and green lentils. These products have received the highest possible rating in terms of environmental impact."
+    }
+  },
+  {
+    "column": "ecoscore_grade",
+    "sql": "SELECT ecoscore_grade, COUNT(*) as count FROM products WHERE ecoscore_grade NOT IN ('unknown', 'not-applicable') GROUP BY ecoscore_grade ORDER BY ecoscore_grade;",
+    "questions": {
+      "fr": "Quelle est la répartition des notes Eco-Score pour les produits alimentaires dans la base de données ?",
+      "en": "What is the distribution of Eco-Score grades for food products in the database?"
+    },
+    "answers": {
+      "fr": "La répartition des notes Eco-Score pour les produits alimentaires est la suivante : A+ (159 produits), A (1664 produits), B (3088 produits), C (1791 produits), D (2403 produits), E (1829 produits), et F (773 produits). La majorité des produits ont une note B, suivie par D et C.",
+      "en": "The distribution of Eco-Score grades for food products is as follows: A+ (159 products), A (1664 products), B (3088 products), C (1791 products), D (2403 products), E (1829 products), and F (773 products). The majority of products have a B grade, followed by D and C."
+    }
+  },
+  {
+    "column": "ecoscore_data",
+    "sql": "SELECT JSON_EXTRACT_STRING(TRY_CAST(ecoscore_data AS JSON), '$.grade') as grade, COUNT(*) as count FROM products WHERE ecoscore_data IS NOT NULL AND JSON_EXTRACT_STRING(TRY_CAST(ecoscore_data AS JSON), '$.status') = 'known' GROUP BY grade ORDER BY grade",
+    "questions": {
+      "fr": "Quelle est la répartition des notes Eco-Score pour les produits alimentaires dans la base de données ?",
+      "en": "What is the distribution of Eco-Score grades for food products in the database?"
+    },
+    "answers": {
+      "fr": "La base de données contient des produits avec des notes Eco-Score allant de A+ à F. La répartition est la suivante : A+ (159 produits), A (1664), B (3088), C (1791), D (2403), E (1829), et F (773). La majorité des produits ont une note B, suivie par D et E.",
+      "en": "The database contains products with Eco-Score grades ranging from A+ to F. The distribution is as follows: A+ (159 products), A (1664), B (3088), C (1791), D (2403), E (1829), and F (773). The majority of products have a B grade, followed by D and E."
+    }
+  },
+  {
+    "column": "ecoscore_data",
+    "sql": "SELECT code, product_name, categories_tags, JSON_EXTRACT_STRING(TRY_CAST(ecoscore_data AS JSON), '$.grade') as ecoscore_grade, JSON_EXTRACT_STRING(TRY_CAST(ecoscore_data AS JSON), '$.score') as ecoscore_score FROM products WHERE ecoscore_data IS NOT NULL AND JSON_EXTRACT_STRING(TRY_CAST(ecoscore_data AS JSON), '$.grade') IN ('a', 'b') LIMIT 1000",
+    "questions": {
+      "fr": "Quels sont les produits alimentaires ayant le meilleur impact environnemental ?",
+      "en": "Which food products have the best environmental impact?"
+    },
+    "answers": {
+      "fr": "D'après les données, plusieurs produits ont un excellent impact environnemental (note A ou B). Par exemple, les 'Goldfish Cheddar' ont une note A avec un score de 78/100, les tomates cerises ont une note A avec un score de 77/100, et la sauce soja Kikkoman a une note A avec un score de 82/100. Ces produits, ainsi que d'autres dans la liste, sont de bons choix pour les consommateurs soucieux de l'environnement.",
+      "en": "According to the data, several products have an excellent environmental impact (grade A or B). For example, 'Goldfish Cheddar' has an A grade with a score of 78/100, grape tomatoes have an A grade with a score of 77/100, and Kikkoman soy sauce has an A grade with a score of 82/100. These products, along with others in the list, are good choices for environmentally conscious consumers."
+    }
+  },
+  {
+    "column": "ecoscore_score",
+    "sql": "SELECT code, product_name, ecoscore_score FROM products WHERE ecoscore_score >= 80 ORDER BY ecoscore_score DESC LIMIT 1000",
+    "questions": {
+      "fr": "Quels sont les produits alimentaires ayant le meilleur impact environnemental ?",
+      "en": "Which food products have the best environmental impact?"
+    },
+    "answers": {
+      "fr": "D'après les données d'Open Food Facts, il existe 738 produits avec un excellent score environnemental (Eco-score de 80 ou plus). Les meilleurs produits incluent des galettes de blé noir, du thé à la camomille, et du moût de raisin, avec des scores allant jusqu'à 116 sur une échelle qui dépasse normalement 100.",
+      "en": "According to Open Food Facts data, there are 738 products with an excellent environmental score (Eco-score of 80 or higher). The top products include buckwheat galettes, chamomile tea, and grape must, with scores reaching up to 116 on a scale that normally tops at 100."
+    }
+  },
+  {
+    "column": "ecoscore_score",
+    "sql": "SELECT CASE WHEN ecoscore_score < 0 THEN 'negative' WHEN ecoscore_score < 40 THEN 'low' WHEN ecoscore_score < 70 THEN 'medium' ELSE 'high' END AS score_category, COUNT(*) as product_count FROM products WHERE ecoscore_score IS NOT NULL GROUP BY score_category ORDER BY score_category",
+    "questions": {
+      "fr": "Quelle est la répartition des produits alimentaires selon leur impact environnemental dans la base de données Open Food Facts ?",
+      "en": "What is the distribution of food products according to their environmental impact in the Open Food Facts database?"
+    },
+    "answers": {
+      "fr": "D'après les données d'Open Food Facts, la répartition des produits selon leur ecoscore est la suivante : 3103 produits ont un score élevé, 4561 ont un score moyen, 3779 ont un score faible, et 264 ont un score négatif. Cela montre qu'une proportion significative de produits a un impact environnemental moyen à élevé.",
+      "en": "According to the Open Food Facts data, the distribution of products based on their ecoscore is as follows: 3,103 products have a high score, 4,561 have a medium score, 3,779 have a low score, and 264 have a negative score. This shows that a significant proportion of products have a medium to high environmental impact."
+    }
+  },
+  {
+    "column": "ecoscore_tags",
+    "sql": "SELECT ecoscore_tags[1] as ecoscore, COUNT(*) as product_count FROM products WHERE ecoscore_tags IS NOT NULL GROUP BY ecoscore_tags[1] ORDER BY product_count DESC",
+    "questions": {
+      "fr": "Quelle est la répartition des éco-scores pour les produits alimentaires dans la base de données ?",
+      "en": "What is the distribution of eco-scores for food products in the database?"
+    },
+    "answers": {
+      "fr": "D'après les données, la majorité des produits (81 470) ont un éco-score 'inconnu'. Parmi les produits avec un éco-score connu, la répartition est la suivante : B (3 223 produits), D (2 516), E (1 921), C (1 865), A (1 743), 'non applicable' (844), F (792), et A+ (175). Cela suggère qu'il y a une grande variété d'impacts environnementaux parmi les produits, avec une opportunité d'amélioration pour de nombreux produits.",
+      "en": "According to the data, the majority of products (81,470) have an 'unknown' eco-score. Among the products with a known eco-score, the distribution is as follows: B (3,223 products), D (2,516), E (1,921), C (1,865), A (1,743), 'not applicable' (844), F (792), and A+ (175). This suggests that there is a wide range of environmental impacts among the products, with room for improvement for many products."
+    }
+  },
+  {
+    "column": "ecoscore_tags",
+    "sql": "SELECT code, product_name, ecoscore_tags FROM products WHERE ecoscore_tags = ARRAY['a-plus']",
+    "questions": {
+      "fr": "Quels sont les produits alimentaires ayant le meilleur impact environnemental ?",
+      "en": "Which food products have the best environmental impact?"
+    },
+    "answers": {
+      "fr": "D'après notre base de données, il y a 175 produits qui ont obtenu la meilleure note environnementale (A+). Parmi eux, on trouve par exemple de la moutarde de Dijon originale, du son d'avoine, de la farine non blanchie, des crackers, un mélange de boulgour et de quinoa, de la soupe de tomate, du sel de table iodé, et des olives noires. Ces produits sont considérés comme ayant l'impact environnemental le plus faible.",
+      "en": "According to our database, there are 175 products that have achieved the best environmental rating (A+). Among them, you can find products such as original Dijon mustard, oat bran, unbleached all-purpose flour, crackers, a bulgur and quinoa blend, tomato soup, iodized table salt, and black olives. These products are considered to have the lowest environmental impact."
+    }
+  },
+  {
+    "column": "ecoscore_tags",
+    "sql": "SELECT code, product_name, ecoscore_tags FROM products WHERE ecoscore_tags[1] IN ('e', 'f')",
+    "questions": {
+      "fr": "Quels produits alimentaires ont un impact environnemental élevé selon leur écoscore ?",
+      "en": "Which food products have a high environmental impact according to their ecoscore?"
+    },
+    "answers": {
+      "fr": "L'analyse montre que 2713 produits ont un écoscore de 'e' ou 'f', indiquant un impact environnemental élevé. Parmi eux, on trouve des produits comme le sirop d'agave biologique, des céréales, des barres de céréales, des boissons aux canneberges et du chocolat noir.",
+      "en": "The analysis shows that 2713 products have an ecoscore of 'e' or 'f', indicating a high environmental impact. These include products such as organic blue agave syrup, cereals, cereal bars, cranberry drinks, and dark chocolate."
+    }
+  },
+  {
+    "column": "ingredients_analysis_tags",
+    "sql": "SELECT code, product_name, ingredients_analysis_tags FROM products WHERE ingredients_analysis_tags IS NOT NULL AND array_contains(ingredients_analysis_tags, 'en:vegan')",
+    "questions": {
+      "fr": "Quels produits sont certifiés végétaliens dans la base de données Open Food Facts ?",
+      "en": "Which products are certified vegan in the Open Food Facts database?"
+    },
+    "answers": {
+      "fr": "La base de données Open Food Facts contient 5450 produits certifiés végétaliens. Ces produits sont étiquetés comme ne contenant aucun ingrédient d'origine animale.",
+      "en": "The Open Food Facts database contains 5450 products certified as vegan. These products are labeled as containing no animal-derived ingredients."
+    }
+  },
+  {
+    "column": "ingredients_from_palm_oil_n",
+    "sql": "SELECT code, product_name, ingredients_from_palm_oil_n FROM products WHERE ingredients_from_palm_oil_n > 0 ORDER BY ingredients_from_palm_oil_n DESC LIMIT 1000",
+    "questions": {
+      "fr": "Quels produits alimentaires contiennent le plus d'ingrédients à base d'huile de palme ?",
+      "en": "Which food products contain the most palm oil-based ingredients?"
+    },
+    "answers": {
+      "fr": "D'après notre base de données, certains produits contiennent jusqu'à 2 ingrédients à base d'huile de palme. Par exemple, le produit 'Ridiculously delicious' (code 0628055997238) contient 2 ingrédients à base d'huile de palme. Si vous souhaitez éviter ou limiter votre consommation d'huile de palme, vous pouvez vérifier l'étiquette des produits ou utiliser notre base de données pour identifier les produits contenant moins ou pas d'ingrédients à base d'huile de palme.",
+      "en": "According to our database, some products contain up to 2 palm oil-based ingredients. For example, the product 'Ridiculously delicious' (code 0628055997238) contains 2 palm oil-based ingredients. If you wish to avoid or limit your palm oil consumption, you can check product labels or use our database to identify products with fewer or no palm oil-based ingredients."
+    }
+  },
+  {
+    "column": "ingredients_from_palm_oil_n",
+    "sql": "SELECT ingredients_from_palm_oil_n, COUNT(*) as product_count FROM products WHERE ingredients_from_palm_oil_n IS NOT NULL GROUP BY ingredients_from_palm_oil_n ORDER BY ingredients_from_palm_oil_n",
+    "questions": {
+      "fr": "Combien de produits dans la base de données contiennent des ingrédients à base d'huile de palme ?",
+      "en": "How many products in the database contain palm oil-based ingredients?"
+    },
+    "answers": {
+      "fr": "D'après les données disponibles, sur 13 849 produits, 13 351 ne contiennent pas d'ingrédients à base d'huile de palme, 495 en contiennent un, et 3 en contiennent deux.",
+      "en": "Based on the available data, out of 13,849 products, 13,351 contain no palm oil-based ingredients, 495 contain one, and 3 contain two."
+    }
+  },
+  {
+    "column": "ingredients_from_palm_oil_n",
+    "sql": "SELECT CASE ingredients_from_palm_oil_n WHEN 0 THEN 'No Palm Oil' WHEN 1 THEN 'One Palm Oil Ingredient' WHEN 2 THEN 'Two Palm Oil Ingredients' END as category, COUNT(*) as count FROM products WHERE ingredients_from_palm_oil_n IS NOT NULL GROUP BY ingredients_from_palm_oil_n ORDER BY ingredients_from_palm_oil_n",
+    "questions": {
+      "fr": "Quelle est la proportion de produits alimentaires contenant de l'huile de palme dans la base de données ?",
+      "en": "What proportion of food products in the database contain palm oil?"
+    },
+    "answers": {
+      "fr": "Selon les données, sur 13,849 produits avec des informations complètes sur l'huile de palme, 13,351 (96.4%) ne contiennent pas d'huile de palme, 495 (3.6%) contiennent un ingrédient à base d'huile de palme, et seulement 3 (0.02%) contiennent deux ingrédients à base d'huile de palme.",
+      "en": "According to the data, out of 13,849 products with complete palm oil information, 13,351 (96.4%) contain no palm oil, 495 (3.6%) contain one palm oil ingredient, and only 3 (0.02%) contain two palm oil ingredients."
+    }
+  },
+  {
+    "column": "ingredients",
+    "sql": "SELECT code, ingredients FROM products WHERE ingredients IS NOT NULL AND ingredients LIKE '%\"text\":\"milk\"%' LIMIT 1000",
+    "questions": {
+      "fr": "Quels produits contiennent du lait dans leurs ingrédients ?",
+      "en": "Which products contain milk in their ingredients?"
+    },
+    "answers": {
+      "fr": "La recherche a trouvé 400 produits contenant du lait dans leurs ingrédients. Par exemple, certains produits laitiers, chocolats au lait, et aliments transformés contiennent du lait comme ingrédient principal ou secondaire.",
+      "en": "The search found 400 products containing milk in their ingredients. For example, some dairy products, milk chocolates, and processed foods contain milk as a primary or secondary ingredient."
+    }
+  },
+  {
+    "column": "ingredients",
+    "sql": "SELECT code, ingredients FROM products WHERE ingredients IS NOT NULL AND ingredients LIKE '%\"percent_estimate\":9%' AND ingredients LIKE '%\"rank\":1%' LIMIT 1000",
+    "questions": {
+      "fr": "Quels produits contiennent une très forte proportion de leur ingrédient principal ?",
+      "en": "Which products contain a very high proportion of their main ingredient?"
+    },
+    "answers": {
+      "fr": "Nous avons trouvé plusieurs produits dont l'ingrédient principal représente plus de 90% de la composition. Ces produits ont tendance à être plus purs ou concentrés en leur ingrédient principal.",
+      "en": "We found several products where the main ingredient represents over 90% of the composition. These products tend to be purer or more concentrated in their primary ingredient."
+    }
+  },
+  {
+    "column": "ingredients_n",
+    "sql": "WITH stats AS ( SELECT PERCENTILE_CONT(0.9) WITHIN GROUP (ORDER BY ingredients_n) as p90 FROM products WHERE ingredients_n IS NOT NULL ) SELECT code, product_name, ingredients_n FROM products, stats WHERE ingredients_n > stats.p90 ORDER BY ingredients_n DESC LIMIT 1000",
+    "questions": {
+      "fr": "Quels sont les produits alimentaires ayant le plus grand nombre d'ingrédients ?",
+      "en": "Which food products have the highest number of ingredients?"
+    },
+    "answers": {
+      "fr": "Parmi les produits avec le plus d'ingrédients, on trouve '[{'lang': 'main', 'text': 'Kellogg’s nutri grain'}, {'lang': 'fr', 'text': 'Kellogg’s nutri grain'}]' avec 289 ingrédients. Cela pourrait indiquer des aliments très transformés.",
+      "en": "Among the products with the most ingredients, we find '[{'lang': 'main', 'text': 'Kellogg’s nutri grain'}, {'lang': 'fr', 'text': 'Kellogg’s nutri grain'}]' with 289 ingredients. This might indicate highly processed foods."
+    }
+  },
+  {
+    "column": "ingredients_n",
+    "sql": "SELECT CASE WHEN ingredients_n BETWEEN 0 AND 5 THEN '0-5' WHEN ingredients_n BETWEEN 6 AND 10 THEN '6-10' WHEN ingredients_n BETWEEN 11 AND 20 THEN '11-20' ELSE '21+' END as ingredient_range, COUNT(*) as product_count, ROUND(COUNT(*) * 100.0 / SUM(COUNT(*)) OVER (), 2) as percentage FROM products WHERE ingredients_n IS NOT NULL GROUP BY 1 ORDER BY MIN(ingredients_n)",
+    "questions": {
+      "fr": "Quelle est la répartition des produits alimentaires en fonction du nombre d'ingrédients qu'ils contiennent ?",
+      "en": "What is the distribution of food products based on the number of ingredients they contain?"
+    },
+    "answers": {
+      "fr": "D'après les données, 23% des produits ont 0 à 5 ingrédients, 17,63% ont 6 à 10 ingrédients, 28,48% ont 11 à 20 ingrédients, et 30,88% ont plus de 21 ingrédients. Cela montre qu'une grande partie des produits alimentaires contiennent de nombreux ingrédients, avec plus de 59% des produits ayant plus de 11 ingrédients.",
+      "en": "According to the data, 23% of products have 0 to 5 ingredients, 17.63% have 6 to 10 ingredients, 28.48% have 11 to 20 ingredients, and 30.88% have more than 21 ingredients. This shows that a large portion of food products contain numerous ingredients, with over 59% of products having more than 11 ingredients."
+    }
+  },
+  {
+    "column": "ingredients_original_tags",
+    "sql": "SELECT code, product_name, ingredients_original_tags FROM products WHERE array_contains(ingredients_original_tags, 'en:sugar') LIMIT 1000;",
+    "questions": {
+      "fr": "Quels produits contiennent du sucre dans leurs ingrédients ?",
+      "en": "Which products contain sugar in their ingredients?"
+    },
+    "answers": {
+      "fr": "Nous avons trouvé 1000 produits qui contiennent du sucre dans leurs ingrédients. Par exemple, '[{'lang': 'main', 'text': 'Imitation vanilla flavor'}, {'lang': 'en', 'text': 'Imitation vanilla flavor'}]' et '[{'lang': 'main', 'text': \"Chef d'oeuf™avec fromage sur muffin anglais\"}, {'lang': 'fr', 'text': \"Chef d'oeuf™avec fromage sur muffin anglais\"}]' sont des produits qui contiennent du sucre.",
+      "en": "We found 1000 products that contain sugar in their ingredients. For example, '[{'lang': 'main', 'text': 'Imitation vanilla flavor'}, {'lang': 'en', 'text': 'Imitation vanilla flavor'}]' and '[{'lang': 'main', 'text': \"Chef d'oeuf™avec fromage sur muffin anglais\"}, {'lang': 'fr', 'text': \"Chef d'oeuf™avec fromage sur muffin anglais\"}]' are products that contain sugar."
+    }
+  },
+  {
+    "column": "ingredients_original_tags",
+    "sql": "SELECT code, product_name, array_length(ingredients_original_tags) as ingredient_count, ingredients_original_tags FROM products WHERE ingredients_original_tags IS NOT NULL ORDER BY array_length(ingredients_original_tags) DESC LIMIT 1000;",
+    "questions": {
+      "fr": "Quels sont les produits alimentaires qui contiennent le plus grand nombre d'ingrédients ?",
+      "en": "Which food products contain the highest number of ingredients?"
+    },
+    "answers": {
+      "fr": "D'après les données, certains produits alimentaires peuvent contenir jusqu'à 289 ingrédients différents. Par exemple, le produit 'Kellogg's nutri grain' contient 289 ingrédients, ce qui en fait l'un des produits avec le plus grand nombre d'ingrédients dans la base de données.",
+      "en": "According to the data, some food products can contain up to 289 different ingredients. For example, the product 'Kellogg's nutri grain' contains 289 ingredients, making it one of the products with the highest number of ingredients in the database."
+    }
+  },
+  {
+    "column": "ingredients_tags",
+    "sql": "SELECT code, product_name, array_length(ingredients_tags) as ingredient_count FROM products WHERE ingredients_tags IS NOT NULL ORDER BY ingredient_count DESC LIMIT 1000",
+    "questions": {
+      "fr": "Quels sont les produits alimentaires avec le plus grand nombre d'ingrédients ?",
+      "en": "Which food products have the highest number of ingredients?"
+    },
+    "answers": {
+      "fr": "D'après les données, le produit avec le plus grand nombre d'ingrédients est '[{'lang': 'main', 'text': 'Kellogg’s nutri grain'}, {'lang': 'fr', 'text': 'Kellogg’s nutri grain'}]' avec 192 ingrédients. Cependant, il est important de noter que le nombre d'ingrédients seul ne détermine pas nécessairement la qualité nutritionnelle du produit.",
+      "en": "According to the data, the product with the highest number of ingredients is '[{'lang': 'main', 'text': 'Kellogg’s nutri grain'}, {'lang': 'fr', 'text': 'Kellogg’s nutri grain'}]' with 192 ingredients. However, it's important to note that the number of ingredients alone doesn't necessarily determine the nutritional quality of the product."
+    }
+  },
+  {
+    "column": "ingredients_text",
+    "sql": "SELECT code, COALESCE( UNNEST(LIST_FILTER(ingredients_text, x -> x.lang = 'en'))['text'], UNNEST(LIST_FILTER(ingredients_text, x -> x.lang = 'main'))['text'] ) AS ingredients FROM products WHERE ingredients_text IS NOT NULL LIMIT 1000;",
+    "questions": {
+      "fr": "Quels sont les ingrédients de ce produit alimentaire ?",
+      "en": "What are the ingredients in this food product?"
+    },
+    "answers": {
+      "fr": "Ce produit contient les ingrédients suivants : [liste des ingrédients]. Cette information vous permet de faire des choix éclairés en fonction de vos préférences alimentaires, restrictions diététiques ou allergies.",
+      "en": "This product contains the following ingredients: [list of ingredients]. This information allows you to make informed choices based on your dietary preferences, restrictions, or allergies."
+    }
+  },
+  {
+    "column": "ingredients_without_ciqual_codes",
+    "sql": "SELECT code, ingredients_without_ciqual_codes FROM products WHERE ingredients_without_ciqual_codes IS NOT NULL AND array_contains(ingredients_without_ciqual_codes, 'en:e300') LIMIT 50",
+    "questions": {
+      "fr": "Quels produits contiennent de la vitamine C ajoutée (E300) dans leurs ingrédients ?",
+      "en": "Which products contain added Vitamin C (E300) in their ingredients?"
+    },
+    "answers": {
+      "fr": "Plusieurs produits contiennent de la vitamine C ajoutée (E300), notamment des boissons à base d'amandes, des céréales, des jus de fruits et d'autres aliments transformés. La vitamine C est souvent ajoutée comme antioxydant ou pour enrichir nutritionnellement le produit.",
+      "en": "Several products contain added Vitamin C (E300), including almond-based drinks, cereals, fruit juices, and other processed foods. Vitamin C is often added as an antioxidant or to nutritionally enrich the product."
+    }
+  },
+  {
+    "column": "known_ingredients_n",
+    "sql": "SELECT code, product_name, known_ingredients_n FROM products WHERE known_ingredients_n > 50 ORDER BY known_ingredients_n DESC LIMIT 50",
+    "questions": {
+      "fr": "Quels sont les produits alimentaires ayant le plus grand nombre d'ingrédients ?",
+      "en": "Which food products have the highest number of ingredients?"
+    },
+    "answers": {
+      "fr": "D'après notre base de données, certains produits alimentaires contiennent plus de 100 ingrédients. Par exemple, une soupe de nouilles Ansung à saveur de boeuf et de haricots fermentés contient 112 ingrédients, ce qui en fait le produit avec le plus grand nombre d'ingrédients dans notre échantillon.",
+      "en": "According to our database, some food products contain over 100 ingredients. For example, an Ansung noodle soup with beef and fermented bean flavor contains 112 ingredients, making it the product with the highest number of ingredients in our sample."
+    }
+  },
+  {
+    "column": "known_ingredients_n",
+    "sql": "SELECT AVG(known_ingredients_n) as avg_ingredients, PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY known_ingredients_n) as median_ingredients FROM products WHERE known_ingredients_n IS NOT NULL LIMIT 50",
+    "questions": {
+      "fr": "Combien d'ingrédients contiennent en moyenne les produits alimentaires ?",
+      "en": "How many ingredients do food products contain on average?"
+    },
+    "answers": {
+      "fr": "En moyenne, les produits alimentaires contiennent environ 21 ingrédients, avec une médiane de 17 ingrédients. Cela signifie que la moitié des produits ont 17 ingrédients ou moins, tandis que l'autre moitié en a 17 ou plus.",
+      "en": "On average, food products contain about 21 ingredients, with a median of 17 ingredients. This means that half of the products have 17 ingredients or fewer, while the other half have 17 or more."
+    }
+  },
+  {
+    "column": "labels",
+    "sql": "WITH split_labels AS ( SELECT unnest(string_split(labels, ',')) as label FROM products WHERE labels IS NOT NULL ) SELECT trim(label) as label, COUNT(*) as count FROM split_labels GROUP BY label ORDER BY count DESC LIMIT 50",
+    "questions": {
+      "fr": "Quelles sont les étiquettes alimentaires les plus courantes sur les produits?",
+      "en": "What are the most common food labels on products?"
+    },
+    "answers": {
+      "fr": "Les étiquettes alimentaires les plus courantes sont: Sans gluten (4636 produits), Non GMO project (3273 produits), Végétalien (2567 produits), Bio (2324 produits), et Sans OGM (1948 produits). Ces informations peuvent vous aider à choisir des produits adaptés à vos besoins diététiques spécifiques.",
+      "en": "The most common food labels are: Gluten-free (4636 products), Non GMO project (3273 products), Vegan (2567 products), Organic (2324 products), and No GMOs (1948 products). This information can help you choose products that suit your specific dietary needs."
+    }
+  },
+  {
+    "column": "labels",
+    "sql": "SELECT code, product_name, labels FROM products WHERE labels ILIKE '%organic%' AND labels ILIKE '%non gmo%' LIMIT 50",
+    "questions": {
+      "fr": "Quels produits sont à la fois biologiques et sans OGM?",
+      "en": "Which products are both organic and non-GMO?"
+    },
+    "answers": {
+      "fr": "Nous avons trouvé 50 produits qui sont à la fois biologiques et sans OGM, y compris du sirop d'érable biologique du Vermont, du sirop d'agave bleu biologique, des céréales de blé entier à la cannelle, et des boissons de soja biologiques.",
+      "en": "We found 50 products that are both organic and non-GMO, including organic Vermont maple syrup, organic blue agave syrup, whole wheat cinnamon cereal, and organic soy beverages."
+    }
+  },
+  {
+    "column": "labels_tags",
+    "sql": "SELECT code, product_name, labels_tags FROM products WHERE labels_tags IS NOT NULL AND list_contains(labels_tags, 'en:kosher') AND list_contains(labels_tags, 'en:no-gluten') LIMIT 50",
+    "questions": {
+      "fr": "Quels produits sont à la fois kasher et sans gluten ?",
+      "en": "Which products are both kosher and gluten-free?"
+    },
+    "answers": {
+      "fr": "Notre base de données contient au moins 50 produits qui sont à la fois kasher et sans gluten. Ces produits comprennent des boissons aux amandes, des boissons au soja, des céréales, et divers autres aliments. Cette information est particulièrement utile pour les consommateurs qui suivent un régime kasher et qui doivent également éviter le gluten pour des raisons de santé.",
+      "en": "Our database contains at least 50 products that are both kosher and gluten-free. These products include almond beverages, soy beverages, cereals, and various other food items. This information is particularly useful for consumers who follow a kosher diet and also need to avoid gluten for health reasons."
+    }
+  },
+  {
+    "column": "manufacturing_places",
+    "sql": "SELECT product_name, manufacturing_places FROM products WHERE manufacturing_places ILIKE '%canada%' ORDER BY product_name LIMIT 50",
+    "questions": {
+      "fr": "Quels produits alimentaires sont fabriqués au Canada ?",
+      "en": "Which food products are manufactured in Canada?"
+    },
+    "answers": {
+      "fr": "Plusieurs produits alimentaires sont fabriqués au Canada, notamment des margarines, des sirops, du beurre, du chocolat et du lait sans lactose. Par exemple, on trouve la margarine Becel fabriquée à Toronto, Ontario, et du sirop original produit au Canada.",
+      "en": "Several food products are manufactured in Canada, including margarines, syrups, butter, chocolate, and lactose-free milk. For example, Becel margarine is made in Toronto, Ontario, and Original Syrup is produced in Canada."
+    }
+  },
+  {
+    "column": "minerals_tags",
+    "sql": "WITH RECURSIVE unnested AS ( SELECT UNNEST(minerals_tags) as mineral FROM products WHERE minerals_tags IS NOT NULL ) SELECT mineral, COUNT(*) as count FROM unnested GROUP BY mineral ORDER BY count DESC LIMIT 50;",
+    "questions": {
+      "fr": "Quels sont les minéraux les plus couramment ajoutés aux produits alimentaires?",
+      "en": "What are the most commonly added minerals in food products?"
+    },
+    "answers": {
+      "fr": "D'après l'analyse de la base de données Open Food Facts, les minéraux les plus couramment ajoutés aux produits alimentaires sont le chlorure de calcium, le phosphate de sodium, le sodium, le fer et le calcium. Ces informations peuvent vous aider à choisir des produits en fonction de vos besoins nutritionnels spécifiques.",
+      "en": "According to the analysis of the Open Food Facts database, the most commonly added minerals in food products are calcium chloride, sodium phosphate, sodium, iron, and calcium. This information can help you choose products based on your specific nutritional needs."
+    }
+  },
+  {
+    "column": "minerals_tags",
+    "sql": "SELECT code, product_name, minerals_tags FROM products WHERE minerals_tags IS NOT NULL AND (array_contains(minerals_tags, 'en:calcium') OR array_contains(minerals_tags, 'en:calcium-chloride') OR array_contains(minerals_tags, 'en:calcium-carbonate')) AND (array_contains(minerals_tags, 'en:iron') OR array_contains(minerals_tags, 'en:ferric-orthophosphate')) LIMIT 50;",
+    "questions": {
+      "fr": "Quels produits alimentaires contiennent à la fois du calcium et du fer ?",
+      "en": "Which food products contain both calcium and iron?"
+    },
+    "answers": {
+      "fr": "D'après notre base de données, plusieurs produits contiennent à la fois du calcium et du fer. Par exemple, certaines céréales comme 'Gmills hny nut cheerios sweetened whl grn oat cereal', 'Regular instant oatmeal', et 'Special K Nourish Apple, Raspberries & Almonds' contiennent ces deux minéraux. Ces produits peuvent être bénéfiques pour les consommateurs cherchant à augmenter leur apport en calcium et en fer dans leur alimentation.",
+      "en": "According to our database, several products contain both calcium and iron. For example, some cereals like 'Gmills hny nut cheerios sweetened whl grn oat cereal', 'Regular instant oatmeal', and 'Special K Nourish Apple, Raspberries & Almonds' contain both of these minerals. These products can be beneficial for consumers looking to increase their calcium and iron intake in their diet."
+    }
+  },
+  {
+    "column": "minerals_tags",
+    "sql": "SELECT AVG(array_length(minerals_tags)) as avg_minerals_count, MIN(array_length(minerals_tags)) as min_minerals, MAX(array_length(minerals_tags)) as max_minerals FROM products WHERE minerals_tags IS NOT NULL LIMIT 50;",
+    "questions": {
+      "fr": "Quelle est la variété de minéraux généralement présente dans les produits alimentaires?",
+      "en": "What is the typical variety of minerals found in food products?"
+    },
+    "answers": {
+      "fr": "En moyenne, les produits alimentaires contiennent environ 0,27 types de minéraux différents. Certains produits n'en contiennent aucun, tandis que d'autres peuvent contenir jusqu'à 20 types de minéraux différents.",
+      "en": "On average, food products contain about 0.27 different types of minerals. Some products contain no minerals, while others can have up to 20 different types of minerals."
+    }
+  },
+  {
+    "column": "misc_tags",
+    "sql": "SELECT code, product_name, misc_tags FROM products WHERE array_contains(misc_tags, 'en:all-ingredients-with-specified-percent') LIMIT 50",
+    "questions": {
+      "fr": "Quels produits alimentaires indiquent le pourcentage précis de tous leurs ingrédients ?",
+      "en": "Which food products specify the exact percentage of all their ingredients?"
+    },
+    "answers": {
+      "fr": "D'après notre base de données, plusieurs produits indiquent le pourcentage précis de tous leurs ingrédients. Par exemple, on trouve différents jus d'orange comme Tropicana et des flocons d'avoine. Cette information permet aux consommateurs de connaître exactement la composition des produits qu'ils achètent.",
+      "en": "According to our database, several products specify the exact percentage of all their ingredients. For example, we find various orange juices like Tropicana and oat products. This information allows consumers to know exactly what goes into the products they're purchasing."
+    }
+  },
+  {
+    "column": "new_additives_n",
+    "sql": "SELECT new_additives_n, COUNT(*) as product_count FROM products WHERE new_additives_n IS NOT NULL GROUP BY new_additives_n ORDER BY new_additives_n LIMIT 50",
+    "questions": {
+      "fr": "Combien de produits alimentaires ne contiennent aucun additif ?",
+      "en": "How many food products contain no additives?"
+    },
+    "answers": {
+      "fr": "Selon les données disponibles, 2 produits alimentaires ne contiennent aucun additif.",
+      "en": "Based on the available data, 2 food products contain no additives."
+    }
+  },
+  {
+    "column": "new_additives_n",
+    "sql": "SELECT code, product_name, new_additives_n FROM products WHERE new_additives_n > 3 ORDER BY new_additives_n DESC LIMIT 50",
+    "questions": {
+      "fr": "Quels sont les produits alimentaires qui contiennent le plus d'additifs ?",
+      "en": "Which food products contain the highest number of additives?"
+    },
+    "answers": {
+      "fr": "D'après notre base de données, le produit 'Pêche' contient le plus grand nombre d'additifs, avec 6 additifs différents.",
+      "en": "According to our database, the product 'Pêche' (Peach) contains the highest number of additives, with 6 different additives."
+    }
+  },
+  {
+    "column": "nova_group",
+    "sql": "SELECT nova_group, COUNT(*) as product_count, ROUND(COUNT(*) * 100.0 / (SELECT COUNT(*) FROM products WHERE nova_group IS NOT NULL), 2) as percentage FROM products WHERE nova_group IS NOT NULL GROUP BY nova_group ORDER BY nova_group LIMIT 50;",
+    "questions": {
+      "fr": "Quelle est la répartition des produits alimentaires selon leur niveau de transformation (groupes NOVA) dans la base de données ?",
+      "en": "What is the distribution of food products according to their level of processing (NOVA groups) in the database?"
+    },
+    "answers": {
+      "fr": "Selon les données, 8.68% des produits appartiennent au groupe NOVA 1 (aliments peu ou pas transformés), 9.16% au groupe NOVA 2 (ingrédients culinaires transformés), 12.11% au groupe NOVA 3 (aliments transformés), et 70.06% au groupe NOVA 4 (produits ultra-transformés). Cela suggère qu'une grande majorité des produits dans la base de données sont des aliments hautement transformés.",
+      "en": "According to the data, 8.68% of products belong to NOVA group 1 (unprocessed or minimally processed foods), 9.16% to NOVA group 2 (processed culinary ingredients), 12.11% to NOVA group 3 (processed foods), and 70.06% to NOVA group 4 (ultra-processed foods). This suggests that a large majority of products in the database are highly processed foods."
+    }
+  },
+  {
+    "column": "nova_group",
+    "sql": "SELECT code, product_name, nova_group FROM products WHERE nova_group = 4 LIMIT 50;",
+    "questions": {
+      "fr": "Quels sont des exemples de produits alimentaires ultra-transformés disponibles sur le marché ?",
+      "en": "What are some examples of ultra-processed food products available in the market?"
+    },
+    "answers": {
+      "fr": "Parmi les exemples de produits alimentaires ultra-transformés (groupe NOVA 4) disponibles sur le marché, on trouve : l'arôme d'imitation de vanille, le gingembre pour sushi, les sandwichs au fromage sur muffin anglais, les gâteaux au chocolat, les macaronis au fromage, les craquelins au fromage Goldfish, les céréales sucrées comme les Cheerios au miel et aux noix, les barres granola Nature Valley et les boissons gazeuses aromatisées.",
+      "en": "Some examples of ultra-processed food products (NOVA group 4) available in the market include: imitation vanilla flavor, sushi ginger, cheese sandwiches on English muffins, chocolate cakes, macaroni and cheese, Goldfish cheese crackers, sweetened cereals like Honey Nut Cheerios, Nature Valley granola bars, and flavored sparkling beverages."
+    }
+  },
+  {
+    "column": "nova_group",
+    "sql": "SELECT categories_tags[1] as main_category, ROUND(AVG(nova_group), 2) as avg_nova, COUNT(*) as product_count FROM products WHERE nova_group IS NOT NULL GROUP BY categories_tags[1] HAVING COUNT(*) > 10 ORDER BY avg_nova DESC LIMIT 50;",
+    "questions": {
+      "fr": "Quelles catégories d'aliments sont généralement les plus transformées selon la classification NOVA ?",
+      "en": "Which food categories are generally the most processed according to the NOVA classification?"
+    },
+    "answers": {
+      "fr": "Selon les données, les catégories d'aliments les plus transformées (avec un score NOVA moyen proche de 4) sont les tartes sucrées, les sirops, les desserts, les aliments surgelés et les compléments alimentaires. Les snacks et les alternatives à la viande ont également des scores élevés, indiquant un niveau élevé de transformation.",
+      "en": "According to the data, the most processed food categories (with an average NOVA score close to 4) are sweet pies, syrups, desserts, frozen foods, and dietary supplements. Snacks and meat alternatives also have high scores, indicating a high level of processing."
+    }
+  },
+  {
+    "column": "nova_groups",
+    "sql": "SELECT nova_groups, COUNT(*) as product_count FROM products WHERE nova_groups IS NOT NULL GROUP BY nova_groups ORDER BY nova_groups LIMIT 50",
+    "questions": {
+      "fr": "Quelle est la répartition des produits alimentaires selon leur niveau de transformation ?",
+      "en": "What is the distribution of food products according to their level of processing?"
+    },
+    "answers": {
+      "fr": "\n    Selon les données de la base Open Food Facts :\n    - 1278 produits sont classés dans le groupe NOVA 1 (aliments peu ou pas transformés)\n    - 1349 produits sont dans le groupe NOVA 2 (ingrédients culinaires transformés)\n    - 1783 produits sont dans le groupe NOVA 3 (aliments transformés)\n    - 10317 produits sont dans le groupe NOVA 4 (produits ultra-transformés)\n    \n    La majorité des produits répertoriés sont ultra-transformés, ce qui peut être une information importante pour les consommateurs soucieux de leur santé.\n    ",
+      "en": "\n    According to the Open Food Facts database:\n    - 1,278 products are classified in NOVA group 1 (unprocessed or minimally processed foods)\n    - 1,349 products are in NOVA group 2 (processed culinary ingredients)\n    - 1,783 products are in NOVA group 3 (processed foods)\n    - 10,317 products are in NOVA group 4 (ultra-processed foods)\n    \n    The majority of listed products are ultra-processed, which can be important information for health-conscious consumers.\n    "
+    }
+  },
+  {
+    "column": "nova_groups",
+    "sql": "SELECT code, product_name, nova_groups FROM products WHERE nova_groups = '1' LIMIT 50",
+    "questions": {
+      "fr": "Quels sont des exemples d'aliments non transformés ou minimalement transformés dans la base de données ?",
+      "en": "What are some examples of unprocessed or minimally processed foods in the database?"
+    },
+    "answers": {
+      "fr": "Voici quelques exemples d'aliments non transformés ou minimalement transformés (groupe NOVA 1) : lait de coco, eau de noix de coco, jus d'orange 100% pur pressé pasteurisé, flocons d'avoine rapides et céleri. Ces aliments sont considérés comme ayant subi peu ou pas de transformation industrielle.",
+      "en": "Here are some examples of unprocessed or minimally processed foods (NOVA group 1): coconut milk, coconut water, 100% pure squeezed pasteurized orange juice, quick oats, and celery. These foods are considered to have undergone little or no industrial processing."
+    }
+  },
+  {
+    "column": "nova_groups",
+    "sql": "SELECT ROUND(100.0 * COUNT(CASE WHEN nova_groups = '4' THEN 1 END) / COUNT(*), 2) as ultra_processed_percentage FROM products WHERE nova_groups IS NOT NULL LIMIT 50",
+    "questions": {
+      "fr": "Quel pourcentage des produits alimentaires dans la base de données sont considérés comme ultra-transformés selon la classification NOVA ?",
+      "en": "What percentage of food products in the database are considered ultra-processed according to the NOVA classification?"
+    },
+    "answers": {
+      "fr": "Selon les données, 70,06% des produits alimentaires dans la base de données sont classés comme ultra-transformés (groupe NOVA 4).",
+      "en": "According to the data, 70.06% of food products in the database are classified as ultra-processed (NOVA group 4)."
+    }
+  },
+  {
+    "column": "nova_groups_tags",
+    "sql": "SELECT nova_groups_tags, COUNT(*) as product_count FROM products WHERE nova_groups_tags IS NOT NULL GROUP BY nova_groups_tags ORDER BY product_count DESC LIMIT 50",
+    "questions": {
+      "fr": "Quelle est la répartition des produits alimentaires selon leur niveau de transformation (classification NOVA) dans la base de données ?",
+      "en": "What is the distribution of food products according to their level of processing (NOVA classification) in the database?"
+    },
+    "answers": {
+      "fr": "\nD'après les données, la répartition des produits alimentaires selon la classification NOVA est la suivante :\n- 79 680 produits sont de groupe inconnu\n- 10 317 produits sont ultra-transformés (groupe 4)\n- 1 783 produits sont des aliments transformés (groupe 3)\n- 1 349 produits sont des ingrédients culinaires transformés (groupe 2)\n- 1 278 produits sont des aliments peu ou pas transformés (groupe 1)\n- 142 produits sont classés comme non applicables\n\nCette répartition montre une prépondérance de produits ultra-transformés parmi les produits classifiés, ce qui peut être une information importante pour les consommateurs soucieux de leur santé et cherchant à limiter leur consommation d'aliments hautement transformés.\n",
+      "en": "\nAccording to the data, the distribution of food products based on the NOVA classification is as follows:\n- 79,680 products have an unknown group\n- 10,317 products are ultra-processed (group 4)\n- 1,783 products are processed foods (group 3)\n- 1,349 products are processed culinary ingredients (group 2)\n- 1,278 products are unprocessed or minimally processed foods (group 1)\n- 142 products are classified as not applicable\n\nThis distribution shows a predominance of ultra-processed products among the classified items, which can be important information for health-conscious consumers looking to limit their consumption of highly processed foods.\n"
+    }
+  },
+  {
+    "column": "nova_groups_tags",
+    "sql": "SELECT code, product_name, nova_groups_tags FROM products WHERE nova_groups_tags = ARRAY['en:4-ultra-processed-food-and-drink-products'] LIMIT 50",
+    "questions": {
+      "fr": "Quels sont des exemples de produits alimentaires considérés comme ultra-transformés ?",
+      "en": "What are some examples of food products considered ultra-processed?"
+    },
+    "answers": {
+      "fr": "Parmi les exemples de produits alimentaires ultra-transformés, on trouve : l'arôme artificiel de vanille, le gingembre pour sushi, les muffins anglais au fromage, le gâteau double chocolat, les macaronis au fromage, les craquelins au cheddar Goldfish, les céréales Cheerios au miel et aux noix, les barres Nature Valley, et les boissons pétillantes aromatisées.",
+      "en": "Examples of ultra-processed food products include: imitation vanilla flavor, sushi ginger, cheese muffins, double chocolate cake, macaroni and cheese, Goldfish cheddar crackers, Honey Nut Cheerios cereal, Nature Valley bars, and flavored sparkling beverages."
+    }
+  },
+  {
+    "column": "nutriscore_grade",
+    "sql": "SELECT nutriscore_grade, COUNT(*) as count, ROUND(COUNT(*) * 100.0 / SUM(COUNT(*)) OVER (), 2) as percentage FROM products WHERE nutriscore_grade IS NOT NULL GROUP BY nutriscore_grade ORDER BY nutriscore_grade LIMIT 50",
+    "questions": {
+      "fr": "Quelle est la répartition des notes Nutri-Score dans la base de données des produits alimentaires ?",
+      "en": "What is the distribution of Nutri-Score grades in the food product database?"
+    },
+    "answers": {
+      "fr": "Parmi les produits avec un Nutri-Score connu, environ 13% ont une note A ou B (excellente ou bonne qualité nutritionnelle), 18% ont une note C ou D (qualité nutritionnelle moyenne), et 11% ont une note E (qualité nutritionnelle inférieure). Cependant, il est important de noter que 81,71% des produits ont un Nutri-Score inconnu, ce qui limite la portée de cette analyse.",
+      "en": "Among products with a known Nutri-Score, about 13% have a grade A or B (excellent or good nutritional quality), 18% have a grade C or D (average nutritional quality), and 11% have a grade E (lower nutritional quality). However, it's important to note that 81.71% of products have an unknown Nutri-Score, which limits the scope of this analysis."
+    }
+  },
+  {
+    "column": "nutriscore_grade",
+    "sql": "SELECT code, product_name, nutriscore_grade FROM products WHERE nutriscore_grade = 'a' LIMIT 50",
+    "questions": {
+      "fr": "Quels sont les produits alimentaires ayant le meilleur score nutritionnel (Nutri-Score A) ?",
+      "en": "Which food products have the best nutritional score (Nutri-Score A)?"
+    },
+    "answers": {
+      "fr": "Notre base de données contient de nombreux produits avec un Nutri-Score A, le meilleur score nutritionnel possible. Parmi ces produits, on trouve par exemple du Sambal Oelek, des flocons d'avoine rapides, et du céleri. Ces aliments sont considérés comme ayant la meilleure qualité nutritionnelle selon le système Nutri-Score.",
+      "en": "Our database contains many products with a Nutri-Score A, the best possible nutritional score. Among these products, you can find examples such as Sambal Oelek, quick oats, and celery. These foods are considered to have the best nutritional quality according to the Nutri-Score system."
+    }
+  },
+  {
+    "column": "nutriscore_grade",
+    "sql": "SELECT categories_tags, nutriscore_grade, COUNT(*) as count FROM products WHERE nutriscore_grade IS NOT NULL GROUP BY categories_tags, nutriscore_grade LIMIT 50",
+    "questions": {
+      "fr": "Comment la qualité nutritionnelle (Nutri-Score) varie-t-elle entre différentes catégories d'aliments ?",
+      "en": "How does the nutritional quality (Nutri-Score) vary across different food categories?"
+    },
+    "answers": {
+      "fr": "\n    D'après les résultats, on observe une variation significative du Nutri-Score entre les catégories d'aliments :\n    - Les barres de céréales ont tendance à avoir un Nutri-Score D, indiquant une qualité nutritionnelle moins bonne.\n    - Les mueslis ont un Nutri-Score A, ce qui suggère une meilleure qualité nutritionnelle.\n    - Les chocolats au lait ont généralement un Nutri-Score E, indiquant une qualité nutritionnelle faible.\n    - Les jus d'orange ont un Nutri-Score C, ce qui représente une qualité nutritionnelle moyenne.\n    - Les sirops d'érable ont un Nutri-Score E, indiquant une qualité nutritionnelle faible.\n    Ces informations peuvent vous aider à faire des choix plus éclairés lors de vos achats alimentaires.\n    ",
+      "en": "\n    Based on the results, we can observe significant variation in Nutri-Score across food categories:\n    - Cereal bars tend to have a Nutri-Score of D, indicating lower nutritional quality.\n    - Mueslis have a Nutri-Score of A, suggesting better nutritional quality.\n    - Milk chocolates generally have a Nutri-Score of E, indicating poor nutritional quality.\n    - Orange juices have a Nutri-Score of C, representing average nutritional quality.\n    - Maple syrups have a Nutri-Score of E, indicating poor nutritional quality.\n    This information can help you make more informed choices when shopping for food items.\n    "
+    }
+  },
+  {
+    "column": "nutriscore_score",
+    "sql": "SELECT code, product_name, nutriscore_score FROM products WHERE nutriscore_score IS NOT NULL ORDER BY nutriscore_score ASC LIMIT 50",
+    "questions": {
+      "fr": "Quels sont les produits alimentaires les plus sains selon le Nutri-Score ?",
+      "en": "What are the healthiest food products according to the Nutri-Score?"
+    },
+    "answers": {
+      "fr": "D'après les résultats, les produits les plus sains sont principalement des légumineuses comme les lentilles rouges et les pois jaunes cassés, avec un Nutri-Score de -17, ce qui est excellent.",
+      "en": "According to the results, the healthiest products are mainly legumes such as red split lentils and yellow split peas, with a Nutri-Score of -17, which is excellent."
+    }
+  },
+  {
+    "column": "nutriscore_score",
+    "sql": "SELECT CASE WHEN nutriscore_score < 0 THEN 'Very Good' WHEN nutriscore_score < 10 THEN 'Good' WHEN nutriscore_score < 20 THEN 'Average' WHEN nutriscore_score < 30 THEN 'Poor' ELSE 'Very Poor' END as quality_category, COUNT(*) as product_count FROM products WHERE nutriscore_score IS NOT NULL GROUP BY quality_category ORDER BY MIN(nutriscore_score) LIMIT 50",
+    "questions": {
+      "fr": "Quelle est la répartition des produits alimentaires selon leur qualité nutritionnelle (Nutri-Score) ?",
+      "en": "What is the distribution of food products according to their nutritional quality (Nutri-Score)?"
+    },
+    "answers": {
+      "fr": "D'après les données, la répartition des produits alimentaires selon leur Nutri-Score est la suivante : 2009 produits sont classés 'Très Bon', 5976 'Bon', 5090 'Moyen', 2542 'Mauvais', et 737 'Très Mauvais'. La majorité des produits se situent dans les catégories 'Bon' et 'Moyen'.",
+      "en": "According to the data, the distribution of food products by Nutri-Score is as follows: 2,009 products are classified as 'Very Good', 5,976 as 'Good', 5,090 as 'Average', 2,542 as 'Poor', and 737 as 'Very Poor'. The majority of products fall into the 'Good' and 'Average' categories."
+    }
+  },
+  {
+    "column": "nutriscore_score",
+    "sql": "SELECT categories, ROUND(AVG(nutriscore_score), 2) as avg_score, COUNT(*) as product_count FROM products WHERE nutriscore_score IS NOT NULL AND categories IS NOT NULL GROUP BY categories ORDER BY avg_score ASC LIMIT 50",
+    "questions": {
+      "fr": "Quelles catégories d'aliments ont généralement les meilleurs scores nutritionnels ?",
+      "en": "Which food categories generally have the best nutritional scores?"
+    },
+    "answers": {
+      "fr": "D'après les données, les catégories d'aliments avec les meilleurs scores nutritionnels (Nutri-Score les plus bas) comprennent diverses légumineuses comme les lentilles rouges, les edamames et les haricots rouges, ainsi que certains aliments à base de plantes et de légumes. Ces catégories ont des scores moyens allant de -17 à -12, ce qui indique une qualité nutritionnelle généralement élevée.",
+      "en": "According to the data, the food categories with the best nutritional scores (lowest Nutri-Scores) include various legumes such as red lentils, edamame, and red beans, as well as some plant-based and vegetable-based foods. These categories have average scores ranging from -17 to -12, indicating generally high nutritional quality."
+    }
+  },
+  {
+    "column": "nutrient_levels_tags",
+    "sql": "WITH unnested AS (SELECT unnest(nutrient_levels_tags) as level FROM products WHERE nutrient_levels_tags IS NOT NULL) SELECT level, COUNT(*) as count FROM unnested WHERE level LIKE 'en:fat-in-%' GROUP BY level ORDER BY count DESC LIMIT 50",
+    "questions": {
+      "fr": "Quelle est la répartition des produits alimentaires selon leur teneur en matières grasses dans la base de données Open Food Facts ?",
+      "en": "What is the distribution of food products according to their fat content in the Open Food Facts database?"
+    },
+    "answers": {
+      "fr": "Selon les données d'Open Food Facts, la répartition des produits alimentaires en fonction de leur teneur en matières grasses est la suivante : 7711 produits ont une faible teneur en matières grasses, 5977 produits ont une teneur modérée, et 4412 produits ont une teneur élevée.",
+      "en": "According to the Open Food Facts data, the distribution of food products based on their fat content is as follows: 7,711 products have low fat content, 5,977 products have moderate fat content, and 4,412 products have high fat content."
+    }
+  },
+  {
+    "column": "nutrient_levels_tags",
+    "sql": "SELECT code, product_name, nutrient_levels_tags FROM products WHERE nutrient_levels_tags IS NOT NULL AND array_contains(nutrient_levels_tags, 'en:fat-in-low-quantity') AND array_contains(nutrient_levels_tags, 'en:saturated-fat-in-low-quantity') AND array_contains(nutrient_levels_tags, 'en:sugars-in-low-quantity') AND array_contains(nutrient_levels_tags, 'en:salt-in-low-quantity') LIMIT 50",
+    "questions": {
+      "fr": "Quels produits sont faibles en gras, gras saturés, sucres et sel ?",
+      "en": "Which products are low in fat, saturated fat, sugars, and salt?"
+    },
+    "answers": {
+      "fr": "Nous avons trouvé 50 produits qui sont faibles en gras, gras saturés, sucres et sel. Parmi eux, on trouve des boissons pétillantes comme Sparkling Ice et Fruit2O dans différentes saveurs de fruits.",
+      "en": "We found 50 products that are low in fat, saturated fat, sugars, and salt. Among them are sparkling beverages like Sparkling Ice and Fruit2O in various fruit flavors."
+    }
+  },
+  {
+    "column": "nutrient_levels_tags",
+    "sql": "SELECT code, product_name, nutrient_levels_tags FROM products WHERE nutrient_levels_tags IS NOT NULL AND (array_contains(nutrient_levels_tags, 'en:fat-in-high-quantity') OR array_contains(nutrient_levels_tags, 'en:saturated-fat-in-high-quantity') OR array_contains(nutrient_levels_tags, 'en:sugars-in-high-quantity') OR array_contains(nutrient_levels_tags, 'en:salt-in-high-quantity')) LIMIT 50",
+    "questions": {
+      "fr": "Quels produits alimentaires ont des niveaux élevés de gras, gras saturés, sucres ou sel ?",
+      "en": "Which food products have high levels of fat, saturated fat, sugars, or salt?"
+    },
+    "answers": {
+      "fr": "Selon les données, plusieurs produits ont des niveaux élevés de certains nutriments. Par exemple, le lait de coco a une teneur élevée en gras et en gras saturés. Les biscuits à l'avoine et aux raisins secs sont élevés en gras, gras saturés et sucres. Les collations au fromage épicé sont élevées en gras, gras saturés et sel. Il est important de vérifier les étiquettes nutritionnelles pour faire des choix alimentaires éclairés.",
+      "en": "According to the data, several products have high levels of certain nutrients. For example, coconut milk is high in fat and saturated fat. Oatmeal raisin cookies are high in fat, saturated fat, and sugars. Spicy cheese snacks are high in fat, saturated fat, and salt. It's important to check nutrition labels to make informed food choices."
+    }
+  },
+  {
+    "column": "origins",
+    "sql": "SELECT origins, COUNT(*) as product_count FROM products WHERE origins IS NOT NULL GROUP BY origins ORDER BY product_count DESC LIMIT 50",
+    "questions": {
+      "fr": "Quels sont les pays d'origine les plus courants pour les produits alimentaires dans notre base de données ?",
+      "en": "What are the most common countries of origin for food products in our database?"
+    },
+    "answers": {
+      "fr": "D'après nos données, les pays d'origine les plus courants pour les produits alimentaires sont le Canada (834 produits), les États-Unis (162 produits), l'Italie (62 produits), et le Québec (54 produits). La France et la Thaïlande suivent avec 44 produits chacun.",
+      "en": "According to our data, the most common countries of origin for food products are Canada (834 products), United States (162 products), Italy (62 products), and Quebec (54 products). France and Thailand follow with 44 products each."
+    }
+  },
+  {
+    "column": "origins",
+    "sql": "SELECT code, product_name, origins FROM products WHERE origins LIKE '%,%' AND origins IS NOT NULL LIMIT 50",
+    "questions": {
+      "fr": "Quels sont les produits alimentaires qui proviennent de plusieurs endroits différents ?",
+      "en": "Which food products come from multiple different locations?"
+    },
+    "answers": {
+      "fr": "Certains produits alimentaires proviennent de plusieurs endroits. Par exemple, nous avons trouvé un gâteau au chocolat du Canada (Ancaster et Ontario), des barres de céréales aux États-Unis (produit aux États-Unis et en Californie), et une crème de marrons de France (France et Ardèche). Cette information peut être utile si vous vous intéressez à l'origine de vos aliments ou si vous préférez des produits locaux ou importés.",
+      "en": "Some food products come from multiple locations. For example, we found a chocolate cake from Canada (Ancaster and Ontario), cereal bars from the USA (product of USA and California), and a chestnut cream from France (France and Ardèche). This information can be useful if you're interested in the origin of your food or if you prefer local or imported products."
+    }
+  },
+  {
+    "column": "origins",
+    "sql": "SELECT code, product_name, origins FROM products WHERE origins ILIKE '%canada%' OR origins ILIKE '%canadian%' LIMIT 50",
+    "questions": {
+      "fr": "Quels produits alimentaires sont originaires du Canada?",
+      "en": "Which food products are sourced from Canada?"
+    },
+    "answers": {
+      "fr": "Plusieurs produits alimentaires sont originaires du Canada, notamment des barres granola, des biscuits, des céréales, des haricots verts en conserve et de la crème glacée. Par exemple, on trouve des barres granola aux brisures de chocolat et chia, des biscuits fourrés à la crème d'érable, et de la crème glacée aux fraises, tous fabriqués au Canada.",
+      "en": "Many food products are sourced from Canada, including granola bars, cookies, cereals, canned green beans, and ice cream. For example, there are chocolate chip and chia granola bars, maple cream-filled cookies, and strawberry ice cream, all made in Canada."
+    }
+  },
+  {
+    "column": "origins_tags",
+    "sql": "SELECT code, product_name, origins_tags FROM products WHERE list_contains(origins_tags, 'en:canada') LIMIT 50;",
+    "questions": {
+      "fr": "Quels produits alimentaires disponibles sont originaires du Canada ?",
+      "en": "Which available food products are originally from Canada?"
+    },
+    "answers": {
+      "fr": "Nous avons trouvé 50 produits alimentaires originaires du Canada. Parmi eux, on trouve des produits comme '[{'lang': 'main', 'text': ' Gâteau double chocolat '}, {'lang': 'fr', 'text': ' Gâteau double chocolat '}]', '[{'lang': 'main', 'text': 'Dark chocolate Almond and Sea salt'}, {'lang': 'en', 'text': 'Dark Chocolate, Almond & Sea Salt Chia Granola Bars'}, {'lang': 'fr', 'text': 'Dark chocolate Almond and Sea salt'}]', et '[{'lang': 'main', 'text': 'Strawberry Ice Cream'}, {'lang': 'fr', 'text': 'Crème Glacée (fraises)'}, {'lang': 'en', 'text': 'Strawberry Ice Cream'}]'.",
+      "en": "We found 50 food products originating from Canada. Among them are products like '[{'lang': 'main', 'text': ' Gâteau double chocolat '}, {'lang': 'fr', 'text': ' Gâteau double chocolat '}]', '[{'lang': 'main', 'text': 'Dark chocolate Almond and Sea salt'}, {'lang': 'en', 'text': 'Dark Chocolate, Almond & Sea Salt Chia Granola Bars'}, {'lang': 'fr', 'text': 'Dark chocolate Almond and Sea salt'}]', and '[{'lang': 'main', 'text': 'Strawberry Ice Cream'}, {'lang': 'fr', 'text': 'Crème Glacée (fraises)'}, {'lang': 'en', 'text': 'Strawberry Ice Cream'}]'."
+    }
+  },
+  {
+    "column": "packaging_recycling_tags",
+    "sql": "SELECT code, packaging_recycling_tags FROM products WHERE packaging_recycling_tags IS NOT NULL AND array_contains(packaging_recycling_tags, 'en:recycle-with-plastics') LIMIT 50",
+    "questions": {
+      "fr": "Quels produits alimentaires ont des emballages qui peuvent être recyclés avec les plastiques ?",
+      "en": "Which food products have packaging that can be recycled with plastics?"
+    },
+    "answers": {
+      "fr": "Plusieurs produits alimentaires ont des emballages qui peuvent être recyclés avec les plastiques. Cela inclut divers types de produits, bien que les détails spécifiques sur les aliments ne soient pas fournis dans cette requête.",
+      "en": "Several food products have packaging that can be recycled with plastics. This includes various types of products, although specific details about the food items are not provided in this query."
+    }
+  },
+  {
+    "column": "packaging_tags",
+    "sql": "SELECT code, product_name, packaging_tags FROM products WHERE list_contains(packaging_tags, 'en:glass') LIMIT 50",
+    "questions": {
+      "fr": "Quels produits alimentaires sont emballés dans du verre ?",
+      "en": "Which food products are packaged in glass?"
+    },
+    "answers": {
+      "fr": "Il existe de nombreux produits alimentaires emballés dans du verre, notamment des confitures, des moutardes et des sauces. Par exemple, la Crème de Marrons de L'Ardèche, la Moutarde de Dijon Originale et le Sambal Oelek sont tous conditionnés dans des emballages en verre.",
+      "en": "There are many food products packaged in glass, including jams, mustards, and sauces. For example, Crème de Marrons de L'Ardèche (Chestnut Cream), Original Dijon Mustard, and Sambal Oelek are all packaged in glass containers."
+    }
+  },
+  {
+    "column": "packaging_tags",
+    "sql": "SELECT ARRAY_LENGTH(packaging_tags) as num_materials, COUNT(*) as product_count FROM products WHERE packaging_tags IS NOT NULL GROUP BY ARRAY_LENGTH(packaging_tags) ORDER BY num_materials LIMIT 50",
+    "questions": {
+      "fr": "Combien de matériaux d'emballage sont généralement utilisés pour les produits alimentaires?",
+      "en": "How many packaging materials are typically used for food products?"
+    },
+    "answers": {
+      "fr": "D'après notre base de données, la majorité des produits alimentaires utilisent entre 0 et 2 matériaux d'emballage. Environ 4175 produits n'ont pas de matériau d'emballage enregistré, 3421 produits utilisent un seul matériau, et 926 produits utilisent deux matériaux. L'utilisation de plus de deux matériaux d'emballage est moins courante.",
+      "en": "According to our database, the majority of food products use between 0 and 2 packaging materials. About 4175 products have no recorded packaging material, 3421 products use a single material, and 926 products use two materials. The use of more than two packaging materials is less common."
+    }
+  },
+  {
+    "column": "packaging_tags",
+    "sql": "SELECT code, product_name, packaging_tags FROM products WHERE ARRAY_LENGTH(packaging_tags) > 2 LIMIT 50",
+    "questions": {
+      "fr": "Quels produits alimentaires ont un emballage complexe (plus de 2 matériaux) ?",
+      "en": "Which food products have complex packaging (more than 2 materials)?"
+    },
+    "answers": {
+      "fr": "Plusieurs produits ont un emballage complexe, par exemple : les céréales Cheerios (plastique, boîte, carton), la Crème de Marrons de L'Ardèche (couvercle, métal, verre), et la sauce Sriracha (plastique, bouteille, article).",
+      "en": "Several products have complex packaging, for example: Cheerios cereal (plastic, box, cardboard), Chestnut Cream from Ardèche (lid, metal, glass), and Sriracha sauce (plastic, bottle, item)."
+    }
+  },
+  {
+    "column": "serving_quantity",
+    "sql": "SELECT code, product_name, serving_quantity FROM products WHERE TRY_CAST(serving_quantity AS DOUBLE) BETWEEN 50 AND 100 AND serving_quantity IS NOT NULL ORDER BY TRY_CAST(serving_quantity AS DOUBLE) LIMIT 50",
+    "questions": {
+      "fr": "Quels sont les produits alimentaires ayant une portion standard de 50 grammes?",
+      "en": "Which food products have a standard serving size of 50 grams?"
+    },
+    "answers": {
+      "fr": "Plusieurs produits ont une portion standard de 50 grammes, notamment la Crème de Marrons de L'Ardèche, la Tablette de chocolat Excellence 99% Cacao, et les Stand 'n Stuff Tacos Dinner Kit. Cette information peut être utile pour la gestion des portions, mais il est important de considérer également d'autres facteurs nutritionnels pour faire des choix alimentaires éclairés.",
+      "en": "Several products have a standard serving size of 50 grams, including Crème de Marrons de L'Ardèche, Excellence 99% Cacao Chocolate Bar, and Stand 'n Stuff Tacos Dinner Kit. This information can be useful for portion control, but it's important to consider other nutritional factors as well when making informed food choices."
+    }
+  },
+  {
+    "column": "serving_quantity",
+    "sql": "SELECT categories, AVG(TRY_CAST(serving_quantity AS DOUBLE)) as avg_serving_size, COUNT(*) as product_count FROM products WHERE serving_quantity IS NOT NULL GROUP BY categories HAVING COUNT(*) > 5 ORDER BY avg_serving_size DESC LIMIT 50",
+    "questions": {
+      "fr": "Quelle est la taille de portion moyenne pour différents types de boissons?",
+      "en": "What is the average serving size for different types of beverages?"
+    },
+    "answers": {
+      "fr": "La taille de portion moyenne varie considérablement selon le type de boisson. Par exemple, les boissons diététiques pour le sport ont une taille de portion moyenne d'environ 557 ml, tandis que les sodas ont une taille de portion moyenne d'environ 422 ml. Les thés glacés se situent entre les deux, avec une moyenne d'environ 515 ml par portion.",
+      "en": "The average serving size varies significantly depending on the type of beverage. For example, dietary sports drinks have an average serving size of about 557 ml, while sodas have an average serving size of about 422 ml. Iced teas fall in between, with an average of about 515 ml per serving."
+    }
+  },
+  {
+    "column": "serving_size",
+    "sql": "SELECT serving_size, product_name FROM products WHERE serving_size LIKE '%g)%' OR serving_size LIKE '%g %' OR serving_size LIKE '% g' LIMIT 50",
+    "questions": {
+      "fr": "Quelle est la taille de portion typique pour les snacks et céréales en grammes?",
+      "en": "What is the typical serving size for snacks and cereals in grams?"
+    },
+    "answers": {
+      "fr": "D'après les résultats, les tailles de portion typiques pour les snacks et céréales varient généralement entre 28g et 42g. Par exemple, les Goldfish ont une portion de 30g, les Cheerios au miel et aux noix ont une portion de 28g, et les barres Nature Valley ont une portion de 42g.",
+      "en": "Based on the results, typical serving sizes for snacks and cereals generally range from 28g to 42g. For example, Goldfish have a serving size of 30g, Honey Nut Cheerios have a serving size of 28g, and Nature Valley bars have a serving size of 42g."
+    }
+  },
+  {
+    "column": "serving_size",
+    "sql": "SELECT CASE WHEN serving_size LIKE '%ml%' OR serving_size LIKE '%mL%' THEN 'Volume (ml)' WHEN serving_size LIKE '%g)%' OR serving_size LIKE '%g %' OR serving_size LIKE '% g' THEN 'Weight (g)' WHEN serving_size LIKE '%portion%' OR serving_size LIKE '%serving%' THEN 'Portion-based' ELSE 'Other' END as measurement_type, COUNT(*) as count FROM products WHERE serving_size IS NOT NULL GROUP BY 1 LIMIT 50",
+    "questions": {
+      "fr": "Comment les tailles de portion sont-elles généralement mesurées sur les étiquettes des produits alimentaires ?",
+      "en": "How are serving sizes typically measured on food product labels?"
+    },
+    "answers": {
+      "fr": "D'après l'analyse de notre base de données, la majorité des produits alimentaires (environ 14 538) mesurent leurs portions en poids (grammes). Environ 4 282 produits utilisent le volume (millilitres), tandis que 115 produits se basent sur des portions ou des services. Il y a également 2 606 produits qui utilisent d'autres méthodes de mesure. Cette information peut vous aider à mieux comprendre et comparer les informations nutritionnelles sur les étiquettes des produits.",
+      "en": "Based on our database analysis, the majority of food products (about 14,538) measure their serving sizes by weight (grams). Around 4,282 products use volume (milliliters), while 115 products are based on portions or servings. There are also 2,606 products using other measurement methods. This information can help you better understand and compare nutritional information on product labels."
+    }
+  },
+  {
+    "column": "serving_size",
+    "sql": "SELECT serving_size, product_name FROM products WHERE serving_size LIKE '%(%' AND (serving_size LIKE '% g %' OR serving_size LIKE '% ml %' OR serving_size LIKE '% mL %') LIMIT 50",
+    "questions": {
+      "fr": "Comment puis-je comprendre les tailles de portion complexes sur les étiquettes alimentaires?",
+      "en": "How can I understand complex serving sizes on food labels?"
+    },
+    "answers": {
+      "fr": "Les tailles de portion complexes sur les étiquettes alimentaires peuvent inclure plusieurs unités, comme '28 g (1 oz)' ou '31 g (2 cuillères à soupe)'. Il est important de prêter attention à ces informations pour bien comprendre la quantité recommandée et les valeurs nutritionnelles associées.",
+      "en": "Complex serving sizes on food labels may include multiple units, such as '28 g (1 oz)' or '31 g (2 Tbsp)'. It's important to pay attention to this information to properly understand the recommended amount and associated nutritional values."
+    }
+  },
+  {
+    "column": "stores",
+    "sql": "SELECT code, product_name, stores FROM products WHERE stores ILIKE '%Walmart%' LIMIT 50;",
+    "questions": {
+      "fr": "Quels produits alimentaires sont disponibles chez Walmart ?",
+      "en": "What food products are available at Walmart?"
+    },
+    "answers": {
+      "fr": "Parmi les produits disponibles chez Walmart, on trouve de l'eau de noix de coco, du jerky de bœuf original et au jalapeño, et des boissons gazeuses aux fruits Fruit2O en différentes saveurs comme la framboise noire et les baies mixtes.",
+      "en": "Some of the food products available at Walmart include coconut water, original and jalapeño beef jerky, and Fruit2O sparkling fruit drinks in flavors such as black raspberry and mixed berry."
+    }
+  },
+  {
+    "column": "stores",
+    "sql": "SELECT code, product_name, stores FROM products WHERE stores ILIKE '%Walmart%' AND stores ILIKE '%Costco%' LIMIT 50;",
+    "questions": {
+      "fr": "Quels produits alimentaires sont disponibles à la fois chez Walmart et Costco ?",
+      "en": "Which food products are available at both Walmart and Costco?"
+    },
+    "answers": {
+      "fr": "Parmi les produits disponibles dans les deux magasins, on trouve le chocolat noir Lindt Excellence, la boisson d'avoine originale, les pains multigrains pour sandwich 'OneBun', l'eau de source naturelle Eska, et le houmous aux poivrons rouges rôtis Humm!",
+      "en": "Products available in both stores include Lindt Excellence dark chocolate, Original oat beverage, 'OneBun' multigrain sandwich buns, Eska natural spring water, and Humm! roasted red pepper hummus."
+    }
+  },
+  {
+    "column": "stores_tags",
+    "sql": "SELECT code, product_name, stores_tags FROM products WHERE list_contains(stores_tags, 'walmart') AND list_contains(stores_tags, 'costco') LIMIT 50",
+    "questions": {
+      "fr": "Quels produits alimentaires sont disponibles à la fois chez Walmart et Costco ?",
+      "en": "Which food products are available at both Walmart and Costco?"
+    },
+    "answers": {
+      "fr": "Il y a 6 produits alimentaires disponibles à la fois chez Walmart et Costco, incluant des produits comme Supreme Dark Lindt Excellence, Oat Original, et Eska - Eau de source naturelle.",
+      "en": "There are 6 food products available at both Walmart and Costco, including items like Supreme Dark Lindt Excellence, Oat Original, and Eska - Eau de source naturelle."
+    }
+  },
+  {
+    "column": "traces_tags",
+    "sql": "SELECT code, product_name, traces_tags FROM products WHERE traces_tags IS NOT NULL AND list_contains(traces_tags, 'en:milk') AND list_contains(traces_tags, 'en:nuts') LIMIT 50",
+    "questions": {
+      "fr": "Quels produits peuvent contenir à la fois des traces de lait et de noix ?",
+      "en": "Which products may contain traces of both milk and nuts?"
+    },
+    "answers": {
+      "fr": "Nous avons trouvé 50 produits qui peuvent contenir des traces de lait et de noix. Par exemple, 'Unknown product' et 'Unknown product' sont dans cette catégorie. Il est important de vérifier l'étiquette du produit pour plus de détails si vous avez des allergies.",
+      "en": "We found 50 products that may contain traces of both milk and nuts. For example, 'Unknown product' and 'Unknown product' fall into this category. It's important to check the product label for more details if you have allergies."
+    }
+  },
+  {
+    "column": "traces_tags",
+    "sql": "SELECT array_length(traces_tags) as allergen_count, COUNT(*) as product_count FROM products WHERE traces_tags IS NOT NULL GROUP BY array_length(traces_tags) ORDER BY allergen_count LIMIT 50",
+    "questions": {
+      "fr": "Quelle est la répartition des produits alimentaires en fonction du nombre de traces d'allergènes potentiels qu'ils contiennent ?",
+      "en": "What is the distribution of food products based on the number of potential allergen traces they contain?"
+    },
+    "answers": {
+      "fr": "D'après les données, la majorité des produits (90 687) n'ont aucune trace d'allergène déclarée. Parmi ceux qui en ont, 1 259 produits ont une trace potentielle, 1 137 en ont deux, et le nombre de produits diminue à mesure que le nombre de traces augmente. Par exemple, 548 produits ont trois traces potentielles, 369 en ont quatre, et ainsi de suite jusqu'à 27 produits qui ont neuf traces potentielles d'allergènes.",
+      "en": "According to the data, the majority of products (90,687) have no declared allergen traces. Among those that do, 1,259 products have one potential trace, 1,137 have two, and the number of products decreases as the number of traces increases. For example, 548 products have three potential traces, 369 have four, and so on, up to 27 products that have nine potential allergen traces."
+    }
+  },
+  {
+    "column": "traces_tags",
+    "sql": "SELECT code, product_name FROM products WHERE traces_tags IS NULL OR array_length(traces_tags) = 0 LIMIT 50",
+    "questions": {
+      "fr": "Quels produits sont moins susceptibles de contenir des traces d'allergènes ?",
+      "en": "Which products are less likely to contain traces of allergens?"
+    },
+    "answers": {
+      "fr": "D'après notre base de données, plusieurs produits n'ont pas de traces d'allergènes déclarées, notamment le sirop d'érable biologique du Vermont, l'arôme de vanille artificiel, le lait faible en gras à 1%, et le sirop d'agave bleu biologique. Cependant, il est toujours recommandé de vérifier l'étiquette du produit pour les informations les plus à jour sur les allergènes.",
+      "en": "According to our database, several products have no declared allergen traces, including Organic Vermont Maple Syrup, Imitation Vanilla Flavor, 1% Low-Fat Milk, and Organic Blue Agave. However, it's always recommended to check the product label for the most up-to-date allergen information."
+    }
+  },
+  {
+    "column": "vitamins_tags",
+    "sql": "SELECT COUNT(*) as products_with_vitamin_c FROM products WHERE list_contains(vitamins_tags, 'en:l-ascorbic-acid') OR list_contains(vitamins_tags, 'en:vitamin-c') LIMIT 50",
+    "questions": {
+      "fr": "Combien de produits dans la base de données contiennent de la vitamine C ?",
+      "en": "How many products in the database contain Vitamin C?"
+    },
+    "answers": {
+      "fr": "Il y a 1048 produits dans la base de données qui contiennent de la vitamine C.",
+      "en": "There are 1048 products in the database that contain Vitamin C."
+    }
+  },
+  {
+    "column": "vitamins_tags",
+    "sql": "SELECT code, product_name, array_length(vitamins_tags) as vitamin_count, vitamins_tags FROM products WHERE vitamins_tags IS NOT NULL ORDER BY array_length(vitamins_tags) DESC LIMIT 50",
+    "questions": {
+      "fr": "Quels sont les produits alimentaires qui contiennent la plus grande variété de vitamines ?",
+      "en": "Which food products contain the greatest variety of vitamins?"
+    },
+    "answers": {
+      "fr": "D'après les données, les produits 'Premier Protein' (comme les shakes au chocolat et à la vanille) contiennent la plus grande variété de vitamines, avec 15 types différents de vitamines listés. Ces produits incluent des vitamines telles que C, E, B12, K, et D.",
+      "en": "According to the data, 'Premier Protein' products (such as chocolate and vanilla shakes) contain the greatest variety of vitamins, with 15 different types of vitamins listed. These products include vitamins such as C, E, B12, K, and D."
+    }
+  },
+  {
+    "column": "with_non_nutritive_sweeteners",
+    "sql": "SELECT CASE WHEN with_non_nutritive_sweeteners = 1 THEN 'Contains sweeteners' WHEN with_non_nutritive_sweeteners = 0 THEN 'No sweeteners' ELSE 'Unknown' END as status, COUNT(*) as count FROM products GROUP BY 1 LIMIT 50",
+    "questions": {
+      "fr": "Combien de produits contiennent des édulcorants artificiels dans la base de données Open Food Facts ?",
+      "en": "How many products contain artificial sweeteners in the Open Food Facts database?"
+    },
+    "answers": {
+      "fr": "Selon les données d'Open Food Facts, 622 produits contiennent des édulcorants artificiels, tandis que pour 94 180 produits, cette information est inconnue ou non spécifiée.",
+      "en": "According to the Open Food Facts data, 622 products contain artificial sweeteners, while for 94,180 products, this information is unknown or not specified."
+    }
+  },
+  {
+    "column": "with_non_nutritive_sweeteners",
+    "sql": "SELECT code, product_name FROM products WHERE with_non_nutritive_sweeteners = 1 ORDER BY code LIMIT 50",
+    "questions": {
+      "fr": "Quels produits contiennent des édulcorants artificiels?",
+      "en": "Which products contain artificial sweeteners?"
+    },
+    "answers": {
+      "fr": "Nous avons trouvé 50 produits contenant des édulcorants artificiels, notamment Chocolate Indulgence IsaLean Whole Blend Whey-Based Bar, Sushi Ginger Gari, Truvia, Sweet Chili Sauce, et Black Raspberry Sparkling Ice.",
+      "en": "We found 50 products containing artificial sweeteners, including Chocolate Indulgence IsaLean Whole Blend Whey-Based Bar, Sushi Ginger Gari, Truvia, Sweet Chili Sauce, and Black Raspberry Sparkling Ice."
+    }
+  },
+  {
+    "column": "with_sweeteners",
+    "sql": "SELECT CASE WHEN with_sweeteners = 1 THEN 'With sweeteners' ELSE 'Without sweeteners' END as category, COUNT(*) as count FROM products GROUP BY with_sweeteners LIMIT 50",
+    "questions": {
+      "fr": "Quelle est la proportion de produits alimentaires contenant des édulcorants dans la base de données ?",
+      "en": "What proportion of food products in the database contain sweeteners?"
+    },
+    "answers": {
+      "fr": "Selon les données, sur un total de 94 802 produits, seulement 230 (soit environ 0,24%) contiennent des édulcorants, tandis que 94 572 (soit environ 99,76%) n'en contiennent pas.",
+      "en": "According to the data, out of a total of 94,802 products, only 230 (about 0.24%) contain sweeteners, while 94,572 (about 99.76%) do not contain sweeteners."
+    }
+  },
+  {
+    "column": "with_sweeteners",
+    "sql": "SELECT code, product_name, ingredients_text FROM products WHERE with_sweeteners = 1 ORDER BY code LIMIT 50",
+    "questions": {
+      "fr": "Quels produits contiennent des édulcorants et quels sont leurs ingrédients ?",
+      "en": "Which products contain sweeteners and what are their ingredients?"
+    },
+    "answers": {
+      "fr": "La requête a identifié 50 produits contenant des édulcorants. Par exemple, le 'Sushi Ginger Gari' contient de l'aspartame, et les 'djzns' contiennent du sucralose. Les consommateurs peuvent examiner la liste complète des ingrédients pour chaque produit afin de prendre des décisions éclairées sur leur consommation.",
+      "en": "The query identified 50 products containing sweeteners. For example, 'Sushi Ginger Gari' contains aspartame, and 'djzns' contains sucralose. Consumers can review the full ingredient list for each product to make informed decisions about their consumption."
+    }
+  },
+  {
+    "column": "with_sweeteners",
+    "sql": "SELECT categories_tags, COUNT(*) as total_products, SUM(CASE WHEN with_sweeteners = 1 THEN 1 ELSE 0 END) as with_sweeteners_count, ROUND(100.0 * SUM(CASE WHEN with_sweeteners = 1 THEN 1 ELSE 0 END) / COUNT(*), 2) as sweetener_percentage FROM products GROUP BY categories_tags ORDER BY sweetener_percentage DESC LIMIT 50",
+    "questions": {
+      "fr": "Quelles catégories d'aliments contiennent le plus souvent des édulcorants?",
+      "en": "Which food categories most frequently contain sweeteners?"
+    },
+    "answers": {
+      "fr": "D'après les données, certaines catégories comme les bonbons sans sucre, les boissons gazeuses non sucrées et les boissons énergisantes diététiques contiennent des édulcorants dans 100% des cas. Les consommateurs souhaitant éviter les édulcorants devraient être particulièrement vigilants avec ces catégories de produits.",
+      "en": "According to the data, certain categories such as sugar-free mints, sugar-free carbonated drinks, and diet energy drinks contain sweeteners in 100% of cases. Consumers wishing to avoid sweeteners should be particularly cautious with these product categories."
+    }
+  },
+  {
+    "column": "product_name",
+    "sql": "SELECT code, product_name, nutriscore_grade \nFROM products \nWHERE list_contains(labels_tags, 'en:no-gluten') \nAND nutriscore_grade IN ('a', 'b')\nLIMIT 50;\n",
+    "questions": {
+      "fr": "Quels sont les produits sans gluten les plus sains selon le Nutri-Score ?",
+      "en": "What are the healthiest gluten-free products according to the Nutri-Score?"
+    },
+    "answers": {
+      "fr": "Il existe de nombreux produits sans gluten avec un excellent score nutritionnel (Nutri-Score A ou B). Parmi eux, on trouve des boissons aux amandes et au soja, du houmous, des galettes de riz, des sauces pour pâtes, du tofu fumé, et des céréales. Ces produits combinent l'avantage d'être sans gluten avec une bonne qualité nutritionnelle.",
+      "en": "There are many gluten-free products with excellent nutritional scores (Nutri-Score A or B). These include almond and soy beverages, hummus, rice cakes, pasta sauces, smoked tofu, and cereals. These products combine the benefit of being gluten-free with good nutritional quality."
+    }
+  },
+  {
+    "column": "product_name",
+    "sql": "SELECT code, product_name, traces_tags \nFROM products \nWHERE traces_tags IS NOT NULL \nAND list_contains(traces_tags, 'en:milk') \nAND list_contains(traces_tags, 'en:nuts') \nLIMIT 50;\n",
+    "questions": {
+      "fr": "Quels produits alimentaires peuvent contenir des traces de lait et de noix?",
+      "en": "Which food products may contain traces of milk and nuts?"
+    },
+    "answers": {
+      "fr": "Plusieurs produits peuvent contenir des traces de lait et de noix, notamment des chocolats (comme les tablettes Lindt Excellence), des gâteaux (comme le Gâteau double chocolat), et même des produits inattendus comme les Cherry Sours. Il est important de toujours vérifier l'étiquette si vous avez des allergies.",
+      "en": "Several products may contain traces of milk and nuts, including chocolates (such as Lindt Excellence bars), cakes (like the Double Chocolate Cake), and even unexpected items like Cherry Sours. It's important to always check the label if you have allergies."
+    }
+  },
+  {
+    "column": "product_name",
+    "sql": "SELECT code, product_name, nutrient_levels_tags \nFROM products \nWHERE list_contains(nutrient_levels_tags, 'en:fat-in-low-quantity') \nAND list_contains(ingredients_tags, 'en:proteins')\nLIMIT 50;\n",
+    "questions": {
+      "fr": "Pourquoi ne trouve-t-on pas de produits à la fois faibles en gras et riches en protéines dans la base de données?",
+      "en": "Why can't we find products that are both low in fat and high in protein in the database?"
+    },
+    "answers": {
+      "fr": "Actuellement, notre base de données ne contient aucun produit étiqueté comme étant à la fois faible en gras et contenant des protéines. Cela pourrait être dû à plusieurs raisons : soit ces produits sont rares, soit ils n'ont pas encore été correctement étiquetés dans notre système, soit la combinaison de ces caractéristiques nutritionnelles est difficile à atteindre dans les produits alimentaires courants.",
+      "en": "Currently, our database doesn't contain any products labeled as both low in fat and containing proteins. This could be due to several reasons: either such products are rare, they haven't been properly labeled in our system yet, or the combination of these nutritional characteristics is difficult to achieve in common food products."
+    }
+  },
+  {
+    "column": "product_name",
+    "sql": "SELECT code, product_name, additives_n \nFROM products \nWHERE additives_n = 0 \nAND ingredients_n IS NOT NULL \nORDER BY ingredients_n \nLIMIT 50;\n",
+    "questions": {
+      "fr": "Quels sont les produits alimentaires sans additifs disponibles?",
+      "en": "What food products are available without additives?"
+    },
+    "answers": {
+      "fr": "Il existe plusieurs produits alimentaires sans additifs, notamment le beurre d'arachide croquant 'Juste des arachides', les graines de lin 'Flexseed', le yogourt à boire IOGO nano à la banane, et l'huile d'olive sans parfum. Ces produits sont une excellente option pour les consommateurs cherchant à éviter les additifs dans leur alimentation.",
+      "en": "There are several food products available without additives, including 'Crunchy All Natural Peanut Butter', 'Flexseed' flaxseed, IOGO nano banana drinkable yogurt, and unscented olive oil. These products are excellent options for consumers looking to avoid additives in their diet."
+    }
+  },
+  {
+    "column": "product_name",
+    "sql": "SELECT code, product_name\nFROM products \nWHERE nova_group = 1 \nAND nutriscore_grade = 'a'\nLIMIT 50;\n",
+    "questions": {
+      "fr": "Quels sont les aliments les moins transformés ayant la meilleure qualité nutritionnelle ?",
+      "en": "What are the least processed foods with the best nutritional quality?"
+    },
+    "answers": {
+      "fr": "Les aliments les moins transformés (NOVA 1) ayant la meilleure qualité nutritionnelle (Nutri-Score A) comprennent des produits tels que les flocons d'avoine, le céleri, le beurre d'amandes, l'eau de source, et les haricots verts sans sel ajouté.",
+      "en": "The least processed foods (NOVA 1) with the best nutritional quality (Nutri-Score A) include products such as oat flakes, celery, almond butter, spring water, and salt-free green beans."
+    }
+  },
+  {
+    "column": "product_name",
+    "sql": "SELECT code, product_name \nFROM products \nWHERE array_contains(ingredients_analysis_tags, 'en:vegan')\nAND array_length(allergens_tags) = 0\nLIMIT 50;\n",
+    "questions": {
+      "fr": "Quels sont les produits alimentaires qui sont à la fois végétaliens et sans allergènes majeurs?",
+      "en": "What food products are both vegan and free from major allergens?"
+    },
+    "answers": {
+      "fr": "Nous avons trouvé 50 produits qui sont à la fois végétaliens et sans allergènes majeurs. Parmi eux, on trouve par exemple du sirop d'érable biologique, du sirop d'agave bleu biologique, du lait de coco, de l'eau de coco, et des piments verts en dés.",
+      "en": "We found 50 products that are both vegan and free from major allergens. Examples include organic maple syrup, organic blue agave syrup, coconut milk, coconut water, and diced green chilies."
+    }
+  },
+  {
+    "column": "product_name",
+    "sql": "SELECT code, product_name, ecoscore_grade\nFROM products \nWHERE origins ILIKE '%canada%'\nAND ecoscore_grade IN ('a', 'b')\nLIMIT 50;\n",
+    "questions": {
+      "fr": "Quels sont les produits alimentaires canadiens ayant un bon impact environnemental ?",
+      "en": "Which Canadian food products have a good environmental impact?"
+    },
+    "answers": {
+      "fr": "Il existe de nombreux produits alimentaires canadiens avec un bon éco-score (A ou B), notamment des produits laitiers comme la crème glacée aux fraises, des légumes en conserve sans sel, du pain de blé germé, du ketchup, du yaourt, du tofu, et du miel biologique.",
+      "en": "There are many Canadian food products with good eco-scores (A or B), including dairy products like strawberry ice cream, salt-free canned vegetables, sprouted wheat bread, ketchup, yogurt, tofu, and organic honey."
+    }
+  },
+  {
+    "column": "product_name",
+    "sql": "SELECT code, product_name \nFROM products \nWHERE NOT array_contains(ingredients_original_tags, 'en:sugar')\nAND nutriscore_grade IN ('a', 'b')\nLIMIT 50;\n",
+    "questions": {
+      "fr": "Quels sont les produits alimentaires sans sucre ajouté qui ont un bon score nutritionnel (Nutri-Score A ou B)?",
+      "en": "What food products without added sugar have a good nutritional score (Nutri-Score A or B)?"
+    },
+    "answers": {
+      "fr": "Parmi les produits sans sucre ajouté et avec un bon score nutritionnel, on trouve : des flocons d'avoine rapides, du céleri, du houmous classique, de la chapelure panko, de l'eau minérale naturelle gazeuse, du beurre d'amandes, et des galettes de riz nature. Ces produits sont généralement considérés comme des choix plus sains.",
+      "en": "Among the products without added sugar and with a good nutritional score, we find: quick oats, celery, classic hummus, panko breadcrumbs, carbonated natural mineral water, almond butter, and plain rice cakes. These products are generally considered healthier choices."
+    }
+  }
+]

@@ -1,133 +1,65 @@
-# Documentation technique
+# Installation
 
-## Créer l'environnement de travail
+Follow these instructions to set up your local development environment using Git and connect it to your GitHub repository.
 
-Voici des instructions pour créer votre répertoire de travail local en utilisant Git et en le connectant à votre dépôt GitHub.
+## Prerequisites
+- Python 3.10 or higher
+- Git
+- GitHub account
+- Anthropic API key (get it from https://console.anthropic.com/)
 
-Ouvrez le Terminal et créez et accédez au répertoire où vous voulez placer votre projet :
+## Setup Steps
 
+1. Clone the GitHub repository:
 ```bash
-mkdir ~/Projects  # si ce n'est pas déjà fait
-cd ~/Projects
+git clone https://github.com/boisalai/ift-6005.git
+cd ift-6005
 ```
 
-Clonez le dépôt GitHub :
+2. Create and activate a Python virtual environment:
 
+On macOS/Linux:
 ```bash
-git clone https://github.com/votre-username/nom-du-repo.git
-cd nom-du-repo
+python -m venv .venv
+source .venv/bin/activate
 ```
 
-Créez un environnement virtuel Python :
-
+On Windows:
 ```bash
-python -m venv venv
-source venv/bin/activate
+python -m venv .venv
+.venv\Scripts\activate
 ```
 
-Créez la structure initiale du projet :
-
+3. Install dependencies:
 ```bash
-mkdir -p src/agents tests data docs notebooks
-touch requirements.txt
+pip install -r requirements.txt
 ```
 
-Cette commande créera :
-
-- `src/agents/` pour votre code source
-- `tests/` pour vos tests
-- `data/` pour les données Open Food Facts
-- `docs/` pour la documentation
-- `notebooks/` pour les notebooks Jupyter
-- `requirements.txt` pour les dépendances
-
-Créez un fichier `.gitignore` :
-
+4. Create a `.env` file in the project root directory:
 ```bash
-cat << EOF > .gitignore
-# Python
-__pycache__/
-*.py[cod]
-*$py.class
-.Python
-venv/
-.env
-
-# Notebooks
-.ipynb_checkpoints
-
-# VS Code
-.vscode/
-
-# Data
-data/*.db
-data/*.csv
-
-# Mac
-.DS_Store
-EOF
+touch .env  # On macOS/Linux
+# OR manually create .env file on Windows
 ```
 
-Installez les dépendances initiales :
+5. Add your Anthropic API key to the `.env` file:
+```text
+ANTHROPIC_API_KEY=sk-ant-xxxx...  # Replace with your actual API key
+```
 
+**Important**: Never commit your `.env` file to version control. The `.gitignore` file should already be configured to exclude it.
+
+## Verify Installation
+
+To verify your installation, run the test suite (if available):
 ```bash
-pip install pytest smolagents duckdb matplotlib pandas jupyter
-pip freeze > requirements.txt
+python -m pytest
 ```
 
-Faites votre premier commit :
+## Troubleshooting
 
-```bash
-git add .
-git commit -m "Initial project structure"
-git push origin main
-```
-
-Votre structure de répertoire devrait maintenant ressembler à ceci :
-
-```
-votre-repo/
-├── LICENSE
-├── README.md
-├── requirements.txt
-├── .gitignore
-├── src/
-│   └── agents/
-├── tests/
-├── data/
-├── docs/
-└── notebooks/
-```
-
-Pour la documentation Markdown :
-
-```
-docs/markdown/
-├── README.md              # Vue d'ensemble
-├── installation.md        # Guide d'installation
-├── architecture.md        # Architecture du système
-├── agents/               
-│   ├── main_agent.md     # Agent principal
-│   ├── query_agent.md    # Agent de requêtes
-│   ├── enrichment_agent.md # Agent d'enrichissement
-│   └── viz_agent.md      # Agent de visualisation
-└── database/
-    ├── schema.md         # Structure de la base de données
-    └── queries.md        # Exemples de requêtes
-```
-
-Pour la documentation LaTeX :
-
-```
-docs/latex/
-├── main.tex              # Document principal
-├── chapters/
-│   ├── introduction.tex
-│   ├── architecture.tex
-│   ├── implementation.tex
-│   ├── evaluation.tex
-│   └── conclusion.tex
-├── images/               # Figures et diagrammes
-├── appendices/           # Code source, exemples
-└── bibliography.bib      # Références
-```
+If you encounter any issues:
+- Ensure you have the correct Python version installed
+- Make sure your virtual environment is activated (you should see `(.venv)` in your terminal prompt)
+- Try updating pip before installing requirements: `pip install --upgrade pip`
+- Verify your `.env` file exists and contains your API key
+- Check that the API key is properly formatted

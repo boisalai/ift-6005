@@ -3,8 +3,8 @@
 
 # Conversational Agent for Open Food Facts Database
 
-[!NOTE]
-This directory will eventually contain technical documentation for the project. For now, it only contains draft notes and work in progress.
+> [!NOTE]
+> This directory will eventually contain technical documentation for the project. For now, it only contains draft notes and work in progress.
 
 ## Overview
 This project is part of the IFT-6005 Integrative Project course at [Laval University](https://www.ulaval.ca/en). 

@@ -31,5 +31,5 @@ The primary objective is to develop a conversational agent capable of:
 The following files contain detailed documentation of the project's components:
 
 - [`dataset.md`](dataset.md): Explains the process of preparing and filtering the Open Food Facts dataset for use in our system.
-- `dictionary.md`: Documents how we automatically generate comprehensive database column documentation using Claude 3.5.
-- `qa_pairs.md`: Describes the generation of 110 bilingual question-answer pairs used for evaluating the conversational agent.
+- [`dictionary.md`](dictionary.md): Documents how we automatically generate comprehensive database column documentation using Claude 3.5.
+- [`qa_pairs.md`](qa_pairs.md): Describes the generation of 110 bilingual question-answer pairs used for evaluating the conversational agent.

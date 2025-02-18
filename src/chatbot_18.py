@@ -4,7 +4,7 @@ Changes:
     - Added sqlglot and validate_query() function
 - Version 18:
     - Added docs_path = DATA_DIR / "columns_documentation.json"
-    - Ajout de la recherche sémantique avec FAISS pour la documentation de la base de données
+    - Added semantic search with FAISS for database documentation
 """
 import os
 import json

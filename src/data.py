@@ -1,12 +1,13 @@
 from pathlib import Path
 import matplotlib.pyplot as plt
 import pandas as pd
+import numpy as np
 import duckdb
 from tqdm import tqdm
 import os
 
 """
-Téléchargez le fichier `food.parquet` à partir de Hugging Face et placez-le dans le dossier `data`.
+Download the `food.parquet` file from Hugging Face and place it in the `data` folder.
 wget -P data/ https://huggingface.co/datasets/openfoodfacts/product-database/resolve/main/food.parquet
 """
 
@@ -17,7 +18,7 @@ FILTERED_DB_PATH = DATA_DIR / "food_canada.duckdb"
 
 def create_full_db():
     """
-    Crée une base de données DuckDB contenant toutes les données du fichier Parquet.
+    Creates a DuckDB database containing all data from the Parquet file.
     """
     if FULL_DB_PATH.exists():
         os.remove(FULL_DB_PATH)
@@ -28,7 +29,7 @@ def create_full_db():
 
 def create_filtered_db():
     """
-    Crée une base de données DuckDB contenant uniquement les produits canadiens.
+    Creates a DuckDB database containing only Canadian products.
     """
     if FILTERED_DB_PATH.exists():
         os.remove(FILTERED_DB_PATH)
@@ -53,12 +54,12 @@ def create_filtered_db():
 
 def describe_db(db_path: Path):
     """
-    Génère une description des données stockées dans la base de données DuckDB spécifiée.
+    Generates a description of the data stored in the specified DuckDB database.
 
-    La description est écrite dans un fichier Markdown.
+    The description is written to a Markdown file.
 
     Args:
-        db_path (Path): Chemin vers la base de données DuckDB.
+        db_path (Path): Path to the DuckDB database.
     """
     output_file = Path("../docs/markdown/description.md")
 
@@ -67,9 +68,9 @@ def describe_db(db_path: Path):
         total_rows = con.execute("SELECT COUNT(*) FROM products").fetchone()[0]
 
         with output_file.open("w", encoding="utf-8") as f:
-            f.write(f"# Description de {db_path}\n\n")
-            f.write(f"- Nombre de lignes: {total_rows:,}\n")
-            f.write(f"- Nombre de colonnes: {len(columns)}\n\n")
+            f.write(f"# Description of {db_path}\n\n")
+            f.write(f"- Number of rows: {total_rows:,}\n")
+            f.write(f"- Number of columns: {len(columns)}\n\n")
 
             for col in columns:
                 col_name = col[0]
@@ -99,39 +100,39 @@ def describe_db(db_path: Path):
                 """
                 ).fetchall()
 
-                # Écriture des métadonnées
+                # Write metadata
                 f.write(f"## {col_name}\n")
                 f.write(f"- **Type**: `{col_type}`\n")
-                f.write(f"- **Valeurs uniques**: {stats[0]:,}\n")
+                f.write(f"- **Unique values**: {stats[0]:,}\n")
                 f.write(
-                    f"- **Valeurs nulles**: {stats[1]:,} ({stats[1]/total_rows*100:.2f}%)\n"
+                    f"- **Null values**: {stats[1]:,} ({stats[1]/total_rows*100:.2f}%)\n"
                 )
 
                 if col_type in ("INTEGER", "DOUBLE"):
-                    f.write("- **Statistiques descriptives**:\n")
+                    f.write("- **Descriptive statistics**:\n")
                     f.write(f"  - Minimum: {stats[2]}\n")
                     f.write(f"  - Maximum: {stats[3]}\n")
-                    f.write(f"  - Moyenne: {stats[4]:.2f if stats[4] else 'N/A'}\n")
-                    f.write(f"  - Écart-type: {stats[5]:.2f if stats[5] else 'N/A'}\n")
+                    f.write(f"  - Mean: {stats[4]:.2f if stats[4] else 'N/A'}\n")
+                    f.write(f"  - Standard deviation: {stats[5]:.2f if stats[5] else 'N/A'}\n")
 
-                f.write("- **Exemples de valeurs**:\n")
+                f.write("- **Sample values**:\n")
                 for sample in samples:
                     f.write(f"  - `{sample[0]}`\n")
                 f.write("\n")
 
-    print(f"Description générée dans {output_file}")
+    print(f"Description generated in {output_file}")
 
 def create_missing_values_plot(db_path: Path):
     """
-    Crée un graphique montrant la distribution de la complétude des colonnes 
-    dans la base de données DuckDB spécifiée.
+    Creates a plot showing the distribution of column completeness 
+in the specified DuckDB database.
     """
     with duckdb.connect(str(db_path)) as con:
-        # Récupérer les statistiques des colonnes
+        # Get column statistics
         columns = con.execute("SELECT * FROM products LIMIT 0").description
         total_rows = con.execute("SELECT COUNT(*) FROM products").fetchone()[0]
         
-        # Calculer les taux de remplissage
+        # Calculate completion rates
         column_stats = []
         for col in columns:
             col_name = col[0]
@@ -145,43 +146,43 @@ def create_missing_values_plot(db_path: Path):
             non_null_percentage = (non_null_count / total_rows) * 100
             column_stats.append(non_null_percentage)
 
-        # Définir les tranches de pourcentage
+        # Define percentage ranges
         bins = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 95, 100]
         labels = ['0-10%', '10-20%', '20-30%', '30-40%', '40-50%', 
                  '50-60%', '60-70%', '70-80%', '80-90%', '90-95%', '95-100%']
 
-        # Créer le graphique
+        # Create the plot
         plt.figure(figsize=(8, 5))
         
-        # Calculer l'histogramme
+        # Calculate histogram
         hist, edges = np.histogram(column_stats, bins=bins)
         
-        # Créer le graphique en barres
+        # Create bar chart
         x = range(len(labels))
         bars = plt.bar(x, hist, align='center')
         
-        # Personnaliser l'apparence
+        # Customize appearance
         plt.xticks(x, labels, rotation=45, ha='right')
         plt.xlabel('Complétude des données (%)')
         plt.ylabel('Nombre de colonnes')
         plt.title('Distribution de la complétude des colonnes')
         
-        # Ajouter les valeurs sur les barres
+        # Add values on bars
         for bar in bars:
             height = bar.get_height()
             plt.text(bar.get_x() + bar.get_width()/2., height,
                     f'{int(height)}',
                     ha='center', va='bottom')
         
-        # Ajuster la mise en page
+        # Adjust layout
         plt.tight_layout()
         
-        # Sauvegarder le graphique
+        # Save the plot
         plot_path = Path("../docs/latex/plan/figures/missing_values.pdf")
         plt.savefig(plot_path, dpi=300, bbox_inches='tight')
         plt.close()
         
-        print(f"Graphique sauvegardé dans {plot_path}")
+        print(f"Plot saved in {plot_path}")
 
 
 if __name__ == "__main__":

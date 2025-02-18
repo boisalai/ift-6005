@@ -10,7 +10,7 @@ __pycache__/
 data/*.csv
 data/*.parquet
 data/*.duckdb
-data/cache/*.*
+data/cache/*.index
 
 # Notebooks
 .ipynb_checkpoints

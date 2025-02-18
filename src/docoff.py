@@ -57,7 +57,6 @@ from dotenv import load_dotenv
 from smolagents import (
     CodeAgent,
     Tool,
-    ToolCallingAgent,
     DuckDuckGoSearchTool,
     VisitWebpageTool,
     LiteLLMModel,

@@ -1,6 +1,3 @@
-
-
-
 # Conversational Agent for Open Food Facts Database
 
 > [!NOTE]
@@ -29,3 +26,10 @@ The primary objective is to develop a conversational agent capable of:
 - Providing accurate and relevant nutritional information
 - Making food product data more accessible to the general public
 
+## Technical Documentation
+
+The following files contain detailed documentation of the project's components:
+
+- [`dataset.md`](dataset.md): Explains the process of preparing and filtering the Open Food Facts dataset for use in our system.
+- `dictionary.md`: Documents how we automatically generate comprehensive database column documentation using Claude 3.5.
+- `qa_pairs.md`: Describes the generation of 110 bilingual question-answer pairs used for evaluating the conversational agent.

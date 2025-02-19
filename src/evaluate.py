@@ -1,13 +1,64 @@
 """
-Evaluation script for the Open Food Facts conversational agent.
-Calculates three performance metrics:
-- Execution Accuracy (EX)
-- Missing Data Coverage Rate (TCM)
-- Average Response Time (TRM)
+# Evaluation Framework for Open Food Facts Conversational Agent
+
+This script implements a comprehensive evaluation framework for testing and measuring 
+the performance of a conversational agent designed to query the Open Food Facts database. 
+The agent converts natural language questions into SQL queries and provides informative responses 
+about food products.
+
+## Key Components:
+1. AgentEvaluator Class:
+   - Manages the evaluation process for question-answer pairs
+   - Connects to DuckDB database containing Open Food Facts data
+   - Calculates performance metrics and generates detailed reports
+2. QueryResult & EvaluationResult Classes:
+   - Data structures for storing query execution results and evaluation outcomes
+   - Track success/failure states, execution times, and error messages
+3. Performance Metrics:
+   a) Execution Accuracy (EX):
+      - Measures the ability to generate correct SQL queries
+      - Considers query presence, execution success, and result accuracy
+      - Weighted scoring: query presence (20%), execution success (30%), results match (50%)
+   b) Missing Data Coverage Rate (TCM):
+      - Evaluates how well the agent handles incomplete data scenarios
+      - Tracks use of alternative data sources and appropriate acknowledgment of data gaps
+      - Considers both database coverage and alternative source usage
+   c) Average Response Time (TRM):
+      - Measures end-to-end processing time for each query
+      - Includes query generation, execution, and response formatting
+
+## Key Functions:
+- `evaluate_single_case()`: Processes individual test cases and computes metrics
+- `calculate_metrics()`: Aggregates results across all test cases
+- `_calculate_sql_accuracy()`: Compares generated SQL with reference queries
+- `_calculate_semantic_accuracy()`: Evaluates response quality using LLM
+- `_calculate_data_coverage()`: Assesses handling of missing data scenarios
+
+## Usage:
+The script supports both English and French evaluation cases, with the following features:
+- Loads test cases from a JSON file of question-answer pairs
+- Connects to a DuckDB database containing Open Food Facts data
+- Uses LLM for semantic similarity scoring of responses
+- Generates detailed evaluation reports in Markdown format
+
+Example usage:
+```python
+evaluator = AgentEvaluator(db_path, qa_path, model)
+metrics = evaluator.evaluate_all(agent, lang='en')
+```
+
+## Output:
+Generates both summary metrics and detailed per-question analysis including:
+- Overall accuracy scores
+- Response time statistics
+- Data coverage metrics
+- Detailed error logs and execution traces
 """
 import json
 import time
 from pathlib import Path
+from textwrap import dedent
+
 from typing import List, Dict, Any, Tuple
 from dataclasses import dataclass
 import logging
@@ -17,20 +68,13 @@ import duckdb
 
 # Import agent components from chatbot script
 from chatbot_18 import (
-    create_model,
     FaissDocumentationTool,
     DuckDBSearchTool,
-    FoodGuideSearchTool,
-    VisitWebpageTool,
-    CodeAgent,
-    AGENT_INSTRUCTIONS
+    FoodGuideSearchTool
 )
 
-
 from smolagents import (
-    Tool,
     CodeAgent,
-    DuckDuckGoSearchTool,
     VisitWebpageTool,
     LiteLLMModel,
 )
@@ -60,11 +104,12 @@ class EvaluationResult:
     error: str = None
 
 class AgentEvaluator:
-    def __init__(self, db_path: Path, qa_path: Path):
+    def __init__(self, db_path: Path, qa_path: Path, model: LiteLLMModel):
         self.db_path = db_path
         self.qa_pairs = self._load_qa_pairs(qa_path)
         self.connection = duckdb.connect(str(db_path))
         self.logger = logging.getLogger(__name__)
+        self.model = model
 
     def _load_qa_pairs(self, qa_path: Path) -> List[Dict]:
         """Load Q&A pairs from JSON file"""
@@ -99,76 +144,228 @@ class AgentEvaluator:
         
         question = qa_pair['questions'][lang]
 
-        print(f"DEBUG Question: {question_en}")
+        print(f"DEBUG Question: {question}")
+
+        additional_notes = dedent(
+            """\
+            You are a helpful assistant that answers questions about food products using the Open Food Facts database.
+
+            Follow these steps to answer questions:
+
+            1. Use the documentation search tool to understand which columns contain the needed information
+            2. Write and execute an SQL query to get the data using the DuckDB tool
+            3. If data is missing, use the Food Guide search tool for complementary information
+            4. Format your response as a JSON string with the following structure:
+
+            {
+                "answer": {
+                    "text": "Your natural language response here",
+                    "source": "Source used (either 'Open Food Facts' or 'Canada Food Guide' or 'Both')"
+                },
+                "sql_query": "Your SQL query if one was executed, or None if none was used"
+            }
+
+            IMPORTANT FORMATTING RULES:
+            - Your complete response must be a valid JSON string that can be parsed using json.loads()
+            - The "text" field should contain your complete answer in natural language
+            - The "source" field must be exactly one of: "Open Food Facts", "Canada Food Guide", or "Both"
+            - The "sql_query" field should contain the full SQL query if database was queried, or null if no query was executed
+            - If data is missing or incomplete, explicitly mention it in the "text" field
+            - Respond in the same language as the question (French or English)
+
+            Example response:
+            {
+                "answer": {
+                    "text": "Based on the Open Food Facts database, the average sugar content in breakfast cereals is 25g per 100g. Products with the highest sugar content are...",
+                    "source": "Open Food Facts"
+                },
+                "sql_query": "SELECT AVG(sugars_100g) FROM products WHERE category LIKE '%breakfast cereals%';"
+            }
+            """
+        )
 
         # Measure response time
         start_time = time.time()
         agent_response = agent.run(
             question,
             additional_args={
-                "additional_notes": AGENT_INSTRUCTIONS,
+                "additional_notes": additional_notes,
             },
         )
         response_time = time.time() - start_time
 
-        # Extract SQL query from agent response (implementation depends on agent output format)
-        sql_query = self._extract_sql_query(agent_response)
-
-        # Execute reference and agent queries
-        ref_result = self.execute_query(qa_pair['sql'])
-        agent_result = self.execute_query(sql_query) if sql_query else None
-
-        # Check execution success
-        execution_success = False
-        if agent_result and ref_result.success and agent_result.success:
-            execution_success = self._compare_results(ref_result.results, agent_result.results)
-
-        # Check missing data handling
-        missing_data_handled = self._check_missing_data_handling(
-            agent_response, 
-            qa_pair['answers']['en']
-        )
-
+        # Calculate metrics
+        sql_accuracy = self._calculate_sql_accuracy(agent_response, qa_pair)
+        semantic_accuracy = self._calculate_semantic_accuracy(agent_response, qa_pair)
+        data_coverage = self._calculate_data_coverage(agent_response, qa_pair)
+        
         return EvaluationResult(
             question_id=qa_pair.get('id', 0),
             question=qa_pair['questions'],
             expected_answer=qa_pair['answers'],
             agent_answer={'en': agent_response},
-            sql_query=sql_query,
             response_time=response_time,
-            execution_success=execution_success,
-            missing_data_handled=missing_data_handled
+            sql_accuracy=sql_accuracy,
+            semantic_accuracy=semantic_accuracy,
+            data_coverage=data_coverage
         )
 
     def _extract_sql_query(self, agent_response: str) -> str:
-        """Extract SQL query from agent response"""
-        # Implementation depends on how your agent formats its response
-        # This is a simple example - adapt based on your agent's output format
+        """
+        Extract SQL query from agent's JSON response.
+        
+        Args:
+            agent_response (str): The full response from the agent (should be JSON)
+            
+        Returns:
+            str: Extracted SQL query or None if no query is found
+        """
         try:
-            if "SELECT" in agent_response:
-                # Very basic extraction - improve based on your needs
-                start = agent_response.find("SELECT")
-                end = agent_response.find(";", start)
-                if end == -1:
-                    end = len(agent_response)
-                return agent_response[start:end].strip()
+            # Parse the JSON response
+            response_data = json.loads(agent_response)
+            
+            # Extract the SQL query
+            sql_query = response_data.get('sql_query')
+            
+            # Return None if no query or query is null
+            if not sql_query:
+                self.logger.info("No SQL query in response (null or missing)")
+                return None
+                
+            return sql_query.strip()
+            
+        except json.JSONDecodeError as e:
+            self.logger.error(f"Failed to parse agent response as JSON: {e}")
             return None
         except Exception as e:
             self.logger.error(f"Error extracting SQL query: {e}")
             return None
+    
+    def _calculate_sql_accuracy(self, agent_response: str, qa_pair: Dict) -> Dict[str, float]:
+        """
+        Calculate SQL accuracy by comparing query results.
+        Returns a dictionary with different accuracy metrics.
+        """
+        # Extract SQL query from agent response (implement based on your agent's output format)
+        agent_sql = self._extract_sql_query(agent_response)
+        if not agent_sql:
+            return {
+                "query_present": 0.0,
+                "execution_success": 0.0,
+                "results_match": 0.0,
+                "combined": 0.0
+            }
 
-    def _compare_results(self, ref_results: List[Tuple], agent_results: List[Tuple]) -> bool:
-        """Compare query results for equality"""
-        # Convert tuples to sets for comparison
-        ref_set = set(ref_results)
-        agent_set = set(agent_results)
+        # Execute both queries
+        reference_results = self.execute_query(qa_pair['sql'])
+        agent_results = self.execute_query(agent_sql)
 
-        # Calculate overlap
-        overlap = len(ref_set.intersection(agent_set))
-        total = len(ref_set.union(agent_set))
+        # Calculate component scores
+        query_present = 1.0  # Agent generated a SQL query
+        execution_success = float(agent_results.success)
 
-        # Consider results equal if they have high overlap
-        return overlap / total >= 0.9 if total > 0 else False
+        # Compare results if both queries executed successfully
+        results_match = 0.0
+        if reference_results.success and agent_results.success:
+            # Convert result rows to sets of tuples for comparison
+            ref_set = {tuple(str(item) for item in row) for row in reference_results.results}
+            agent_set = {tuple(str(item) for item in row) for row in agent_results.results}
+
+            if ref_set or agent_set:  # Avoid division by zero
+                # Calculate Jaccard similarity: intersection over union
+                intersection = len(ref_set.intersection(agent_set))
+                union = len(ref_set.union(agent_set))
+                results_match = intersection / union
+            else:
+                # Both queries returned empty sets - consider this a match
+                results_match = 1.0
+
+        """
+        Cette méthode calcule l'exactitude SQL en trois composantes :
+
+        1. query_present (20% du score) :
+          - Vérifie si l'agent a généré une requête SQL
+          - Score de 1.0 si une requête est présente, 0.0 sinon
+
+        2. execution_success (30% du score) :
+          - Vérifie si la requête s'exécute sans erreur
+          - Score de 1.0 si la requête s'exécute, 0.0 sinon
+
+        3. results_match (50% du score) :
+          - Compare les résultats des requêtes de l'agent et de référence
+          - Utilise la similarité de Jaccard (intersection/union)
+          - Gère les cas spéciaux comme les ensembles vides
+
+        La méthode retourne un dictionnaire avec tous les scores composants et le score combiné pondéré.
+        """
+        # Calculate combined score
+        # Weights could be adjusted based on importance
+        weights = {
+            "query_present": 0.2,
+            "execution_success": 0.3,
+            "results_match": 0.5
+        }
+        
+        combined_score = (
+            weights["query_present"] * query_present +
+            weights["execution_success"] * execution_success +
+            weights["results_match"] * results_match
+        )
+
+        return {
+            "query_present": query_present,
+            "execution_success": execution_success,
+            "results_match": results_match,
+            "combined": combined_score
+        }
+
+    def _calculate_semantic_accuracy(self, agent_response: str, qa_pair: Dict) -> float:
+        """Calculate semantic similarity between responses"""
+
+        agent = CodeAgent(
+            tools=[],
+            model=self.model        
+        )
+
+        prompt = f"""Compare these two responses and rate their semantic similarity from 0 to 1:
+        Expected: {qa_pair['answers']['en']}
+        Actual: {agent_response}
+        
+        Consider:
+        1. Key information present in both responses
+        2. Factual consistency
+        3. Completeness of information
+        
+        Return only a number between 0 and 1."""
+        
+        # Use model (Claude) to evaluate semantic similarity
+        similarity = float(agent.run(prompt))
+        return similarity
+
+    def _calculate_data_coverage(self, agent_response: str, qa_pair: Dict) -> Dict[str, float]:
+        """Evaluate data coverage and alternative sources"""
+        # Check if the question requires database access
+        db_required = "SELECT" in qa_pair['sql']
+        
+        # Check if the agent used food guide information
+        food_guide_used = any(indicator in agent_response.lower() for indicator in [
+            "according to the food guide",
+            "food guide recommends",
+            "guide alimentaire"
+        ])
+        
+        # Check for missing data acknowledgment
+        missing_data_handled = self._check_missing_data_handling(agent_response, qa_pair['answers']['en'])
+        
+        # Calculate components
+        db_coverage = 1.0 if not db_required or not missing_data_handled else 0.0
+        alternative_sources = 1.0 if food_guide_used and missing_data_handled else 0.0
+        
+        return {
+            "db_coverage": db_coverage,
+            "alternative_sources": alternative_sources,
+            "combined": (db_coverage + alternative_sources) / 2
+        }
 
     def _check_missing_data_handling(self, agent_response: str, expected_answer: str) -> bool:
         """Check if agent properly handles missing data"""
@@ -267,17 +464,8 @@ class AgentEvaluator:
                     f.write(f"**Error:** {r.error}\n")
                 f.write("\n")
 
-def create_agent() -> CodeAgent:
+def create_agent(model: LiteLLMModel) -> CodeAgent:
     """Create and initialize the conversational agent"""
-    # Initialize model
-    if True:
-        model = LiteLLMModel(
-            model_id="ollama/llama3.1:8b-instruct-q8_0",
-            api_base="http://localhost:11434",
-            num_ctx=8192
-        )
-    else:
-        model = create_model("claude-sonnet")
     
     # Initialize tools
     docs_path = Path("../data/columns_documentation.json")
@@ -300,6 +488,9 @@ def create_agent() -> CodeAgent:
     return agent
 
 def main():
+
+    breakpoint()
+    
     # Configure logging
     logging.basicConfig(
         level=logging.INFO,
@@ -310,12 +501,25 @@ def main():
     db_path = Path("../data/food_canada.duckdb")
     qa_path = Path("../data/qa_pairs.json")
     
+    breakpoint()
+
+    # Initialize model
+    model = LiteLLMModel(
+        model_id="ollama/llama3.1:8b-instruct-q8_0",
+        api_base="http://localhost:11434",
+        num_ctx=8192
+    )
+    
+    """
+    model = LiteLLMModel(model_id="anthropic/claude-3-5-sonnet-20240620")
+    """
+
     # Create evaluator
-    evaluator = AgentEvaluator(db_path, qa_path)
+    evaluator = AgentEvaluator(db_path, qa_path, model)
     
     # Initialize agent
     try:
-        agent = create_agent()
+        agent = create_agent(model)
         logging.info("Agent initialized successfully")
     except Exception as e:
         logging.error(f"Failed to initialize agent: {e}")

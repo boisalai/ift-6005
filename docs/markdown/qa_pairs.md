@@ -90,6 +90,19 @@ def process_query(query: SQLQuery, sql_executor: QueryExecutionTool, agent: Code
     # Execute query
     result = sql_executor.forward(query.sql)
     
+    prompt = dedent(
+    """\
+    Analyze this SQL query and its results:
+    Column: "{query.column}"
+    Description: "{query.description}"
+    SQL: "{query.sql}"
+    
+    Determine if this query would be DIRECTLY useful for consumers making food choices.
+
+    etc.
+    """
+    ).format(query=query)
+
     # Agent analyzes results and determines relevance
     analysis = agent.run(prompt)
     

@@ -392,6 +392,47 @@ C'est une approche intelligente car :
 
 #### Implémentation des scripts d’évaluation des trois métriques (10h)
 
+#### FAISS
+
+Pour évaluer la similitude entre les questions, vous pouvez utiliser FAISS (Facebook AI Similarity Search). FAISS est une bibliothèque open-source qui permet de rechercher efficacement des vecteurs similaires dans de grandes bases de données. Il utilise des algorithmes d'indexation et de recherche rapides pour trouver les vecteurs les plus proches en termes de similarité.
+
+FAISS et SentenceTransformer utilisent des embeddings vectoriels pour la recherche sémantique. La performance multilingue dépend du modèle Sentence Transformer spécifique utilisé.
+
+Dans le code, nous voyons :
+```python
+def __init__(self, docs_path: Path, cache_dir: Path, model_name: str = "all-MiniLM-L6-v2"):
+```
+
+Le modèle "all-MiniLM-L6-v2" est effectivement multilingue - il fait partie d'une famille de modèles entraînés sur plus de 100 langues. Il devrait donc fonctionner pour l'anglais et le français.
+
+Cependant, pour le vérifier en pratique, nous pourrions ajouter des logs pour comparer les scores de similarité entre questions anglaises et françaises. Je suggère d'ajouter ce test :
+
+Ce test nous permettra de voir :
+1. Si les mêmes colonnes pertinentes sont trouvées pour les questions équivalentes en anglais et français
+2. Comment les scores de similarité se comparent entre les deux langues
+3. S'il y a des différences significatives dans la performance selon la langue
+
+Voici un exemple de ce que vous pourriez voir dans les logs :
+```
+2025-02-19 10:30:45,123 - food_agent - Testing EN query: What is the sugar content in cereals?
+- Column: sugars_100g         Similarity: 0.892 Type: FLOAT
+- Column: carbohydrates_100g  Similarity: 0.756 Type: FLOAT
+- Column: energy_100g         Similarity: 0.634 Type: FLOAT
+
+2025-02-19 10:30:45,345 - food_agent - Testing FR query: Quelle est la teneur en sucre dans les céréales?
+- Column: sugars_100g         Similarity: 0.878 Type: FLOAT
+- Column: carbohydrates_100g  Similarity: 0.743 Type: FLOAT
+- Column: energy_100g         Similarity: 0.629 Type: FLOAT
+```
+
+Si vous constatez des différences significatives dans les performances entre les langues, vous pourriez envisager :
+1. D'utiliser un modèle plus performant pour le français comme "paraphrase-multilingual-mpnet-base-v2"
+2. D'ajouter des descriptions de colonnes en français dans la documentation
+3. D'ajuster les seuils de similarité selon la langue
+
+
+
+
 ### Développement du système de base (75h)
 
 #### NEW Agents
@@ -740,9 +781,11 @@ Voir le livre de Chip Huyen Ai Enginering
 - Agents require the ability to remember past actions, security, handle user feedback, and adapt gracefully. In other words, it is a proper software product that happens to use/integrate a large language model with tool usage to accomplish various tasks.
 - As AI engineers working at the application layer, this is our job building agents: assemble these pieces into a polished and fully realized product.
 
+Pour lire des articles Medium, mettre `https://freedium.cfd/` devant l'URL.
 
 Pour plus d'information sur les agents, voir :
 
+- [](https://freedium.cfd/https://medium.com/@amjadraza24/comparative-analysis-of-agentic-ai-frameworks-navigating-the-future-of-autonomous-systems-0c2fb5b4912f)
 - [What's next for AI agentic workflows ft. Andrew Ng of AI Fund](https://www.youtube.com/watch?v=sal78ACtGTc&t=52s)
 - [Gradio](https://freedium.cfd/https://medium.com/ai-simplified-in-plain-english/smolagents-deepseek-v3-web-scraping-multi-agent-system-for-data-automation-solution-5ae8d2d7f405)
 - [Alpine Agent: An AI Agent to Navigate Your Winter Mountain Adventures](https://huggingface.co/blog/florentgbelidji/alpine-agent)

@@ -65,12 +65,13 @@ import logging
 from dotenv import load_dotenv
 from statistics import mean
 import duckdb
+from datetime import datetime
 
 # Import agent components from chatbot script
-from chatbot_18 import (
-    FaissDocumentationTool,
-    DuckDBSearchTool,
-    FoodGuideSearchTool
+from chatbot_19 import (
+    SearchDatabaseDocumentationTool,
+    QueryDatabaseTool,
+    SearchCanadaFoodGuideTool
 )
 
 from smolagents import (
@@ -82,6 +83,38 @@ from smolagents import (
 
 # Load environment variables
 load_dotenv()
+
+# Create logs directory if it doesn't exist
+log_dir = Path("logs")
+log_dir.mkdir(exist_ok=True)
+
+# Create log file with timestamp
+timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+log_file = log_dir / f"evaluation_{timestamp}.log"
+
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    # format='%(asctime)s - %(levelname)s - %(message)s',
+    format='%(asctime)s - %(name)s - %(module)s.%(funcName)s:%(lineno)d - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler(str(log_file), mode='w', encoding='utf-8'),
+        logging.StreamHandler()  # Also display in console
+    ],
+    force=True
+)
+
+# Create logger at module level
+logger = logging.getLogger('food_agent')
+logger.setLevel(logging.INFO)  # Ensure logger level matches basicConfig
+
+# Verify logging is working
+logger.debug("Technical details useful for debugging")
+logger.info("General information about execution progress")
+logger.info(f"Logging initialized. Writing to {log_file}")
+logger.warning("Non-critical warnings")
+logger.error("Important but non-fatal errors")  
+logger.critical("Critical errors that prevent evaluation")
 
 @dataclass
 class QueryResult:
@@ -108,7 +141,7 @@ class AgentEvaluator:
         self.db_path = db_path
         self.qa_pairs = self._load_qa_pairs(qa_path)
         self.connection = duckdb.connect(str(db_path))
-        self.logger = logging.getLogger(__name__)
+        self.logger = logging.getLogger('food_agent')
         self.model = model
 
     def _load_qa_pairs(self, qa_path: Path) -> List[Dict]:
@@ -131,30 +164,32 @@ class AgentEvaluator:
                 error=str(e)
             )
 
-    def evaluate_single_case(self, agent, qa_pair: Dict, lang: str ) -> EvaluationResult:
+    def _get_agent_response(self, agent, question: str) -> Tuple[str, float]:
         """
-        Evaluates a single Q&A test case.
-
-        Args:
-            qa_pair: Test case containing the question and answer
-            lang (str): Language code ('en' or 'fr'). Defaults to 'en'
-        """
-        if lang not in ['en', 'fr']:
-            raise ValueError("Language must be 'en' or 'fr'")
+        Get response from agent for a given question and measure response time.
         
-        question = qa_pair['questions'][lang]
-
-        print(f"DEBUG Question: {question}")
+        Args:
+            agent: The agent to query
+            question: The question to ask
+            
+        Returns:
+            Tuple[str, float]: Agent's response and response time in seconds
+        """
+        self.logger.info("Getting agent response")
 
         additional_notes = dedent(
             """\
-            You are a helpful assistant that answers questions about food products using the Open Food Facts database.
+            You are a helpful assistant that answers questions about food products 
+            using the Open Food Facts database.
 
             Follow these steps to answer questions:
 
-            1. Use the documentation search tool to understand which columns contain the needed information
-            2. Write and execute an SQL query to get the data using the DuckDB tool
-            3. If data is missing, use the Food Guide search tool for complementary information
+            1. Use the documentation search tool (search_db_docs) to understand 
+               which columns contain the needed information
+            2. Write and execute an SQL query to get the data using the query 
+               tool (query_db)
+            3. If data is missing, use the Food Guide search tool for complementary 
+               information (search_food_guide and visit_webpage)
             4. Format your response as a JSON string with the following structure:
 
             {
@@ -194,6 +229,30 @@ class AgentEvaluator:
         )
         response_time = time.time() - start_time
 
+        self.logger.info(f"Question: {question}")
+        self.logger.info(f"Agent response: {agent_response}")
+        self.logger.info(f"Response time: {response_time:.2f}s")
+        
+        return agent_response, response_time
+    
+    def evaluate_single_case(self, agent, qa_pair: Dict, lang: str) -> EvaluationResult:
+        """
+        Evaluates a single Q&A test case.
+
+        Args:
+            qa_pair: Test case containing the question and answer
+            lang (str): Language code ('en' or 'fr'). Defaults to 'en'
+        """
+        self.logger.info("Evaluating single case")
+
+        if lang not in ['en', 'fr']:
+            raise ValueError("Language must be 'en' or 'fr'")
+        
+        question = qa_pair['questions'][lang]
+
+        # Get agent's response
+        agent_response, response_time = self._get_agent_response(agent, question)
+
         # Calculate metrics
         sql_accuracy = self._calculate_sql_accuracy(agent_response, qa_pair)
         semantic_accuracy = self._calculate_semantic_accuracy(agent_response, qa_pair)
@@ -220,6 +279,9 @@ class AgentEvaluator:
         Returns:
             str: Extracted SQL query or None if no query is found
         """
+        self.logger.info("Extracting SQL query from agent response")
+        self.logger.info(f"Agent response: {agent_response}")
+
         try:
             # Parse the JSON response
             response_data = json.loads(agent_response)
@@ -248,13 +310,21 @@ class AgentEvaluator:
         """
         # Extract SQL query from agent response (implement based on your agent's output format)
         agent_sql = self._extract_sql_query(agent_response)
+
+        self.logger.info(f"Evaluating SQL accuracy for question_id: {qa_pair.get('id', 'unknown')}")
+    
         if not agent_sql:
+            self.logger.warning("No SQL query found in agent response")
             return {
                 "query_present": 0.0,
                 "execution_success": 0.0,
                 "results_match": 0.0,
                 "combined": 0.0
             }
+
+        # Log the queries for comparison
+        self.logger.debug(f"Reference SQL: {qa_pair['sql']}")
+        self.logger.debug(f"Agent SQL: {agent_sql}")
 
         # Execute both queries
         reference_results = self.execute_query(qa_pair['sql'])
@@ -396,12 +466,27 @@ class AgentEvaluator:
 
         return agent_handles == expected_handles
 
-    def evaluate_all(self, agent, lang: str) -> Dict[str, float]:
-        """Evaluate agent on all Q&A pairs"""
+    def evaluate_all(self, agent, lang: str, max_cases: int = None) -> Dict[str, float]:
+        """
+        Evaluate agent on Q&A pairs.
+        
+        Args:
+            agent: The agent to evaluate
+            lang (str): Language code ('en' or 'fr')
+            max_cases (int, optional): Maximum number of cases to evaluate. 
+                                    If None, evaluates all cases.
+        
+        Returns:
+            Dict[str, float]: Evaluation metrics
+        """
+        self.logger.debug("Entering evaluation loop")
+
         results = []
-        for qa_pair in self.qa_pairs[:1]:  # ?? Limit to 1 for testing
+        qa_pairs = self.qa_pairs[:max_cases] if max_cases else self.qa_pairs
+
+        for qa_pair in qa_pairs: 
             try:
-                result = self.evaluate_single_case(agent, qa_pair, lang='en')
+                result = self.evaluate_single_case(agent, qa_pair, lang)
                 results.append(result)
                 self.logger.info(f"Evaluated question {result.question_id}")
             except Exception as e:
@@ -470,17 +555,17 @@ def create_agent(model: LiteLLMModel) -> CodeAgent:
     # Initialize tools
     docs_path = Path("../data/columns_documentation.json")
     cache_dir = Path("../data/cache")
-    faiss_docs = FaissDocumentationTool(docs_path, cache_dir)
+    search_db_docs = SearchDatabaseDocumentationTool(docs_path, cache_dir)
     
     filtered_db_path = Path("../data/food_canada.duckdb")
-    sql_db = DuckDBSearchTool(db_path=filtered_db_path)
+    query_db = QueryDatabaseTool(db_path=filtered_db_path)
     
-    search_webpage = FoodGuideSearchTool()
+    search_food_guide = SearchCanadaFoodGuideTool()
     visit_webpage = VisitWebpageTool()
     
     # Create agent
     agent = CodeAgent(
-        tools=[faiss_docs, sql_db, search_webpage, visit_webpage],
+        tools=[search_db_docs, query_db, search_food_guide, visit_webpage],
         model=model,
         additional_authorized_imports=["json"]
     )
@@ -488,34 +573,24 @@ def create_agent(model: LiteLLMModel) -> CodeAgent:
     return agent
 
 def main():
+    logger.info("Starting evaluation script")
 
-    breakpoint()
-    
-    # Configure logging
-    logging.basicConfig(
-        level=logging.INFO,
-        format='%(asctime)s - %(levelname)s - %(message)s'
-    )
-    
     # Initialize paths
+    # The Open Food Facts database of Canadian products
     db_path = Path("../data/food_canada.duckdb")
+    # Question-answer pairs for evaluation
     qa_path = Path("../data/qa_pairs.json")
     
-    breakpoint()
-
     # Initialize model
-    model = LiteLLMModel(
-        model_id="ollama/llama3.1:8b-instruct-q8_0",
-        api_base="http://localhost:11434",
-        num_ctx=8192
-    )
-    
-    """
-    model = LiteLLMModel(model_id="anthropic/claude-3-5-sonnet-20240620")
-    """
-
-    # Create evaluator
-    evaluator = AgentEvaluator(db_path, qa_path, model)
+    engine = "ollama" # or "anthropic"
+    if engine == "ollama":
+        model = LiteLLMModel(
+            model_id="ollama/llama3.1:8b-instruct-q8_0",
+            api_base="http://localhost:11434",
+            num_ctx=8192
+        )
+    elif engine == "anthropic":
+        model = LiteLLMModel(model_id="anthropic/claude-3-5-sonnet-20240620")
     
     # Initialize agent
     try:
@@ -525,9 +600,13 @@ def main():
         logging.error(f"Failed to initialize agent: {e}")
         return
     
+    # Create evaluator
+    evaluator = AgentEvaluator(db_path, qa_path, model)
+    
     # Run evaluation
-    lang = 'en'
-    metrics = evaluator.evaluate_all(agent, lang)
+    lang = 'en'  # or 'fr'
+    max_cases = 1  # Set to None to evaluate
+    metrics = evaluator.evaluate_all(agent, lang, max_cases)
     
     # Print results
     print("\nEvaluation Results:")

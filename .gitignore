@@ -12,6 +12,9 @@ data/*.parquet
 data/*.duckdb
 data/cache/*.index
 
+# Logs
+logs/*.log
+
 # Notebooks
 .ipynb_checkpoints
 

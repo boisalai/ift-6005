@@ -15,3 +15,10 @@ sqlglotrs==0.3.14
 tqdm==4.67.1
 transformers==4.48.3
 
+# Télémétrie avec Arize AI Phoenix
+# pip install arize-phoenix opentelemetry-sdk opentelemetry-exporter-otlp openinference-instrumentation-smolagents
+# See https://huggingface.co/docs/smolagents/tutorials/inspect_runs
+arize-phoenix==7.12.3
+opentelemetry-sdk==1.30.0
+opentelemetry-exporter-otlp==1.30.0
+openinference-instrumentation-smolagents==0.1.6

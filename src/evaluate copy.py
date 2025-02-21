@@ -59,12 +59,12 @@ import time
 from pathlib import Path
 from textwrap import dedent
 
-from typing import Dict, List, Any, Optional, Tuple
-from dataclasses import dataclass, field
+from typing import List, Dict, Any, Tuple
+from dataclasses import dataclass
 import logging
 import numpy as np
 from dotenv import load_dotenv
-from statistics import mean, median
+from statistics import mean
 import duckdb
 from datetime import datetime
 from sentence_transformers import SentenceTransformer
@@ -143,38 +143,23 @@ def cleanup_old_logs(log_dir: Path, keep_last_n: int = 3) -> None:
 
 @dataclass
 class QueryResult:
-    """Résultat d'exécution d'une requête SQL"""
+    """Results from executing a query"""
     success: bool
-    results: List[Any]
-    error: Optional[str] = None
-
-@dataclass
-class QueryResults:
-    """Résultats de requête pour comparaison"""
-    expected: List[Any]
-    actual: List[Any]
-    comparison: Dict[str, Any] = field(default_factory=dict)
-
-@dataclass
-class EvaluationMetrics:
-    """Métriques d'évaluation regroupées"""
-    sql_accuracy: Dict[str, float]
-    semantic_accuracy: float
-    tcm_score: float
-    details: Dict[str, Any] = field(default_factory=dict)
+    results: List[Tuple]
+    error: str = None
 
 @dataclass
 class EvaluationResult:
-    """Résultat d'évaluation d'une question"""
+    """Results from one evaluation case"""
     question_id: int
-    language: str  # Langue de l'évaluation ('fr' ou 'en')
-    question: Dict[str, str]  # Questions bilingues
-    expected_answer: Dict[str, str]  # Réponses attendues bilingues
-    agent_answer: Dict[str, Any]  # Réponse dans la langue évaluée
-    query_results: Optional[QueryResults] = None
-    metrics: Optional[EvaluationMetrics] = None
-    response_time: float = 0.0
-    error: Optional[str] = None
+    question: Dict[str, str]  # {'fr': '...', 'en': '...'}
+    expected_answer: Dict[str, str]  # {'fr': '...', 'en': '...'}
+    agent_answer: Dict[str, Dict[str, Any]]  # {lang: {parsed response structure}}
+    response_time: float
+    sql_accuracy: Dict[str, float]  # Detailed SQL accuracy metrics
+    semantic_accuracy: float        # Semantic similarity score
+    tcm_score: float                # New field to store TCM score from _evaluate_search_sequence
+    error: str = None
 
 class AgentEvaluator:
     def __init__(self, db_path: Path, qa_path: Path, model: LiteLLMModel):
@@ -625,141 +610,143 @@ class AgentEvaluator:
         
         return response_data, response_time
 
-    def evaluate_single_case(self, agent, qa_pair: Dict[str, Any], lang: str) -> EvaluationResult:
+    def evaluate_single_case(self, agent, qa_pair: Dict, lang: str) -> EvaluationResult:
         """
-        Évalue un cas de test unique avec la nouvelle structure.
+        Evaluates a single Q&A test case.
+        
+        Args:
+            agent: The agent to evaluate
+            qa_pair (Dict): The question-answer pair to evaluate
+            lang (str): Language code ('en' or 'fr')
+            
+        Returns:
+            EvaluationResult: Results of the evaluation
         """
+        self.logger.info(f"Evaluating single case for question_id: {qa_pair.get('id', 0)}")
+        
         question = qa_pair['questions'][lang]
-        relevant_columns = self._search_relevant_columns(question)
+
+        # Search for relevant columns
+        relevant_columns = self._search_relevant_columns(question, top_k=5)
 
         try:
-            # Obtenir la réponse de l'agent
+            # Get agent's response - returns parsed dictionary
             response_data, response_time = self._get_agent_response(agent, question, relevant_columns)
-            
-            # Calculer toutes les métriques
-            sql_accuracy, query_results = self._calculate_sql_accuracy(response_data, qa_pair, lang)
-            semantic_accuracy = self._calculate_semantic_accuracy(response_data, qa_pair)
-            tcm_score = self._evaluate_search_sequence(response_data)
-            
-            # Créer l'objet metrics
-            metrics = EvaluationMetrics(
-                sql_accuracy=sql_accuracy,
-                semantic_accuracy=semantic_accuracy,
-                tcm_score=tcm_score,
-                details={
-                    'relevant_columns': [col['name'] for col in relevant_columns],
-                    'sql_analysis': {
-                        'has_query': bool(response_data.get('sql_query')),
-                        'execution_details': query_results.comparison if query_results else None
-                    }
-                }
-            )
 
-            # Retourner le résultat complet
+            # Calculate metrics using the parsed response directly
+            sql_accuracy = self._calculate_sql_accuracy(response_data, qa_pair)
+            semantic_accuracy = self._calculate_semantic_accuracy(response_data, qa_pair)
+            tcm_result = self._evaluate_search_sequence(response_data, qa_pair)
+            
             return EvaluationResult(
-                question_id=qa_pair.get('id', 0),  # ou un index séquentiel si nécessaire
-                language=lang,
+                question_id=qa_pair.get('id', 0),
                 question=qa_pair['questions'],
                 expected_answer=qa_pair['answers'],
-                agent_answer=response_data,
-                query_results=query_results,
-                metrics=metrics,
-                response_time=response_time
+                agent_answer={lang: response_data},
+                response_time=response_time,
+                sql_accuracy=sql_accuracy,
+                semantic_accuracy=semantic_accuracy,
+                tcm_score=tcm_result,
+                error=None
             )
 
         except Exception as e:
             self.logger.error(f"Error evaluating question: {str(e)}")
             return EvaluationResult(
                 question_id=qa_pair.get('id', 0),
-                language=lang,
                 question=qa_pair['questions'],
                 expected_answer=qa_pair['answers'],
-                agent_answer={
+                agent_answer={lang: {
                     "answer": {"text": "", "source": "Unknown"},
                     "sql_query": None,
                     "steps": []
-                },
-                metrics=EvaluationMetrics(
-                    sql_accuracy={
-                        "query_present": 0.0,
-                        "execution_success": 0.0,
-                        "results_match": 0.0,
-                        "combined": 0.0
-                    },
-                    semantic_accuracy=0.0,
-                    tcm_score=0.0,
-                    details={'error': str(e)}
-                ),
+                }},
                 response_time=0.0,
-                error=str(e)
-            )
-    
-    def _calculate_sql_accuracy(self, response_data: dict, qa_pair: Dict[str, Any], lang: str) -> Tuple[Dict[str, float], QueryResults]:
-        """
-        Calculate SQL accuracy and prepare detailed query results.
-        """
-        agent_sql = response_data.get('sql_query')
-        
-        # Si pas de requête SQL
-        if not agent_sql:
-            return (
-                {
+                sql_accuracy={
                     "query_present": 0.0,
                     "execution_success": 0.0,
                     "results_match": 0.0,
                     "combined": 0.0
                 },
-                None
+                semantic_accuracy=0.0,
+                tcm_score=0.0,
+                error=str(e)
             )
+    
+    def _calculate_sql_accuracy(self, response_data: dict, qa_pair: Dict) -> Dict[str, float]:
+        """
+        Calculate SQL accuracy by comparing query results.
+        Returns a dictionary with different accuracy metrics.
+        
+        Args:
+            response_data (dict): The parsed response from the agent
+            qa_pair (Dict): The question-answer pair being evaluated
+            
+        Returns:
+            Dict[str, float]: Dictionary containing accuracy metrics
+        """
+        self.logger.info(f"Evaluating SQL accuracy for question_id: {qa_pair.get('id', 'unknown')}")
+        
+        # Extract SQL query directly from the parsed response
+        agent_sql = response_data.get('sql_query')
+        
+        if not agent_sql:
+            self.logger.warning("No SQL query found in agent response")
+            return {
+                "query_present": 0.0,
+                "execution_success": 0.0,
+                "results_match": 0.0,
+                "combined": 0.0
+            }
 
-        # Exécuter les requêtes
+        # Log the queries for comparison
+        self.logger.debug(f"Reference SQL: {qa_pair['sql']}")
+        self.logger.debug(f"Agent SQL: {agent_sql}")
+
+        # Execute both queries
         reference_results = self.execute_query(qa_pair['sql'])
         agent_results = self.execute_query(agent_sql)
 
-        # Préparer les résultats pour comparaison
-        query_results = QueryResults(
-            expected=reference_results.results if reference_results.success else [],
-            actual=agent_results.results if agent_results.success else [],
-            comparison={
-                'ref_success': reference_results.success,
-                'agent_success': agent_results.success,
-                'error': agent_results.error if not agent_results.success else None
-            }
-        )
+        # Calculate component scores
+        query_present = 1.0  # Agent generated a SQL query
+        execution_success = float(agent_results.success)
 
-        # Calculer les métriques
-        metrics = {
-            "query_present": 1.0,
-            "execution_success": float(agent_results.success),
-            "results_match": 0.0,
-            "combined": 0.0
-        }
-
-        # Comparer les résultats si les deux requêtes ont réussi
+        # Compare results if both queries executed successfully
+        results_match = 0.0
         if reference_results.success and agent_results.success:
+            # Convert result rows to sets of tuples for comparison
             ref_set = {tuple(str(item) for item in row) for row in reference_results.results}
             agent_set = {tuple(str(item) for item in row) for row in agent_results.results}
-            
-            if ref_set or agent_set:
+
+            if ref_set or agent_set:  # Avoid division by zero
+                # Calculate Jaccard similarity: intersection over union
                 intersection = len(ref_set.intersection(agent_set))
                 union = len(ref_set.union(agent_set))
-                metrics["results_match"] = intersection / union
-                
-                query_results.comparison.update({
-                    'matching_rows': intersection,
-                    'total_rows': union,
-                    'ref_rows': len(ref_set),
-                    'agent_rows': len(agent_set)
-                })
+                results_match = intersection / union
             else:
-                metrics["results_match"] = 1.0  # Les deux ensembles vides = correspondance
-                
-        # Calculer le score combiné
-        weights = {"query_present": 0.2, "execution_success": 0.3, "results_match": 0.5}
-        metrics["combined"] = sum(metrics[k] * v for k, v in weights.items())
+                # Both queries returned empty sets - consider this a match
+                results_match = 1.0
 
-        return metrics, query_results
-    
+        # Calculate combined score with weights
+        weights = {
+            "query_present": 0.2,
+            "execution_success": 0.3,
+            "results_match": 0.5
+        }
+        
+        combined_score = (
+            weights["query_present"] * query_present +
+            weights["execution_success"] * execution_success +
+            weights["results_match"] * results_match
+        )
+
+        return {
+            "query_present": query_present,
+            "execution_success": execution_success,
+            "results_match": results_match,
+            "combined": combined_score
+        }
+
     def _calculate_semantic_accuracy(self, response_data: dict, qa_pair: Dict) -> float:
         """
         Calculate semantic similarity between responses.
@@ -798,7 +785,7 @@ class AgentEvaluator:
             return 0.0
         
 
-    def _evaluate_search_sequence(self, response_data: dict) -> float:
+    def _evaluate_search_sequence(self, response_data: dict, qa_pair: Dict) -> float:
         """
         Évalue la capacité de l'agent à gérer les données manquantes selon une progression stricte.
         
@@ -816,8 +803,6 @@ class AgentEvaluator:
                 self.logger.warning("No steps found in agent response")
                 return 0.0
 
-            self.logger.info(f"Steps: {steps}")
-
             score = 0.0
             db_attempts = []
             web_attempt = None
@@ -831,8 +816,6 @@ class AgentEvaluator:
                         return 0.0  # Violation de la séquence
                 elif step['action'] == 'food_guide_search':
                     web_attempt = step
-
-                self.logger.info(f"Step: {step}, DB attempts: {db_attempts}, Web attempt: {web_attempt}")
             
             # Évaluer la progression
             if db_attempts:
@@ -846,9 +829,6 @@ class AgentEvaluator:
                 # Points pour avoir consulté le guide seulement après échec des requêtes DB
                 if web_attempt and not any(attempt['success'] for attempt in db_attempts):
                     score += 0.3
-
-            x = min(1.0, score)
-            self.logger.info(f"Search sequence score: {x}")
 
             return min(1.0, score)
             
@@ -880,11 +860,11 @@ class AgentEvaluator:
         for idx, qa_pair in enumerate(qa_pairs, start=1):
             try:
                 qa_pair_with_id = {**qa_pair, 'id': idx}
-                self.logger.info(f"Évaluation de la question {idx}/{len(qa_pairs)}")
                 result = self.evaluate_single_case(agent, qa_pair_with_id, lang)
                 results.append(result)
+                self.logger.info(f"Evaluated question {idx}")
             except Exception as e:
-                self.logger.error(f"Erreur lors de l'évaluation de la question {idx}: {e}")
+                self.logger.error(f"Error evaluating question {idx}: {e}")
 
         # Calculate metrics
         metrics = self.calculate_metrics(results)
@@ -895,137 +875,69 @@ class AgentEvaluator:
         return metrics
 
     def calculate_metrics(self, results: List[EvaluationResult]) -> Dict[str, float]:
-        """
-        Calcule les métriques globales à partir des résultats d'évaluation.
-        
-        Args:
-            results: Liste des résultats d'évaluation
-            
-        Returns:
-            Dict[str, float]: Métriques globales calculées
-        """
-        if not results:
+        """Calculate the metrics from evaluation results"""
+        total = len(results)
+        if total == 0:
             return {
                 "execution_accuracy": 0.0,
                 "tcm_score": 0.0,
-                "semantic_accuracy": 0.0,
-                "avg_response_time": 0.0
+                "avg_response_time": 0.0,
+                "semantic_accuracy": 0.0
             }
+        
+        # Execution Accuracy (EX)
+        execution_accuracy = mean(r.sql_accuracy["combined"] for r in results)
 
-        # Calculer les moyennes des différentes métriques
-        execution_accuracy = mean(
-            r.metrics.sql_accuracy["combined"] for r in results if r.metrics
-        )
-        tcm_score = mean(r.metrics.tcm_score for r in results if r.metrics)
-        semantic_accuracy = mean(
-            r.metrics.semantic_accuracy for r in results if r.metrics
-        )
+        # TCM Score from _evaluate_search_sequence
+        tcm_score = mean(r.tcm_score for r in results)
+
+        # Semantic Accuracy
+        semantic_accuracy = mean(r.semantic_accuracy for r in results)
+
+        # Average Response Time (TRM)
         avg_response_time = mean(r.response_time for r in results)
 
-        # Convertir en pourcentages où approprié
-        metrics = {
+        return {
             "execution_accuracy": execution_accuracy * 100,
             "tcm_score": tcm_score * 100,
             "semantic_accuracy": semantic_accuracy * 100,
             "avg_response_time": avg_response_time
         }
 
-        # Ajouter des statistiques détaillées
-        metrics.update(self._calculate_detailed_stats(results))
-
-        return metrics
-
-    def _calculate_detailed_stats(self, results: List[EvaluationResult]) -> Dict[str, Any]:
-        """
-        Calcule des statistiques détaillées sur les résultats.
-        """
-        stats = {
-            "success_rate": {
-                "total": len(results),
-                "successful": sum(1 for r in results if not r.error),
-                "failed": sum(1 for r in results if r.error)
-            },
-            "query_stats": {
-                "with_query": sum(1 for r in results 
-                    if r.agent_answer.get('sql_query')),
-                "successful_execution": sum(1 for r in results 
-                    if r.metrics and r.metrics.sql_accuracy["execution_success"] > 0)
-            },
-            "response_time_stats": {
-                "min": min(r.response_time for r in results),
-                "max": max(r.response_time for r in results),
-                "median": median(r.response_time for r in results)
-            }
-        }
-        
-        # Calculer le taux de succès en pourcentage
-        stats["success_rate"]["percentage"] = (
-            stats["success_rate"]["successful"] / stats["success_rate"]["total"] * 100
-        )
-        
-        return stats
 
     def _log_detailed_results(self, results: List[EvaluationResult], metrics: Dict[str, float]):
-        """
-        Génère un rapport des résultats d'évaluation au format Markdown.
-        """
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        log_path = Path(f"evaluation_results_{timestamp}.md")
-
-        total_time = sum(r.response_time for r in results)
-        avg_time = total_time / len(results)
+        """Log detailed evaluation results"""
+        log_path = Path("evaluation_results.md")
 
         with open(log_path, 'w', encoding='utf-8') as f:
-            # En-tête du rapport
-            f.write("# Rapport d'évaluation de l'agent Open Food Facts\n\n")
-            f.write(f"Date: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n")
-            
-            # Informations sur l'exécution
-            f.write("## Informations d'exécution\n\n")
-            f.write("| Paramètre | Valeur |\n")
-            f.write("|-----------|--------|\n")
-            f.write(f"| Langue | {results[0].language} |\n")
-            f.write(f"| Questions traitées | {len(results)} |\n")
-            f.write(f"| Modèle LLM | {self.model.model_id} |\n")
-            f.write(f"| Temps total | {total_time:.2f}s |\n")
-            f.write(f"| Temps moyen par question | {avg_time:.2f}s |\n\n")
+            # Write summary
+            f.write("# Evaluation Results\n\n")
+            f.write("## Summary Metrics\n")
+            f.write(f"- Execution Accuracy (EX): {metrics['execution_accuracy']:.2f}%\n")
+            f.write(f"- TCM Score: {metrics['tcm_score']:.2f}%\n")
+            f.write(f"- Average Response Time (TRM): {metrics['avg_response_time']:.2f}s\n\n")
 
-            # Description des métriques
-            f.write("## Description des métriques\n\n")
-            f.write("- **Exécution SQL** : Évalue si l'agent génère des requêtes SQL valides qui retournent les bons résultats\n")
-            f.write("- **Sémantique** : Mesure si la réponse en langage naturel de l'agent correspond au sens de la réponse attendue\n")
-            f.write("- **Stratégie** : Évalue si l'agent suit une progression logique : d'abord la base de données, puis des approches alternatives, et enfin d'autres sources si nécessaire\n\n")
-
-            # Tableau des métriques
-            f.write("## Métriques de Performance\n\n")
-            f.write("| Métrique | Score (%) | Min | Max | Moyenne | Médiane |\n")
-            f.write("|-----------|-----------|-----|-----|---------|----------|\n")
-
-            # SQL scores
-            sql_scores = [r.metrics.sql_accuracy['combined'] for r in results]
-            sql_stats = self._get_stats(sql_scores)
-            f.write(f"| Exécution SQL | {metrics['execution_accuracy']:.2f} | {sql_stats['min']:.2f} | {sql_stats['max']:.2f} | {sql_stats['avg']:.2f} | {sql_stats['median']:.2f} |\n")
-
-            # Semantic scores
-            semantic_scores = [r.metrics.semantic_accuracy for r in results]
-            semantic_stats = self._get_stats(semantic_scores)
-            f.write(f"| Sémantique | {metrics['semantic_accuracy']:.2f} | {semantic_stats['min']:.2f} | {semantic_stats['max']:.2f} | {semantic_stats['avg']:.2f} | {semantic_stats['median']:.2f} |\n")
-
-            # Strategy scores (formerly TCM)
-            strategy_scores = [r.metrics.tcm_score for r in results]
-            strategy_stats = self._get_stats(strategy_scores)
-            f.write(f"| Stratégie | {metrics['tcm_score']:.2f} | {strategy_stats['min']:.2f} | {strategy_stats['max']:.2f} | {strategy_stats['avg']:.2f} | {strategy_stats['median']:.2f} |\n")
-
-        self.logger.info(f"Rapport généré : {log_path}")
-
-    def _get_stats(self, scores: List[float]) -> Dict[str, float]:
-        """Calcule les statistiques pour une liste de scores."""
-        return {
-            'min': min(scores),
-            'max': max(scores),
-            'avg': mean(scores),
-            'median': median(scores)
-        }
+            # Write detailed results
+            f.write("## Detailed Results\n\n")
+            for r in results:
+                f.write(f"### Question {r.question_id}\n")
+                f.write(f"**English Question:** {r.question['en']}\n")
+                f.write(f"**Response Time:** {r.response_time:.2f}s\n")
+                
+                # SQL Accuracy section
+                f.write(f"**SQL Accuracy Metrics:**\n")
+                f.write(f"- Query Present: {r.sql_accuracy['query_present']:.2f}\n")
+                f.write(f"- Execution Success: {r.sql_accuracy['execution_success']:.2f}\n")
+                f.write(f"- Results Match: {r.sql_accuracy['results_match']:.2f}\n")
+                f.write(f"- Combined Score: {r.sql_accuracy['combined']:.2f}\n")
+                
+                # TCM Score section
+                f.write(f"**TCM Score:** {r.tcm_score:.2f}\n")
+                
+                # Error section if applicable
+                if r.error:
+                    f.write(f"**Error:** {r.error}\n")
+                f.write("\n")
 
 def create_agent(model: LiteLLMModel) -> CodeAgent:
     """Create and initialize the conversational agent"""
@@ -1078,7 +990,7 @@ def main():
     qa_path = Path("../data/qa_pairs.json")
     
     # Initialize model
-    engine = "ollama" # or ["ollama"|"anthropic"]
+    engine = "anthropic" # or ["ollama"|"anthropic"]
     if engine == "ollama":
         model = LiteLLMModel(
             model_id="ollama/llama3.1:8b-instruct-q8_0",

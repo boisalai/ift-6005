@@ -182,6 +182,11 @@ git commit -m "message" -n
 
 #### Préparation de la base de données Open Food Facts canadienne (5h)
 
+<!--
+Le 20 février 2025, Louis Bastarache a écrit :
+Si jamais il s'avère trop difficile de travailler avec les données OFF, vous pourriez essayer avec les Branded Foods du FDC, https://fdc.nal.usda.gov/
+-->
+
 [Open Food Facts](https://en.openfoodfacts.org/) is a non-profit organisation that collects and shares information on food products from around the world. It is a collaborative project that relies on volunteers to collect data. Open Food Facts is the largest open food products database in the world, with over 3 million products in 200 countries.
 
 Pour plus d'information sur Open Food Facts, voir :
@@ -392,6 +397,154 @@ C'est une approche intelligente car :
 
 #### Implémentation des scripts d’évaluation des trois métriques (10h)
 
+Oui, ce texte est logique et la métrique TCM est pertinente pour votre projet. Analysons pourquoi :
+
+1. Contexte du problème :
+- La base de données Open Food Facts est connue pour avoir beaucoup de données manquantes
+- Les utilisateurs veulent des réponses utiles même quand toutes les données ne sont pas disponibles
+- Un bon agent conversationnel doit pouvoir gérer cette réalité
+
+2. Les trois stratégies proposées sont pertinentes :
+- Utiliser des attributs alternatifs : C'est intelligent car certaines informations peuvent être déduites d'autres données disponibles
+- Reformuler les requêtes : Permet d'obtenir des informations similaires via d'autres chemins dans la base de données
+- Communiquer les limitations : C'est une bonne pratique d'être transparent sur la qualité/fiabilité des réponses
+
+3. Mesure d'efficacité :
+- Le fait qu'une seule stratégie réussie suffise pour considérer la réponse comme "exploitable" est raisonnable
+- Cela reflète la réalité pratique où même une réponse partielle peut être utile à l'utilisateur
+
+Cependant, votre code actuel pour calculer le TCM ne reflète pas complètement ces stratégies. Il faudrait modifier `_calculate_data_coverage` pour évaluer spécifiquement :
+1. Si l'agent tente d'utiliser des attributs alternatifs quand les données principales manquent
+2. S'il reformule ses requêtes pour obtenir des informations similaires
+3. S'il communique clairement sur les limitations des données
+
+
+
+Concernant l'indicateur "data_coverage"... 
+
+Ne serait-il pas plus opportun de demander à l'agent de codifier sa démarche en étapes. Par exemple à l'étape 1 il a essayé une requête SQL et la réponse était-elle satisfaisante ou pas. Si l'agent a réaliser une étape 2 en essayant une 2e requête SQL, la réponse était-elle satisfaisante ou pas. L'agent peut avoir réaliser une étape 3 en cherchant dans le guide alimentaire si les étapes précédentes étaient insatisfaisantes. Ainsi, ce score évaluerait plutôt si l'agent a bien suivi les indications.
+
+Excellente suggestion ! Cette approche est beaucoup plus robuste et cohérente avec l'objectif du projet. L'agent devrait effectivement structurer sa démarche et ses réponses de manière plus systématique.
+
+Je propose de modifier les instructions données à l'agent pour qu'il retourne une réponse JSON structurée comme ceci :
+
+```python
+{
+    "steps": [
+        {
+            "step": 1,
+            "action": "database_query",
+            "query": "SELECT ...",
+            "success": true/false,
+            "reason": "Found complete data" / "Missing important information"
+        },
+        {
+            "step": 2,
+            "action": "alternative_query",
+            "query": "SELECT ... /* Reformulation avec d'autres colonnes */",
+            "success": true/false,
+            "reason": "Found alternative data" / "Still incomplete"
+        },
+        {
+            "step": 3,
+            "action": "food_guide_search",
+            "success": true/false,
+            "reason": "Found complementary information"
+        }
+    ],
+    "answer": {
+        "text": "Réponse finale en français ou anglais",
+        "source": "Open Food Facts" / "Canada Food Guide" / "Both",
+        "confidence": "high/medium/low"
+    }
+}
+```
+
+Ensuite, le calcul du TCM serait basé sur :
+1. Le nombre d'étapes tentées quand nécessaire
+2. La progression logique entre les étapes
+3. L'utilisation appropriée des différentes sources
+
+Cette approche :
+- Est indépendante de la langue
+- Reflète mieux le processus de résolution
+- Permet une évaluation plus précise de la stratégie de l'agent
+
+Voulez-vous que je montre comment modifier le code pour implémenter cette nouvelle approche ?
+
+
+Ah, voilà une définition beaucoup plus claire de la logique attendue ! En effet, il devrait y avoir une progression stricte :
+
+1. Toujours commencer par la base de données
+2. En cas d'échec, essayer d'autres requêtes dans la base 
+3. Seulement à la fin, si toutes les requêtes DB ont échoué, consulter le guide alimentaire
+
+Voici la correction proposée :
+
+```python
+def _calculate_data_coverage(self, agent_response: str, qa_pair: Dict) -> Dict[str, float]:
+    """
+    Évalue la capacité de l'agent à gérer les données manquantes selon une progression stricte :
+    1. Première tentative obligatoire : requête DB
+    2. Tentatives suivantes si échec : requêtes DB alternatives
+    3. Dernière tentative si tout a échoué : guide alimentaire
+    """
+    try:
+        response_data = json.loads(agent_response)
+        steps = response_data.get('steps', [])
+        
+        if not steps:
+            self.logger.warning("No steps found in agent response")
+            return {"tcm": 0.0}
+
+        score = 0.0
+        db_attempts = []
+        web_attempt = None
+
+        # Vérifier la séquence des tentatives
+        for step in steps:
+            if step['action'] in ['database_query', 'alternative_query']:
+                db_attempts.append(step)
+                # Pénaliser une requête DB après une recherche web
+                if web_attempt is not None:
+                    return {"tcm": 0.0}  # Violation de la séquence
+            elif step['action'] == 'food_guide_search':
+                web_attempt = step
+        
+        # Évaluer la progression
+        if db_attempts:
+            # Points pour avoir commencé par la DB
+            score += 0.4
+            
+            # Points pour chaque tentative alternative pertinente
+            if len(db_attempts) > 1:
+                score += min(0.3, 0.1 * (len(db_attempts) - 1))
+                
+            # Points pour avoir consulté le guide seulement après échec des requêtes DB
+            if web_attempt and not any(attempt['success'] for attempt in db_attempts):
+                score += 0.3
+
+        return {"tcm": min(1.0, score)}
+        
+    except json.JSONDecodeError:
+        self.logger.error("Failed to parse agent response as JSON")
+        return {"tcm": 0.0}
+```
+
+Cette version :
+1. Vérifie que la séquence est respectée (DB → DB alternatives → Guide)
+2. Pénalise totalement (score 0) si l'agent fait une requête DB après le web
+3. Récompense :
+   - 0.4 pour commencer par la DB
+   - Jusqu'à 0.3 pour les tentatives alternatives dans la DB
+   - 0.3 pour utiliser le guide au bon moment (à la fin, après échec DB)
+
+Voici une explication simple de chaque métrique :
+
+Exécution SQL : Évalue si l'agent génère des requêtes SQL valides qui retournent les bons résultats
+Sémantique : Mesure si la réponse en langage naturel de l'agent correspond au sens de la réponse attendue
+Stratégie: Évalue si l'agent suit une progression logique : d'abord la base de données, puis des approches alternatives, et enfin d'autres sources si nécessaire"
+
 #### FAISS
 
 Pour évaluer la similitude entre les questions, vous pouvez utiliser FAISS (Facebook AI Similarity Search). FAISS est une bibliothèque open-source qui permet de rechercher efficacement des vecteurs similaires dans de grandes bases de données. Il utilise des algorithmes d'indexation et de recherche rapides pour trouver les vecteurs les plus proches en termes de similarité.
@@ -430,6 +583,67 @@ Si vous constatez des différences significatives dans les performances entre le
 2. D'ajouter des descriptions de colonnes en français dans la documentation
 3. D'ajuster les seuils de similarité selon la langue
 
+Le paramètre "top_k" dans la méthode `_search_relevant_columns` représente le nombre maximum de colonnes les plus pertinentes à retourner lors de la recherche sémantique avec FAISS.
+
+Plus précisément :
+- `top_k = 3` signifie que la méthode retournera au maximum les 3 colonnes ayant les plus hauts scores de similarité avec la requête
+- La similarité est calculée entre l'embedding de la requête et les embeddings des descriptions des colonnes stockés dans l'index FAISS
+- Les scores de similarité sont entre -1 et 1 (utilisant la similarité cosinus car FAISS est initialisé avec IndexFlatIP - Inner Product)
+- Les colonnes sont triées par ordre décroissant de similarité
+
+Par exemple, si on a une requête sur les produits sans gluten :
+```python
+results = evaluator._search_relevant_columns("produits sans gluten", top_k=3)
+```
+Cela pourrait retourner les 3 colonnes les plus pertinentes comme :
+1. "allergens_tags" (similarité: 0.89)
+2. "labels_tags" (similarité: 0.82)  
+3. "ingredients_text" (similarité: 0.75)
+
+Après, dans `_get_agent_response`, seules les colonnes ayant une similarité > 0.7 sont effectivement utilisées pour la construction de la requête SQL, assurant ainsi que seules les colonnes vraiment pertinentes sont considérées.
+
+
+
+1. Documentation des colonnes :
+```python
+# Dans SearchDatabaseDocumentationTool
+text_to_embed = f"Column {col_name} ({col_info['type']}): {col_info['description']}"
+if "examples" in col_info:
+    examples_str = str(col_info["examples"])
+    text_to_embed += f" Examples: {examples_str}"
+```
+Plutôt que de vectoriser les données elles-mêmes, vous vectorisez la documentation des colonnes. Chaque colonne a :
+- Un nom
+- Un type
+- Une description
+- Des exemples de valeurs
+- Des exemples de requêtes courantes
+
+1. Recherche sémantique des colonnes pertinentes :
+```python
+def search(self, query: str, top_k: int = 3) -> List[Dict[str, Any]]:
+    query_embedding = self.model.encode(query)
+    similarities, indices = self.index.search(query_embedding, top_k)
+```
+Quand un utilisateur pose une question, le système :
+- Convertit la question en vecteur
+- Trouve les colonnes dont la description est sémantiquement proche
+- Utilise ces colonnes pour construire la requête SQL
+
+Par exemple, si l'utilisateur demande "Quels sont les produits sans gluten?", le système :
+1. Identifie que la colonne "allergens_tags" est pertinente 
+2. Sait que c'est un tableau et qu'il faut utiliser `list_contains()`
+3. Génère une requête comme :
+```sql
+SELECT * FROM products 
+WHERE NOT list_contains(allergens_tags, 'en:gluten')
+```
+
+C'est une approche élégante car :
+- Elle aide à identifier les bonnes colonnes à utiliser
+- Elle guide la construction des requêtes SQL
+- Elle permet de gérer la complexité d'une base avec +100 colonnes
+- Elle tient compte de la structure spécifique des données (tableaux, données multilingues, etc.)
 
 
 

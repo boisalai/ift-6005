@@ -1,0 +1,43 @@
+2025-02-20 16:20:37,232 - food_agent - evaluate.<module>:117 - INFO - General information about execution progress
+2025-02-20 16:20:37,232 - food_agent - evaluate.<module>:118 - INFO - Logging initialized. Writing to logs/evaluation_20250220_162037.log
+2025-02-20 16:20:37,232 - food_agent - evaluate.<module>:119 - WARNING - Non-critical warnings
+2025-02-20 16:20:37,232 - food_agent - evaluate.<module>:120 - ERROR - Important but non-fatal errors
+2025-02-20 16:20:37,232 - food_agent - evaluate.<module>:121 - CRITICAL - Critical errors that prevent evaluation
+2025-02-20 16:20:37,233 - food_agent - evaluate.main:1069 - INFO - Starting evaluation script
+2025-02-20 16:20:37,245 - root - evaluate.main:1094 - INFO - Agent initialized successfully
+2025-02-20 16:20:37,252 - sentence_transformers.SentenceTransformer - SentenceTransformer.__init__:210 - INFO - Use pytorch device_name: mps
+2025-02-20 16:20:37,252 - sentence_transformers.SentenceTransformer - SentenceTransformer.__init__:218 - INFO - Load pretrained SentenceTransformer: all-MiniLM-L6-v2
+2025-02-20 16:20:37,847 - food_agent - evaluate._initialize_faiss:213 - INFO - Successfully loaded FAISS index and metadata from cache
+2025-02-20 16:20:37,847 - food_agent - evaluate.evaluate_all:883 - INFO - Évaluation de la question 1/1
+2025-02-20 16:20:37,934 - food_agent - evaluate._search_relevant_columns:413 - INFO - Found 5 relevant columns for query: What food products without additives are available in the database?
+2025-02-20 16:20:37,934 - food_agent - evaluate._search_relevant_columns:415 - INFO - - Column 'unknown_ingredients_n' with similarity 0.656
+2025-02-20 16:20:37,934 - food_agent - evaluate._search_relevant_columns:415 - INFO - - Column 'additives_tags' with similarity 0.638
+2025-02-20 16:20:37,934 - food_agent - evaluate._search_relevant_columns:415 - INFO - - Column 'ingredients_original_tags' with similarity 0.622
+2025-02-20 16:20:37,934 - food_agent - evaluate._search_relevant_columns:415 - INFO - - Column 'ingredients_without_ciqual_codes' with similarity 0.612
+2025-02-20 16:20:37,934 - food_agent - evaluate._search_relevant_columns:415 - INFO - - Column 'data_quality_info_tags' with similarity 0.563
+2025-02-20 16:20:37,934 - food_agent - evaluate._get_agent_response:450 - INFO - Getting agent response
+2025-02-20 16:20:38,427 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: GET https://raw.githubusercontent.com/BerriAI/litellm/main/model_prices_and_context_window.json "HTTP/1.1 200 OK"
+2025-02-20 16:20:38,755 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20240620; provider = anthropic
+2025-02-20 16:20:43,039 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-20 16:20:43,046 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-20 16:20:43,089 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20240620; provider = anthropic
+2025-02-20 16:20:49,182 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-20 16:20:49,186 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-20 16:20:49,199 - smolagents.local_python_executor - local_python_executor.get_safe_module:984 - INFO - Skipping dangerous attribute builtins.compile
+2025-02-20 16:20:49,200 - smolagents.local_python_executor - local_python_executor.get_safe_module:984 - INFO - Skipping dangerous attribute builtins.eval
+2025-02-20 16:20:49,200 - smolagents.local_python_executor - local_python_executor.get_safe_module:984 - INFO - Skipping dangerous attribute builtins.exec
+2025-02-20 16:20:49,200 - smolagents.local_python_executor - local_python_executor.get_safe_module:984 - INFO - Skipping dangerous attribute codecs.sys
+2025-02-20 16:20:49,202 - smolagents.local_python_executor - local_python_executor.get_safe_module:984 - INFO - Skipping dangerous attribute _sre.compile
+2025-02-20 16:20:49,202 - smolagents.local_python_executor - local_python_executor.get_safe_module:984 - INFO - Skipping dangerous attribute re._compiler.compile
+2025-02-20 16:20:49,203 - smolagents.local_python_executor - local_python_executor.get_safe_module:984 - INFO - Skipping dangerous attribute re.compile
+2025-02-20 16:20:49,203 - smolagents.local_python_executor - local_python_executor.get_safe_module:984 - INFO - Skipping dangerous attribute enum.sys
+2025-02-20 16:20:49,266 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20240620; provider = anthropic
+2025-02-20 16:20:54,918 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-20 16:20:54,922 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-20 16:20:54,927 - food_agent - evaluate._evaluate_search_sequence:819 - INFO - Steps: [{'step': 1, 'action': 'database_query', 'description': 'Queried the database for products with no additives', 'query': "\nSELECT \n    unnest(list_filter(product_name, x -> x.lang == 'en'))['text'] AS product_name,\n    additives_tags\nFROM products\nWHERE additives_tags = '[]'\nLIMIT 10\n", 'success': True, 'result': 'Found 10 products without additives'}]
+2025-02-20 16:20:54,927 - food_agent - evaluate._evaluate_search_sequence:835 - INFO - Step: {'step': 1, 'action': 'database_query', 'description': 'Queried the database for products with no additives', 'query': "\nSELECT \n    unnest(list_filter(product_name, x -> x.lang == 'en'))['text'] AS product_name,\n    additives_tags\nFROM products\nWHERE additives_tags = '[]'\nLIMIT 10\n", 'success': True, 'result': 'Found 10 products without additives'}, DB attempts: [{'step': 1, 'action': 'database_query', 'description': 'Queried the database for products with no additives', 'query': "\nSELECT \n    unnest(list_filter(product_name, x -> x.lang == 'en'))['text'] AS product_name,\n    additives_tags\nFROM products\nWHERE additives_tags = '[]'\nLIMIT 10\n", 'success': True, 'result': 'Found 10 products without additives'}], Web attempt: None
+2025-02-20 16:20:54,927 - food_agent - evaluate._evaluate_search_sequence:851 - INFO - Search sequence score: 0.4
+2025-02-20 16:20:54,928 - food_agent - evaluate._log_detailed_results:1019 - INFO - Rapport généré : evaluation_results_20250220_162054.md

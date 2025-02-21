@@ -13,7 +13,7 @@ data/*.duckdb
 data/cache/*.index
 
 # Logs
-logs/*.log
+src/logs/*.log
 
 # Notebooks
 .ipynb_checkpoints

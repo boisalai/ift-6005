@@ -221,64 +221,6 @@ class AgentEvaluator:
             self.logger.error(f"Error initializing FAISS: {str(e)}")
             raise
 
-    def _setup_faiss_index(self) -> None:
-        """Initialize FAISS index with documentation embeddings"""
-        try:
-            docs_path = Path("../data/columns_documentation.json")
-            with open(docs_path) as f:
-                docs = json.load(f)
-
-            if "tables" not in docs or "products" not in docs["tables"]:
-                raise ValueError("Invalid documentation structure")
-
-            columns = docs["tables"]["products"].get("columns", {})
-            if not columns:
-                raise ValueError("No columns found in documentation")
-
-            self.columns.clear()
-            embeddings = []
-
-            for col_name, col_info in columns.items():
-                if not all(key in col_info for key in ["type", "description"]):
-                    self.logger.warning(f"Column {col_name} missing required fields")
-                    continue
-
-                # Create text to embed
-                text_to_embed = f"Column {col_name} ({col_info['type']}): {col_info['description']}"
-                if "examples" in col_info:
-                    examples_str = str(col_info["examples"])[:500]  # Limit length
-                    text_to_embed += f" Examples: {examples_str}"
-
-                try:
-                    # Generate embedding
-                    embedding = self.sentence_model.encode(text_to_embed)
-                    embeddings.append(embedding)
-
-                    # Store column metadata
-                    self.columns.append({
-                        "name": col_name,
-                        "type": col_info["type"],
-                        "description": col_info["description"],
-                        "examples": col_info.get("examples", []),
-                        "common_queries": col_info.get("common_queries", [])
-                    })
-                except Exception as e:
-                    self.logger.error(f"Error processing column {col_name}: {str(e)}")
-                    continue
-
-            if not embeddings:
-                raise ValueError("No embeddings were created")
-
-            # Add embeddings to FAISS index
-            embeddings_array = np.array(embeddings).astype('float32')
-            self.index.add(embeddings_array)
-
-            self.logger.info(f"FAISS index initialized with {len(embeddings)} columns")
-
-        except Exception as e:
-            self.logger.error(f"Error initializing FAISS index: {str(e)}")
-            raise
-
     def _load_from_cache(self) -> bool:
         """Load FAISS index and metadata from cache if available"""
         try:

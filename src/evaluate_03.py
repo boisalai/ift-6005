@@ -583,8 +583,9 @@ class Evaluator:
             
             {columns_text}
 
-            IMPORTANT RESPONSE FORMAT:
-            You must return a valid JSON string with the following structure:
+            CRITICAL RESPONSE FORMAT:
+            You MUST return a valid JSON string and NOTHING ELSE. Your entire response must be parseable with json.loads().
+            The required format is:
 
             {{
                 "answer": {{
@@ -601,24 +602,11 @@ class Evaluator:
                         "success": true/false,
                         "result": "Description of the result or why it failed"
                     }},
-                    {{
-                        "step": 2,
-                        "action": "alternative_query",
-                        "description": "Tried alternative approach with different columns",
-                        "query": "Alternative SQL query",
-                        "success": true/false,
-                        "result": "Description of the result"
-                    }},
-                    {{
-                        "step": 3,
-                        "action": "food_guide_search",
-                        "description": "Searched Canada Food Guide for additional information",
-                        "query": null,
-                        "success": true/false,
-                        "result": "Information found in Food Guide"
-                    }}
+                    # Include all steps you took, even if they were unsuccessful
                 ]
             }}
+
+            Respond ONLY with this JSON object. Do not include any explanations, markdown formatting, or additional text outside the JSON.
 
             SEARCH SEQUENCE RULES:
             1. ALWAYS start with database queries using the most relevant columns
@@ -880,26 +868,41 @@ class Evaluator:
         """
         agent = CodeAgent(
             tools=[],
-            model=self.model,
-            max_steps=3
+            model=self.model        
         )
 
         # Extract the text response from the parsed data
         agent_response = response_data.get('answer', {}).get('text', '')
 
-        prompt = f"""Compare these two responses and rate their semantic similarity from 0 to 1:
-        Expected: {qa_pair['answers']['en']}
-        Actual: {agent_response}
+        prompt = dedent(f"""\
+        Compare these two responses and rate their semantic similarity from 0 to 1:
+        Response #1: {qa_pair['answers']['en']}
+        Response #2: {agent_response}
         
         Consider:
         1. Key information present in both responses
         2. Factual consistency
         3. Completeness of information
         
-        Return only a number between 0 and 1."""
-        
+        Output format: 
+        Return exactly one line containing only a number between 0 and 1, with no 
+        explanation or additional text. For example: 0.75
+        """)
+
+        self.logger.info(f"prompt: {prompt}")
+
         try:
-            similarity = float(agent.run(prompt))
+            response = agent.run(prompt)
+            self.logger.debug(f"Semantic similarity response: {response}")
+            
+            # Check response type
+            if isinstance(response, float):
+                similarity = response
+            else:
+                # If string, clean it and convert
+                response_str = str(response).strip()
+                similarity = float(response_str)
+                
             return max(0.0, min(1.0, similarity))  # Ensure value is between 0 and 1
         except (ValueError, TypeError) as e:
             self.logger.error(f"Error calculating semantic similarity: {e}")
@@ -1311,5 +1314,8 @@ def main():
         print(f"Max: {time_stats['max']:.2f}s")
         print(f"Median: {time_stats['median']:.2f}s")
 
+def foo():
+    question = "Quels sont les aliments riches en protéines ?"
+    
 if __name__ == "__main__":
     main()

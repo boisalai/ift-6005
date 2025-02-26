@@ -1,5 +1,7 @@
 # Rapport de mi-session
 
+> Version du 26 février 2025
+
 ## 1. Introduction
 
 L'accès aux informations nutritionnelles reste souvent limité par des interfaces techniques nécessitant des compétences en langages de requête comme SQL. Cette barrière empêche de nombreux utilisateurs d'exploiter pleinement des bases de données comme Open Food Facts, qui contient des milliers de fiches produits détaillées. Ce projet vise à développer un agent conversationnel utilisant des grands modèles de langage (LLM) pour permettre aux utilisateurs de poser des questions en langage naturel comme "Quelles collations sans allergènes ont un Nutri-score A ?". Cette approche démocratise l'accès aux données nutritionnelles tout en améliorant la qualité des réponses grâce à l'exploitation directe de sources structurées. Ce rapport présente l'état d'avancement du projet à la mi-session, les défis rencontrés et les solutions implémentées.

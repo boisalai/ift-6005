@@ -8,7 +8,7 @@ L'accès aux informations nutritionnelles reste souvent limité par des interfac
 
 ## 2. Rappel de l'objectif du projet
 
-L'objectif de ce projet est de développer un agent conversationnel permettant aux utilisateurs d'interroger la base de données Open Food Facts en langage naturel. Le système doit comprendre les questions des utilisateurs sur les produits alimentaires, les convertir en requêtes SQL, et fournir des réponses claires et précises. Les données manquantes ou incomplètes doivent être compensées par une recherche alternative dans le Guide alimentaire canadien.
+L'objectif de ce projet est de développer un agent conversationnel permettant aux utilisateurs d'interroger la base de données [Open Food Facts](https://world.openfoodfacts.org/) en langage naturel. Le système doit comprendre les questions des utilisateurs sur les produits alimentaires, les convertir en requêtes SQL, et fournir des réponses claires et précises. Les données manquantes ou incomplètes doivent être compensées par une recherche alternative dans le [Guide alimentaire canadien](https://guide-alimentaire.canada.ca/fr/).
 
 ## 3. Approche proposée et options considérées
 
@@ -27,7 +27,7 @@ Pour assurer une progression cohérente dans la démarche, j'ai implémenté une
 
 - **Recherche principale dans la base de données** : Après une recherche sémantique pour identifier les colonnes pertinentes, l'agent génère et exécute une première requête SQL.
 - **Requêtes alternatives** : En cas d'échec ou de résultats incomplets, l'agent formule des requêtes SQL alternatives utilisant d'autres colonnes ou approches.
-- **Recherche complémentaire** : Si les données restent insuffisantes, l'agent se tourne vers le Guide alimentaire canadien pour compléter l'information.
+- **Recherche complémentaire** : Si les données restent insuffisantes, l'agent se tourne vers le [Guide alimentaire canadien](https://guide-alimentaire.canada.ca/fr/) pour compléter l'information.
 
 Cette progression permet de maximiser l'utilisation des données structurées tout en assurant qu'une réponse utile est toujours fournie à l'utilisateur.
 
@@ -40,7 +40,7 @@ Après évaluation de plusieurs options, j'ai retenu les technologies suivantes 
   - Gestion efficace de la mémoire, adaptée à un environnement de développement local
   - Support natif des fichiers Parquet et des requêtes SQL complexes
   - Facilité d'intégration avec Python et capacité à gérer des structures de données complexes
-- **Smolagents de Hugging Face** comme framework d'agent conversationnel :
+- **[Smolagents](https://github.com/huggingface/smolagents) de Hugging Face** comme framework d'agent conversationnel :
   - Simplicité d'utilisation par rapport à d'autres solutions comme CrewAI
   - Approche optimisée pour les "agents de code" (agents qui génèrent et exécutent du code)
   - Flexibilité dans l'intégration de différents LLMs et outils
@@ -50,7 +50,7 @@ Après évaluation de plusieurs options, j'ai retenu les technologies suivantes 
   - Pour le développement : `ollama/llama3.1:8b-instruct-q8_0` (modèle open-source pouvant s'exécuter localement)
   - Pour la production : `anthropic/claude-3-5-sonnet` (modèle plus puissant offrant une meilleure compréhension et génération)
   - Cette approche double permet de limiter les coûts d'API
-- **FAISS** pour la recherche sémantique :
+- **[FAISS](https://github.com/facebookresearch/faiss)** pour la recherche sémantique :
   - Identification efficace des colonnes pertinentes pour chaque question
   - Vectorisation de la documentation des colonnes de la base de données pour faciliter la recherche
   - En fait, je n'ai pas considéré d'autres options. J'ai choisi FAISS (Facebook AI Similarity Search) car il est bien documenté, open source et largement utilisé dans la communauté de recherche en IA. Il est également compatible avec les modèles de langage MiniLM, ce qui en fait un choix naturel pour ce projet.

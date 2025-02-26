@@ -227,7 +227,7 @@ Les paires Q&A sont stockées dans qa_pairs.json avec la structure suivante :
         "en": "The following products have a Nutri-Score A..."
     }
 }
-// ... plus de paires Q&A
+# ... plus de paires Q&A
 ```
 
 Le processus est implémenté dans le script `question_answer.py`.
@@ -336,7 +336,31 @@ Gao, D., Wang, H., Li, Y., Sun, X., Qian, Y., Ding, B., & Zhou, J. (2023). Text-
 
 **Question utilisateur** : What food products without additives are available in the database?
 
-**Analyse préliminaire** : L'agent a identifié 5 colonnes pertinentes pour cette requête :
+Cette question soumise à l'agent est la première de la série d'évaluations (`qa_pairs.json`) qui se présente comme suit :
+
+```txt
+[
+  {
+    "column": "additives_n",
+    "sql": "SELECT code, product_name FROM products WHERE additives_n = 0",
+    "questions": {
+      "fr": "Quels sont les produits alimentaires sans additifs disponibles dans la base de données?",
+      "en": "What food products without additives are available in the database?"
+    },
+    "answers": {
+      "fr": """La base de données contient 5843 produits sans additifs, incluant des produits comme 
+               le sirop d'érable biologique du Vermont, le lait faible en gras, l'agave bleu biologique, 
+               et le lait de coco.""",
+      "en": """The database contains 5843 products without additives, including items such as organic 
+               Vermont maple syrup, low-fat milk, organic blue agave, and coconut milk."""
+    }
+  },
+  ...
+]
+```
+
+**Analyse préliminaire** : À l'aide d'une recherche sémantique sur la documentation des données 
+(`columns_documentation.json`), 5 colonnes pertinentes ont été identifiées pour cette requête :
 - Colonne `unknown_ingredients_n` (score de similarité : 0,656)
 - Colonne `additives_tags` (score de similarité : 0,638)
 - Colonne `ingredients_original_tags` (score de similarité : 0,622)
@@ -345,6 +369,138 @@ Gao, D., Wang, H., Li, Y., Sun, X., Qian, Y., Ding, B., & Zhou, J. (2023). Text-
 
 **Instructions fournies à l'agent** :
 Ces instructions détaillées ont guidé l'agent sur comment traiter la requête, en incluant des informations sur les colonnes pertinentes, des exemples de requêtes SQL typiques pour chaque colonne, les règles de séquence de recherche à suivre, et les exigences de format de réponse.
+
+Voici le prompt fourni à l'agent :
+
+```
+You are a helpful assistant that answers questions about food products 
+using the Open Food Facts database.
+
+POTENTIALLY RELEVANT COLUMNS:
+The following columns have been identified through semantic search as potentially 
+relevant, with their similarity scores (higher means more likely relevant):
+
+Column: unknown_ingredients_n
+Type: INTEGER
+Description: Count of ingredients in the product that are not recognized or cannot 
+be properly classified in the Open Food Facts database
+Examples of values: 0, 1, 15
+Query examples:
+# Find products with a high number of unknown ingredients (more than 10):
+SELECT code, product_name, unknown_ingredients_n FROM products 
+WHERE unknown_ingredients_n > 10 ORDER BY unknown_ingredients_n DESC LIMIT 50
+# Calculate the percentage of products with unknown ingredients:
+SELECT ROUND(COUNT(CASE WHEN unknown_ingredients_n > 0 THEN 1 END) * 100.0 / COUNT(*), 2) 
+as percent_with_unknown FROM products WHERE unknown_ingredients_n IS NOT NULL LIMIT 50
+# Group products by ranges of unknown ingredients count:
+SELECT CASE WHEN unknown_ingredients_n = 0 THEN 'No unknown' WHEN unknown_ingredients_n 
+BETWEEN 1 AND 5 THEN '1-5' WHEN unknown_ingredients_n BETWEEN 6 AND 10 THEN '6-10' ELSE 'More than 10' 
+END as range, COUNT(*) as count FROM products WHERE unknown_ingredients_n IS NOT NULL GROUP BY 1 LIMIT 50
+
+Column: additives_tags
+Type: VARCHAR[]
+Description: An array of food additives present in the product, using standardized E-number format
+with 'en:e' prefix. Each element represents one additive (e.g., 'en:e330' for citric acid). Common 
+additives include preservatives, emulsifiers, and acidity regulators.
+Examples of values: ['en:e330', 'en:e322', 'en:e500'], ['en:e211'], ['en:e330', 'en:e202', 'en:e260', 'en:e951']
+Query examples:
+# Find the most commonly used additives and their frequency:
+WITH unnested AS ( SELECT unnest(additives_tags) as additive FROM products WHERE additives_tags IS NOT NULL )
+SELECT additive, COUNT(*) as frequency FROM unnested GROUP BY additive ORDER BY frequency DESC LIMIT 10;
+# Find products containing a specific additive (e.g., E330 - Citric acid):
+SELECT code, product_name, additives_tags FROM products WHERE array_contains(additives_tags, 'en:e330')
+LIMIT 1000;
+# Count products by number of additives used:
+SELECT array_length(additives_tags) as num_additives, COUNT(*) as product_count FROM products 
+WHERE additives_tags IS NOT NULL GROUP BY array_length(additives_tags) ORDER BY num_additives;
+
+Column: ingredients_original_tags
+Type: VARCHAR[]
+Description: An array of standardized ingredient tags, typically prefixed with language codes 
+(e.g., 'en:', 'fr:'). Each tag represents a single ingredient in its normalized form, making it easier
+to search and analyze product compositions. The tags follow the Open Food Facts taxonomy.
+Examples of values: ['en:water', 'en:sugar', 'en:carbon-dioxide'], ['en:fortified-wheat-flour', 'en:sugar',
+'en:vegetable-oil', 'en:salt'], ['en:milk-chocolate', 'en:sugar', 'en:cocoa-butter', 'en:cocoa-paste',
+'en:milk-powder']
+Query examples:
+# Find the most common ingredients in products and their frequency of use:
+SELECT unnest(ingredients_original_tags) as ingredient, COUNT(*) as frequency FROM products 
+WHERE ingredients_original_tags IS NOT NULL GROUP BY ingredient ORDER BY frequency DESC LIMIT 1000;
+# Find all products containing a specific ingredient (e.g., sugar):
+SELECT code, product_name, ingredients_original_tags FROM products 
+WHERE array_contains(ingredients_original_tags, 'en:sugar') LIMIT 1000;
+# Find products with the most ingredients, sorted by ingredient count:
+SELECT code, product_name, array_length(ingredients_original_tags) as ingredient_count, 
+ingredients_original_tags FROM products WHERE ingredients_original_tags IS NOT NULL 
+ORDER BY array_length(ingredients_original_tags) DESC LIMIT 1000;
+
+Column: ingredients_without_ciqual_codes
+Type: VARCHAR[]
+Description: An array of ingredients that don't have corresponding CIQUAL (French food composition 
+database) codes. These ingredients are typically additives, processing aids, or specific ingredients
+that cannot be mapped to standard nutritional data. Each ingredient is prefixed with a language code
+(e.g., 'en:', 'fr:').
+Examples of values: ['en:e300', 'en:vegetable-pigment', 'en:vitamin-c'], ['en:e202', 'en:e330'], 
+['en:colour', 'en:e341i', 'en:e500ii', 'en:wheat-gluten']
+Query examples:
+# Find products with the highest number of ingredients without CIQUAL codes:
+SELECT code, ingredients_without_ciqual_codes, array_length(ingredients_without_ciqual_codes) as ingredient_count
+FROM products WHERE ingredients_without_ciqual_codes IS NOT NULL 
+ORDER BY array_length(ingredients_without_ciqual_codes) DESC LIMIT 50
+# Find products containing a specific additive (e.g., E300 - Vitamin C):
+SELECT code, ingredients_without_ciqual_codes FROM products 
+WHERE ingredients_without_ciqual_codes IS NOT NULL AND array_contains(ingredients_without_ciqual_codes, 'en:e300') 
+LIMIT 50
+# Count products with and without CIQUAL-mapped ingredients:
+SELECT COUNT(CASE WHEN ingredients_without_ciqual_codes IS NOT NULL THEN 1 END) as with_non_ciqual, 
+COUNT(CASE WHEN ingredients_without_ciqual_codes IS NULL THEN 1 END) as without_non_ciqual 
+FROM products LIMIT 50
+
+Column: data_quality_info_tags
+Type: VARCHAR[]
+Description: An array of tags describing various aspects of product data quality, including packaging
+information completeness, ingredient analysis status, ecoscore computation status, and food group
+classification levels. Each tag is prefixed with 'en:' and provides specific information about different
+quality aspects of the product data.
+Examples of values: ['en:no-packaging-data', 'en:ingredients-percent-analysis-ok', 
+'en:ecoscore-extended-data-not-computed', 'en:food-groups-1-unknown'], 
+['en:packaging-data-incomplete', 'en:ingredients-percent-analysis-ok', 
+'en:all-ingredients-with-specified-percent', 'en:food-groups-2-known'], 
+['en:ecoscore-extended-data-computed', 'en:food-groups-1-known', 'en:food-groups-2-known',
+'en:food-groups-3-unknown']
+Query examples:
+# Find products with specific quality issues (missing packaging data and ecoscore not computed):
+SELECT code, product_name, data_quality_info_tags FROM products WHERE array_contains(data_quality_info_tags,
+'en:no-packaging-data') AND array_contains(data_quality_info_tags, 'en:ecoscore-extended-data-not-computed')
+LIMIT 1000;
+# Find products with complete ingredient percentage documentation:
+SELECT code, product_name, data_quality_info_tags FROM products WHERE array_contains(data_quality_info_tags,
+'en:ingredients-percent-analysis-ok') LIMIT 1000;
+# Find products with complete food group classification (known at all levels):
+SELECT code, product_name, data_quality_info_tags FROM products WHERE array_contains(data_quality_info_tags, 
+'en:food-groups-1-known') AND array_contains(data_quality_info_tags, 'en:food-groups-2-known')
+AND array_contains(data_quality_info_tags, 'en:food-groups-3-known') LIMIT 1000;
+
+SEARCH SEQUENCE RULES:
+1. ALWAYS start with database queries using the most relevant columns
+2. If initial query fails, try alternative database queries with different columns or approaches
+3. Only if database queries are unsuccessful, search the Canada Food Guide
+4. Document EVERY attempt in the steps array, including failures
+5. Never skip straight to Food Guide without trying database first
+6. Always include the source of the information in the answer ("Open Food Facts" or "Canada Food Guide")
+7. Always respond in the same language as the question (French or English)
+
+RESPONSE FORMAT REQUIREMENTS:
+1. Provide ONLY the natural language answer to the user's question
+2. Maximum response length: 200 characters
+3. DO NOT include SQL queries, code snippets, or technical details
+4. DO NOT explain your reasoning or methodology
+5. Respond in the same language as the question (French or English)
+6. DO mention the source of information ("Open Food Facts" or "Canada Food Guide")
+
+Please follow these rules to ensure a consistent and effective search strategy.
+```
+
 
 **Réponse produite par l'agent** :
 "According to Open Food Facts database, additive-free products include natural foods like blueberries and pistachios, basic staples like spaghetti and rice, and beverages like coconut water and coffee."
@@ -374,4 +530,4 @@ L'évaluation a produit les métriques suivantes :
 **Temps de réponse :**
 - Minimum, maximum, moyenne et médiane : 45,95 secondes (valeurs identiques car une seule question évaluée)
 
-Cette évaluation démontre que, malgré l'absence de requête SQL, l'agent a fourni une réponse sémantiquement proche de la référence (80% de similarité), en respectant parfaitement les règles de recherche établies. La réponse de l'agent inclut correctement la source des informations (Open Food Facts) et présente des exemples concrets de produits sans additifs disponibles dans la base de données.
+Cette évaluation démontre que l'agent a fourni une réponse sémantiquement proche de la référence (80% de similarité selon Claude Sonnet, ce qui est discutable), en respectant parfaitement les règles de recherche établies. La réponse de l'agent inclut correctement la source des informations (Open Food Facts) et présente des exemples concrets de produits sans additifs disponibles dans la base de données.

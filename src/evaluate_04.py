@@ -57,6 +57,7 @@ Generates both summary metrics and detailed per-question analysis including:
 import json
 import time
 import re
+import sys
 from pathlib import Path
 from textwrap import dedent
 
@@ -68,25 +69,22 @@ import sqlglot
 
 from dotenv import load_dotenv
 from statistics import mean, median
+import requests
 import duckdb
 from datetime import datetime
 from sentence_transformers import SentenceTransformer
 import faiss
 
-# Import agent components from chatbot script
-from chatbot_19 import (
-    SearchCanadaFoodGuideTool
-)
-
 from smolagents import (
     Tool,
     CodeAgent,
     VisitWebpageTool,
+    DuckDuckGoSearchTool,
     LiteLLMModel,
     ToolCallingAgent,
-    LogLevel
+    LogLevel,
+    HfApiModel  # Add this line to import HfApiModel
 )
-
 
 # Load environment variables
 load_dotenv()
@@ -155,42 +153,14 @@ class QueryResult:
     error: Optional[str] = None
 
 @dataclass
-class QueryResults:
-    """Résultats de requête pour comparaison"""
-    expected: List[Any]
-    actual: List[Any]
-    comparison: Dict[str, Any] = field(default_factory=dict)
-
-@dataclass
-class EvaluationMetrics:
-    """Métriques d'évaluation regroupées"""
-    sql_metrics: Dict[str, float] = field(default_factory=lambda: {
-        "query_present": 0.0,
-        "execution_success": 0.0,
-        "results_match": 0.0,
-        "combined": 0.0
-    })
-    semantic_metrics: Dict[str, float] = field(default_factory=lambda: {
-        "accuracy": 0.0
-    })
-    sequence_metrics: Dict[str, float] = field(default_factory=lambda: {
-        "sequence_respect": 0.0,
-        "steps_count": 0
-    })
-    details: Dict[str, Any] = field(default_factory=dict)
-
-@dataclass
 class EvaluationResult:
     """Résultat d'évaluation d'une question"""
     question_id: int
     language: str  # Langue de l'évaluation ('fr' ou 'en')
-    question: Dict[str, str]  # Questions bilingues
-    expected_answer: Dict[str, str]  # Réponses attendues bilingues
-    agent_answer: Dict[str, Any]  # Réponse dans la langue évaluée
-    query_results: Optional[QueryResults] = None
-    metrics: Optional[EvaluationMetrics] = None
-    response_time: float = 0.0
-    error: Optional[str] = None
+    question: str  # Question dans la langue évaluée
+    expected_answer: str  # Réponse attendue dans la langue évaluée
+    agent_answer: Dict[str, str]  # Réponse de l'agent avec texte et source
+    metrics: Dict[str, Any]  # Métriques d'évaluation simplifiées
 
 class QueryDatabaseTool(Tool):
     name = "query_db"
@@ -244,8 +214,12 @@ class QueryDatabaseTool(Tool):
     )
 
     inputs = {
-        "query": {"type": "string", "description": "Valid DuckDB SQL query to execute"}
+        "query": {
+            "type": "string", 
+            "description": "Valid DuckDB SQL query to execute"
+        }
     }
+
     output_type = "string"
 
     def __init__(self, db_path: Path, max_rows: int = 100):
@@ -328,6 +302,85 @@ class QueryDatabaseTool(Tool):
         """Properly close database connection"""
         if self.connection:
             self.connection.close()
+
+class SearchCanadaFoodGuideTool(DuckDuckGoSearchTool):
+    name = "search_food_guide"
+    description = dedent(
+        """\
+    Searches Canada's Food Guide official websites (English and French) for nutrition and dietary information.
+    
+    PURPOSE:
+    This tool helps find official Canadian dietary guidelines and recommendations by:
+    - Searching both English and French versions of Canada's Food Guide
+    - Verifying URL availability
+    - Returning relevant content with links
+    
+    USAGE:
+    - Input simple keywords or phrases related to your nutrition question
+    - The tool will search:
+      * English site: https://food-guide.canada.ca/en/
+      * French site: https://guide-alimentaire.canada.ca/fr/
+    
+    SEARCH TIPS:
+    - Use clear, specific terms (e.g., "protein recommendations" rather than just "protein")
+    - Try both English and French keywords for better results
+    - Keep queries concise (2-4 words typically work best)
+    
+    RESPONSE FORMAT:
+    Returns results in Markdown format with:
+    - Article titles with clickable links
+    - Brief content descriptions
+    - Each result separated by newlines
+    
+    Example usage:
+    query="daily vegetable servings"
+    query="recommandations fruits légumes"
+    query="healthy protein sources"
+    """
+    )
+    inputs = {
+        "query": {
+            "type": "string",
+            "description": "Keywords to search in Canada's Food Guide websites (English and French versions)"
+        }
+    }
+    output_type = "string"
+
+    def url_exists(self, url: str) -> bool:
+        """Vérifie si une URL existe"""
+        try:
+            response = requests.head(url)
+            return response.status_code == 200
+        except:
+            return False
+        
+    def forward(self, query: str) -> str:
+        print(f"DEBUG: Searching for query: {query}")
+
+        en_results = self.ddgs.text(
+            "site:https://food-guide.canada.ca/en/ " + query,
+            max_results=self.max_results,
+        )
+        
+        fr_results = self.ddgs.text(
+            "site:https://guide-alimentaire.canada.ca/fr/ " + query,
+            max_results=self.max_results,
+        )
+
+        results = []
+        for result in en_results + fr_results:
+            # Verify that URL exists before including it
+            if self.url_exists(result['href']):
+                results.append(result)
+
+        if len(results) == 0:
+            raise Exception("No results found! Try a less restrictive/shorter query.")
+        
+        postprocessed_results = [
+            f"[{result['title']}]({result['href']})\n{result['body']}"
+            for result in results
+        ]
+        return "## Search Results\n\n" + "\n\n".join(postprocessed_results)
 
 class Evaluator:
     def __init__(self, db_path: Path, qa_path: Path, model: LiteLLMModel):
@@ -530,7 +583,7 @@ class Evaluator:
                 error=str(e)
             )
 
-    def _get_agent_response(self, agent, question: str, relevant_columns: List[Dict[str, Any]]) -> Tuple[Dict[str, Any], float]:
+    def _get_agent_response(self, agent, question: str, relevant_columns: List[Dict[str, Any]]) -> Tuple[dict, float]:
         """
         Get response from agent for a given question and measure response time.
         
@@ -540,7 +593,8 @@ class Evaluator:
             relevant_columns: List of relevant columns identified for the question
             
         Returns:
-            Tuple[str, float]: Agent's response and response time in seconds
+            Tuple[dict, float]: A dictionary containing the agent's response, steps sequence, and other metadata,
+                            and response time in seconds
         """
         self.logger.info("Getting agent response")
 
@@ -583,62 +637,24 @@ class Evaluator:
             
             {columns_text}
 
-            IMPORTANT RESPONSE FORMAT:
-            You must return a valid JSON string with the following structure:
-
-            {{
-                "answer": {{
-                    "text": "Your natural language response here",
-                    "source": "Source used (Open Food Facts and/or Canada Food Guide)"
-                }},
-                "sql_query": "Your SQL query if one was executed, or null if none was used",
-                "steps": [
-                    {{
-                        "step": 1,
-                        "action": "database_query",  # One of: database_query, alternative_query, food_guide_search
-                        "description": "Description of what was attempted",
-                        "query": "SQL query used (if applicable)",
-                        "success": true/false,
-                        "result": "Description of the result or why it failed"
-                    }},
-                    {{
-                        "step": 2,
-                        "action": "alternative_query",
-                        "description": "Tried alternative approach with different columns",
-                        "query": "Alternative SQL query",
-                        "success": true/false,
-                        "result": "Description of the result"
-                    }},
-                    {{
-                        "step": 3,
-                        "action": "food_guide_search",
-                        "description": "Searched Canada Food Guide for additional information",
-                        "query": null,
-                        "success": true/false,
-                        "result": "Information found in Food Guide"
-                    }}
-                ]
-            }}
-
             SEARCH SEQUENCE RULES:
             1. ALWAYS start with database queries using the most relevant columns
             2. If initial query fails, try alternative database queries with different columns or approaches
             3. Only if database queries are unsuccessful, search the Canada Food Guide
             4. Document EVERY attempt in the steps array, including failures
             5. Never skip straight to Food Guide without trying database first
-
-            REQUIREMENTS:
-            - Return a valid JSON string that can be parsed with json.loads()
-            - Document every search attempt in the steps array
-            - Respond in the same language as the question (French or English)
-            - Be explicit about any data limitations or uncertainties
-            - Follow the search sequence rules strictly
-
-            IMPORTANT:
-            - Your response MUST include a "steps" array documenting your search process
-            - Each step MUST have all the fields shown in the example
-            - The sequence of steps matters and will be evaluated
-            - Always try database queries before falling back to Food Guide search
+            6. Always include the source of the information in the answer ("Open Food Facts" or "Canada Food Guide")
+            7. Always respond in the same language as the question (French or English)
+            
+            RESPONSE FORMAT REQUIREMENTS:
+            1. Provide ONLY the natural language answer to the user's question
+            2. Maximum response length: 200 characters
+            3. DO NOT include SQL queries, code snippets, or technical details
+            4. DO NOT explain your reasoning or methodology
+            5. Respond in the same language as the question (French or English)
+            6. DO mention the source of information ("Open Food Facts" or "Canada Food Guide")
+            
+            Please follow these rules to ensure a consistent and effective search strategy.
             """
         ).format(columns_text=columns_text)
 
@@ -653,94 +669,154 @@ class Evaluator:
             },
         )
         response_time = time.time() - start_time
-
-        # Parse and validate the response
-        try:
-            # Parse the JSON response
-            if isinstance(agent_response, str):
-                response_data = json.loads(agent_response)
-            else:
-                response_data = agent_response
-
-            # Ensure the response has the required structure
-            default_structure = {
-                "answer": {
-                    "text": "",
-                    "source": "Unknown"
-                },
-                "sql_query": None,
-                "steps": []
-            }
-
-            # If response_data is not a dictionary, wrap it
-            if not isinstance(response_data, dict):
-                response_data = {
-                    "answer": {
-                        "text": str(response_data),
-                        "source": "Unknown"
-                    },
-                    "sql_query": None,
-                    "steps": []
-                }
-
-            # Ensure all required keys exist with valid types
-            if "answer" not in response_data or not isinstance(response_data["answer"], dict):
-                response_data["answer"] = default_structure["answer"]
+        
+        # Create a structured response with all the information we need
+        response_data = {
+            "answer": {
+                "text": agent_response if isinstance(agent_response, str) else str(agent_response),
+                "source": "Unknown"  # Will be updated by the agent if it follows instructions
+            },
+            "sql_query": None,  # Will be populated if the agent used SQL
+            "steps": []  # Will contain the sequence of steps
+        }
+        
+        # Extract steps sequence and SQL query from agent memory
+        last_successful_sql = None
+        
+        if hasattr(agent, 'memory') and hasattr(agent.memory, 'steps'):
+            steps_sequence = []
             
-            if "sql_query" not in response_data:
-                response_data["sql_query"] = default_structure["sql_query"]
+            for step in agent.memory.steps:
+                # Skip system prompt and task steps
+                if not hasattr(step, 'tool_calls') or not step.tool_calls:
+                    continue
+                    
+                tool_call = step.tool_calls[0]
                 
-            if "steps" not in response_data or not isinstance(response_data["steps"], list):
-                response_data["steps"] = default_structure["steps"]
-
-            # Ensure answer has both text and source
-            if not isinstance(response_data["answer"], dict):
-                response_data["answer"] = {
-                    "text": str(response_data["answer"]),
-                    "source": "Unknown"
-                }
-            if "text" not in response_data["answer"]:
-                response_data["answer"]["text"] = ""
-            if "source" not in response_data["answer"]:
-                response_data["answer"]["source"] = "Unknown"
-
-            # Validate each step in the steps array
-            validated_steps = []
-            for step in response_data["steps"]:
-                if isinstance(step, dict):
-                    validated_step = {
-                        "step": step.get("step", len(validated_steps) + 1),
-                        "action": step.get("action", "unknown"),
-                        "description": step.get("description", ""),
-                        "query": step.get("query", None),
-                        "success": bool(step.get("success", False)),
-                        "result": step.get("result", "")
-                    }
-                    validated_steps.append(validated_step)
-            response_data["steps"] = validated_steps
-
-        except json.JSONDecodeError as e:
-            self.logger.warning(f"Failed to parse agent response as JSON: {e}")
-            self.logger.warning(f"Agent response: {agent_response}")
-            response_data = {
-                "answer": {
-                    "text": str(agent_response),
-                    "source": "Unknown"
-                },
-                "sql_query": None,
-                "steps": []
-            }
-        except Exception as e:
-            self.logger.error(f"Error processing agent response: {e}")
-            response_data = default_structure
-
-        self.logger.debug(f"Processed response data: {response_data}")
+                # Process python_interpreter calls
+                if tool_call.name == "python_interpreter" and isinstance(tool_call.arguments, str):
+                    code = tool_call.arguments
+                    step_data = {}
+                    
+                    # Parse the observation to determine success
+                    success = True if step.observations and "error" not in step.observations.lower() else False
+                    
+                    # Look for SQL queries in the code
+                    if "query_db" in code:
+                        # Extract SQL using more robust pattern matching
+                        sql_query = self._extract_sql_from_code(code)
+                        
+                        if sql_query:
+                            step_data = {
+                                "action": "database_query",
+                                "query": sql_query,
+                                "success": success,
+                                "result": step.observations
+                            }
+                            
+                            # Track the last successful SQL query
+                            if success and not sql_query.strip().startswith("WITH") and "SELECT" in sql_query.upper():
+                                last_successful_sql = sql_query
+                        else:
+                            step_data = {
+                                "action": "alternative_query",
+                                "code": code[:200] + ("..." if len(code) > 200 else ""),
+                                "success": success,
+                                "result": step.observations
+                            }
+                    
+                    # Detect food guide searches
+                    elif "search_food_guide" in code:
+                        # Try to extract the query
+                        query_matches = re.findall(r'query\s*=\s*[\'"](.+?)[\'"]', code)
+                        query = query_matches[0] if query_matches else "unknown query"
+                        
+                        step_data = {
+                            "action": "food_guide_search",
+                            "query": query,
+                            "success": success,
+                            "result": step.observations
+                        }
+                    
+                    # Fallback for other Python code
+                    else:
+                        step_data = {
+                            "action": "processing",
+                            "code": code[:200] + ("..." if len(code) > 200 else ""),
+                            "success": success,
+                            "result": step.observations
+                        }
+                    
+                    if step_data:
+                        steps_sequence.append(step_data)
+            
+            # Add the steps to our response
+            response_data["steps"] = steps_sequence
+            
+            # Set the SQL query to the last successful one
+            response_data["sql_query"] = last_successful_sql
+            
+            # Try to extract source information from the answer
+            for source in ["Open Food Facts", "Canada Food Guide"]:
+                if source.lower() in agent_response.lower():
+                    response_data["answer"]["source"] = source
+                    break
         
         return response_data, response_time
 
+    def _extract_sql_from_code(self, code: str) -> Optional[str]:
+        """
+        Extract SQL query from Python code using more robust pattern matching.
+        
+        Args:
+            code (str): The Python code to analyze
+            
+        Returns:
+            Optional[str]: The extracted SQL query or None if not found
+        """
+        # Try different pattern matching approaches
+        
+        # Pattern 1: Look for query assignments with triple quotes
+        pattern1 = r'(?:query|sql)\s*=\s*(?:f|r)?"""(.*?)"""'
+        matches = re.findall(pattern1, code, re.DOTALL)
+        if matches:
+            return matches[0]
+        
+        # Pattern 2: Look for query assignments with single triple quotes
+        pattern2 = r"(?:query|sql)\s*=\s*(?:f|r)?'''(.*?)'''"
+        matches = re.findall(pattern2, code, re.DOTALL)
+        if matches:
+            return matches[0]
+        
+        # Pattern 3: Look for query assignments with single quotes
+        pattern3 = r"(?:query|sql)\s*=\s*(?:f|r)?'(.*?SELECT.*?)'"
+        matches = re.findall(pattern3, code, re.DOTALL)
+        if matches:
+            return matches[0]
+        
+        # Pattern 4: Look for query assignments with double quotes
+        pattern4 = r'(?:query|sql)\s*=\s*(?:f|r)?"(.*?SELECT.*?)"'
+        matches = re.findall(pattern4, code, re.DOTALL)
+        if matches:
+            return matches[0]
+        
+        # Pattern 5: Look for query_db calls 
+        pattern5 = r'query_db\s*\(\s*(?:query\s*=\s*)?[\'"]([^"\']+)[\'"]'
+        matches = re.findall(pattern5, code, re.DOTALL)
+        if matches:
+            return matches[0]
+        
+        # Pattern 6: Look for any SQL query pattern
+        pattern6 = r'SELECT\s+.+?\s+FROM\s+.+?(?:WHERE|GROUP BY|ORDER BY|LIMIT|$)'
+        matches = re.findall(pattern6, code, re.DOTALL | re.IGNORECASE)
+        if matches:
+            return matches[0]
+        
+        return None
+    
     def evaluate_single_case(self, agent, qa_pair: Dict[str, Any], lang: str) -> EvaluationResult:
         """
-        Évalue un cas de test unique avec la nouvelle structure.
+        Évalue un cas de test unique avec une structure très simplifiée.
         """
         question = qa_pair['questions'][lang]
         relevant_columns = self._search_relevant_columns(question)
@@ -749,98 +825,74 @@ class Evaluator:
             # Obtenir la réponse de l'agent
             response_data, response_time = self._get_agent_response(agent, question, relevant_columns)
             
-            # Calculer toutes les métriques
-            sql_metrics, query_results = self._calculate_sql_accuracy(response_data, qa_pair, lang)
-            semantic_accuracy = self._calculate_semantic_accuracy(response_data, qa_pair)
-            sequence_metrics = self._evaluate_search_sequence(response_data)
+            # Extraire uniquement la réponse textuelle et la source
+            agent_answer = {
+                "text": response_data.get('answer', {}).get('text', ''),
+                "source": response_data.get('answer', {}).get('source', 'Unknown')
+            }
             
-            # Créer l'objet metrics avec la nouvelle structure
-            metrics = EvaluationMetrics(
-                sql_metrics=sql_metrics,
-                semantic_metrics={"accuracy": semantic_accuracy},
-                sequence_metrics=sequence_metrics,
-                details={
-                    'relevant_columns': [col['name'] for col in relevant_columns],
-                    'sql_analysis': {
-                        'has_query': bool(response_data.get('sql_query')),
-                        'execution_details': query_results.comparison if query_results else None
-                    },
-                    'sequence_analysis': sequence_metrics
-                }
-            )
+            # Calculer les métriques simplifiées
+            sql_accuracy = self._calculate_sql_accuracy(response_data, qa_pair)
+            semantic_accuracy = self._calculate_semantic_accuracy(response_data, qa_pair, lang)
+            sequence_respect = self._evaluate_search_sequence(response_data)["sequence_respect"]
+            
+            # Créer un objet metrics simplifié incluant le temps de réponse
+            metrics = {
+                "sql_accuracy": sql_accuracy,
+                "semantic_accuracy": semantic_accuracy,
+                "sequence_respect": sequence_respect,
+                "response_time": response_time
+            }
 
-            # Retourner le résultat complet
+            # Retourner le résultat très simplifié
             return EvaluationResult(
                 question_id=qa_pair.get('id', 0),
                 language=lang,
-                question=qa_pair['questions'],
-                expected_answer=qa_pair['answers'],
-                agent_answer=response_data,
-                query_results=query_results,
-                metrics=metrics,
-                response_time=response_time
+                question=question,
+                expected_answer=qa_pair['answers'][lang],
+                agent_answer=agent_answer,
+                metrics=metrics
             )
 
         except Exception as e:
             self.logger.error(f"Error evaluating question: {str(e)}")
-            # Créer un résultat d'erreur avec la nouvelle structure de métriques
+            # Créer un résultat d'erreur encore plus simplifié
             return EvaluationResult(
                 question_id=qa_pair.get('id', 0),
                 language=lang,
-                question=qa_pair['questions'],
-                expected_answer=qa_pair['answers'],
-                agent_answer={
-                    "answer": {"text": "", "source": "Unknown"},
-                    "sql_query": None,
-                    "steps": []
-                },
-                metrics=EvaluationMetrics(
-                    details={'error': str(e)}
-                ),
-                response_time=0.0,
-                error=str(e)
+                question=question,
+                expected_answer=qa_pair['answers'][lang],
+                agent_answer={"text": "", "source": "Unknown"},
+                metrics={
+                    "sql_accuracy": 0.0,
+                    "semantic_accuracy": 0.0,
+                    "sequence_respect": 0.0,
+                    "response_time": 0.0,
+                    "error": str(e)
+                }
             )
         
-    def _calculate_sql_accuracy(self, response_data: dict, qa_pair: Dict[str, Any], lang: str) -> Tuple[Dict[str, float], QueryResults]:
+    def _calculate_sql_accuracy(self, response_data: dict, qa_pair: Dict[str, Any]) -> float:
         """
-        Calculate SQL accuracy and prepare detailed query results.
+        Calculate combined SQL accuracy metric.
+        
+        Returns:
+            float: Combined accuracy score between 0 and 1
         """
         agent_sql = response_data.get('sql_query')
         
         # Si pas de requête SQL
         if not agent_sql:
-            return (
-                {
-                    "query_present": 0.0,
-                    "execution_success": 0.0,
-                    "results_match": 0.0,
-                    "combined": 0.0
-                },
-                None
-            )
+            return 0.0
 
         # Exécuter les requêtes
         reference_results = self.execute_query(qa_pair['sql'])
         agent_results = self.execute_query(agent_sql)
 
-        # Préparer les résultats pour comparaison
-        query_results = QueryResults(
-            expected=reference_results.results if reference_results.success else [],
-            actual=agent_results.results if agent_results.success else [],
-            comparison={
-                'ref_success': reference_results.success,
-                'agent_success': agent_results.success,
-                'error': agent_results.error if not agent_results.success else None
-            }
-        )
-
-        # Calculer les métriques
-        metrics = {
-            "query_present": 1.0,
-            "execution_success": float(agent_results.success),
-            "results_match": 0.0,
-            "combined": 0.0
-        }
+        # Calculer les métriques individuelles
+        query_present = 1.0
+        execution_success = float(agent_results.success)
+        results_match = 0.0
 
         # Comparer les résultats si les deux requêtes ont réussi
         if reference_results.success and agent_results.success:
@@ -850,56 +902,67 @@ class Evaluator:
             if ref_set or agent_set:
                 intersection = len(ref_set.intersection(agent_set))
                 union = len(ref_set.union(agent_set))
-                metrics["results_match"] = intersection / union
-                
-                query_results.comparison.update({
-                    'matching_rows': intersection,
-                    'total_rows': union,
-                    'ref_rows': len(ref_set),
-                    'agent_rows': len(agent_set)
-                })
+                results_match = intersection / union
             else:
-                metrics["results_match"] = 1.0  # Les deux ensembles vides = correspondance
-                
+                results_match = 1.0  # Les deux ensembles vides = correspondance
+                    
         # Calculer le score combiné
         weights = {"query_present": 0.2, "execution_success": 0.3, "results_match": 0.5}
-        metrics["combined"] = sum(metrics[k] * v for k, v in weights.items())
+        combined_score = (query_present * weights["query_present"] + 
+                        execution_success * weights["execution_success"] + 
+                        results_match * weights["results_match"])
 
-        return metrics, query_results
+        return combined_score
     
-    def _calculate_semantic_accuracy(self, response_data: dict, qa_pair: Dict) -> float:
+    def _calculate_semantic_accuracy(self, response_data: dict, qa_pair: Dict, lang: str) -> float:
         """
         Calculate semantic similarity between responses.
         
         Args:
             response_data (dict): The parsed response from the agent
             qa_pair (Dict): The question-answer pair for comparison
+            lang (str): Language code ('en' or 'fr')
             
         Returns:
             float: Semantic similarity score between 0 and 1
         """
         agent = CodeAgent(
             tools=[],
-            model=self.model,
-            max_steps=3
+            model=self.model        
         )
 
         # Extract the text response from the parsed data
         agent_response = response_data.get('answer', {}).get('text', '')
 
-        prompt = f"""Compare these two responses and rate their semantic similarity from 0 to 1:
-        Expected: {qa_pair['answers']['en']}
-        Actual: {agent_response}
-        
+        prompt = dedent(f"""\
+        Compare these two responses and rate their semantic similarity from 0 to 1:
+        Response #1: {qa_pair['answers'][lang]}
+        Response #2: {agent_response}
+
         Consider:
         1. Key information present in both responses
         2. Factual consistency
         3. Completeness of information
-        
-        Return only a number between 0 and 1."""
-        
+
+        Output format: 
+        Return exactly one line containing only a number between 0 and 1, with no 
+        explanation or additional text. For example: 0.75
+        """)
+
+        self.logger.info(f"prompt: {prompt}")
+
         try:
-            similarity = float(agent.run(prompt))
+            response = agent.run(prompt)
+            self.logger.debug(f"Semantic similarity response: {response}")
+            
+            # Check response type
+            if isinstance(response, float):
+                similarity = response
+            else:
+                # If string, clean it and convert
+                response_str = str(response).strip()
+                similarity = float(response_str)
+                
             return max(0.0, min(1.0, similarity))  # Ensure value is between 0 and 1
         except (ValueError, TypeError) as e:
             self.logger.error(f"Error calculating semantic similarity: {e}")
@@ -1001,219 +1064,108 @@ class Evaluator:
 
     def calculate_metrics(self, results: List[EvaluationResult]) -> Dict[str, float]:
         """
-        Calcule les métriques globales à partir des résultats d'évaluation.
+        Calcule les métriques globales à partir des résultats d'évaluation simplifiés.
         
         Args:
             results: Liste des résultats d'évaluation
-            
+                
         Returns:
             Dict[str, float]: Métriques globales calculées
         """
         if not results:
             return {
-                "execution_accuracy": 0.0,
+                "sql_accuracy": 0.0,
                 "semantic_accuracy": 0.0,
                 "sequence_respect": 0.0,
                 "avg_response_time": 0.0
             }
 
         # Calculer les moyennes des différentes métriques
-        execution_accuracy = mean(
-            r.metrics.sql_metrics["combined"] for r in results if r.metrics
-        )
-        semantic_accuracy = mean(
-            r.metrics.semantic_metrics["accuracy"] for r in results if r.metrics
-        )
-        sequence_respect = mean(
-            r.metrics.sequence_metrics["sequence_respect"] for r in results if r.metrics
-        )
-        avg_response_time = mean(r.response_time for r in results)
+        sql_accuracy = mean([r.metrics.get("sql_accuracy", 0.0) for r in results])
+        semantic_accuracy = mean([r.metrics.get("semantic_accuracy", 0.0) for r in results])
+        sequence_respect = mean([r.metrics.get("sequence_respect", 0.0) for r in results])
+        avg_response_time = mean([r.metrics.get("response_time", 0.0) for r in results])
 
         # Convertir en pourcentages où approprié
         metrics = {
-            "execution_accuracy": execution_accuracy * 100,
+            "sql_accuracy": sql_accuracy * 100,
             "semantic_accuracy": semantic_accuracy * 100,
             "sequence_respect": sequence_respect * 100,
             "avg_response_time": avg_response_time
         }
 
-        # Ajouter des statistiques détaillées
-        metrics.update(self._calculate_detailed_stats(results))
+        # Ajouter quelques statistiques supplémentaires
+        metrics.update({
+            "success_rate": (sum(1 for r in results if "error" not in r.metrics) / len(results)) * 100,
+            "min_response_time": min([r.metrics.get("response_time", 0.0) for r in results]),
+            "max_response_time": max([r.metrics.get("response_time", 0.0) for r in results]),
+            "median_response_time": median([r.metrics.get("response_time", 0.0) for r in results])
+        })
 
         return metrics
-
-    def _calculate_detailed_stats(self, results: List[EvaluationResult]) -> Dict[str, Any]:
-        """
-        Calcule des statistiques détaillées sur les résultats.
-        """
-        stats = {
-            "success_rate": {
-                "total": len(results),
-                "successful": sum(1 for r in results if not r.error),
-                "failed": sum(1 for r in results if r.error)
-            },
-            "query_stats": {
-                "with_query": sum(1 for r in results 
-                    if r.agent_answer.get('sql_query')),
-                "successful_execution": sum(1 for r in results 
-                    if r.metrics and r.metrics.sql_metrics["execution_success"] > 0)
-            },
-            "response_time_stats": {
-                "min": min(r.response_time for r in results),
-                "max": max(r.response_time for r in results),
-                "median": median(r.response_time for r in results)
-            }
-        }
-        
-        # Calculer le taux de succès en pourcentage
-        stats["success_rate"]["percentage"] = (
-            stats["success_rate"]["successful"] / stats["success_rate"]["total"] * 100
-        )
-        
-        return stats
-
-    def _get_stats(self, values: List[float]) -> Dict[str, float]:
-        """
-        Calcule les statistiques descriptives pour une liste de valeurs.
-        
-        Args:
-            values (List[float]): Liste des valeurs à analyser
-            
-        Returns:
-            Dict[str, float]: Dictionnaire contenant les statistiques suivantes:
-                - min: valeur minimale
-                - max: valeur maximale
-                - avg: moyenne
-                - median: médiane
-                - std: écart-type
-        """
-        try:
-            if not values:
-                return {
-                    'min': 0.0,
-                    'max': 0.0,
-                    'avg': 0.0,
-                    'median': 0.0,
-                    'std': 0.0
-                }
-                
-            # Convertir en tableau numpy pour les calculs statistiques
-            import numpy as np
-            values_array = np.array(values)
-            
-            # Calculer les statistiques de base
-            stats = {
-                'min': float(np.min(values_array)),
-                'max': float(np.max(values_array)),
-                'avg': float(np.mean(values_array)),
-                'median': float(np.median(values_array)),
-                'std': float(np.std(values_array))
-            }
-            
-            # Conversion en pourcentages si les valeurs sont entre 0 et 1
-            if all(0 <= v <= 1 for v in values):
-                stats = {k: v * 100 for k, v in stats.items()}
-                
-            # Arrondir les valeurs à 2 décimales
-            stats = {k: round(v, 2) for k, v in stats.items()}
-            
-            return stats
-            
-        except Exception as e:
-            self.logger.error(f"Error calculating statistics: {str(e)}")
-            # Retourner des valeurs par défaut en cas d'erreur
-            return {
-                'min': 0.0,
-                'max': 0.0,
-                'avg': 0.0,
-                'median': 0.0,
-                'std': 0.0
-            }
     
     def _log_detailed_results(self, results: List[EvaluationResult], metrics: Dict[str, float]):
         """
-        Génère un rapport des résultats d'évaluation au format Markdown.
+        Écrit les résultats détaillés d'évaluation dans le fichier log.
+        Accumule d'abord le rapport dans une chaîne puis l'écrit en une seule fois.
         """
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        log_path = Path(f"evaluation_results_{timestamp}.md")
+        # Initialiser la chaîne de rapport
+        report_lines = []
+        report_lines.append("====== RAPPORT D'ÉVALUATION - AGENT OPEN FOOD FACTS ======")
+        report_lines.append(f"Date: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+        
+        # Informations sur l'exécution
+        report_lines.append("\n----- INFORMATIONS D'EXÉCUTION -----")
+        report_lines.append(f"Langue: {results[0].language}")
+        report_lines.append(f"Questions traitées: {len(results)}")
+        report_lines.append(f"Modèle LLM: {self.model.model_id}")
+        report_lines.append(f"Temps total: {sum(r.metrics['response_time'] for r in results):.2f}s")
+        report_lines.append(f"Temps moyen par question: {metrics['avg_response_time']:.2f}s")
 
-        total_time = sum(r.response_time for r in results)
-        avg_time = total_time / len(results)
+        # Métriques de performance
+        report_lines.append("\n----- MÉTRIQUES DE PERFORMANCE -----")
+        report_lines.append(f"Précision SQL: {metrics['sql_accuracy']:.2f}%")
+        report_lines.append(f"Précision sémantique: {metrics['semantic_accuracy']:.2f}%")
+        report_lines.append(f"Respect de séquence: {metrics['sequence_respect']:.2f}%")
+        report_lines.append(f"Taux de succès: {metrics['success_rate']:.2f}%")
 
-        with open(log_path, 'w', encoding='utf-8') as f:
-            # En-tête du rapport
-            f.write("# Rapport d'évaluation de l'agent Open Food Facts\n\n")
-            f.write(f"Date: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n")
+        # Statistiques des temps de réponse
+        report_lines.append("\n----- TEMPS DE RÉPONSE -----")
+        report_lines.append(f"Minimum: {metrics['min_response_time']:.2f}s")
+        report_lines.append(f"Maximum: {metrics['max_response_time']:.2f}s")
+        report_lines.append(f"Moyenne: {metrics['avg_response_time']:.2f}s")
+        report_lines.append(f"Médiane: {metrics['median_response_time']:.2f}s")
+
+        # Détails par question
+        report_lines.append("\n----- DÉTAILS PAR QUESTION -----")
+        for idx, result in enumerate(results, start=1):
+            report_lines.append(f"\nQuestion {idx}: {result.question[:50]}...")
             
-            # Informations sur l'exécution
-            f.write("## Informations d'exécution\n\n")
-            f.write("| Paramètre | Valeur |\n")
-            f.write("|-----------|--------|\n")
-            f.write(f"| Langue | {results[0].language} |\n")
-            f.write(f"| Questions traitées | {len(results)} |\n")
-            f.write(f"| Modèle LLM | {self.model.model_id} |\n")
-            f.write(f"| Temps total | {total_time:.2f}s |\n")
-            f.write(f"| Temps moyen par question | {avg_time:.2f}s |\n\n")
+            # Métriques spécifiques à la question
+            report_lines.append("Métriques:")
+            report_lines.append(f"- Précision SQL: {result.metrics.get('sql_accuracy', 0.0)*100:.2f}%")
+            report_lines.append(f"- Précision sémantique: {result.metrics.get('semantic_accuracy', 0.0)*100:.2f}%")
+            report_lines.append(f"- Respect de séquence: {result.metrics.get('sequence_respect', 0.0)*100:.2f}%")
+            report_lines.append(f"- Temps de réponse: {result.metrics.get('response_time', 0.0):.2f}s")
+            
+            # Affichage des erreurs si présentes
+            if "error" in result.metrics:
+                report_lines.append(f"Erreur: {result.metrics['error']}")
+            
+            # Extraits des réponses
+            report_lines.append(f"Réponse attendue (extrait): {result.expected_answer[:100]}...")
+            report_lines.append(f"Réponse de l'agent (extrait): {result.agent_answer.get('text', '')[:100]}...")
+            report_lines.append(f"Source: {result.agent_answer.get('source', 'Non spécifiée')}")
+            
+            report_lines.append("-" * 40)  # Séparateur entre les questions
 
-            # Description des métriques
-            f.write("## Description des métriques\n\n")
-            f.write("- **Exécution SQL** : Évalue si l'agent génère des requêtes SQL valides qui retournent les bons résultats\n")
-            f.write("- **Sémantique** : Mesure si la réponse en langage naturel de l'agent correspond au sens de la réponse attendue\n")
-            f.write("- **Séquence de recherche** : Évalue si l'agent suit une progression logique dans sa recherche d'information\n")
-            f.write("  - Respect de la séquence : Vérifie si l'agent commence par la base de données avant d'utiliser d'autres sources\n")
-            f.write("  - Nombre d'étapes : Compte le nombre total d'étapes de recherche effectuées\n\n")
-
-            # Tableau des métriques principales
-            f.write("## Métriques de Performance\n\n")
-            f.write("| Métrique | Score (%) | Min | Max | Moyenne | Médiane |\n")
-            f.write("|-----------|-----------|-----|-----|---------|----------|\n")
-
-            # SQL scores
-            sql_scores = [r.metrics.sql_metrics['combined'] for r in results]
-            sql_stats = self._get_stats(sql_scores)
-            f.write(f"| Exécution SQL | {metrics['execution_accuracy']:.2f} | {sql_stats['min']:.2f} | {sql_stats['max']:.2f} | {sql_stats['avg']:.2f} | {sql_stats['median']:.2f} |\n")
-
-            # Semantic scores
-            semantic_scores = [r.metrics.semantic_metrics['accuracy'] for r in results]
-            semantic_stats = self._get_stats(semantic_scores)
-            f.write(f"| Sémantique | {metrics['semantic_accuracy']:.2f} | {semantic_stats['min']:.2f} | {semantic_stats['max']:.2f} | {semantic_stats['avg']:.2f} | {semantic_stats['median']:.2f} |\n")
-
-            # Sequence respect scores
-            sequence_scores = [r.metrics.sequence_metrics['sequence_respect'] for r in results]
-            sequence_stats = self._get_stats(sequence_scores)
-            f.write(f"| Respect séquence | {metrics['sequence_respect']:.2f} | {sequence_stats['min']:.2f} | {sequence_stats['max']:.2f} | {sequence_stats['avg']:.2f} | {sequence_stats['median']:.2f} |\n\n")
-
-            # Statistiques détaillées des étapes
-            f.write("## Statistiques des étapes de recherche\n\n")
-            steps_counts = [r.metrics.sequence_metrics['steps_count'] for r in results]
-            steps_stats = self._get_stats(steps_counts)
-            f.write("| Statistique | Valeur |\n")
-            f.write("|-------------|--------|\n")
-            f.write(f"| Nombre minimum d'étapes | {steps_stats['min']:.0f} |\n")
-            f.write(f"| Nombre maximum d'étapes | {steps_stats['max']:.0f} |\n")
-            f.write(f"| Nombre moyen d'étapes | {steps_stats['avg']:.1f} |\n")
-            f.write(f"| Nombre médian d'étapes | {steps_stats['median']:.0f} |\n\n")
-
-            # Détails des temps de réponse
-            f.write("## Temps de réponse\n\n")
-            time_stats = metrics["response_time_stats"]
-            f.write("| Statistique | Valeur (secondes) |\n")
-            f.write("|-------------|-------------------|\n")
-            f.write(f"| Minimum | {time_stats['min']:.2f} |\n")
-            f.write(f"| Maximum | {time_stats['max']:.2f} |\n")
-            f.write(f"| Moyenne | {avg_time:.2f} |\n")
-            f.write(f"| Médiane | {time_stats['median']:.2f} |\n\n")
-
-            # Statistiques des requêtes
-            f.write("## Statistiques des requêtes\n\n")
-            query_stats = metrics["query_stats"]
-            total = metrics["success_rate"]["total"]
-            f.write("| Métrique | Nombre | Pourcentage |\n")
-            f.write("|-----------|---------|-------------|\n")
-            f.write(f"| Requêtes avec SQL | {query_stats['with_query']} | {(query_stats['with_query']/total)*100:.1f}% |\n")
-            f.write(f"| Exécutions réussies | {query_stats['successful_execution']} | {(query_stats['successful_execution']/total)*100:.1f}% |\n")
-
-        self.logger.info(f"Rapport généré : {log_path}")
+        report_lines.append("====== FIN DU RAPPORT D'ÉVALUATION ======")
+        
+        # Joindre toutes les lignes en une seule chaîne avec des sauts de ligne
+        full_report = '\n'.join(report_lines)
+        
+        # Écrire le rapport complet en un seul appel
+        self.logger.info(full_report)
 
 def create_agent(model: LiteLLMModel) -> CodeAgent:
     """Create and initialize the conversational agent"""
@@ -1250,6 +1202,8 @@ def create_agent(model: LiteLLMModel) -> CodeAgent:
         additional_authorized_imports=["json"],
         verbosity_level=LogLevel.INFO,
     )
+
+    agent.planning_interval = 4
     
     return agent
 
@@ -1263,7 +1217,7 @@ def main():
     qa_path = Path("../data/qa_pairs.json")
     
     # Initialize model
-    engine = "ollama" # or ["ollama"|"anthropic"]
+    engine = "anthropic" # or ["ollama"|"anthropic"]
     if engine == "ollama":
         model = LiteLLMModel(
             model_id="ollama/llama3.1:8b-instruct-q8_0",
@@ -1272,6 +1226,9 @@ def main():
         )
     elif engine == "anthropic":
         model = LiteLLMModel(model_id="anthropic/claude-3-5-sonnet-20241022")
+        # model = LiteLLMModel(model_id="anthropic/claude-3-7-sonnet-20250219")
+    elif engine == "qwen":
+        model = HfApiModel("Qwen/Qwen2.5-Coder-32B-Instruct")
     
     # Initialize agent
     try:
@@ -1292,7 +1249,7 @@ def main():
     # Print results
     print("\nEvaluation Results:")
     print(f"Language: {lang}")
-    print(f"Execution Accuracy (EX): {metrics['execution_accuracy']:.2f}%")
+    print(f"SQL Accuracy: {metrics['sql_accuracy']:.2f}%")  # Changed from 'execution_accuracy'
     print(f"Semantic Accuracy: {metrics['semantic_accuracy']:.2f}%")
     print(f"Sequence Respect: {metrics['sequence_respect']:.2f}%")
     print(f"Average Response Time: {metrics['avg_response_time']:.2f}s")
@@ -1311,5 +1268,8 @@ def main():
         print(f"Max: {time_stats['max']:.2f}s")
         print(f"Median: {time_stats['median']:.2f}s")
 
+def foo():
+    question = "Quels sont les aliments riches en protéines ?"
+    
 if __name__ == "__main__":
     main()

@@ -659,6 +659,35 @@ See also [https://weaviate.io/blog/ai-agents](https://weaviate.io/blog/ai-agents
 
 Voir ici [agent-leaderboard](https://huggingface.co/spaces/galileo-ai/agent-leaderboard) pour le choix du modèle fonctionnant avec l'agent.
 
+#### Est-ce que l'agent conserve un historique des étapes réalisées ?
+
+En examinant le code de la classe `CodeAgent` dans `agents.py`, je peux confirmer que cette classe conserve effectivement des informations sur les outils utilisés et la séquence d'utilisation de ces outils. Voici les éléments clés qui permettent ce suivi:
+
+1. **Suivi des outils utilisés**:
+   - La classe `CodeAgent` hérite de `MultiStepAgent`, qui maintient un dictionnaire `self.tools` contenant tous les outils disponibles pour l'agent.
+   - Les outils sont enregistrés lors de l'initialisation dans `_setup_tools()` de la classe parente.
+
+2. **Suivi de la séquence d'utilisation**:
+   - La classe utilise un système de mémoire (`self.memory` de type `AgentMemory`) qui enregistre chaque étape d'exécution.
+   - Dans la méthode `step()`, chaque appel d'outil est enregistré dans la mémoire via `memory_step.tool_calls`, qui stocke le nom de l'outil, les arguments et un identifiant.
+   - Pour les agents de code spécifiquement, les appels sont enregistrés comme des appels à l'outil "python_interpreter" avec le code comme argument.
+
+3. **Historique complet**:
+   - La méthode `_run()` de la classe parente accumule toutes les étapes d'exécution.
+   - Chaque étape est enregistrée dans `self.memory.steps`, qui constitue l'historique complet des actions.
+   - La classe inclut également une méthode `replay()` permettant de visualiser l'historique des étapes exécutées.
+
+4. **Documentation des étapes**:
+   - Chaque étape (`ActionStep`) stocke des informations détaillées comme:
+     - Les messages d'entrée envoyés au modèle (`model_input_messages`) 
+     - La réponse du modèle (`model_output_message`)
+     - Les appels d'outils (`tool_calls`)
+     - Les observations résultant de l'exécution (`observations`)
+     - Le temps d'exécution et d'autres métadonnées
+
+Ces mécanismes sont exactement ce dont vous avez besoin pour implémenter la fonctionnalité demandée dans votre correction de la méthode `_get_agent_response`. L'agent conserve toutes les informations sur la séquence d'utilisation des outils, ce qui permet d'analyser si la séquence de recherche respecte bien les règles établies (commencer par la base de données, puis essayer des requêtes alternatives, et seulement ensuite utiliser le guide alimentaire).
+
+
 #### Implémentation du module de dialogue avec Qwen2-7B-Instruct (20h)
 
 Je devrais commencer par utiliser un modèle de langage pour générer des requêtes SQL à partir des questions posées par l'utilisateur.
@@ -1447,3 +1476,24 @@ Cependant, cette conversion présente aussi quelques défis:
 Pour Open Food Facts spécifiquement, un graphe de connaissances serait particulièrement utile car il permettrait de modéliser facilement des relations complexes comme "contient_ingrédient", "associé_à_allergie", "produit_dans_région", etc., qui seraient naturelles à explorer via un dialogue en langage naturel.
 
 Une approche hybride pourrait être optimale: conserver la base relationnelle pour les opérations CRUD standard et maintenir un graphe de connaissances dérivé pour alimenter l'interface conversationnelle.
+
+
+# =-=-=-=-=-=-=-=-=-=
+
+Bonjour Louis,
+
+Ton idée est intéressante mais...
+
+NotebookLM fonctionne sûrement comme un système RAG (Retrieval-Augmented Generation), ce qui signifie qu'il répond aux questions en se basant uniquement sur les documents qu'on importe. Cela réduit les hallucinations et permet d'avoir des réponses plus précises et traçables.
+
+On pourrait envisager développer un agent basé sur un LLM capable d’interroger une base de données vectorielle qui contiendrait les embeddings des 95000 produits. 
+
+Comme l'a mentionné Luc, cette approche est plutôt orientée vers le résumé et l'organisation de textes, et sûrement moins adapté pour faire des requêtes analytiques complexes sur des données structurées comme celles d'Open Food Facts, qui bénéficient de la puissance de SQL.
+
+La meilleure approche est probablement d'utiliser une combinaison des deux.
+
+Actuellement, j'utilise la recherche vectorielle sur les embeddings d'un dictionnaire de données pour identifier les colonnes pertinentes dans la base de données pour répondre à une question. Ensuite, j'utilise un agent LLM pour interroger avec SQL la base de données DuckDB. 
+
+Je pourrais peut-être étendre cette approche pour stocker les embeddings des fiches produits et donner le choix à l'agent LLM de répondre à une question en utilisant la recherche sémantique sur les fiches produits ou en interrogeant directement la base de données DuckDB avec SQL....
+
+

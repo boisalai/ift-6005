@@ -319,7 +319,8 @@ Des tests comparatifs préliminaires avec `anthropic/claude-3-5-sonnet` ont dém
 
 ## 6. Prochaines étapes
 
-**À discuter** : Devrais-je plutôt me concentrer sur le **RAG sur un graphe de connaissances** pour exploiter les données d'Open Food Facts?
+**À discuter** : Devrais-je plutôt me concentrer sur le **RAG sur un graphe de connaissances** avec [Neo4j](https://neo4j.com/) et [Langchain](https://www.langchain.com/)
+pour exploiter les données d'Open Food Facts?
 
 Pour consolider les fondations de l'agent, je me concentrerai sur l'**amélioration de sa compréhension des structures complexes d'Open Food Facts**. Cela impliquera la création d'une cartographie plus intuitive des relations entre colonnes, l'élaboration d'exemples spécifiques pour les structures difficiles, et l'enrichissement de la documentation avec des métadonnées de distribution et de complétude.
 

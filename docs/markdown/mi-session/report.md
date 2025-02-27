@@ -160,23 +160,30 @@ J'ai créé un dictionnaire de données détaillé en format JSON pour guider l'
 Documentation pour chaque colonne :
 
 ```python
-{
-    "type": "Type de données du schéma DuckDB",
-    "description": "Description claire de la colonne",
+"nova_groups_tags": {
+    "type": "VARCHAR[]",
+    "description": "Array containing NOVA food classification group tags. NOVA is a food classification system that categorizes foods according to their level of processing: from unprocessed (group 1) to ultra-processed (group 4). Also includes 'unknown' and 'not-applicable' values.",
     "examples": [
-        "Exemple 1",
-        "Exemple 2",
-        "Exemple 3"
+      "['en:1-unprocessed-or-minimally-processed-foods']",
+      "['en:4-ultra-processed-food-and-drink-products']",
+      "['en:3-processed-foods']"
     ],
-    "is_nullable": true/false,
+    "is_nullable": true,
     "common_queries": [
-        {
-            "description": "Description de l'objectif de la requête",
-            "sql": "Exemple de requête SQL"
-        },
-        // Exactement 3 requêtes par colonne
-    ]
-}
+    {
+        "description": "Distribution of products across NOVA groups",
+        "sql": "SELECT nova_groups_tags, COUNT(*) as product_count FROM products WHERE nova_groups_tags IS NOT NULL GROUP BY nova_groups_tags ORDER BY product_count DESC LIMIT 50"
+    },
+    {
+        "description": "Find products in a specific NOVA group (e.g., ultra-processed foods)",
+        "sql": "SELECT code, product_name, nova_groups_tags FROM products WHERE nova_groups_tags = ARRAY['en:4-ultra-processed-food-and-drink-products'] LIMIT 50"
+    },
+    {
+        "description": "Products with unknown or missing NOVA classification",
+        "sql": "SELECT code, product_name, nova_groups_tags FROM products WHERE nova_groups_tags IS NULL OR nova_groups_tags = ARRAY['unknown'] LIMIT 50"
+    }
+  ]
+},
 ```
 
 La documentation des colonnes de la base de données est générée par un agent. Pour chaque colonne, l'agent :

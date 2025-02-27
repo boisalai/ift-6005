@@ -319,16 +319,16 @@ Des tests comparatifs préliminaires avec `anthropic/claude-3-5-sonnet` ont dém
 
 ## 6. Prochaines étapes
 
-**À discuter** : Devrais-je plutôt me concentrer sur le RAG sur un graphe de connaissances pour exploiter les données d'Open Food Facts?
+**À discuter** : Devrais-je plutôt me concentrer sur le **RAG sur un graphe de connaissances** pour exploiter les données d'Open Food Facts?
 
-Pour consolider les fondations de l'agent, je me concentrerai sur l'amélioration de sa compréhension des structures complexes d'Open Food Facts. Cela impliquera la création d'une cartographie plus intuitive des relations entre colonnes, l'élaboration d'exemples spécifiques pour les structures difficiles, et l'enrichissement de la documentation avec des métadonnées de distribution et de complétude.
+Pour consolider les fondations de l'agent, je me concentrerai sur l'**amélioration de sa compréhension des structures complexes d'Open Food Facts**. Cela impliquera la création d'une cartographie plus intuitive des relations entre colonnes, l'élaboration d'exemples spécifiques pour les structures difficiles, et l'enrichissement de la documentation avec des métadonnées de distribution et de complétude.
 
-En parallèle, j'explorerai l'intégration d'une couche de recherche vectorielle pour compléter l'approche SQL traditionnelle. Cette hybridation permettra des requêtes sémantiques directes sur les descriptions de produits, facilitera l'identification de produits similaires, et offrira une alternative performante lorsque les formulations SQL atteignent leurs limites.
+En parallèle, j'explorerai l'intégration d'une couche de recherche vectorielle pour compléter l'approche SQL traditionnelle. Cette hybridation permettra des **requêtes sémantiques directes sur les descriptions de produits**, facilitera l'identification de produits similaires, et offrira une alternative performante lorsque les formulations SQL atteignent leurs limites.
 D'ailleurs, je vais explorer Agentic RAG (Retrieval-Augmented Generation) qui étend les systèmes RAG traditionnels en combinant des agents autonomes avec une récupération dynamique de connaissances.
 Alors que les systèmes RAG traditionnels utilisent un LLM pour répondre aux requêtes basées sur des données récupérées, le RAG agentique permet un contrôle intelligent des processus de récupération et de génération, améliorant l'efficacité et la précision.
 Voir [Custom Knowledge Base Tool](https://huggingface.co/learn/agents-course/unit2/smolagents/retrieval_agents#custom-knowledge-base-tool).
 
-Enfin, je conduirai une évaluation systématique de différents modèles de langage (llama3.1:8b-instruct-q8_0, claude-3-5-sonnet-20241022, Qwen2.5-Coder-32B-Instruct) en mesurant leur précision d'exécution, la qualité sémantique de leurs réponses et leur ratio coût-performance. Cette analyse comparative permettra d'identifier la configuration optimale pour l'implémentation finale, équilibrant efficacement qualité, rapidité et coûts opérationnels.
+Enfin, je conduirai une **évaluation systématique de différents modèles de langage** (llama3.1:8b-instruct-q8_0, claude-3-5-sonnet-20241022, Qwen2.5-Coder-32B-Instruct) en mesurant leur précision d'exécution, la qualité sémantique de leurs réponses et leur ratio coût-performance. Cette analyse comparative permettra d'identifier la configuration optimale pour l'implémentation finale, équilibrant efficacement qualité, rapidité et coûts opérationnels.
 
 ## 7. Références
 

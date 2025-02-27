@@ -19,7 +19,7 @@ L'approche retenue repose sur une architecture modulaire facilitant le développ
 - **Module de dialogue** : Responsable de maintenir le contexte conversationnel et de gérer les interactions avec l'utilisateur. J'ai implémenté ce composant en utilisant un LLM pré-entraîné capable d'utiliser des outils.
 - **Convertisseur texte-SQL** : Transforme les questions en langage naturel en requêtes SQL adaptées à la structure de la base de données Open Food Facts. Ce module s'appuie sur une recherche préalable dans un dictionnaire de données pour identifier les colonnes pertinentes pour chaque requête.
 - **Connecteur de base de données** : Interface avec DuckDB pour l'exécution des requêtes. Les requêtes SQL générées par l'agent LLM sont validées avant exécution pour garantir leur sécurité.
-- **Générateur de réponses** : Transforme les résultats bruts en réponses naturelles et contextuelles, incluant des explications sur les sources et les limites des données lorsque nécessaire.
+- **Générateur de réponses** : Transforme les résultats bruts en réponses naturelles et contextuelles, incluant des explications sur les sources.
 
 ### 3.2 Stratégie de recherche séquentielle
 
@@ -318,6 +318,8 @@ Face à ces limitations, j'ai implémenté deux types d'adaptations :
 Des tests comparatifs préliminaires avec `anthropic/claude-3-5-sonnet` ont démontré une amélioration substantielle de la qualité des réponses et du respect des contraintes, confirmant l'intérêt d'une stratégie hybride : développement avec des modèles légers, puis déploiement avec des modèles plus robustes pour l'environnement de production.
 
 ## 6. Prochaines étapes
+
+**À discuter** : Devrais-je plutôt me concentrer sur le RAG sur un graphe de connaissances pour exploiter les données d'Open Food Facts?
 
 Pour consolider les fondations de l'agent, je me concentrerai sur l'amélioration de sa compréhension des structures complexes d'Open Food Facts. Cela impliquera la création d'une cartographie plus intuitive des relations entre colonnes, l'élaboration d'exemples spécifiques pour les structures difficiles, et l'enrichissement de la documentation avec des métadonnées de distribution et de complétude.
 

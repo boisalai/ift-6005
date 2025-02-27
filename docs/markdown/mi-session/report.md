@@ -64,7 +64,7 @@ La préparation des données a impliqué :
 - Documentation détaillée des 109 colonnes de la base de données
 - Création d'embeddings pour chaque colonne afin de faciliter la recherche sémantique
 
-### 3.5 Évaluation et optimisation
+### 3.5 Évaluation
 
 Le système implémente trois métriques principales d'évaluation :
 

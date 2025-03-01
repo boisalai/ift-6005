@@ -1,6 +1,6 @@
 # Rapport de mi-session
 
-> Version du 27 février 2025
+> Version du 1er mars 2025
 
 ## 1. Introduction
 
@@ -268,6 +268,8 @@ Les principales observations sont les suivantes :
 
 Ces résultats démontrent clairement l'avantage d'utiliser un modèle commercial comme Claude 3.5 Sonnet pour des applications pratiques, bien que Qwen2.5 offre une alternative open-source intéressante avec des performances acceptables, particulièrement pour la compréhension sémantique.
 
+Ces évaluations s'effectuent dans le script `evaluation_04.py`.
+
 ## 6. Problèmes rencontrés et solutions
 
 ### 6.1 Complexité structurelle des données
@@ -500,6 +502,11 @@ def _calculate_sql_accuracy(self, response_data: dict, qa_pair: Dict[str, Any]) 
 **2. Précision sémantique (PS) : Comparer la réponse générée avec la référence**
 
 Je demande à un modèle LLM de comparer les deux réponses pour évaluer leur similarité sémantique.
+
+Les deux réponses sont : 
+
+- **Réponse attendue** : "The database contains 5843 products without additives, including items such as organic Vermont maple syrup, low-fat milk, organic blue agave, and coconut milk."
+- **Réponse de l'agent** : "According to Open Food Facts database, additive-free products include natural foods like blueberries and pistachios, basic staples like spaghetti and rice, and beverages like coconut water and coffee."
 
 ```python
 def _calculate_semantic_accuracy(self, response_data: dict, qa_pair: Dict, lang: str) -> float:

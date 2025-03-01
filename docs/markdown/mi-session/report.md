@@ -286,16 +286,23 @@ sur 20 questions pour chaque modèle, en français et en anglais.
 
 
 |                          |Llama3.1:8b-Instruct (en)|Qwen2.5:7b-Instruct (en)|Claude 3.5 Sonnet (en)|Llama3.1:8b-Instruct (fr)|Qwen2.5:7b-Instruct (fr)|Claude 3.5 Sonnet (fr)| 
-|--------------------------|---|---|---|---|---|---|
+|--------------------------|---:|---:|---:|---:|---:|---:|
 |Nombre de questions       |20|20|20|20|20|20|
 |Précision d'exécution (EX) (%)             |31.1|28.6|42.5|25.0|40.0|47.5|
 |Précision sémantique (PS) (%)      |16.7|66.5|62.3|20.0|49.5|54.7|
 |Respect de séquence (RS) (%)       |100.0|100.0|100.0|100.0|100.0|100.0|
 |Temps de réponse moyen (TRM)|432s|239s|37s|273s|201|41s|
 
-Ici Llama3.1:8b-Instruct réfère au modèle `ollama/llama3.1:8b-instruct-q8_0`, Qwen2.5:7b-Instruct au modèle `ollama/qwen2.5:7b-instruct` et Claude 3.5 Sonnet au modèle `anthropic/claude-3-5-sonnet-20241022`.
+Ici Llama3.1:8b-Instruct réfère au modèle `ollama/llama3.1:8b-instruct-q8_0`, Qwen2.5:7b-Instruct au modèle `ollama/qwen2.5:7b-instruct` et Claude 3.5 Sonnet au modèle `anthropic/claude-3-5-sonnet-20241022`. Les tests ont été réalisés sur un MacBook Pro M1 16 Go de RAM.
 
+Les principales observations sont les suivantes :
 
+- **Performance des modèles** : Claude 3.5 Sonnet surpasse significativement les modèles Llama3.1 et Qwen2.5 sur presque toutes les métriques, particulièrement en précision d'exécution (EX) et en temps de réponse moyen (TRM).
+- **Différences linguistiques** : Les performances varient selon la langue. Les résultats en français montrent généralement une bonne précision d'exécution pour Claude et Qwen par rapport à l'anglais, suggérant une bonne capacité de traitement multilingue.
+- **Respect de séquence** : Tous les modèles obtiennent un score parfait (100%) sur le respect de séquence (RS), indiquant que la stratégie de recherche définie est bien suivie indépendamment du modèle utilisé.
+- **Précision sémantique** : Qwen2.5 surpasse remarquablement Llama3.1 en précision sémantique, particulièrement en anglais (66.5% contre 16.7%), suggérant peut-être une meilleure compréhension du domaine des produits alimentaires.
+
+Ces résultats démontrent clairement l'avantage d'utiliser un modèle commercial comme Claude 3.5 Sonnet pour des applications pratiques, bien que Qwen2.5 offre une alternative open-source intéressante avec des performances acceptables, particulièrement pour la compréhension sémantique.
 
 ## 6. Problèmes rencontrés et solutions
 

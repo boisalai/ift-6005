@@ -1,10 +1,14 @@
 # Rapport de mi-session
 
-> Version du 26 février 2025
+> Version du 27 février 2025
 
 ## 1. Introduction
 
-L'accès aux informations nutritionnelles reste souvent limité par des interfaces techniques nécessitant des compétences en langages de requête comme SQL. Cette barrière empêche de nombreux utilisateurs d'exploiter pleinement des bases de données comme Open Food Facts, qui contient des milliers de fiches produits détaillées. Ce projet vise à développer un agent conversationnel utilisant des grands modèles de langage (LLM) pour permettre aux utilisateurs de poser des questions en langage naturel comme "Quelles collations sans allergènes ont un Nutri-score A ?". Cette approche démocratise l'accès aux données nutritionnelles tout en améliorant la qualité des réponses grâce à l'exploitation directe de sources structurées. Ce rapport présente l'état d'avancement du projet à la mi-session, les défis rencontrés et les solutions implémentées.
+L'accès aux informations nutritionnelles reste souvent limité par des interfaces techniques nécessitant des compétences en langages de requête comme SQL. Cette barrière empêche de nombreux utilisateurs d'exploiter pleinement des bases de données comme Open Food Facts, qui contient des informations détaillées sur des milliers de produits alimentaires. 
+
+Ce projet vise à développer un agent conversationnel utilisant des grands modèles de langage (LLM) pour permettre aux utilisateurs de poser des questions en langage naturel comme "Quels collations sans allergènes ont un Nutri-score A ?". Cette approche démocratise l'accès aux données nutritionnelles tout en améliorant la qualité des réponses grâce à l'exploitation directe de sources structurées. 
+
+Ce rapport de mi-session présente l'état d'avancement du projet à la mi-session, les défis rencontrés et les solutions implémentées.
 
 ## 2. Rappel de l'objectif du projet
 
@@ -14,24 +18,15 @@ L'objectif de ce projet est de développer un agent conversationnel permettant a
 
 ### 3.1 Architecture modulaire
 
-L'approche retenue repose sur une architecture modulaire facilitant le développement itératif, les tests, et l'évolution du système. Cette architecture comprend quatre composants clés interconnectés :
+L'approche retenue repose sur une architecture qui comprend quatre composants clés interconnectés :
 
 - **Module de dialogue** : Responsable de maintenir le contexte conversationnel et de gérer les interactions avec l'utilisateur. J'ai implémenté ce composant en utilisant un LLM pré-entraîné capable d'utiliser des outils.
 - **Convertisseur texte-SQL** : Transforme les questions en langage naturel en requêtes SQL adaptées à la structure de la base de données Open Food Facts. Ce module s'appuie sur une recherche préalable dans un dictionnaire de données pour identifier les colonnes pertinentes pour chaque requête.
 - **Connecteur de base de données** : Interface avec DuckDB pour l'exécution des requêtes. Les requêtes SQL générées par l'agent LLM sont validées avant exécution pour garantir leur sécurité.
+- **Recherche sur le Web** : En cas de données manquantes, ce module interroge le [Guide alimentaire canadien](https://guide-alimentaire.canada.ca/fr/) pour compléter les informations. Les résultats sont intégrés dans les réponses finales.
 - **Générateur de réponses** : Transforme les résultats bruts en réponses naturelles et contextuelles, incluant des explications sur les sources.
 
-### 3.2 Stratégie de recherche séquentielle
-
-Pour assurer une progression cohérente dans la démarche, j'ai implémenté une stratégie de recherche séquentielle à trois niveaux :
-
-- **Recherche principale dans la base de données** : Après une recherche sémantique pour identifier les colonnes pertinentes, l'agent génère et exécute une première requête SQL.
-- **Requêtes alternatives** : En cas d'échec ou de résultats incomplets, l'agent formule des requêtes SQL alternatives utilisant d'autres colonnes ou approches.
-- **Recherche complémentaire** : Si les données restent insuffisantes, l'agent se tourne vers le [Guide alimentaire canadien](https://guide-alimentaire.canada.ca/fr/) pour compléter l'information.
-
-Cette progression permet de maximiser l'utilisation des données structurées tout en assurant qu'une réponse utile est toujours fournie à l'utilisateur.
-
-### 3.3 Sélection des technologies
+### 3.2 Sélection des technologies
 
 Après évaluation de plusieurs options, j'ai retenu les technologies suivantes :
 
@@ -45,7 +40,6 @@ Après évaluation de plusieurs options, j'ai retenu les technologies suivantes 
   - Approche optimisée pour les "agents de code" (agents qui génèrent et exécutent du code)
   - Flexibilité dans l'intégration de différents LLMs et outils
   - Support actif et documentation de qualité
-  - Cours récent de Hugging Face sur cette technologie
 - **Modèles de langage** :
   - Pour le développement : `ollama/llama3.1:8b-instruct-q8_0` (modèle open-source pouvant s'exécuter localement)
   - Pour la production : `anthropic/claude-3-5-sonnet` (modèle plus puissant offrant une meilleure compréhension et génération)
@@ -55,7 +49,7 @@ Après évaluation de plusieurs options, j'ai retenu les technologies suivantes 
   - Vectorisation de la documentation des colonnes de la base de données pour faciliter la recherche
   - En fait, je n'ai pas considéré d'autres options. J'ai choisi FAISS (Facebook AI Similarity Search) car il est bien documenté, open source et largement utilisé dans la communauté de recherche en IA. Il est également compatible avec les modèles de langage MiniLM, ce qui en fait un choix naturel pour ce projet.
 
-### 3.4 Gestion des données
+### 3.3 Gestion des données
 
 La préparation des données a impliqué :
 
@@ -64,7 +58,7 @@ La préparation des données a impliqué :
 - Documentation détaillée des 109 colonnes de la base de données
 - Création d'embeddings pour chaque colonne afin de faciliter la recherche sémantique
 
-### 3.5 Évaluation
+### 3.4 Évaluation
 
 Le système implémente trois métriques principales d'évaluation :
 
@@ -83,7 +77,7 @@ Le développement de l'agent conversationnel a progressé significativement dura
 La première étape du projet a consisté à établir un environnement de développement pour le développement du projet.
 
 - **Infrastructure et outils**
-  - Création d'un dépôt GitHub pour le versionnement du code et la documentation
+  - Création d'un [dépôt GitHub](https://github.com/boisalai/ift-6005) pour le versionnement du code et la documentation
   - Configuration d'un environnement virtuel Python avec les versions spécifiques des dépendances
   - Mise en place d'outils de développement comme Black pour le formatage du code et Pylint pour l'analyse statique
   - Configuration des hooks pre-commit pour maintenir la qualité du code
@@ -149,15 +143,12 @@ Tandis que la colonne parallèle "categories_tags" stocke les mêmes information
 ["en:dairies", "en:milk", "en:whole-milk"]
 ```
 
-Pour gérer ces structures complexes, j'ai créé un fichier "columns_documentation.json" qui sert de référence à l'agent, lui permettant de générer des requêtes SQL adaptées en utilisant des fonctions DuckDB spécifiques comme `UNNEST()` et `list_contains()`. Cette documentation détaillée guide l'agent dans la création de requêtes optimisées selon la nature exacte des colonnes interrogées.
-
-Cependant, je compte réfléchir davantage au cours des prochaines semaines sur une façon plus optimale d'instruire l'agent LLM sur le contenu de ces colonnes et comment les exploiter. L'approche actuelle, bien que fonctionnelle, pourrait être améliorée pour permettre une compréhension plus intuitive des structures de données complexes par l'agent, réduisant ainsi le besoin d'instructions explicites et augmentant sa capacité à générer des requêtes pertinentes de manière autonome.
-
 ### 4.3 Documentation des données
 
-J'ai créé un dictionnaire de données détaillé en format JSON pour guider l'agent dans la génération de requêtes SQL. Ce dictionnaire contient des informations sur chacune des 109 colonnes de la base de données.
+our guider l'agent dans la génération de requêtes SQL, j'ai créé un dictionnaire de données détaillé en format JSON (`columns_documentation.json`). 
+Ce dictionnaire contient des informations sur chacune des 109 colonnes de la base de données.
 
-Documentation pour chaque colonne :
+La documentation de chacune des 109 colonnes ressemble à ceci :
 
 ```python
 "nova_groups_tags": {
@@ -198,30 +189,25 @@ Le script est `docoff.py`.
 
 ### 4.4 Création du jeu de test
 
-Le processus de génération de questions-réponses utilise les requêtes SQL précédemment documentées dans `columns_documentation.json` pour créer des paires question-réponse réalistes. Chaque requête est analysée pour déterminer si elle représente une question significative pour un consommateur sur les produits alimentaires. Encore ici, j'ai demandé à un agent LLM :
+Le processus de génération de questions-réponses utilise les requêtes SQL précédemment documentées dans `columns_documentation.json` pour créer des paires question-réponse réalistes. Chaque requête est analysée par un agent pour déterminer si elle représente une question significative pour un consommateur type. 
 
 Le processus suit ces étapes :
 
-- Chargement des requêtes depuis la documentation :
+- Chargement des requêtes SQL depuis la documentation des colonnes
 - Pour chaque requête SQL de la documentation, l'agent :
   - Évalue la pertinence de la requête :
-    - Détermine si la requête répond à une vraie question de consommateur
+    - Détermine si la requête répond à une question pertinente pour un consommateur
     - Vérifie si les résultats fournissent des informations exploitables sur les aliments
-    - Vérifie la pertinence pratique pour les consommateurs
-    - Critères de rejet automatique :
-  - Requêtes de métadonnées de base de données
-    - Statistiques de qualité des données
-    - Requêtes de maintenance technique
-    - Requêtes d'identifiants internes
-    - Pour les requêtes pertinentes :
-  - Génère des questions naturelles en français et en anglais
-    - Crée des réponses claires orientées consommateur
-    - Valide que les résultats de la requête soutiennent les réponses
+    - Rejette les requêtes trop techniques ou peu informatives pour un consommateur
+  - Génère des questions en langage naturelle en français et en anglais
+    - Crée des réponses claires orientées consommateur correspondant à la requête SQL
+    - Valide que les résultats de la requête permettent de répondre à la question posée
+    - Génère une réponse en langage naturel en français et en anglais
 - Sauvegarde des paires Q&A :
   - Stocke les paires question-réponse dans un format structuré
   - Inclut des métadonnées pour l'évaluation et le suivi
 
-Les paires Q&A sont stockées dans qa_pairs.json avec la structure suivante :
+Les paires Q&A sont stockées dans `qa_pairs.json` avec la structure suivante :
 
 ```json
 {
@@ -243,13 +229,13 @@ Le processus est implémenté dans le script `question_answer.py`.
 
 ### 4.5 Développement de la recherche sémantique
 
-La recherche sémantique constitue un pilier essentiel pour permettre à l'agent d'identifier les colonnes pertinentes de la base de données en fonction des questions utilisateur. Cette fonctionnalité a été implémentée à l'aide de FAISS (Facebook AI Similarity Search), couplé au modèle de langage `all-MiniLM-L6-v2` de Sentence Transformers pour la génération d'embeddings.
+La recherche sémantique permet à l'agent d'identifier les colonnes pertinentes de la base de données en fonction des questions utilisateur. Cette fonctionnalité a été implémentée à l'aide de FAISS (Facebook AI Similarity Search), couplé au modèle de langage `all-MiniLM-L6-v2` de Sentence Transformers pour la génération d'embeddings.
 
 Pour ce faire, j'ai suivi les étapes suivantes :
 
 - **Préparation des embeddings** :
   - La documentation structurée des 109 colonnes (stockée dans `columns_documentation.json`) est convertie en représentations vectorielles. Chaque entrée combine le nom de la colonne, son type, sa description et des exemples de requêtes SQL.
-  - Le modèle MiniLM génère des embeddings de dimension 384, optimisant le compromis entre précision et performance. Ce modèle, identifiable par le préfixe "all-", est spécifiquement conçu pour supporter plusieurs langues, dont le français et l'anglais, permettant ainsi de traiter efficacement les requêtes utilisateur indépendamment de la langue utilisée.
+  - Le modèle MiniLM génère des embeddings de dimension 384. Ce modèle, identifiable par le préfixe "all-", est spécifiquement conçu pour supporter plusieurs langues, dont le français et l'anglais, permettant ainsi de traiter efficacement les requêtes utilisateur indépendamment de la langue utilisée.
 - **Indexation FAISS** :
   - Un index FlatIP (Inner Product) est créé pour permettre des recherches rapides par similarité cosinus.
   - Mécanisme de cache : Les embeddings et métadonnées sont persistés dans des fichiers (`docs_faiss.index` et `columns_metadata.json`) pour éviter de recalculer l'index à chaque exécution.
@@ -258,7 +244,7 @@ Pour ce faire, j'ai suivi les étapes suivantes :
   - Les 5 colonnes les plus similaires sont retournées avec leur score de pertinence (0-1), triées par ordre décroissant.
   - Seules les colonnes avec un score > 0.5 sont retenues pour la génération de requêtes SQL.
 
-Les résultats de la recherche sémantique sont injectés dynamiquement dans le prompt de l'agent sous forme de contexte structuré. Par exemple, pour une question sur les allergènes, l'agent reçoit automatiquement les descriptions des colonnes `allergens_tags`, `traces_tags` et `ingredients_analysis_tags`, accompagnées d'exemples de requêtes SQL typiques.
+Les résultats de la recherche sémantique sont injectés dynamiquement comme contexte dans le prompt de l'agent. Par exemple, pour une question sur les allergènes, l'agent reçoit automatiquement les descriptions des colonnes `allergens_tags`, `traces_tags` et `ingredients_analysis_tags`, accompagnées d'exemples de requêtes SQL typiques.
 
 Cette méthode de recherche sémantique s'inspire directement du concept d'apprentissage contextuel (*In-Context Learning*) pour Text-to-SQL, récemment formalisé par Gao et al. (2023). Contrairement aux approches qui sélectionnent des paires complètes question-SQL comme exemples, j'ai adapté cette méthode pour cibler spécifiquement les colonnes pertinentes de la base de données Open Food Facts.
 
@@ -266,19 +252,18 @@ Cette adaptation est particulièrement appropriée pour le présent cas d'usage 
 
 ### 4.6 Création des outils d'agent
 
-Les agents d'IA sont des programmes qui utilisent des LLMs pour générer des 'pensées' basées sur des 'observations' afin d'effectuer des 'actions'.
+Un agent d'intelligence artificielle (IA) est un logiciel qui peut interagir avec son environnement, collecter des données et les utiliser pour effectuer des tâches autodéterminées afin d'atteindre des objectifs prédéterminés.
 
-Nous avons choisi `smolagents`, l'un des nombreux frameworks d'agents open-source disponibles pour le développement d'applications. D'autres options incluent LlamaIndex et LangGraph. Smolagents a été sélectionné pour sa simplicité, sa flexibilité et le support actif de sa communauté. `smolagents` est idéal pour prototyper ou expérimenter rapidement avec la logique d'agent, particulièrement lorsque votre application est relativement simple.
+Nous avons choisi [smolagents](https://github.com/huggingface/smolagents), l'un des nombreux frameworks d'agents open-source disponibles pour le développement d'applications. D'autres options incluent LlamaIndex et LangGraph. Smolagents a été sélectionné pour sa simplicité, sa flexibilité et le support actif de sa communauté. Smolagents est idéal pour prototyper ou expérimenter rapidement avec la logique d'agent, particulièrement lorsque l'application est relativement simple.
 
-De plus, contrairement à d'autres frameworks où les agents écrivent des actions en JSON, smolagents se concentre sur des appels d'outils en code, simplifiant le processus d'exécution. Ceci est dû au fait qu'il n'y a pas besoin d'analyser le JSON pour construire du code qui appelle les outils : la sortie peut être exécutée directement. Un autre avantage est que smolagents permet de télécharger des agents et des outils sur le Hugging Face Hub pour que d'autres puissent les réutiliser.
+De plus, contrairement à d'autres frameworks où les agents écrivent des actions en JSON, smolagents se concentre sur des appels d'outils en code, simplifiant le processus d'exécution. Ceci est dû au fait qu'il n'y a pas besoin d'analyser le JSON pour construire du code qui appelle les outils : la sortie peut être exécutée directement. smolagents peut aussi télécharger des agents et des outils sur le Hugging Face Hub pour que d'autres puissent les réutiliser.
 
 Pour notre projet, nous avons développé trois outils complémentaires :
 
-- **Recherche documentaire sémantique** : Cet outil utilise FAISS et des embeddings vectoriels pour identifier les colonnes de la base de données Open Food Facts les plus pertinentes pour chaque question utilisateur. Il fournit ensuite au LLM des descriptions détaillées de ces colonnes ainsi que des exemples de requêtes SQL typiques les utilisant. Cette approche permet au LLM de comprendre rapidement les structures de données complexes sans avoir à mémoriser l'ensemble du schéma.
-- **Exécution SQL sécurisée** : Connecté directement à DuckDB, cet outil permet à l'agent de générer et d'exécuter des requêtes SQL. Il intègre une couche de validation qui assure la sécurité et l'efficacité des requêtes en détectant les erreurs de syntaxe et en prévenant les requêtes potentiellement dangereuses ou inefficaces.
-- **Recherche externe complémentaire** : Reconnaissant les limites inhérentes à toute base de données, cet outil permet à l'agent de consulter le Guide alimentaire canadien lorsque les informations nutritionnelles requises ne sont pas disponibles dans Open Food Facts. Cela garantit une réponse complète même face à des données incomplètes.
+- **Exécution SQL sécurisée** : Cet outil permet à l'agent de générer et d'exécuter des requêtes SQL sur DuckDB. Il intègre une couche de validation qui assure la sécurité et l'efficacité des requêtes en détectant les erreurs de syntaxe et en prévenant les requêtes potentiellement dangereuses ou inefficaces.
+- **Recherche sur le Web** : Cet outil permet à l'agent de consulter le Guide alimentaire canadien lorsque les informations nutritionnelles requises ne sont pas disponibles dans Open Food Facts. Cela garantit une réponse complète même face à des données incomplètes.
 
-Ces trois outils sont orchestrés via la bibliothèque **smolagents** de Hugging Face, qui permet à l'agent de déterminer automatiquement quel outil utiliser en fonction de la question posée. Cette architecture modulaire facilite également l'ajout de nouvelles fonctionnalités et la maintenance du système à long terme.
+Ces deux outils sont orchestrés via la bibliothèque **smolagents** de Hugging Face, qui permet à l'agent de déterminer automatiquement quel outil utiliser en fonction de la question posée. 
 
 Cette approche multi-outils s'inscrit dans la méthodologie de recherche séquentielle décrite dans la section 3.2, garantissant une progression logique du traitement de la requête, depuis la consultation de la base de données jusqu'aux sources externes si nécessaire.
 
@@ -293,9 +278,28 @@ L'évaluation de l'agent repose sur quatre métriques principales permettant de 
 
 Chaque test suit une méthodologie stricte : une question est posée à l'agent, qui génère une réponse et une requête SQL (si applicable). Les résultats sont comparés aux réponses de référence, et une analyse de similarité sémantique est effectuée. L'évaluation porte aussi sur la séquence de recherche suivie par l'agent, vérifiant qu'il privilégie la base de données avant d'explorer des alternatives.
 
-## 5. Problèmes rencontrés et solutions
+## 5. Résultats et discussion
 
-### 5.1 Complexité structurelle des données
+Le tableau suivant résume les résultats des tests effectués sur l'agent conversationnel en utilisant différents modèles de langage et en évaluant les métriques EX, PS, RS et TRM
+sur 20 questions pour chaque modèle, en français et en anglais.
+
+
+
+|                          |Llama3.1:8b-Instruct (en)|Qwen2.5:7b-Instruct (en)|Claude 3.5 Sonnet (en)|Llama3.1:8b-Instruct (fr)|Qwen2.5:7b-Instruct (fr)|Claude 3.5 Sonnet (fr)| 
+|--------------------------|---|---|---|---|---|---|
+|Nombre de questions       |20|20|20|20|20|20|
+|Précision d'exécution (EX) (%)             |31.1|28.6|42.5|25.0|40.0|47.5|
+|Précision sémantique (PS) (%)      |16.7|66.5|62.3|20.0|49.5|54.7|
+|Respect de séquence (RS) (%)       |100.0|100.0|100.0|100.0|100.0|100.0|
+|Temps de réponse moyen (TRM)|432s|239s|37s|273s|201|41s|
+
+Ici Llama3.1:8b-Instruct réfère au modèle `ollama/llama3.1:8b-instruct-q8_0`, Qwen2.5:7b-Instruct au modèle `ollama/qwen2.5:7b-instruct` et Claude 3.5 Sonnet au modèle `anthropic/claude-3-5-sonnet-20241022`.
+
+
+
+## 6. Problèmes rencontrés et solutions
+
+### 6.1 Complexité structurelle des données
 
 Un défi majeur rencontré pendant le développement concerne la compréhension et l'exploitation des structures de données complexes d'Open Food Facts. L'absence d'une documentation officielle exhaustive a nécessité une exploration approfondie pour décoder la sémantique et les relations entre les colonnes.
 
@@ -308,7 +312,7 @@ Pour surmonter cette difficulté, j'ai développé une documentation détaillée
 
 Malgré ces efforts, je crois qu'on peut faire mieux. Les prochaines étapes incluront une approche plus systématique pour représenter et expliquer ces structures complexes, potentiellement via des métadonnées enrichies ou des exemples annotés plus nombreux.
 
-### 5.2 Limitations des modèles de langage légers
+### 6.2 Limitations des modèles de langage légers
 
 L'utilisation de modèles gratuits de taille réduite (`ollama/llama3.1:8b-instruct-q8_0`) pendant la phase de développement a permis d'avancer sans coûts d'API, mais a révélé des limitations significatives :
 
@@ -324,21 +328,20 @@ Face à ces limitations, j'ai implémenté deux types d'adaptations :
 
 Des tests comparatifs préliminaires avec `anthropic/claude-3-5-sonnet` ont démontré une amélioration substantielle de la qualité des réponses et du respect des contraintes, confirmant l'intérêt d'une stratégie hybride : développement avec des modèles légers, puis déploiement avec des modèles plus robustes pour l'environnement de production.
 
-## 6. Prochaines étapes
+## 7. Prochaines étapes
 
-**À discuter** : Devrais-je plutôt me concentrer sur le **RAG sur un graphe de connaissances** avec [Neo4j](https://neo4j.com/) et [Langchain](https://www.langchain.com/)
-pour exploiter les données d'Open Food Facts?
+Si je poursuis sur cette voie, trois grandes étapes sont à prévoir pour la suite du projet :
 
-Pour consolider les fondations de l'agent, je me concentrerai sur l'**amélioration de sa compréhension des structures complexes d'Open Food Facts**. Cela impliquera la création d'une cartographie plus intuitive des relations entre colonnes, l'élaboration d'exemples spécifiques pour les structures difficiles, et l'enrichissement de la documentation avec des métadonnées de distribution et de complétude.
+- **Mieux documenter la structure de la base de données** : 
+ Pour consolider les fondations de l'agent, il faudrait créer une cartographie plus complète des relations entre colonnes, élaborer des exemples spécifiques pour les structures difficiles, et enrichir la documentation avec des métadonnées de distribution et de complétude.
+- **Optimiser la recherche sémantique** : 
+  En parallèle, je pourrais ajouter une recherche vectorielle sur les fiches produits pour compléter l'approche SQL traditionnelle. Cette combinaison faciliterait l'identification de produits similaires, et offrirait une alternative lorsque les formulations SQL atteignent leurs limites.
+- **Évaluation comparative des modèles de langage** :
+Enfin, je conduirai une évaluation systématique de différents modèles de langage (`llama3.1:8b-instruct-q8_0`, `claude-3-5-sonnet-20241022`, `Qwen2.5-Coder-32B-Instruct`) en mesurant leur précision d'exécution, la qualité sémantique de leurs réponses et leur ratio coût-performance. 
 
-En parallèle, j'explorerai l'intégration d'une couche de recherche vectorielle pour compléter l'approche SQL traditionnelle. Cette hybridation permettra des **requêtes sémantiques directes sur les descriptions de produits**, facilitera l'identification de produits similaires, et offrira une alternative performante lorsque les formulations SQL atteignent leurs limites.
-D'ailleurs, je vais explorer Agentic RAG (Retrieval-Augmented Generation) qui étend les systèmes RAG traditionnels en combinant des agents autonomes avec une récupération dynamique de connaissances.
-Alors que les systèmes RAG traditionnels utilisent un LLM pour répondre aux requêtes basées sur des données récupérées, le RAG agentique permet un contrôle intelligent des processus de récupération et de génération, améliorant l'efficacité et la précision.
-Voir [Custom Knowledge Base Tool](https://huggingface.co/learn/agents-course/unit2/smolagents/retrieval_agents#custom-knowledge-base-tool).
+Je pourrais aussi explorer une voie différente en me concentrant sur le **RAG sur un graphe de connaissances** avec [Neo4j](https://neo4j.com/) et [Langchain](https://www.langchain.com/) pour exploiter les données d'Open Food Facts. Cette approche pourrait offrir une meilleure représentation des relations complexes entre les produits et les informations nutritionnelles, tout en facilitant l'interprétation des requêtes utilisateur.
 
-Enfin, je conduirai une **évaluation systématique de différents modèles de langage** (llama3.1:8b-instruct-q8_0, claude-3-5-sonnet-20241022, Qwen2.5-Coder-32B-Instruct) en mesurant leur précision d'exécution, la qualité sémantique de leurs réponses et leur ratio coût-performance. Cette analyse comparative permettra d'identifier la configuration optimale pour l'implémentation finale, équilibrant efficacement qualité, rapidité et coûts opérationnels.
-
-## 7. Références
+## 8. Références
 
 Gao, D., Wang, H., Li, Y., Sun, X., Qian, Y., Ding, B., & Zhou, J. (2023). Text-to-SQL Empowered by Large Language Models: A Benchmark Evaluation. *arXiv preprint arXiv:2308.15363*. https://arxiv.org/abs/2308.15363
 

@@ -12,7 +12,8 @@ sentence-transformers==3.4.1
 smolagents[litellm]==1.9.2
 sqlglot==26.6.0
 sqlglotrs==0.3.14
-tqdm==4.67.1
+accelerate==1.4.0
+mlx-lm==0.21.5
 transformers==4.48.3
 
 # Télémétrie avec Arize AI Phoenix

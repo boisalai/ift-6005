@@ -6,7 +6,7 @@
 
 L'accès aux informations nutritionnelles reste souvent limité par des interfaces techniques nécessitant des compétences en langages de requête comme SQL. Cette barrière empêche de nombreux utilisateurs d'exploiter pleinement des bases de données comme Open Food Facts, qui contient des informations détaillées sur des milliers de produits alimentaires. 
 
-Ce projet vise à développer un agent conversationnel utilisant des grands modèles de langage (LLM) pour permettre aux utilisateurs de poser des questions en langage naturel comme "Quels collations sans allergènes ont un Nutri-score A ?". Cette approche démocratise l'accès aux données nutritionnelles tout en améliorant la qualité des réponses grâce à l'exploitation directe de sources structurées. 
+Ce projet vise à développer un agent conversationnel utilisant des grands modèles de langage (LLM) pour permettre aux utilisateurs de poser des questions en langage naturel comme "Quelles collations sans allergènes ont un Nutri-score A ?". Cette approche démocratise l'accès aux données nutritionnelles tout en améliorant la qualité des réponses grâce à l'exploitation directe de sources structurées. 
 
 Ce rapport de mi-session présente l'état d'avancement du projet à la mi-session, les défis rencontrés et les solutions implémentées.
 
@@ -14,9 +14,9 @@ Ce rapport de mi-session présente l'état d'avancement du projet à la mi-sessi
 
 L'objectif de ce projet est de développer un agent conversationnel permettant aux utilisateurs d'interroger la base de données [Open Food Facts](https://world.openfoodfacts.org/) en langage naturel. Le système doit comprendre les questions des utilisateurs sur les produits alimentaires, les convertir en requêtes SQL, et fournir des réponses claires et précises. Les données manquantes ou incomplètes doivent être compensées par une recherche alternative dans le [Guide alimentaire canadien](https://guide-alimentaire.canada.ca/fr/).
 
-## 3. Approche proposée et options considérées
+## 3. Approche proposée
 
-### 3.1 Architecture modulaire
+### 3.1 Architecture du système
 
 Mon approche utilise une architecture avec les composants suivants :
 
@@ -266,7 +266,7 @@ Les principales observations sont les suivantes :
 - **Respect de séquence** : Tous les modèles obtiennent un score parfait (100%) sur le respect de séquence (RS), indiquant que la stratégie de recherche définie est bien suivie indépendamment du modèle utilisé.
 - **Précision sémantique** : Qwen2.5 surpasse remarquablement Llama3.1 en précision sémantique, particulièrement en anglais (66.5% contre 16.7%), suggérant peut-être une meilleure compréhension du domaine des produits alimentaires.
 
-Ces résultats démontrent clairement l'avantage d'utiliser un modèle commercial comme Claude 3.5 Sonnet pour des applications pratiques, bien que Qwen2.5 offre une alternative open-source intéressante avec des performances acceptables, particulièrement pour la compréhension sémantique.
+Ces résultats démontrent clairement l'avantage d'utiliser un modèle commercial comme Claude 3.5 Sonnet pour des applications pratiques, bien que Qwen2.5 offre une alternative gratuite intéressante avec des performances acceptables, particulièrement pour la compréhension sémantique.
 
 Ces évaluations s'effectuent dans le script `evaluation_04.py`.
 

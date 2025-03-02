@@ -1,0 +1,888 @@
+\documentclass[a4paper,11pt]{article}
+
+% Packages essentiels
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[numbers]{natbib}
+\usepackage[french]{babel}
+\usepackage{csquotes}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{tabularx}
+\usepackage{makecell}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{float}
+\usepackage{listings}
+\usepackage{tcolorbox}
+\usepackage{pgfplots}
+\usepackage{parskip}
+\usepackage[french]{datetime2}
+\usepackage{multirow}
+\usepackage{siunitx}
+\usepackage{mdframed}
+\usepackage{tocloft}  % Ajout du package pour la table des matières
+\usepackage[colorlinks=true,breaklinks=true]{hyperref}
+\usepackage[nameinlink]{cleveref}
+\usepackage{fontawesome5}
+\usepackage{adjustbox}
+
+% Configuration de la table des matières
+\renewcommand{\cftsecleader}{\cftdotfill{\cftdotsep}}
+\renewcommand{\cftsecpagefont}{\normalfont}
+\renewcommand{\cftsecfont}{\normalfont}
+
+% Configuration de pgfplots
+\pgfplotsset{compat=newest,compat/show suggested version=false}
+
+% Configuration des boîtes de texte
+\newmdenv[
+    linewidth=1pt,
+    topline=true,
+    bottomline=true,
+    leftline=true,
+    rightline=true,
+    backgroundcolor=gray!5,
+    innertopmargin=10pt,
+    innerbottommargin=10pt,
+    innerrightmargin=10pt,
+    innerleftmargin=10pt,
+    skipabove=15pt,
+    skipbelow=15pt
+]{solution}
+
+% Configuration améliorée pour listings
+\lstdefinestyle{mystyle}{
+    basicstyle=\ttfamily\footnotesize,
+    backgroundcolor=\color{gray!10},
+    frame=single,
+    framesep=3pt,
+    breaklines=true,
+    showstringspaces=false,
+    keywordstyle=\color{blue},
+    stringstyle=\color{red},
+    commentstyle=\color{green!60!black},
+    captionpos=b,
+    literate={é}{{\'e}}1 {è}{{\`e}}1 {à}{{\`a}}1 {É}{{\'E}}1 {ù}{{\'u}}1
+    {ê}{{\^e}}1
+    {Ê}{{\^E}}1
+    {π}{{$\pi$}}1
+    {≤}{{$\leq$}}1
+    {≥}{{$\geq$}}1
+    {≠}{{$\neq$}}1
+    {²}{{$^2$}}1
+    {⁸}{{$^8$}}1
+    {⁷}{{$^7$}}1
+    {⁶}{{$^6$}}1
+    {⁵}{{$^5$}}1
+    {⁴}{{$^4$}}1
+    {³}{{$^3$}}1
+}
+\lstset{style=mystyle}
+
+% Configuration des marges
+\usepackage[top=2cm, bottom=2cm, left=2.5cm, right=2.5cm]{geometry}
+
+% Définition des environnements personnalisés
+\newtcolorbox{graysection}[1]{
+    colback=gray!10,
+    colframe=white,
+    title=#1,
+    fonttitle=\bfseries\large,
+    boxrule=0pt,
+    arc=0pt,
+    boxsep=5pt,
+    left=10pt,right=10pt,top=10pt,bottom=10pt
+}
+
+% Commande TODO professionnelle
+\newcommand{\todo}[1]{\textcolor{red}{\bfseries [TODO: #1]}}
+
+% Informations du document
+\newcommand{\titre}{
+Agent conversationnel pour l'interrogation de la base de données Open Food Facts \\
+\vspace{1cm} Rapport de mi-session}
+\newcommand{\auteurs}{Alain Boisvert}
+\newcommand{\matricules}{994 029 313}
+\newcommand{\destinataire}{Luc Lamontagne}
+\newcommand{\cours}{IFT-6005 - Projet intégrateur}
+\newcommand{\dateremise}{2 mars 2025}
+
+\title{IFT-6005 - Projet intégrateur - H25 \\ ~ \\ Agent conversationnel pour l'interrogation de la base de données Open Food Facts}
+\author{Alain Boisvert}
+\date{2 mars 2025}
+
+\begin{document}
+
+\input{pagetitre}
+\newpage
+% \maketitle
+
+% Table des matières
+\tableofcontents
+\newpage
+
+%----------------------------------------------------------------------------------------
+\section{Introduction}  
+\label{sec:probleme}
+
+L'accès aux informations nutritionnelles reste souvent limité par des interfaces techniques
+nécessitant des compétences en langages de requête comme SQL. Cette barrière empêche de nombreux
+utilisateurs d'exploiter pleinement des bases de données 
+comme Open Food Facts\footnote{\url{https://world.openfoodfacts.org/}}, 
+qui contient des informations détaillées sur des milliers de produits alimentaires. 
+
+Ce projet vise à développer un agent conversationnel utilisant des grands modèles de langage (LLM) 
+pour permettre aux utilisateurs de poser des questions en langage naturel 
+comme (\textit{\enquote{Quelles collations sans allergènes ont un Nutri-score A ?}}). 
+Cette approche démocratise l'accès aux données nutritionnelles tout en améliorant la qualité
+des réponses grâce à l'exploitation directe de sources structurées. 
+
+Ce rapport de mi-session présente l'état d'avancement du projet à la mi-session, les défis rencontrés et les solutions implémentées.
+
+
+%----------------------------------------------------------------------------------------
+\section{Rappel de l'objectif du projet}
+\label{sec:revue}
+
+L'objectif de ce projet est de développer un agent conversationnel permettant aux utilisateurs 
+d'interroger la base de données Open Food Facts en langage naturel. Le système doit comprendre les 
+questions des utilisateurs sur les produits alimentaires, les convertir en requêtes SQL, et fournir
+des réponses claires et précises. Les données manquantes ou incomplètes doivent être compensées 
+par une recherche alternative 
+dans le Guide alimentaire canadien\footnote{\url{https://guide-alimentaire.canada.ca/fr/}}.
+
+
+% ----------------------------------------------------------------------------------------
+\section{Approche proposée}
+\label{sec:approche}
+
+\subsection{Architecture du système}
+
+L'architecture modulaire du système comprend les composants suivants :
+
+\begin{itemize}
+    \item \textbf{Module de dialogue :} Gère les conversations avec l'utilisateur en utilisant un LLM pré-entraîné.
+    \item \textbf{Convertisseur texte-SQL :} Transforme les questions en requêtes SQL adaptées à 
+    Open Food Facts. Il utilise d'abord une recherche sémantique dans un dictionnaire de données pour trouver les colonnes pertinentes.
+    \item \textbf{Connecteur de base de données :} Communique avec DuckDB pour exécuter les requêtes. Les requêtes SQL sont vérifiées avant exécution pour garantir leur sécurité.
+    \item \textbf{Recherche sur le Web :} Consulte le Guide alimentaire canadien quand les informations manquent dans la base de données.
+    \item \textbf{Générateur de réponses :} Transforme les résultats bruts en réponses naturelles, en précisant les sources.
+\end{itemize}
+
+\subsection{Sélection des technologies}
+
+J'ai choisi ces technologies pour mon projet :
+
+\begin{itemize}
+    \item \textbf{DuckDB} comme base de données, car :
+    \begin{itemize}
+        \item Elle est rapide pour les requêtes analytiques
+        \item Elle gère bien la mémoire
+        \item Elle supporte les fichiers Parquet et les requêtes SQL complexes
+    \end{itemize}
+    \item \textbf{Hugging Face Smolagents} comme framework d'agent, car :
+    \begin{itemize}
+        \item Il est simple à utiliser
+        \item Il permet d'intégrer différents LLMs et outils
+        \item Il est bien documenté et supporté
+    \end{itemize}
+    \item \textbf{Modèles de langage} :
+    \begin{itemize}
+        \item Pour le développement : \detokenize{Llama3.1:8B-Instruct} via Ollama (en local)
+        \item Pour les tests : \detokenize{Llama3.1:8B-Instruct} et \detokenize{Qwen2.5:7B} via Ollama (en local), et Claude 3.5 Sonnet (modèle commercial via API)
+        \item Cette approche limite les coûts d'API
+    \end{itemize}
+    \item \textbf{FAISS} pour la recherche sémantique :
+    \begin{itemize}
+        \item Il identifie rapidement les colonnes pertinentes pour chaque question
+        \item Il transforme la documentation des colonnes en vecteurs faciles à comparer
+    \end{itemize}
+\end{itemize}
+
+
+% ----------------------------------------------------------------------------------------
+\section{État d'avancement et tâches réalisées}
+\label{sec:progress}
+
+Le développement de l'agent conversationnel a progressé significativement durant cette
+première phase du projet. Cette section détaille les différentes tâches accomplies
+et leur état d'avancement, en suivant le plan initial.
+
+% Section 4.1
+\subsection{Mise en place de l'environnement de développement}
+
+J'ai d'abord créé un environnement de développement complet :
+
+\begin{itemize}
+    \item \textbf{Infrastructure et outils}
+    \begin{itemize}
+        \item Un dépôt GitHub\footnote{\url{https://github.com/boisalai/ift-6005}} pour le code et la documentation
+        \item Un environnement virtuel Python avec les bonnes dépendances
+        \item Des outils comme Black pour le formatage et Pylint pour l'analyse de code
+    \end{itemize}
+    \item \textbf{Dépendances principales}
+    \begin{itemize}
+        \item DuckDB pour la base de données
+        \item Smolagents\footnote{\url{https://github.com/huggingface/smolagents}} pour le framework d'agent
+        \item FAISS\footnote{\url{https://github.com/facebookresearch/faiss}} pour la recherche sémantique
+        \item Les bibliothèques habituelles pour l'analyse de données et le traitement du langage
+    \end{itemize}
+    \item \textbf{Configuration des API}
+    \begin{itemize}
+        \item Des variables d'environnement pour les clés API dans un fichier \texttt{.env}
+        \item L'accès à l'API d'Anthropic pour Claude 3.5 Sonnet
+        \item L'interface avec Ollama pour les tests locaux
+    \end{itemize}
+\end{itemize}
+
+
+% Section 4.2
+\subsection{Préparation de la base de données}
+
+J'ai téléchargé le fichier Parquet d'Open Food Facts (3,6~millions de produits) :
+
+\begin{lstlisting}[language=bash, caption=Téléchargement du fichier Parquet]
+wget -P data/ https://huggingface.co/datasets/openfoodfacts/product-database/resolve/main/food.parquet
+\end{lstlisting}
+
+Ensuite, j'ai converti le fichier Parquet en base DuckDB pour faciliter les requêtes SQL :
+
+\begin{lstlisting}[language=Python, caption=Conversion en base DuckDB]
+DATA_DIR = Path("../data")
+PARQUET_PATH = DATA_DIR / "food.parquet"
+FULL_DB_PATH = DATA_DIR / "food_full.duckdb"
+
+con = duckdb.connect(str(FULL_DB_PATH), config={'memory_limit': '8GB'})
+con.execute(f"CREATE TABLE products AS SELECT * FROM '{PARQUET_PATH}'")
+con.close()
+\end{lstlisting}
+
+\newpage
+Pour accélérer les requêtes, j'ai créé une version avec seulement les 94\,802~produits canadiens :
+
+\begin{lstlisting}[language=Python]
+FILTERED_DB_PATH = DATA_DIR / "food_canada.duckdb"
+
+con = duckdb.connect(str(FILTERED_DB_PATH))
+con.execute(f"ATTACH DATABASE '{FULL_DB_PATH}' AS full_db")
+con.execute(f"""
+    CREATE TABLE products AS 
+    SELECT * FROM full_db.products
+    WHERE array_contains(countries_tags, 'en:canada')
+""")
+\end{lstlisting}
+
+La création des bases DuckDB s'effectue via le script \texttt{data.py}.
+
+J'ai aussi analysé les données et découvert que certaines colonnes sont très complètes (>~95\%) alors que d'autres sont peu renseignées (<~30\%).
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.9\textwidth]{figures/missing_values.pdf}
+    \caption{Distribution de la complétude des colonnes de la base de données}
+    \label{fig:missing-values}
+\end{figure}
+
+J'ai également remarqué que certaines colonnes ont des structures complexes. 
+Par exemple, la colonne \texttt{categories} contient du texte libre séparé par des virgules, alors que \texttt{categories\_tags} contient des identifiants standardisés incluant des préfixes de langue.
+
+Exemple de données pour la colonne \texttt{categories} :
+
+\begin{lstlisting}
+"Sweeteners,Syrups,Simple syrups,Agave syrups"
+"Plant-based beverages,Fruit-based,Juices and nectars,Fruit juices,Lemon juice"
+"Snacks,Sweet snacks,Biscuits and cakes,Cakes"
+\end{lstlisting}
+
+Exemple de données pour la colonne \texttt{categories\_tags} :
+
+\begin{lstlisting}
+["en:plant-based-foods-and-beverages", "en:beverages", 
+    "en:plant-based-beverages", "en:coconut-milks"]
+["en:snacks", "en:sweet-snacks", "en:cocoa-and-chocolate-products", 
+    "en:chocolates"]
+["en:dairies", "en:milk", "en:whole-milk"]
+\end{lstlisting}
+
+
+
+% Section 4.3
+\subsection{Documentation des données}
+
+J'ai créé un dictionnaire détaillé
+(\texttt{columns\_documentation.json}) pour aider l'agent à générer des requêtes SQL. Il contient des informations sur chacune des 109~colonnes.
+La documentation pour chaque colonne ressemble à ceci :
+
+
+\begin{lstlisting}
+"nova_groups_tags": {
+  "type": "VARCHAR[]",
+  "description": "Array containing NOVA food classification group tags. NOVA...",
+  "examples": [
+    "['en:1-unprocessed-or-minimally-processed-foods']",
+    "['en:4-ultra-processed-food-and-drink-products']",
+    "['en:3-processed-foods']"
+  ],
+  "is_nullable": true,
+  "common_queries": [
+    {
+      "description": "Distribution of products across NOVA groups",
+      "sql": "SELECT nova_groups_tags, COUNT(*) as product_count FROM products..."
+    },
+    /* Autres... */
+  ]
+},
+\end{lstlisting}
+
+Cette documentation est générée par un agent qui :
+
+\begin{itemize}
+    \item Interroge la colonne dans la base de données
+    \item Recherche des informations sur le site Open Food Facts
+    \item Propose une description de la colonne
+    \item Génère des requêtes SQL typiques
+    \item Ajoute la documentation au fichier JSON
+\end{itemize}
+
+Ces tâches s'effectuent via le script \texttt{docoff.py}.
+
+
+% Section 4.4
+\subsection{Création du jeu de test}
+
+J'ai créé un jeu de 100~questions-réponses en anglais et en français 
+en utilisant les requêtes SQL documentées à l'étape précédente. 
+Pour chaque requête SQL, un agent:
+
+\begin{itemize}
+    \item Évalue si la requête répond à une question pertinente pour un consommateur
+    \item Génère des questions en français et en anglais
+    \item Crée des réponses claires correspondant à la requête SQL
+    \item Vérifie que les résultats de la requête permettent de répondre à la question
+\end{itemize}
+
+\newpage
+Les paires sont stockées dans \texttt{qa\_pairs.json} avec cette structure:
+
+\begin{lstlisting}
+{
+  "column": "nutriscore_score",
+  "sql": "SELECT code, product_name, nutriscore_score FROM products WHERE nutriscore_score IS NOT NULL ORDER BY nutriscore_score ASC LIMIT 50",
+  "questions": {
+    "fr": "Quels sont les produits alimentaires les plus sains selon le Nutri-Score ?",
+    "en": "What are the healthiest food products according to the Nutri-Score?"
+  },
+  "answers": {
+    "fr": "D'après les résultats, les produits les plus sains sont principalement des légumineuses comme les lentilles rouges et les pois jaunes cassés, avec un Nutri-Score de -17, ce qui est excellent.",
+    "en": "According to the results, the healthiest products are mainly legumes such as red split lentils and yellow split peas, with a Nutri-Score of -17, which is excellent."
+  }
+},
+/* Autres... */
+\end{lstlisting}
+
+Le jeu de 100~questions-réponses est créé avec le script \texttt{question\_answer.py}.
+
+
+% Section 4.5
+\subsection{Développement de la recherche sémantique}
+
+J'ai implémenté une recherche sémantique avec FAISS et le modèle \texttt{all-MiniLM-L6-v2} pour identifier les colonnes pertinentes dans la base de données :
+
+\begin{itemize}
+    \item \textbf{Préparation des embeddings}
+    \begin{itemize}
+        \item La documentation des 109 colonnes est convertie en vecteurs
+        \item Le modèle MiniLM génère des embeddings de dimension 384
+        \item Ce modèle multilingue fonctionne en français et en anglais
+    \end{itemize}
+    
+    \item \textbf{Indexation FAISS}
+    \begin{itemize}
+        \item Un index est créé pour les recherches rapides par similarité
+        \item Les embeddings sont sauvegardés dans des fichiers pour éviter de recalculer l'index
+    \end{itemize}
+    
+    \item \textbf{Processus de recherche}
+    \begin{itemize}
+        \item Pour chaque question, l'embedding de la question est comparé à ceux des colonnes
+        \item Les 5 colonnes les plus similaires sont retournées avec un score
+        \item Seules les colonnes avec un score > 0.5 sont utilisées
+    \end{itemize}
+\end{itemize}
+
+Les résultats de cette recherche sont ajoutés au prompt de l'agent pour l'aider à générer de meilleures requêtes SQL.
+
+Cette approche s'inspire des travaux de \citet{gao2023text} sur l'apprentissage contextuel (\textit{in-context learning}) pour Text-to-SQL, en adoptant une méthode similaire où l'agent identifie d'abord les colonnes sémantiquement pertinentes pour la question posée, puis utilise ces informations avec des exemples de requêtes SQL dans le prompt afin d'améliorer la qualité de la conversion du langage naturel vers SQL.
+
+
+% Section 4.6
+\subsection{Création des outils d'agent}
+
+Un agent intelligent est un logiciel qui peut interagir avec son environnement, collecter des données et les utiliser pour effectuer des tâches autodéterminées afin d'atteindre des objectifs prédéterminés.
+
+J'ai choisi Smolagents pour son approche simple et flexible. Cet outil est idéal pour expérimenter rapidement avec la logique d'agent, particulièrement lorsque l'application est relativement simple.
+
+\newpage
+J'ai développé deux outils pour l'agent :
+
+\begin{itemize}
+    \item \textbf{Exécution SQL sécurisée} : Permet à l'agent de générer et d'exécuter des requêtes SQL sur DuckDB avec des vérifications de sécurité
+    \item \textbf{Recherche sur le Web} : Permet à l'agent de consulter le Guide alimentaire canadien quand les informations ne sont pas dans Open Food Facts
+\end{itemize}
+
+
+% Section 4.7
+\subsection{Stratégie d'évaluation}
+
+J'évalue l'agent selon quatre métriques principales :
+
+\begin{itemize}
+    \item \textbf{Précision d'exécution (EX)} : Mesure si l'agent génère des requêtes SQL correctes 
+    avec la pondération suivante :
+    \begin{itemize}
+        \item 20\% pour avoir une requête
+        \item 30\% pour l'exécution sans erreur
+        \item 50\% pour des résultats corrects
+    \end{itemize}
+    
+    \item \textbf{Précision sémantique (PS)} : Compare la similarité entre les réponses de l'agent et les réponses attendues
+    
+    \item \textbf{Respect de séquence (RS)} : Vérifie si l'agent suit une stratégie de recherche cohérente (d'abord la base de données, puis le Guide alimentaire canadien)
+    
+    \item \textbf{Temps de réponse moyen (TRM)} : Mesure la rapidité du traitement
+\end{itemize}
+
+
+%----------------------------------------------------------------------------------------
+% Section 5
+\section{Résultats et discussion}
+\label{sec:results}
+
+Le tableau suivant résume les résultats des tests effectués sur l'agent conversationnel en utilisant différents modèles de langage et en évaluant les métriques EX, PS, RS et TRM
+sur 20~questions pour chaque modèle, en français et en anglais.
+
+J'ai limité les tests à 20 questions par modèle afin de réduire les coûts d'API associés aumodèle commercial Claude 3.5 Sonnet. Tous les tests ont été réalisés sur un MacBook Pro M1 équipé de 16~Go de RAM.
+
+
+\begin{table}[h!]
+\small
+\centering
+\begin{tabular}{l|r r|r r|r r}
+\toprule
+& \multicolumn{2}{c|}{\detokenize{Llama3.1:8B}} & \multicolumn{2}{c|}{\detokenize{Qwen2.5:7B}} 
+& \multicolumn{2}{c}{\makecell{Claude 3.5 \\ Sonnet}} \\
+& {en} & {fr} & {en} & {fr} & {en} & {fr} \\
+\midrule
+Nombre de questions & 20 & 20 & 20 & 20 & 20 & 20 \\
+Précision d'exécution (EX) (\%) & 31.1 & 25.0 & 28.6 & 40.0 & 42.5 & 47.5 \\
+Précision sémantique (PS) (\%) & 16.7 & 20.0 & 66.5 & 49.5 & 62.3 & 54.7 \\
+Respect de séquence (RS) (\%) & 100.0 & 100.0 & 100.0 & 100.0 & 100.0 & 100.0 \\
+Temps de réponse moyen (TRM) & 432~s & 273~s & 239~s & 201~s & 37~s & 41~s \\
+\bottomrule
+\end{tabular}
+\caption{Résultats des tests sur différents modèles de langage}
+\label{tab:resultats}
+\end{table}
+
+Ici \detokenize{Llama3.1:8B} réfère au modèle \texttt{ollama/llama3.1:8B-instruct-q8\_0}, 
+\detokenize{Qwen2.5:7B} au modèle \texttt{ollama/qwen2.5:7B-instruct} et 
+\detokenize{Claude 3.5 Sonnet} au modèle \\
+\texttt{anthropic/claude-3-5-sonnet-20241022}.
+
+
+
+Les principales observations sont les suivantes :
+
+\begin{itemize}
+\item \textbf{Performance des modèles} : Claude 3.5 Sonnet surpasse significativement les modèles \detokenize{Llama3.1:8B} et \detokenize{Qwen2.5:7B} sur presque toutes les métriques, particulièrement en précision d'exécution (EX) et en temps de réponse moyen (TRM).
+\item \textbf{Différences linguistiques} : Les performances varient selon la langue. Les résultats en français montrent généralement une bonne précision d'exécution pour Claude 3.5 Sonnet et \detokenize{Qwen2.5:7B} par rapport à l'anglais, suggérant une bonne capacité de traitement multilingue.
+\item \textbf{Respect de séquence} : Tous les modèles obtiennent un score parfait (100~\%) sur le respect de séquence (RS), indiquant que la stratégie de recherche définie est bien suivie indépendamment du modèle utilisé.
+\item \textbf{Précision sémantique} : \detokenize{Qwen2.5:7B} surpasse remarquablement \detokenize{Llama3.1:8B} en précision sémantique, particulièrement en anglais (66,5\,\% contre 16,7\,\%), suggérant peut-être une meilleure compréhension du domaine des produits alimentaires.
+\end{itemize}
+
+Ces résultats démontrent clairement l'avantage d'utiliser un modèle commercial comme Claude 3.5 Sonnet pour des applications pratiques, bien que \detokenize{Qwen2.5:7B} offre une alternative gratuite intéressante avec des performances acceptables, particulièrement pour la compréhension sémantique.
+Ces évaluations s'effectuent dans le script \texttt{evaluation\_04.py}.
+
+
+%----------------------------------------------------------------------------------------
+% Section 6
+\section{Problèmes rencontrés et solutions}
+\label{sec:problems}
+
+\subsection{Complexité structurelle des données}
+
+Un défi majeur a été de comprendre les structures complexes d'Open Food Facts. Sans documentation officielle complète, j'ai dû explorer la base en détail pour décoder des colonnes et 
+comprendre les relations entre les colonnes.
+La base contient des structures hétérogènes, comme les colonnes \texttt{categories} et \texttt{categories\_tags}. Cette complexité rend difficile la génération de bonnes requêtes SQL.
+
+Pour résoudre ce problème, j'ai créé une documentation détaillée de la base de données 
+avec pour chaque colonne :
+\begin{itemize}
+\item Le type de données et sa description
+\item Des exemples de valeurs
+\item Des modèles de requêtes SQL adaptées
+\end{itemize}
+
+Comme mentionné précédemment, les colonnes pertinentes pour une question de l'utilisateur sont identifiées par une recherche sémantique, puis utilisées pour enrichir le prompt de l'agent. 
+
+\vskip 0.1cm
+Je pense qu'on peut encore améliorer cette documentation, peut-être avec plus d'exemples annotés.
+
+\subsection{Limitations des modèles de langage légers}
+
+L'utilisation d'un modèle léger et gratuit (\detokenize{Llama3.1:8B}) pendant le développement a permis d'avancer sans coûts d'API, mais a montré des limites :
+\begin{itemize}
+\item Difficulté à comprendre des instructions complexes
+\item Problèmes pour maintenir un format de réponse cohérent
+\item Génération SQL parfois incorrecte
+\item Difficulté à suivre des séquences d'actions
+\end{itemize}
+
+\vskip 0.1cm
+Pour résoudre ces problèmes, j'ai :
+\begin{itemize}
+\item Amélioré les prompts: Instructions plus simples et directes, avec plus d'exemples
+\item Modifié l'architecture: Utilisé les mécanismes de MultiStepAgent de Smolagents pour mieux suivre la progression
+\end{itemize}
+
+\vskip 0.1cm
+Des tests avec Claude 3.5 Sonnet montrent des résultats bien meilleurs, confirmant l'intérêt d'une approche hybride : développement avec des modèles légers, puis déploiement avec des modèles plus puissants.
+
+
+
+\newpage
+%----------------------------------------------------------------------------------------
+% Section 7
+\section{Prochaines étapes}
+\label{sec:next}
+
+Si je continue ce projet sur cette voie, je peux :
+\begin{itemize}
+\item \textbf{Mieux documenter la structure de la base de données} : Créer une meilleure carte des relations entre colonnes, ajouter des exemples pour les structures difficiles, et enrichir la documentation avec des informations sur la distribution des données.
+\item \textbf{Optimiser la recherche sémantique} : Ajouter une recherche vectorielle sur les fiches produits en plus de l'approche SQL. Cela aiderait à trouver des produits similaires quand les requêtes SQL sont limitées.
+\end{itemize}
+
+\vskip 0.1cm
+Je pourrais aussi explorer une approche différente avec \textbf{RAG sur un graphe de connaissances} en utilisant Neo4j\footnote{\url{https://neo4j.com/}} et 
+Langchain\footnote{\url{https://www.langchain.com/}}. Cette méthode pourrait mieux représenter les relations complexes entre produits et informations nutritionnelles.
+
+
+%----------------------------------------------------------------------------------------
+% Section 8
+\section{Conclusion}
+\label{sec:conclusion}
+
+Ce rapport présente l'état d'avancement du projet de développement d'un agent conversationnel pour Open Food Facts. L'approche combinant recherche sémantique et génération SQL via un agent LLM démontre un potentiel réel pour démocratiser l'accès aux informations nutritionnelles. Les tests comparatifs révèlent que Claude 3.5 Sonnet offre les meilleures performances, tandis que Qwen2.5 constitue une alternative gratuite viable. Les défis de complexité des données sont adressés par des prompts enrichis 
+par des informaitons détaillées sur les colonnes pertinentes à la question de l'utilisateur.
+
+Les prochaines étapes incluent l'amélioration de cette documentation ou l'exploration des graphes de connaissances pour améliorer la qualité des requêtes générées par l'agent intelligent.
+
+
+
+%----------------------------------------------------------------------------------------
+% Section Bibliographie
+\addcontentsline{toc}{section}{Références}
+\label{sec:biblio}
+\bibliographystyle{plainnat}
+\bibliography{refs}  % Fichier .bib sans l'extension
+
+
+
+%----------------------------------------------------------------------------------------
+% Annexe
+\newpage
+\section*{Annexe A: Exemple d'évaluation d'une requête utilisateur}
+
+Cette annexe illustre le processus d’évaluation d’une requête posée à l’agent conversationnel. Elle détaille les différentes étapes suivies, depuis l’analyse sémantique des colonnes pertinentes jusqu’à la génération et l’évaluation de la réponse, en mettant en évidence la méthodologie employée pour mesurer la performance du système.
+
+\textbf{Question utilisateur} : 
+\enquote{What food products without additives are available in the database?}
+
+
+\subsection*{Étape 1: Définition de la question et référence dans le jeu de test}
+
+Cette question correspond à la première entrée dans le fichier \texttt{qa\_pairs.json}, structurée comme suit:
+
+
+\begin{lstlisting}
+{
+  "column": "additives_n",
+  "sql": "SELECT code, product_name FROM products WHERE additives_n = 0",
+  "questions": {
+    "fr": "Quels sont les produits alimentaires sans additifs disponibles dans la base de données?",
+    "en": "What food products without additives are available in the database?"
+  },
+  "answers": {
+    "fr": "La base de données contient 5843 produits sans additifs, incluant des produits comme le sirop d'érable biologique du Vermont, le lait faible en gras, l'agave bleu biologique, et le lait de coco.",
+    "en": "The database contains 5843 products without additives, including items such as organic Vermont maple syrup, low-fat milk, organic blue agave, and coconut milk."
+  }
+},
+...
+\end{lstlisting}
+
+\subsection*{Étape 2: Analyse sémantique des colonnes pertinentes}
+
+Le système utilise FAISS pour comparer l'embedding de la question avec ceux des descriptions de colonnes :
+
+\begin{lstlisting}[language=Python, caption=Recherche sémantique des colonnes pertinentes]
+relevant_columns = self._search_relevant_columns(question)
+\end{lstlisting}
+
+Cette recherche identifie 5 colonnes potentiellement pertinentes avec leurs scores de similarité :
+\begin{itemize}
+  \item \texttt{unknown\_ingredients\_n} (score : 0,656)
+  \item \texttt{additives\_tags} (score : 0,638)
+  \item \texttt{ingredients\_original\_tags} (score : 0,622)
+  \item \texttt{ingredients\_without\_ciqual\_codes} (score : 0,612)
+  \item \texttt{data\_quality\_info\_tags} (score : 0,563)
+\end{itemize}
+
+\newpage
+\subsection*{Étape 3: Préparation du prompt pour l'agent}
+
+Les informations sur ces colonnes sont préparées et stockées dans \texttt{columns\_info} :
+
+\begin{lstlisting}[language=Python, caption=Préparation des informations sur les colonnes pertinentes]
+columns_info = []
+for col in relevant_columns:
+    if col['similarity'] > 0.5:
+        column_section = [
+            f"Column: {col['name']}\n"
+            f"Type: {col['type']}\n"
+            f"Description: {col['description']}\n"
+            f"Examples of values: {', '.join(map(str, col['examples'][:3]))}"
+        ]
+        
+        if 'common_queries' in col and col['common_queries']:
+            column_section.append(f"Query examples:")
+            for query in col['common_queries']:
+                column_section.append(
+                    f"# {query.get('description', '')}:\n"
+                    f"{query.get('sql', '')}"
+                )
+        
+        columns_info.append("\n".join(column_section))
+\end{lstlisting}
+
+Ces informations sur les colonnes pertinentes sont insérées des notes additionnelles pour l'agent
+comme ceci :
+
+\begin{lstlisting}[language=Python, caption=Préparation des notes additionnelles pour l'agent]
+additional_notes = dedent(
+    """\
+    You are a helpful assistant that answers questions about food products 
+    using the Open Food Facts database.
+
+    POTENTIALLY RELEVANT COLUMNS:
+    The following columns have been identified through semantic search as potentially relevant, 
+    with their similarity scores (higher means more likely relevant):
+    
+    {columns_text}
+
+    SEARCH SEQUENCE RULES:
+    1. ALWAYS start with database queries using the most relevant columns
+    2. If initial query fails, try alternative database queries with different columns or approaches
+    3. Only if database queries are unsuccessful, search the Canada Food Guide
+    4. Document EVERY attempt in the steps array, including failures
+    5. Never skip straight to Food Guide without trying database first
+    6. Always include the source of the information in the answer ("Open Food Facts" or "Canada Food Guide")
+    7. Always respond in the same language as the question (French or English)
+    
+    RESPONSE FORMAT REQUIREMENTS:
+    1. Provide ONLY the natural language answer to the user's question
+    2. Maximum response length: 200 characters
+    3. DO NOT include SQL queries, code snippets, or technical details
+    4. DO NOT explain your reasoning or methodology
+    5. Respond in the same language as the question (French or English)
+    6. DO mention the source of information ("Open Food Facts" or "Canada Food Guide")
+    
+    Please follow these rules to ensure a consistent and effective search strategy.
+    """
+).format(columns_text=columns_text)
+\end{lstlisting}
+
+\subsection*{Étape 4: Création et exécution de l'agent}
+
+L'agent est créé de cette façon, où \texttt{query\_db} et \texttt{search\_web\_agent} sont des outils d'agent définis pour interroger la base de données et le site Web du Guide alimentaire canadien.
+
+\begin{lstlisting}[language=Python, caption=Création de l'agent]
+# Création du modèle LLM
+model = LiteLLMModel(
+    model_id="ollama/llama3.1:8b-instruct-q8_0",
+    api_base="http://localhost:11434",
+    num_ctx=8192
+)
+
+# Create agent
+agent = CodeAgent(
+    tools=[query_db],
+    model=model,
+    managed_agents=[search_web_agent],
+    additional_authorized_imports=["json"],
+    verbosity_level=LogLevel.INFO,
+)
+\end{lstlisting}
+
+L'agent est appelé avec le prompt enrichi :
+
+\begin{lstlisting}[language=Python, caption=Exécution
+de l'agent avec les notes additionnelles]
+start_time = time.time()
+agent_response = agent.run(
+    question,
+    additional_args={"additional_notes": additional_notes},
+)
+response_time = time.time() - start_time
+\end{lstlisting}
+
+\subsection*{Étape 5: Génération de la réponse}
+
+L'agent analyse les informations et génère la réponse suivante : 
+\enquote{According to Open Food Facts database, additive-free products include natural 
+foods like blueberries and pistachios, basic staples like spaghetti and rice, 
+and beverages like coconut water and coffee.}
+
+\newpage
+\subsection*{Étape 6: Traçage des étapes de l'agent}
+
+Le système enregistre toutes les étapes suivies par l'agent :
+
+\begin{lstlisting}[language=Python, caption=Traçage des étapes de l'agent]
+# Extrait les étapes depuis la mémoire de l'agent
+if hasattr(agent, 'memory') and hasattr(agent.memory, 'steps'):
+    steps_sequence = []
+    
+    for step in agent.memory.steps:
+        # Analyse chaque étape et outil utilisé
+        if not hasattr(step, 'tool_calls') or not step.tool_calls:
+            continue
+            
+        tool_call = step.tool_calls[0]
+        
+        # Enregistre les requêtes SQL, recherches web et autres actions
+        if tool_call.name == "python_interpreter" and isinstance(tool_call.arguments, str):
+            code = tool_call.arguments
+            step_data = {}
+            
+            # Détermine le type d'action (requête SQL, recherche web, etc.)
+            if "query_db" in code:
+                sql_query = self._extract_sql_from_code(code)
+                # Enregistre l'information sur la requête SQL
+            elif "search_food_guide" in code:
+                # Enregistre l'information sur la recherche web
+\end{lstlisting}
+
+Ces étapes permettent de suivre la séquence de recherche (d'abord la base de données, puis le guide alimentaire si nécessaire).
+
+\subsection*{Étape 7: Évaluation des métriques}
+
+Trois métriques principales sont calculées :
+
+\textbf{1. Précision d'exécution (EX)} : Comparer la requête générée avec la référence
+
+\begin{lstlisting}[language=Python, caption=Calcul de la précision d'exécution]
+def _calculate_sql_accuracy(self, response_data: dict, qa_pair: Dict[str, Any]) -> float:
+    agent_sql = response_data.get('sql_query')
+    
+    # Exécuter les requêtes
+    reference_results = self.execute_query(qa_pair['sql'])
+    agent_results = self.execute_query(agent_sql)
+
+    # Calculer les métriques individuelles
+    query_present = 1.0 if agent_sql else 0.0
+    execution_success = float(agent_results.success)
+    results_match = 0.0
+
+    # Comparer les résultats
+    if reference_results.success and agent_results.success:
+        # Calcul de la similarité entre les deux ensembles de résultats
+\end{lstlisting}
+
+\newpage
+\textbf{2. Précision sémantique (PS) : Comparer la réponse générée avec la référence}
+
+Je demande à un modèle LLM de comparer les deux réponses pour évaluer leur similarité sémantique.
+
+Les deux réponses sont : 
+
+\begin{itemize}
+  \item \textbf{Réponse attendue} : ``The database contains 5843 products without additives, including items such as organic Vermont maple syrup, low-fat milk, organic blue agave, and coconut milk.''
+  \item \textbf{Réponse de l'agent} : ``According to Open Food Facts database, additive-free products include natural foods like blueberries and pistachios, basic staples like spaghetti and rice, and beverages like coconut water and coffee.''
+\end{itemize}
+
+\begin{lstlisting}[language=Python, caption=Calcul de la précision sémantique]
+def _calculate_semantic_accuracy(self, response_data: dict, qa_pair: Dict, lang: str) -> float:
+    # Utiliser un LLM pour évaluer la similarité sémantique
+    prompt = dedent(f"""\
+    Compare these two responses and rate their semantic similarity from 0 to 1:
+    Response #1: {qa_pair['answers'][lang]}
+    Response #2: {agent_response}
+    """)
+    
+    # Le modèle LLM évalue et retourne un score de similarité
+\end{lstlisting}
+
+\textbf{3. Respect de séquence (RS)} : Vérifier que l'agent a suivi le bon ordre des sources
+
+\begin{lstlisting}[language=Python, caption=Évaluation du respect de séquence]
+def _evaluate_search_sequence(self, response_data: dict) -> dict:
+    steps = response_data.get('steps', [])
+    
+    # Initialiser les compteurs
+    db_attempts = []
+    web_attempt = None
+    sequence_respected = True
+    
+    # Vérifier l'ordre des étapes
+    for step in steps:
+        if step['action'] in ['database_query', 'alternative_query']:
+            db_attempts.append(step)
+            # Vérifier si une recherche web a déjà eu lieu (violation)
+            if web_attempt is not None:
+                sequence_respected = False
+                break
+        elif step['action'] == 'food_guide_search':
+            web_attempt = step
+\end{lstlisting}
+
+\newpage
+\subsection*{Étape 8: Compilation des résultats}
+
+Les résultats de l'évaluation sont compilés :
+
+\begin{lstlisting}[language=Python, caption=Compilation des résultats]
+# Créer un objet EvaluationResult contenant toutes les informations
+return EvaluationResult(
+    question_id=qa_pair.get('id', 0),
+    language=lang,
+    question=question,
+    expected_answer=qa_pair['answers'][lang],
+    agent_answer=agent_answer,
+    metrics=metrics,
+    expected_sql=qa_pair.get('sql', ''),
+    agent_sql=agent_sql
+)
+\end{lstlisting}
+
+\subsection*{Résultats finaux}
+
+L'évaluation finale montre :
+
+\begin{itemize}
+  \item Précision d'exécution (EX) : 0,00\% (l'agent n'a pas généré de requête SQL valide)
+  \item Précision sémantique (PS) : 80,00\% (forte similarité entre les réponses)
+  \item Respect de séquence (RS) : 100,00\% (protocole de recherche respecté)
+  \item Temps de réponse moyen (TR) : 45,95 secondes
+\end{itemize}
+
+Cet exemple illustre le parcours complet, démontrant comment l'agent analyse la question, génère une réponse et comment le système
+évalue objectivement cette réponse selon plusieurs dimensions.
+
+\iffalse
+
+Section pour commentaires.
+\fi
+
+\end{document}

@@ -19,6 +19,15 @@ src/logs/*.log
 # Notebooks
 .ipynb_checkpoints
 
+# LaTeX
+*.aux
+*.bbl
+*.blg
+docs/latex/**/*.log
+*.out
+*.toc
+*.synctex.gz
+
 # VS Code
 .vscode/
 

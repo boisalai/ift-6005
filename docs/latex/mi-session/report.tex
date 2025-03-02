@@ -171,6 +171,15 @@ L'architecture modulaire du système comprend les composants suivants :
     \item \textbf{Générateur de réponses :} Transforme les résultats bruts en réponses naturelles, en précisant les sources.
 \end{itemize}
 
+La figure \ref{fig:architecture} présente l'architecture modulaire du système, illustrant comment les questions des utilisateurs sont traitées par le module de dialogue LLM, enrichies par la recherche sémantique des colonnes pertinentes, puis converties en requêtes SQL pour interroger Open Food Facts, avec un repli vers le Guide alimentaire canadien lorsque nécessaire.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\textwidth]{figures/architecture-agent.png}
+    \caption{Architecture du système d'agent conversationnel pour l'interrogation d'Open Food Facts}
+    \label{fig:architecture}
+\end{figure}
+
 \subsection{Sélection des technologies}
 
 J'ai choisi ces technologies pour mon projet :
@@ -201,8 +210,15 @@ J'ai choisi ces technologies pour mon projet :
     \end{itemize}
 \end{itemize}
 
+Notons qu'au début du projet, j'envisageais d'utiliser CrewAI\footnote{\url{https://www.crewai.com/open-source}} pour l'orchestration des agents, mais j'ai finalement opté pour SmolAgents pour sa simplicité et sa flexibilité.
+Contrairement à CrewAI, qui impose une structure rigide avec des rôles prédéfinis, SmolAgents permet une approche plus modulaire où les agents interagissent librement via des outils définis par l’utilisateur. 
+De plus, il s’intègre facilement aux outils déjà utilisés dans le projet et évite la complexité d’une organisation centralisée, ce qui rend le développement plus rapide et plus facile.
+
+Aucune alternative à FAISS n’a été envisagée, car cette bibliothèque répond parfaitement aux besoins du projet. Elle est open-source, largement reconnue, soutenue par Facebook et simple à utiliser, tout en offrant d’excellentes performances pour la recherche sémantique.
+
 
 % ----------------------------------------------------------------------------------------
+\newpage
 \section{État d'avancement et tâches réalisées}
 \label{sec:progress}
 
@@ -259,7 +275,6 @@ con.execute(f"CREATE TABLE products AS SELECT * FROM '{PARQUET_PATH}'")
 con.close()
 \end{lstlisting}
 
-\newpage
 Pour accélérer les requêtes, j'ai créé une version avec seulement les 94\,802~produits canadiens :
 
 \begin{lstlisting}[language=Python]
@@ -309,13 +324,14 @@ Exemple de données pour la colonne \texttt{categories\_tags} :
 
 
 % Section 4.3
+
 \subsection{Documentation des données}
 
 J'ai créé un dictionnaire détaillé
 (\texttt{columns\_documentation.json}) pour aider l'agent à générer des requêtes SQL. Il contient des informations sur chacune des 109~colonnes.
 La documentation pour chaque colonne ressemble à ceci :
 
-
+\newpage
 \begin{lstlisting}
 "nova_groups_tags": {
   "type": "VARCHAR[]",
@@ -455,6 +471,104 @@ J'évalue l'agent selon quatre métriques principales :
 \end{itemize}
 
 
+% Section 4.8
+\subsection{Avancement par rapport à la planification initiale}
+
+Voici un tableau comparatif entre la planification initiale et l'état actuel du projet :
+
+\iffalse
+
+\fi
+
+\begin{itemize}
+    \item \textbf{Mise en place de l'environnement}
+    \begin{itemize}
+        \item \textbf{Planification initiale} : 5h -- Environnement Python, GitHub\footnote{\url{https://github.com/boisalai/ift-6005}}
+        \item \textbf{État actuel} : Environnement configuré, GitHub prêt, Black \& Pylint utilisés
+        \item \textbf{Statut} : Terminé $\checkmark$
+    \end{itemize}
+    
+    \item \textbf{Préparation de la base de données}
+    \begin{itemize}
+        \item \textbf{Planification initiale} : 5h -- Création d'une base DuckDB
+        \item \textbf{État actuel} : Base DuckDB créée avec filtrage des produits canadiens. Voir le script \texttt{data.py}
+        \item \textbf{Statut} : Terminé $\checkmark$
+      \end{itemize}
+    
+    \item \textbf{Création du jeu de test (100 questions)}
+    \begin{itemize}
+        \item \textbf{Planification initiale} : 10h -- Générer des questions et requêtes SQL
+        \item \textbf{État actuel} : 100 questions-réponses créées en français et anglais. Voir le script \texttt{question\_answer.json} et le fichier \texttt{qa\_pairs.json}
+        \item \textbf{Statut} : Terminé $\checkmark$
+    \end{itemize}
+    
+    \item \textbf{Documentation des données}
+    \begin{itemize}
+        \item \textbf{Planification initiale} : Prévoir un dictionnaire des colonnes
+        \item \textbf{État actuel} : Documentation détaillée (109 colonnes, exemples, SQL). Voir le script \texttt{docoff.py} et le fichier \texttt{columns\_documentation.json}
+        \item \textbf{Statut} : Terminé $\checkmark$
+    \end{itemize}
+    
+    \item \textbf{Développement de la conversion texte-SQL}
+    \begin{itemize}
+        \item \textbf{Planification initiale} : 25h -- Approche texte-SQL avec LLM
+        \item \textbf{État actuel} : Implémentation avec FAISS pour recherche sémantique. Voir le script \texttt{evaluation\_04.py}
+        \item \textbf{Statut} : Terminé $\checkmark$
+    \end{itemize}
+    
+    \item \textbf{Développement du module de dialogue}
+    \begin{itemize}
+        \item \textbf{Planification initiale} : 20h -- Utilisation de Qwen2-7B-Instruct
+        \item \textbf{État actuel} : Utilisation de \detokenize{Llama3.1:8B}, \detokenize{Qwen2.5:7B}, Claude 3.5. Voir le script \texttt{evaluation\_04.py}
+        \item \textbf{Statut} : Terminé $\checkmark$
+    \end{itemize}
+    
+    \item \textbf{Implémentation du générateur de réponses}
+    \begin{itemize}
+        \item \textbf{Planification initiale} : 25h -- Transformer résultats SQL en texte
+        \item \textbf{État actuel} : Fonctionnel avec SmolAgents et intégration Guide alimentaire canadien. Voir le script \texttt{evaluation\_04.py}
+        \item \textbf{Statut} : Terminé $\checkmark$
+    \end{itemize}
+    
+    \item \textbf{Stratégie d'évaluation (métriques EX, PS, RS, TRM)}
+    \begin{itemize}
+        \item \textbf{Planification initiale} : 10h -- Définir et tester les métriques
+        \item \textbf{État actuel} : Métriques définies et tests réalisés sur plusieurs modèles. Voir le script \texttt{evaluation\_04.py}
+        \item \textbf{Statut} : Terminé $\checkmark$
+    \end{itemize}
+    
+    \item \textbf{Optimisation des requêtes SQL et prompts}
+    \begin{itemize}
+        \item \textbf{Planification initiale} : 15h -- Améliorer la génération SQL
+        \item \textbf{État actuel} : Ajustements des prompts et meilleure gestion des colonnes SQL. Voir le script \texttt{evaluation\_04.py}
+        \item \textbf{Statut} : Terminé $\checkmark$
+    \end{itemize}
+    
+    \item \textbf{Gestion des données manquantes}
+    \begin{itemize}
+        \item \textbf{Planification initiale} : 15h -- Trouver des stratégies alternatives
+        \item \textbf{État actuel} : Approche hybride avec Guide alimentaire canadien intégrée. Voir le script \texttt{evaluation\_04.py}
+        \item \textbf{Statut} : Terminé $\checkmark$
+    \end{itemize}
+    
+    \item \textbf{Sélection dynamique de LLM}
+    \begin{itemize}
+        \item \textbf{Planification initiale} : 10h -- Tester plusieurs modèles pour équilibre coût/performance
+        \item \textbf{État actuel} : Non réalisé.
+        \item \textbf{Statut} : Non réalisé.
+    \end{itemize}
+    
+    \item \textbf{Exploration de nouvelles méthodes (ex. RAG, Neo4j)}
+    \begin{itemize}
+        \item \textbf{Planification initiale} : Optionnelle en phase avancée
+        \item \textbf{État actuel} : Mentionnée comme piste future
+        \item \textbf{Statut} : À explorer
+    \end{itemize}
+\end{itemize}
+
+En résumé, les tâches principales sont terminées selon la planification. Les optimisations avancées et l’exploration de nouvelles approches (ex. RAG) sont encore à explorer. 
+
+
 %----------------------------------------------------------------------------------------
 % Section 5
 \section{Résultats et discussion}
@@ -486,6 +600,7 @@ Temps de réponse moyen (TRM) & 432~s & 273~s & 239~s & 201~s & 37~s & 41~s \\
 \label{tab:resultats}
 \end{table}
 
+\newpage
 Ici \detokenize{Llama3.1:8B} réfère au modèle \texttt{ollama/llama3.1:8B-instruct-q8\_0}, 
 \detokenize{Qwen2.5:7B} au modèle \texttt{ollama/qwen2.5:7B-instruct} et 
 \detokenize{Claude 3.5 Sonnet} au modèle \\
@@ -552,7 +667,6 @@ Des tests avec Claude 3.5 Sonnet montrent des résultats bien meilleurs, confirm
 
 
 
-\newpage
 %----------------------------------------------------------------------------------------
 % Section 7
 \section{Prochaines étapes}

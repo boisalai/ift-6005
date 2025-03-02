@@ -242,6 +242,30 @@ J'évalue l'agent avec quatre métriques principales:
 - **Respect de séquence (RS)** : Vérifie si l'agent suit une stratégie de recherche cohérente (d'abord la base de données, puis les sources externes)
 - **Temps de réponse moyen (TRM)** : Mesure la rapidité du traitement
 
+## 4.8 Avancement par rapport à la planification initiale
+
+Voici un tableau comparatif entre la **planification initiale** et l’**état actuel du projet** :
+
+| **Tâche**                                      | **Planification initiale (plan.pdf)**     | **État actuel (report.pdf)**           | **Statut**  |
+|-----------------------------------------------|-----------------------------------------|--------------------------------------|------------|
+| **Mise en place de l’environnement**         | 5h – Environnement Python, GitHub      | Environnement configuré, GitHub prêt, Black & Pylint utilisés | ✅ Terminé  |
+| **Préparation de la base de données**        | 5h – Création d’une base DuckDB        | Base DuckDB créée avec filtrage des produits canadiens | ✅ Terminé  |
+| **Création du jeu de test (100 questions)**  | 10h – Générer des questions et requêtes SQL | 100 questions-réponses créées en français et anglais | ✅ Terminé  |
+| **Documentation des données**                | Prévoir un dictionnaire des colonnes   | Documentation détaillée (109 colonnes, exemples, SQL) | ✅ Terminé  |
+| **Développement de la conversion texte-SQL** | 25h – Approche texte-SQL avec LLM      | Implémentation avec FAISS pour recherche sémantique | ✅ Terminé  |
+| **Développement du module de dialogue**      | 20h – Utilisation de Qwen2-7B-Instruct | Utilisation de Llama3.1:8B, Qwen2.5:7B, Claude 3.5 | ✅ Terminé  |
+| **Implémentation du générateur de réponses** | 25h – Transformer résultats SQL en texte | Fonctionnel avec SmolAgents et intégration Guide alimentaire canadien | ✅ Terminé  |
+| **Stratégie d’évaluation (métriques EX, PS, RS, TRM)** | 10h – Définir et tester les métriques | Métriques définies et tests réalisés sur plusieurs modèles | ✅ Terminé  |
+| **Optimisation des requêtes SQL et prompts** | 15h – Améliorer la génération SQL      | Ajustements des prompts et meilleure gestion des colonnes SQL | ✅ Terminé  |
+| **Gestion des données manquantes**           | 15h – Trouver des stratégies alternatives | Approche hybride avec Guide alimentaire canadien intégrée | ✅ Terminé  |
+| **Sélection dynamique de LLM**               | 10h – Tester plusieurs modèles pour équilibre coût/performance | Tests réalisés sur plusieurs modèles, résultats documentés | ✅ Terminé  |
+| **Exploration de nouvelles méthodes (ex. RAG, Neo4j)** | Optionnelle en phase avancée          | Mentionnée comme piste future | ⏳ À explorer |
+| **Finalisation et rapport final**            | Rapport mi-session : 15h, final : 15h  | Rapport mi-session rédigé, reste le rapport final | ⏳ En cours |
+
+🔹 **Résumé :**  
+Toutes les tâches **principales sont terminées** selon la planification. Les optimisations avancées et l’exploration de nouvelles approches (ex. RAG) sont **à explorer**. La **rédaction du rapport final** est en cours.
+
+
 ## 5. Résultats et discussion
 
 Le tableau suivant résume les résultats des tests effectués sur l'agent conversationnel en utilisant différents modèles de langage et en évaluant les métriques EX, PS, RS et TRM

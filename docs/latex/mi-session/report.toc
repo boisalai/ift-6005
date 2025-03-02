@@ -3,19 +3,20 @@
 \contentsline {section}{\numberline {2}Rappel de l'objectif du projet}{3}{section.2}%
 \contentsline {section}{\numberline {3}Approche proposée}{3}{section.3}%
 \contentsline {subsection}{\numberline {3.1}Architecture du système}{3}{subsection.3.1}%
-\contentsline {subsection}{\numberline {3.2}Sélection des technologies}{3}{subsection.3.2}%
-\contentsline {section}{\numberline {4}État d'avancement et tâches réalisées}{4}{section.4}%
-\contentsline {subsection}{\numberline {4.1}Mise en place de l'environnement de développement}{4}{subsection.4.1}%
-\contentsline {subsection}{\numberline {4.2}Préparation de la base de données}{4}{subsection.4.2}%
+\contentsline {subsection}{\numberline {3.2}Sélection des technologies}{4}{subsection.3.2}%
+\contentsline {section}{\numberline {4}État d'avancement et tâches réalisées}{5}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Mise en place de l'environnement de développement}{5}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.2}Préparation de la base de données}{5}{subsection.4.2}%
 \contentsline {subsection}{\numberline {4.3}Documentation des données}{6}{subsection.4.3}%
-\contentsline {subsection}{\numberline {4.4}Création du jeu de test}{6}{subsection.4.4}%
-\contentsline {subsection}{\numberline {4.5}Développement de la recherche sémantique}{7}{subsection.4.5}%
-\contentsline {subsection}{\numberline {4.6}Création des outils d'agent}{7}{subsection.4.6}%
-\contentsline {subsection}{\numberline {4.7}Stratégie d'évaluation}{8}{subsection.4.7}%
-\contentsline {section}{\numberline {5}Résultats et discussion}{8}{section.5}%
-\contentsline {section}{\numberline {6}Problèmes rencontrés et solutions}{9}{section.6}%
-\contentsline {subsection}{\numberline {6.1}Complexité structurelle des données}{9}{subsection.6.1}%
-\contentsline {subsection}{\numberline {6.2}Limitations des modèles de langage légers}{9}{subsection.6.2}%
-\contentsline {section}{\numberline {7}Prochaines étapes}{10}{section.7}%
-\contentsline {section}{\numberline {8}Conclusion}{10}{section.8}%
-\contentsline {section}{Références}{10}{section.8}%
+\contentsline {subsection}{\numberline {4.4}Création du jeu de test}{7}{subsection.4.4}%
+\contentsline {subsection}{\numberline {4.5}Développement de la recherche sémantique}{8}{subsection.4.5}%
+\contentsline {subsection}{\numberline {4.6}Création des outils d'agent}{8}{subsection.4.6}%
+\contentsline {subsection}{\numberline {4.7}Stratégie d'évaluation}{9}{subsection.4.7}%
+\contentsline {subsection}{\numberline {4.8}Avancement par rapport à la planification initiale}{9}{subsection.4.8}%
+\contentsline {section}{\numberline {5}Résultats et discussion}{10}{section.5}%
+\contentsline {section}{\numberline {6}Problèmes rencontrés et solutions}{11}{section.6}%
+\contentsline {subsection}{\numberline {6.1}Complexité structurelle des données}{11}{subsection.6.1}%
+\contentsline {subsection}{\numberline {6.2}Limitations des modèles de langage légers}{11}{subsection.6.2}%
+\contentsline {section}{\numberline {7}Prochaines étapes}{12}{section.7}%
+\contentsline {section}{\numberline {8}Conclusion}{12}{section.8}%
+\contentsline {section}{Références}{12}{section.8}%

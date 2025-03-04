@@ -10,6 +10,7 @@ __pycache__/
 data/*.csv
 data/*.parquet
 data/*.duckdb
+data/*.jsonl
 data/cache/*.index
 
 # Logs

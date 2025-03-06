@@ -1,6 +1,8 @@
 # IFT-6005 - Conversational Agent Project
 
+<!--
 https://drive.google.com/file/d/1BRhfKyAbzxcwmkuie8dG8HN_38NGwqPx/view?usp=sharing
+-->
 
 A conversational agent for querying the Open Food Facts database using Hugging Face's smolagents library. 
 Developed as part of IFT-6005 Integration Project at Université Laval.

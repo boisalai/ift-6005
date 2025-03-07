@@ -963,7 +963,7 @@ def main():
     # (attempt to add 575 relationships would reach 400498 relationships). Please consider 
     # upgrading to the next tier.}
     # With limit=1000, elapsed time: 46 seconds
-    limit = 100
+    limit = 1000
     clear_db = True  # Paramètre pour contrôler si on efface ou non
 
     # Initialiser le graphe

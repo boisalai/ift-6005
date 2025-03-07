@@ -25,7 +25,8 @@ class IntentHandler:
             ],
             IntentType.BRAND_QUERY: [
                 r"(?:quels (?:sont|produits)(?: les)?|montre(?:s|z)?(?:-moi)?|liste(?:s|z)?|donne(?:s|z)?(?:-moi)?)(?: les| des)? (?:produits|articles)(?:(?:(?:(?:de|par) la)|(?:(?:fabriqués|vendus|produits|fait) par))?(?: la)? marque| de) (.+?)(?:\?|$)",
-                r"(?:je (?:cherche|recherche|veux))(?: des| les)? (?:produits|articles)(?: de| par)?(?: la)? marque (.+?)(?:\?|$)"
+                r"(?:je (?:cherche|recherche|veux))(?: des| les)? (?:produits|articles)(?: de| par)?(?: la)? marque (.+?)(?:\?|$)",
+                r"(?:produits|articles)(?: de| par)?(?: la)? marque ['\"]?(.+?)['\"]?(?:\?|$)"
             ],
             IntentType.INGREDIENT_QUERY: [
                 r"(?:quels (?:sont|produits)(?: les)?|montre(?:s|z)?(?:-moi)?|liste(?:s|z)?|donne(?:s|z)?(?:-moi)?)(?: les| des)? (?:produits|articles)(?: qui|) (?:contien(?:nen)?t|avec)(?: du| de la| des| les?)? (.+?)(?:\?|$)",
@@ -86,9 +87,14 @@ class IntentHandler:
         # Logging pour le débogage
         print(f"Intent détecté: {intent_type.value}, Entité: {entity}")
         
-        if intent_type == IntentType.GENERAL_QUERY:
-            # Utiliser la chaîne QA standard pour les requêtes générales
-            return self.agent.qa_chain.invoke({"query": query}), None
+        if intent_type == IntentType.GENERAL_QUERY or entity is None:
+            # Essayer de réextraire l'entité de la requête complète
+            if "butternut mountain farm" in query.lower() or "butternut" in query.lower():
+                intent_type = IntentType.BRAND_QUERY
+                entity = "Butternut Mountain Farm"
+            else:
+                # Utiliser la chaîne QA standard pour les requêtes générales
+                return self.agent.qa_chain.invoke({"query": query}), None
         
         elif intent_type == IntentType.PRODUCT_INFO and entity:
             # Requête d'information sur un produit spécifique

@@ -1,0 +1,2196 @@
+2025-03-06 16:18:27,806 - INFO - Base de données Neo4j effacée avec succès
+2025-03-06 16:18:27,917 - INFO - Contrainte créée: CREATE CONSTRAINT product_id IF NOT EXISTS FOR (p:Product) REQUIRE p.id IS UNIQUE
+2025-03-06 16:18:27,996 - INFO - Contrainte créée: CREATE CONSTRAINT brand_name IF NOT EXISTS FOR (b:Brand) REQUIRE b.name IS UNIQUE
+2025-03-06 16:18:28,077 - INFO - Contrainte créée: CREATE CONSTRAINT ingredient_name IF NOT EXISTS FOR (i:Ingredient) REQUIRE i.name IS UNIQUE
+2025-03-06 16:18:28,158 - INFO - Contrainte créée: CREATE CONSTRAINT category_name IF NOT EXISTS FOR (c:Category) REQUIRE c.name IS UNIQUE
+2025-03-06 16:18:28,240 - INFO - Contrainte créée: CREATE CONSTRAINT country_name IF NOT EXISTS FOR (c:Country) REQUIRE c.name IS UNIQUE
+2025-03-06 16:18:28,319 - INFO - Contrainte créée: CREATE CONSTRAINT allergen_name IF NOT EXISTS FOR (a:Allergen) REQUIRE a.name IS UNIQUE
+2025-03-06 16:18:28,406 - INFO - Contrainte créée: CREATE CONSTRAINT nutrient_name IF NOT EXISTS FOR (n:Nutrient) REQUIRE n.name IS UNIQUE
+2025-03-06 16:18:28,505 - INFO - Contrainte créée: CREATE CONSTRAINT label_name IF NOT EXISTS FOR (l:Label) REQUIRE l.name IS UNIQUE
+2025-03-06 16:18:28,510 - INFO - Chargement de 3 produits...
+2025-03-06 16:18:28,580 - INFO - Contrainte créée: CREATE CONSTRAINT product_id IF NOT EXISTS FOR (p:Product) REQUIRE p.id IS UNIQUE
+2025-03-06 16:18:28,582 - INFO - Received notification from DBMS server: {severity: INFORMATION} {code: Neo.ClientNotification.Schema.IndexOrConstraintAlreadyExists} {category: SCHEMA} {title: `CREATE CONSTRAINT product_id IF NOT EXISTS FOR (e:Product) REQUIRE (e.id) IS UNIQUE` has no effect.} {description: `CONSTRAINT product_id FOR (e:Product) REQUIRE (e.id) IS UNIQUE` already exists.} {position: None} for query: 'CREATE CONSTRAINT product_id IF NOT EXISTS FOR (p:Product) REQUIRE p.id IS UNIQUE'
+2025-03-06 16:18:28,645 - INFO - Contrainte créée: CREATE CONSTRAINT brand_name IF NOT EXISTS FOR (b:Brand) REQUIRE b.name IS UNIQUE
+2025-03-06 16:18:28,646 - INFO - Received notification from DBMS server: {severity: INFORMATION} {code: Neo.ClientNotification.Schema.IndexOrConstraintAlreadyExists} {category: SCHEMA} {title: `CREATE CONSTRAINT brand_name IF NOT EXISTS FOR (e:Brand) REQUIRE (e.name) IS UNIQUE` has no effect.} {description: `CONSTRAINT brand_name FOR (e:Brand) REQUIRE (e.name) IS UNIQUE` already exists.} {position: None} for query: 'CREATE CONSTRAINT brand_name IF NOT EXISTS FOR (b:Brand) REQUIRE b.name IS UNIQUE'
+2025-03-06 16:18:28,707 - INFO - Contrainte créée: CREATE CONSTRAINT ingredient_name IF NOT EXISTS FOR (i:Ingredient) REQUIRE i.name IS UNIQUE
+2025-03-06 16:18:28,710 - INFO - Received notification from DBMS server: {severity: INFORMATION} {code: Neo.ClientNotification.Schema.IndexOrConstraintAlreadyExists} {category: SCHEMA} {title: `CREATE CONSTRAINT ingredient_name IF NOT EXISTS FOR (e:Ingredient) REQUIRE (e.name) IS UNIQUE` has no effect.} {description: `CONSTRAINT ingredient_name FOR (e:Ingredient) REQUIRE (e.name) IS UNIQUE` already exists.} {position: None} for query: 'CREATE CONSTRAINT ingredient_name IF NOT EXISTS FOR (i:Ingredient) REQUIRE i.name IS UNIQUE'
+2025-03-06 16:18:28,775 - INFO - Contrainte créée: CREATE CONSTRAINT category_name IF NOT EXISTS FOR (c:Category) REQUIRE c.name IS UNIQUE
+2025-03-06 16:18:28,776 - INFO - Received notification from DBMS server: {severity: INFORMATION} {code: Neo.ClientNotification.Schema.IndexOrConstraintAlreadyExists} {category: SCHEMA} {title: `CREATE CONSTRAINT category_name IF NOT EXISTS FOR (e:Category) REQUIRE (e.name) IS UNIQUE` has no effect.} {description: `CONSTRAINT category_name FOR (e:Category) REQUIRE (e.name) IS UNIQUE` already exists.} {position: None} for query: 'CREATE CONSTRAINT category_name IF NOT EXISTS FOR (c:Category) REQUIRE c.name IS UNIQUE'
+2025-03-06 16:18:28,836 - INFO - Contrainte créée: CREATE CONSTRAINT country_name IF NOT EXISTS FOR (c:Country) REQUIRE c.name IS UNIQUE
+2025-03-06 16:18:28,838 - INFO - Received notification from DBMS server: {severity: INFORMATION} {code: Neo.ClientNotification.Schema.IndexOrConstraintAlreadyExists} {category: SCHEMA} {title: `CREATE CONSTRAINT country_name IF NOT EXISTS FOR (e:Country) REQUIRE (e.name) IS UNIQUE` has no effect.} {description: `CONSTRAINT country_name FOR (e:Country) REQUIRE (e.name) IS UNIQUE` already exists.} {position: None} for query: 'CREATE CONSTRAINT country_name IF NOT EXISTS FOR (c:Country) REQUIRE c.name IS UNIQUE'
+2025-03-06 16:18:28,899 - INFO - Contrainte créée: CREATE CONSTRAINT allergen_name IF NOT EXISTS FOR (a:Allergen) REQUIRE a.name IS UNIQUE
+2025-03-06 16:18:28,900 - INFO - Received notification from DBMS server: {severity: INFORMATION} {code: Neo.ClientNotification.Schema.IndexOrConstraintAlreadyExists} {category: SCHEMA} {title: `CREATE CONSTRAINT allergen_name IF NOT EXISTS FOR (e:Allergen) REQUIRE (e.name) IS UNIQUE` has no effect.} {description: `CONSTRAINT allergen_name FOR (e:Allergen) REQUIRE (e.name) IS UNIQUE` already exists.} {position: None} for query: 'CREATE CONSTRAINT allergen_name IF NOT EXISTS FOR (a:Allergen) REQUIRE a.name IS UNIQUE'
+2025-03-06 16:18:28,963 - INFO - Contrainte créée: CREATE CONSTRAINT nutrient_name IF NOT EXISTS FOR (n:Nutrient) REQUIRE n.name IS UNIQUE
+2025-03-06 16:18:28,964 - INFO - Received notification from DBMS server: {severity: INFORMATION} {code: Neo.ClientNotification.Schema.IndexOrConstraintAlreadyExists} {category: SCHEMA} {title: `CREATE CONSTRAINT nutrient_name IF NOT EXISTS FOR (e:Nutrient) REQUIRE (e.name) IS UNIQUE` has no effect.} {description: `CONSTRAINT nutrient_name FOR (e:Nutrient) REQUIRE (e.name) IS UNIQUE` already exists.} {position: None} for query: 'CREATE CONSTRAINT nutrient_name IF NOT EXISTS FOR (n:Nutrient) REQUIRE n.name IS UNIQUE'
+2025-03-06 16:18:29,038 - INFO - Contrainte créée: CREATE CONSTRAINT label_name IF NOT EXISTS FOR (l:Label) REQUIRE l.name IS UNIQUE
+2025-03-06 16:18:29,040 - INFO - Received notification from DBMS server: {severity: INFORMATION} {code: Neo.ClientNotification.Schema.IndexOrConstraintAlreadyExists} {category: SCHEMA} {title: `CREATE CONSTRAINT label_name IF NOT EXISTS FOR (e:Label) REQUIRE (e.name) IS UNIQUE` has no effect.} {description: `CONSTRAINT label_name FOR (e:Label) REQUIRE (e.name) IS UNIQUE` already exists.} {position: None} for query: 'CREATE CONSTRAINT label_name IF NOT EXISTS FOR (l:Label) REQUIRE l.name IS UNIQUE'
+2025-03-06 16:18:33,989 - INFO - Progression: 3/3 produits traités
+2025-03-06 16:18:33,990 - INFO - === Statistiques de chargement ===
+2025-03-06 16:18:33,990 - INFO - marques: 4
+2025-03-06 16:18:33,990 - INFO - categories: 4
+2025-03-06 16:18:33,990 - INFO - pays: 4
+2025-03-06 16:18:33,990 - INFO - ingredients: 9
+2025-03-06 16:18:33,990 - INFO - nutriments: 15
+2025-03-06 16:18:33,990 - INFO - labels: 4
+2025-03-06 16:18:33,990 - INFO - produits_ajoutes: 3
+2025-03-06 16:18:33,990 - INFO - allergenes: 1
+2025-03-06 16:18:33,990 - INFO - 3 produits ont été chargés dans le graphe Neo4j.
+2025-03-06 16:18:34,070 - INFO - Index créé: CREATE INDEX product_name_index IF NOT EXISTS FOR (p:Product) ON (p.name)
+2025-03-06 16:18:34,135 - INFO - Index créé: CREATE INDEX brand_name_index IF NOT EXISTS FOR (b:Brand) ON (b.name)
+2025-03-06 16:18:34,135 - INFO - Received notification from DBMS server: {severity: INFORMATION} {code: Neo.ClientNotification.Schema.IndexOrConstraintAlreadyExists} {category: SCHEMA} {title: `CREATE RANGE INDEX brand_name_index IF NOT EXISTS FOR (e:Brand) ON (e.name)` has no effect.} {description: `RANGE INDEX brand_name FOR (e:Brand) ON (e.name)` already exists.} {position: None} for query: 'CREATE INDEX brand_name_index IF NOT EXISTS FOR (b:Brand) ON (b.name)'
+2025-03-06 16:18:34,194 - INFO - Index créé: CREATE INDEX category_name_index IF NOT EXISTS FOR (c:Category) ON (c.name)
+2025-03-06 16:18:34,195 - INFO - Received notification from DBMS server: {severity: INFORMATION} {code: Neo.ClientNotification.Schema.IndexOrConstraintAlreadyExists} {category: SCHEMA} {title: `CREATE RANGE INDEX category_name_index IF NOT EXISTS FOR (e:Category) ON (e.name)` has no effect.} {description: `RANGE INDEX category_name FOR (e:Category) ON (e.name)` already exists.} {position: None} for query: 'CREATE INDEX category_name_index IF NOT EXISTS FOR (c:Category) ON (c.name)'
+2025-03-06 16:18:34,256 - INFO - Index créé: CREATE INDEX ingredient_name_index IF NOT EXISTS FOR (i:Ingredient) ON (i.name)
+2025-03-06 16:18:34,257 - INFO - Received notification from DBMS server: {severity: INFORMATION} {code: Neo.ClientNotification.Schema.IndexOrConstraintAlreadyExists} {category: SCHEMA} {title: `CREATE RANGE INDEX ingredient_name_index IF NOT EXISTS FOR (e:Ingredient) ON (e.name)` has no effect.} {description: `RANGE INDEX ingredient_name FOR (e:Ingredient) ON (e.name)` already exists.} {position: None} for query: 'CREATE INDEX ingredient_name_index IF NOT EXISTS FOR (i:Ingredient) ON (i.name)'
+2025-03-06 16:18:34,318 - INFO - Index créé: CREATE INDEX product_nutriscore_index IF NOT EXISTS FOR (p:Product) ON (p.nutriscore)
+2025-03-06 16:18:34,375 - INFO - Index créé: CREATE INDEX product_nova_index IF NOT EXISTS FOR (p:Product) ON (p.nova_group)
+2025-03-06 16:18:34,441 - INFO - Index créé: CREATE INDEX product_ecoscore_index IF NOT EXISTS FOR (p:Product) ON (p.ecoscore)
+2025-03-06 16:21:44,623 - INFO - Base de données Neo4j effacée avec succès
+2025-03-06 16:21:44,711 - INFO - Contrainte créée: CREATE CONSTRAINT product_id IF NOT EXISTS FOR (p:Product) REQUIRE p.id IS UNIQUE
+2025-03-06 16:21:44,790 - INFO - Contrainte créée: CREATE CONSTRAINT brand_name IF NOT EXISTS FOR (b:Brand) REQUIRE b.name IS UNIQUE
+2025-03-06 16:21:44,862 - INFO - Contrainte créée: CREATE CONSTRAINT ingredient_name IF NOT EXISTS FOR (i:Ingredient) REQUIRE i.name IS UNIQUE
+2025-03-06 16:21:44,943 - INFO - Contrainte créée: CREATE CONSTRAINT category_name IF NOT EXISTS FOR (c:Category) REQUIRE c.name IS UNIQUE
+2025-03-06 16:21:45,019 - INFO - Contrainte créée: CREATE CONSTRAINT country_name IF NOT EXISTS FOR (c:Country) REQUIRE c.name IS UNIQUE
+2025-03-06 16:21:45,109 - INFO - Contrainte créée: CREATE CONSTRAINT allergen_name IF NOT EXISTS FOR (a:Allergen) REQUIRE a.name IS UNIQUE
+2025-03-06 16:21:45,189 - INFO - Contrainte créée: CREATE CONSTRAINT nutrient_name IF NOT EXISTS FOR (n:Nutrient) REQUIRE n.name IS UNIQUE
+2025-03-06 16:21:45,263 - INFO - Contrainte créée: CREATE CONSTRAINT label_name IF NOT EXISTS FOR (l:Label) REQUIRE l.name IS UNIQUE
+2025-03-06 16:22:22,068 - INFO - Chargement de 97439 produits...
+2025-03-06 16:22:24,274 - INFO - Limitation à 10 produits...
+2025-03-06 16:22:24,390 - INFO - Contrainte créée: CREATE CONSTRAINT product_id IF NOT EXISTS FOR (p:Product) REQUIRE p.id IS UNIQUE
+2025-03-06 16:22:24,390 - INFO - Received notification from DBMS server: {severity: INFORMATION} {code: Neo.ClientNotification.Schema.IndexOrConstraintAlreadyExists} {category: SCHEMA} {title: `CREATE CONSTRAINT product_id IF NOT EXISTS FOR (e:Product) REQUIRE (e.id) IS UNIQUE` has no effect.} {description: `CONSTRAINT product_id FOR (e:Product) REQUIRE (e.id) IS UNIQUE` already exists.} {position: None} for query: 'CREATE CONSTRAINT product_id IF NOT EXISTS FOR (p:Product) REQUIRE p.id IS UNIQUE'
+2025-03-06 16:22:24,449 - INFO - Contrainte créée: CREATE CONSTRAINT brand_name IF NOT EXISTS FOR (b:Brand) REQUIRE b.name IS UNIQUE
+2025-03-06 16:22:24,450 - INFO - Received notification from DBMS server: {severity: INFORMATION} {code: Neo.ClientNotification.Schema.IndexOrConstraintAlreadyExists} {category: SCHEMA} {title: `CREATE CONSTRAINT brand_name IF NOT EXISTS FOR (e:Brand) REQUIRE (e.name) IS UNIQUE` has no effect.} {description: `CONSTRAINT brand_name FOR (e:Brand) REQUIRE (e.name) IS UNIQUE` already exists.} {position: None} for query: 'CREATE CONSTRAINT brand_name IF NOT EXISTS FOR (b:Brand) REQUIRE b.name IS UNIQUE'
+2025-03-06 16:22:24,512 - INFO - Contrainte créée: CREATE CONSTRAINT ingredient_name IF NOT EXISTS FOR (i:Ingredient) REQUIRE i.name IS UNIQUE
+2025-03-06 16:22:24,512 - INFO - Received notification from DBMS server: {severity: INFORMATION} {code: Neo.ClientNotification.Schema.IndexOrConstraintAlreadyExists} {category: SCHEMA} {title: `CREATE CONSTRAINT ingredient_name IF NOT EXISTS FOR (e:Ingredient) REQUIRE (e.name) IS UNIQUE` has no effect.} {description: `CONSTRAINT ingredient_name FOR (e:Ingredient) REQUIRE (e.name) IS UNIQUE` already exists.} {position: None} for query: 'CREATE CONSTRAINT ingredient_name IF NOT EXISTS FOR (i:Ingredient) REQUIRE i.name IS UNIQUE'
+2025-03-06 16:22:24,576 - INFO - Contrainte créée: CREATE CONSTRAINT category_name IF NOT EXISTS FOR (c:Category) REQUIRE c.name IS UNIQUE
+2025-03-06 16:22:24,577 - INFO - Received notification from DBMS server: {severity: INFORMATION} {code: Neo.ClientNotification.Schema.IndexOrConstraintAlreadyExists} {category: SCHEMA} {title: `CREATE CONSTRAINT category_name IF NOT EXISTS FOR (e:Category) REQUIRE (e.name) IS UNIQUE` has no effect.} {description: `CONSTRAINT category_name FOR (e:Category) REQUIRE (e.name) IS UNIQUE` already exists.} {position: None} for query: 'CREATE CONSTRAINT category_name IF NOT EXISTS FOR (c:Category) REQUIRE c.name IS UNIQUE'
+2025-03-06 16:22:24,642 - INFO - Contrainte créée: CREATE CONSTRAINT country_name IF NOT EXISTS FOR (c:Country) REQUIRE c.name IS UNIQUE
+2025-03-06 16:22:24,643 - INFO - Received notification from DBMS server: {severity: INFORMATION} {code: Neo.ClientNotification.Schema.IndexOrConstraintAlreadyExists} {category: SCHEMA} {title: `CREATE CONSTRAINT country_name IF NOT EXISTS FOR (e:Country) REQUIRE (e.name) IS UNIQUE` has no effect.} {description: `CONSTRAINT country_name FOR (e:Country) REQUIRE (e.name) IS UNIQUE` already exists.} {position: None} for query: 'CREATE CONSTRAINT country_name IF NOT EXISTS FOR (c:Country) REQUIRE c.name IS UNIQUE'
+2025-03-06 16:22:24,706 - INFO - Contrainte créée: CREATE CONSTRAINT allergen_name IF NOT EXISTS FOR (a:Allergen) REQUIRE a.name IS UNIQUE
+2025-03-06 16:22:24,707 - INFO - Received notification from DBMS server: {severity: INFORMATION} {code: Neo.ClientNotification.Schema.IndexOrConstraintAlreadyExists} {category: SCHEMA} {title: `CREATE CONSTRAINT allergen_name IF NOT EXISTS FOR (e:Allergen) REQUIRE (e.name) IS UNIQUE` has no effect.} {description: `CONSTRAINT allergen_name FOR (e:Allergen) REQUIRE (e.name) IS UNIQUE` already exists.} {position: None} for query: 'CREATE CONSTRAINT allergen_name IF NOT EXISTS FOR (a:Allergen) REQUIRE a.name IS UNIQUE'
+2025-03-06 16:22:24,768 - INFO - Contrainte créée: CREATE CONSTRAINT nutrient_name IF NOT EXISTS FOR (n:Nutrient) REQUIRE n.name IS UNIQUE
+2025-03-06 16:22:24,769 - INFO - Received notification from DBMS server: {severity: INFORMATION} {code: Neo.ClientNotification.Schema.IndexOrConstraintAlreadyExists} {category: SCHEMA} {title: `CREATE CONSTRAINT nutrient_name IF NOT EXISTS FOR (e:Nutrient) REQUIRE (e.name) IS UNIQUE` has no effect.} {description: `CONSTRAINT nutrient_name FOR (e:Nutrient) REQUIRE (e.name) IS UNIQUE` already exists.} {position: None} for query: 'CREATE CONSTRAINT nutrient_name IF NOT EXISTS FOR (n:Nutrient) REQUIRE n.name IS UNIQUE'
+2025-03-06 16:22:24,833 - INFO - Contrainte créée: CREATE CONSTRAINT label_name IF NOT EXISTS FOR (l:Label) REQUIRE l.name IS UNIQUE
+2025-03-06 16:22:24,835 - INFO - Received notification from DBMS server: {severity: INFORMATION} {code: Neo.ClientNotification.Schema.IndexOrConstraintAlreadyExists} {category: SCHEMA} {title: `CREATE CONSTRAINT label_name IF NOT EXISTS FOR (e:Label) REQUIRE (e.name) IS UNIQUE` has no effect.} {description: `CONSTRAINT label_name FOR (e:Label) REQUIRE (e.name) IS UNIQUE` already exists.} {position: None} for query: 'CREATE CONSTRAINT label_name IF NOT EXISTS FOR (l:Label) REQUIRE l.name IS UNIQUE'
+2025-03-06 16:22:37,361 - WARNING - Produit 0012354087774 sans nom ignoré
+2025-03-06 16:22:37,362 - WARNING - Produit 0012502638919 sans nom ignoré
+2025-03-06 16:22:39,531 - INFO - Progression: 10/10 produits traités
+2025-03-06 16:22:39,531 - INFO - === Statistiques de chargement ===
+2025-03-06 16:22:39,531 - INFO - marques: 8
+2025-03-06 16:22:39,531 - INFO - categories: 21
+2025-03-06 16:22:39,531 - INFO - pays: 10
+2025-03-06 16:22:39,532 - INFO - ingredients: 70
+2025-03-06 16:22:39,532 - INFO - nutriments: 53
+2025-03-06 16:22:39,532 - INFO - labels: 16
+2025-03-06 16:22:39,532 - INFO - produits_ajoutes: 8
+2025-03-06 16:22:39,532 - INFO - allergenes: 5
+2025-03-06 16:22:39,532 - INFO - produits_sans_nom: 2
+2025-03-06 16:22:39,955 - INFO - 8 produits ont été chargés dans le graphe Neo4j.
+2025-03-06 16:22:40,009 - INFO - Index créé: CREATE INDEX product_name_index IF NOT EXISTS FOR (p:Product) ON (p.name)
+2025-03-06 16:22:40,082 - INFO - Index créé: CREATE INDEX brand_name_index IF NOT EXISTS FOR (b:Brand) ON (b.name)
+2025-03-06 16:22:40,084 - INFO - Received notification from DBMS server: {severity: INFORMATION} {code: Neo.ClientNotification.Schema.IndexOrConstraintAlreadyExists} {category: SCHEMA} {title: `CREATE RANGE INDEX brand_name_index IF NOT EXISTS FOR (e:Brand) ON (e.name)` has no effect.} {description: `RANGE INDEX brand_name FOR (e:Brand) ON (e.name)` already exists.} {position: None} for query: 'CREATE INDEX brand_name_index IF NOT EXISTS FOR (b:Brand) ON (b.name)'
+2025-03-06 16:22:40,164 - INFO - Index créé: CREATE INDEX category_name_index IF NOT EXISTS FOR (c:Category) ON (c.name)
+2025-03-06 16:22:40,166 - INFO - Received notification from DBMS server: {severity: INFORMATION} {code: Neo.ClientNotification.Schema.IndexOrConstraintAlreadyExists} {category: SCHEMA} {title: `CREATE RANGE INDEX category_name_index IF NOT EXISTS FOR (e:Category) ON (e.name)` has no effect.} {description: `RANGE INDEX category_name FOR (e:Category) ON (e.name)` already exists.} {position: None} for query: 'CREATE INDEX category_name_index IF NOT EXISTS FOR (c:Category) ON (c.name)'
+2025-03-06 16:22:40,225 - INFO - Index créé: CREATE INDEX ingredient_name_index IF NOT EXISTS FOR (i:Ingredient) ON (i.name)
+2025-03-06 16:22:40,226 - INFO - Received notification from DBMS server: {severity: INFORMATION} {code: Neo.ClientNotification.Schema.IndexOrConstraintAlreadyExists} {category: SCHEMA} {title: `CREATE RANGE INDEX ingredient_name_index IF NOT EXISTS FOR (e:Ingredient) ON (e.name)` has no effect.} {description: `RANGE INDEX ingredient_name FOR (e:Ingredient) ON (e.name)` already exists.} {position: None} for query: 'CREATE INDEX ingredient_name_index IF NOT EXISTS FOR (i:Ingredient) ON (i.name)'
+2025-03-06 16:22:40,286 - INFO - Index créé: CREATE INDEX product_nutriscore_index IF NOT EXISTS FOR (p:Product) ON (p.nutriscore)
+2025-03-06 16:22:40,349 - INFO - Index créé: CREATE INDEX product_nova_index IF NOT EXISTS FOR (p:Product) ON (p.nova_group)
+2025-03-06 16:22:40,415 - INFO - Index créé: CREATE INDEX product_ecoscore_index IF NOT EXISTS FOR (p:Product) ON (p.ecoscore)
+2025-03-06 16:22:40,420 - INFO - Temps d'exécution: 56.59 secondes
+2025-03-06 16:23:21,424 - INFO - Base de données Neo4j effacée avec succès
+2025-03-06 16:23:21,518 - INFO - Contrainte créée: CREATE CONSTRAINT product_id IF NOT EXISTS FOR (p:Product) REQUIRE p.id IS UNIQUE
+2025-03-06 16:23:21,583 - INFO - Contrainte créée: CREATE CONSTRAINT brand_name IF NOT EXISTS FOR (b:Brand) REQUIRE b.name IS UNIQUE
+2025-03-06 16:23:21,662 - INFO - Contrainte créée: CREATE CONSTRAINT ingredient_name IF NOT EXISTS FOR (i:Ingredient) REQUIRE i.name IS UNIQUE
+2025-03-06 16:23:21,735 - INFO - Contrainte créée: CREATE CONSTRAINT category_name IF NOT EXISTS FOR (c:Category) REQUIRE c.name IS UNIQUE
+2025-03-06 16:23:21,811 - INFO - Contrainte créée: CREATE CONSTRAINT country_name IF NOT EXISTS FOR (c:Country) REQUIRE c.name IS UNIQUE
+2025-03-06 16:23:21,882 - INFO - Contrainte créée: CREATE CONSTRAINT allergen_name IF NOT EXISTS FOR (a:Allergen) REQUIRE a.name IS UNIQUE
+2025-03-06 16:23:21,958 - INFO - Contrainte créée: CREATE CONSTRAINT nutrient_name IF NOT EXISTS FOR (n:Nutrient) REQUIRE n.name IS UNIQUE
+2025-03-06 16:23:22,034 - INFO - Contrainte créée: CREATE CONSTRAINT label_name IF NOT EXISTS FOR (l:Label) REQUIRE l.name IS UNIQUE
+2025-03-06 16:23:53,422 - INFO - Chargement de 97439 produits...
+2025-03-06 16:23:55,446 - INFO - Limitation à 100 produits...
+2025-03-06 16:23:55,562 - INFO - Contrainte créée: CREATE CONSTRAINT product_id IF NOT EXISTS FOR (p:Product) REQUIRE p.id IS UNIQUE
+2025-03-06 16:23:55,563 - INFO - Received notification from DBMS server: {severity: INFORMATION} {code: Neo.ClientNotification.Schema.IndexOrConstraintAlreadyExists} {category: SCHEMA} {title: `CREATE CONSTRAINT product_id IF NOT EXISTS FOR (e:Product) REQUIRE (e.id) IS UNIQUE` has no effect.} {description: `CONSTRAINT product_id FOR (e:Product) REQUIRE (e.id) IS UNIQUE` already exists.} {position: None} for query: 'CREATE CONSTRAINT product_id IF NOT EXISTS FOR (p:Product) REQUIRE p.id IS UNIQUE'
+2025-03-06 16:23:55,622 - INFO - Contrainte créée: CREATE CONSTRAINT brand_name IF NOT EXISTS FOR (b:Brand) REQUIRE b.name IS UNIQUE
+2025-03-06 16:23:55,622 - INFO - Received notification from DBMS server: {severity: INFORMATION} {code: Neo.ClientNotification.Schema.IndexOrConstraintAlreadyExists} {category: SCHEMA} {title: `CREATE CONSTRAINT brand_name IF NOT EXISTS FOR (e:Brand) REQUIRE (e.name) IS UNIQUE` has no effect.} {description: `CONSTRAINT brand_name FOR (e:Brand) REQUIRE (e.name) IS UNIQUE` already exists.} {position: None} for query: 'CREATE CONSTRAINT brand_name IF NOT EXISTS FOR (b:Brand) REQUIRE b.name IS UNIQUE'
+2025-03-06 16:23:55,679 - INFO - Contrainte créée: CREATE CONSTRAINT ingredient_name IF NOT EXISTS FOR (i:Ingredient) REQUIRE i.name IS UNIQUE
+2025-03-06 16:23:55,679 - INFO - Received notification from DBMS server: {severity: INFORMATION} {code: Neo.ClientNotification.Schema.IndexOrConstraintAlreadyExists} {category: SCHEMA} {title: `CREATE CONSTRAINT ingredient_name IF NOT EXISTS FOR (e:Ingredient) REQUIRE (e.name) IS UNIQUE` has no effect.} {description: `CONSTRAINT ingredient_name FOR (e:Ingredient) REQUIRE (e.name) IS UNIQUE` already exists.} {position: None} for query: 'CREATE CONSTRAINT ingredient_name IF NOT EXISTS FOR (i:Ingredient) REQUIRE i.name IS UNIQUE'
+2025-03-06 16:23:55,733 - INFO - Contrainte créée: CREATE CONSTRAINT category_name IF NOT EXISTS FOR (c:Category) REQUIRE c.name IS UNIQUE
+2025-03-06 16:23:55,733 - INFO - Received notification from DBMS server: {severity: INFORMATION} {code: Neo.ClientNotification.Schema.IndexOrConstraintAlreadyExists} {category: SCHEMA} {title: `CREATE CONSTRAINT category_name IF NOT EXISTS FOR (e:Category) REQUIRE (e.name) IS UNIQUE` has no effect.} {description: `CONSTRAINT category_name FOR (e:Category) REQUIRE (e.name) IS UNIQUE` already exists.} {position: None} for query: 'CREATE CONSTRAINT category_name IF NOT EXISTS FOR (c:Category) REQUIRE c.name IS UNIQUE'
+2025-03-06 16:23:55,787 - INFO - Contrainte créée: CREATE CONSTRAINT country_name IF NOT EXISTS FOR (c:Country) REQUIRE c.name IS UNIQUE
+2025-03-06 16:23:55,789 - INFO - Received notification from DBMS server: {severity: INFORMATION} {code: Neo.ClientNotification.Schema.IndexOrConstraintAlreadyExists} {category: SCHEMA} {title: `CREATE CONSTRAINT country_name IF NOT EXISTS FOR (e:Country) REQUIRE (e.name) IS UNIQUE` has no effect.} {description: `CONSTRAINT country_name FOR (e:Country) REQUIRE (e.name) IS UNIQUE` already exists.} {position: None} for query: 'CREATE CONSTRAINT country_name IF NOT EXISTS FOR (c:Country) REQUIRE c.name IS UNIQUE'
+2025-03-06 16:23:55,842 - INFO - Contrainte créée: CREATE CONSTRAINT allergen_name IF NOT EXISTS FOR (a:Allergen) REQUIRE a.name IS UNIQUE
+2025-03-06 16:23:55,845 - INFO - Received notification from DBMS server: {severity: INFORMATION} {code: Neo.ClientNotification.Schema.IndexOrConstraintAlreadyExists} {category: SCHEMA} {title: `CREATE CONSTRAINT allergen_name IF NOT EXISTS FOR (e:Allergen) REQUIRE (e.name) IS UNIQUE` has no effect.} {description: `CONSTRAINT allergen_name FOR (e:Allergen) REQUIRE (e.name) IS UNIQUE` already exists.} {position: None} for query: 'CREATE CONSTRAINT allergen_name IF NOT EXISTS FOR (a:Allergen) REQUIRE a.name IS UNIQUE'
+2025-03-06 16:23:55,909 - INFO - Contrainte créée: CREATE CONSTRAINT nutrient_name IF NOT EXISTS FOR (n:Nutrient) REQUIRE n.name IS UNIQUE
+2025-03-06 16:23:55,910 - INFO - Received notification from DBMS server: {severity: INFORMATION} {code: Neo.ClientNotification.Schema.IndexOrConstraintAlreadyExists} {category: SCHEMA} {title: `CREATE CONSTRAINT nutrient_name IF NOT EXISTS FOR (e:Nutrient) REQUIRE (e.name) IS UNIQUE` has no effect.} {description: `CONSTRAINT nutrient_name FOR (e:Nutrient) REQUIRE (e.name) IS UNIQUE` already exists.} {position: None} for query: 'CREATE CONSTRAINT nutrient_name IF NOT EXISTS FOR (n:Nutrient) REQUIRE n.name IS UNIQUE'
+2025-03-06 16:23:55,972 - INFO - Contrainte créée: CREATE CONSTRAINT label_name IF NOT EXISTS FOR (l:Label) REQUIRE l.name IS UNIQUE
+2025-03-06 16:23:55,973 - INFO - Received notification from DBMS server: {severity: INFORMATION} {code: Neo.ClientNotification.Schema.IndexOrConstraintAlreadyExists} {category: SCHEMA} {title: `CREATE CONSTRAINT label_name IF NOT EXISTS FOR (e:Label) REQUIRE (e.name) IS UNIQUE` has no effect.} {description: `CONSTRAINT label_name FOR (e:Label) REQUIRE (e.name) IS UNIQUE` already exists.} {position: None} for query: 'CREATE CONSTRAINT label_name IF NOT EXISTS FOR (l:Label) REQUIRE l.name IS UNIQUE'
+2025-03-06 16:24:08,048 - WARNING - Produit 0012354087774 sans nom ignoré
+2025-03-06 16:24:08,049 - WARNING - Produit 0012502638919 sans nom ignoré
+2025-03-06 16:24:10,093 - INFO - Progression: 10/100 produits traités
+2025-03-06 16:24:31,476 - INFO - Progression: 20/100 produits traités
+2025-03-06 16:24:52,211 - INFO - Progression: 30/100 produits traités
+2025-03-06 16:24:55,945 - WARNING - Produit 0018486700048 sans nom ignoré
+2025-03-06 16:25:13,873 - INFO - Progression: 40/100 produits traités
+2025-03-06 16:25:13,873 - WARNING - Produit 0018627575870 sans nom ignoré
+2025-03-06 16:25:36,475 - INFO - Progression: 50/100 produits traités
+2025-03-06 16:25:44,648 - WARNING - Produit 0022851202013 sans nom ignoré
+2025-03-06 16:25:53,367 - INFO - Progression: 60/100 produits traités
+2025-03-06 16:26:19,115 - INFO - Progression: 70/100 produits traités
+2025-03-06 16:26:37,587 - INFO - Progression: 80/100 produits traités
+2025-03-06 16:26:54,098 - INFO - Progression: 90/100 produits traités
+2025-03-06 16:26:58,237 - WARNING - Produit 0037000308539 sans nom ignoré
+2025-03-06 16:27:09,779 - INFO - Progression: 100/100 produits traités
+2025-03-06 16:27:09,779 - INFO - === Statistiques de chargement ===
+2025-03-06 16:27:09,780 - INFO - marques: 99
+2025-03-06 16:27:09,780 - INFO - categories: 470
+2025-03-06 16:27:09,780 - INFO - pays: 195
+2025-03-06 16:27:09,780 - INFO - ingredients: 892
+2025-03-06 16:27:09,780 - INFO - nutriments: 646
+2025-03-06 16:27:09,780 - INFO - labels: 304
+2025-03-06 16:27:09,781 - INFO - produits_ajoutes: 94
+2025-03-06 16:27:09,781 - INFO - allergenes: 121
+2025-03-06 16:27:09,781 - INFO - produits_sans_nom: 6
+2025-03-06 16:27:10,103 - INFO - 94 produits ont été chargés dans le graphe Neo4j.
+2025-03-06 16:27:10,157 - INFO - Index créé: CREATE INDEX product_name_index IF NOT EXISTS FOR (p:Product) ON (p.name)
+2025-03-06 16:27:10,213 - INFO - Index créé: CREATE INDEX brand_name_index IF NOT EXISTS FOR (b:Brand) ON (b.name)
+2025-03-06 16:27:10,213 - INFO - Received notification from DBMS server: {severity: INFORMATION} {code: Neo.ClientNotification.Schema.IndexOrConstraintAlreadyExists} {category: SCHEMA} {title: `CREATE RANGE INDEX brand_name_index IF NOT EXISTS FOR (e:Brand) ON (e.name)` has no effect.} {description: `RANGE INDEX brand_name FOR (e:Brand) ON (e.name)` already exists.} {position: None} for query: 'CREATE INDEX brand_name_index IF NOT EXISTS FOR (b:Brand) ON (b.name)'
+2025-03-06 16:27:10,262 - INFO - Index créé: CREATE INDEX category_name_index IF NOT EXISTS FOR (c:Category) ON (c.name)
+2025-03-06 16:27:10,263 - INFO - Received notification from DBMS server: {severity: INFORMATION} {code: Neo.ClientNotification.Schema.IndexOrConstraintAlreadyExists} {category: SCHEMA} {title: `CREATE RANGE INDEX category_name_index IF NOT EXISTS FOR (e:Category) ON (e.name)` has no effect.} {description: `RANGE INDEX category_name FOR (e:Category) ON (e.name)` already exists.} {position: None} for query: 'CREATE INDEX category_name_index IF NOT EXISTS FOR (c:Category) ON (c.name)'
+2025-03-06 16:27:10,316 - INFO - Index créé: CREATE INDEX ingredient_name_index IF NOT EXISTS FOR (i:Ingredient) ON (i.name)
+2025-03-06 16:27:10,316 - INFO - Received notification from DBMS server: {severity: INFORMATION} {code: Neo.ClientNotification.Schema.IndexOrConstraintAlreadyExists} {category: SCHEMA} {title: `CREATE RANGE INDEX ingredient_name_index IF NOT EXISTS FOR (e:Ingredient) ON (e.name)` has no effect.} {description: `RANGE INDEX ingredient_name FOR (e:Ingredient) ON (e.name)` already exists.} {position: None} for query: 'CREATE INDEX ingredient_name_index IF NOT EXISTS FOR (i:Ingredient) ON (i.name)'
+2025-03-06 16:27:10,372 - INFO - Index créé: CREATE INDEX product_nutriscore_index IF NOT EXISTS FOR (p:Product) ON (p.nutriscore)
+2025-03-06 16:27:10,437 - INFO - Index créé: CREATE INDEX product_nova_index IF NOT EXISTS FOR (p:Product) ON (p.nova_group)
+2025-03-06 16:27:10,498 - INFO - Index créé: CREATE INDEX product_ecoscore_index IF NOT EXISTS FOR (p:Product) ON (p.ecoscore)
+2025-03-06 16:27:10,502 - INFO - Temps d'exécution: 229.94 secondes
+2025-03-06 16:27:29,792 - INFO - Base de données Neo4j effacée avec succès
+2025-03-06 16:27:30,065 - INFO - Contrainte créée: CREATE CONSTRAINT product_id IF NOT EXISTS FOR (p:Product) REQUIRE p.id IS UNIQUE
+2025-03-06 16:27:30,155 - INFO - Contrainte créée: CREATE CONSTRAINT brand_name IF NOT EXISTS FOR (b:Brand) REQUIRE b.name IS UNIQUE
+2025-03-06 16:27:30,241 - INFO - Contrainte créée: CREATE CONSTRAINT ingredient_name IF NOT EXISTS FOR (i:Ingredient) REQUIRE i.name IS UNIQUE
+2025-03-06 16:27:30,327 - INFO - Contrainte créée: CREATE CONSTRAINT category_name IF NOT EXISTS FOR (c:Category) REQUIRE c.name IS UNIQUE
+2025-03-06 16:27:30,409 - INFO - Contrainte créée: CREATE CONSTRAINT country_name IF NOT EXISTS FOR (c:Country) REQUIRE c.name IS UNIQUE
+2025-03-06 16:27:30,492 - INFO - Contrainte créée: CREATE CONSTRAINT allergen_name IF NOT EXISTS FOR (a:Allergen) REQUIRE a.name IS UNIQUE
+2025-03-06 16:27:30,575 - INFO - Contrainte créée: CREATE CONSTRAINT nutrient_name IF NOT EXISTS FOR (n:Nutrient) REQUIRE n.name IS UNIQUE
+2025-03-06 16:27:30,663 - INFO - Contrainte créée: CREATE CONSTRAINT label_name IF NOT EXISTS FOR (l:Label) REQUIRE l.name IS UNIQUE
+2025-03-06 16:27:56,138 - INFO - Chargement de 97439 produits...
+2025-03-06 16:27:58,021 - INFO - Limitation à 1000 produits...
+2025-03-06 16:27:58,146 - INFO - Contrainte créée: CREATE CONSTRAINT product_id IF NOT EXISTS FOR (p:Product) REQUIRE p.id IS UNIQUE
+2025-03-06 16:27:58,146 - INFO - Received notification from DBMS server: {severity: INFORMATION} {code: Neo.ClientNotification.Schema.IndexOrConstraintAlreadyExists} {category: SCHEMA} {title: `CREATE CONSTRAINT product_id IF NOT EXISTS FOR (e:Product) REQUIRE (e.id) IS UNIQUE` has no effect.} {description: `CONSTRAINT product_id FOR (e:Product) REQUIRE (e.id) IS UNIQUE` already exists.} {position: None} for query: 'CREATE CONSTRAINT product_id IF NOT EXISTS FOR (p:Product) REQUIRE p.id IS UNIQUE'
+2025-03-06 16:27:58,220 - INFO - Contrainte créée: CREATE CONSTRAINT brand_name IF NOT EXISTS FOR (b:Brand) REQUIRE b.name IS UNIQUE
+2025-03-06 16:27:58,220 - INFO - Received notification from DBMS server: {severity: INFORMATION} {code: Neo.ClientNotification.Schema.IndexOrConstraintAlreadyExists} {category: SCHEMA} {title: `CREATE CONSTRAINT brand_name IF NOT EXISTS FOR (e:Brand) REQUIRE (e.name) IS UNIQUE` has no effect.} {description: `CONSTRAINT brand_name FOR (e:Brand) REQUIRE (e.name) IS UNIQUE` already exists.} {position: None} for query: 'CREATE CONSTRAINT brand_name IF NOT EXISTS FOR (b:Brand) REQUIRE b.name IS UNIQUE'
+2025-03-06 16:27:58,288 - INFO - Contrainte créée: CREATE CONSTRAINT ingredient_name IF NOT EXISTS FOR (i:Ingredient) REQUIRE i.name IS UNIQUE
+2025-03-06 16:27:58,288 - INFO - Received notification from DBMS server: {severity: INFORMATION} {code: Neo.ClientNotification.Schema.IndexOrConstraintAlreadyExists} {category: SCHEMA} {title: `CREATE CONSTRAINT ingredient_name IF NOT EXISTS FOR (e:Ingredient) REQUIRE (e.name) IS UNIQUE` has no effect.} {description: `CONSTRAINT ingredient_name FOR (e:Ingredient) REQUIRE (e.name) IS UNIQUE` already exists.} {position: None} for query: 'CREATE CONSTRAINT ingredient_name IF NOT EXISTS FOR (i:Ingredient) REQUIRE i.name IS UNIQUE'
+2025-03-06 16:27:58,355 - INFO - Contrainte créée: CREATE CONSTRAINT category_name IF NOT EXISTS FOR (c:Category) REQUIRE c.name IS UNIQUE
+2025-03-06 16:27:58,357 - INFO - Received notification from DBMS server: {severity: INFORMATION} {code: Neo.ClientNotification.Schema.IndexOrConstraintAlreadyExists} {category: SCHEMA} {title: `CREATE CONSTRAINT category_name IF NOT EXISTS FOR (e:Category) REQUIRE (e.name) IS UNIQUE` has no effect.} {description: `CONSTRAINT category_name FOR (e:Category) REQUIRE (e.name) IS UNIQUE` already exists.} {position: None} for query: 'CREATE CONSTRAINT category_name IF NOT EXISTS FOR (c:Category) REQUIRE c.name IS UNIQUE'
+2025-03-06 16:27:58,430 - INFO - Contrainte créée: CREATE CONSTRAINT country_name IF NOT EXISTS FOR (c:Country) REQUIRE c.name IS UNIQUE
+2025-03-06 16:27:58,431 - INFO - Received notification from DBMS server: {severity: INFORMATION} {code: Neo.ClientNotification.Schema.IndexOrConstraintAlreadyExists} {category: SCHEMA} {title: `CREATE CONSTRAINT country_name IF NOT EXISTS FOR (e:Country) REQUIRE (e.name) IS UNIQUE` has no effect.} {description: `CONSTRAINT country_name FOR (e:Country) REQUIRE (e.name) IS UNIQUE` already exists.} {position: None} for query: 'CREATE CONSTRAINT country_name IF NOT EXISTS FOR (c:Country) REQUIRE c.name IS UNIQUE'
+2025-03-06 16:27:58,502 - INFO - Contrainte créée: CREATE CONSTRAINT allergen_name IF NOT EXISTS FOR (a:Allergen) REQUIRE a.name IS UNIQUE
+2025-03-06 16:27:58,504 - INFO - Received notification from DBMS server: {severity: INFORMATION} {code: Neo.ClientNotification.Schema.IndexOrConstraintAlreadyExists} {category: SCHEMA} {title: `CREATE CONSTRAINT allergen_name IF NOT EXISTS FOR (e:Allergen) REQUIRE (e.name) IS UNIQUE` has no effect.} {description: `CONSTRAINT allergen_name FOR (e:Allergen) REQUIRE (e.name) IS UNIQUE` already exists.} {position: None} for query: 'CREATE CONSTRAINT allergen_name IF NOT EXISTS FOR (a:Allergen) REQUIRE a.name IS UNIQUE'
+2025-03-06 16:27:58,575 - INFO - Contrainte créée: CREATE CONSTRAINT nutrient_name IF NOT EXISTS FOR (n:Nutrient) REQUIRE n.name IS UNIQUE
+2025-03-06 16:27:58,577 - INFO - Received notification from DBMS server: {severity: INFORMATION} {code: Neo.ClientNotification.Schema.IndexOrConstraintAlreadyExists} {category: SCHEMA} {title: `CREATE CONSTRAINT nutrient_name IF NOT EXISTS FOR (e:Nutrient) REQUIRE (e.name) IS UNIQUE` has no effect.} {description: `CONSTRAINT nutrient_name FOR (e:Nutrient) REQUIRE (e.name) IS UNIQUE` already exists.} {position: None} for query: 'CREATE CONSTRAINT nutrient_name IF NOT EXISTS FOR (n:Nutrient) REQUIRE n.name IS UNIQUE'
+2025-03-06 16:27:58,656 - INFO - Contrainte créée: CREATE CONSTRAINT label_name IF NOT EXISTS FOR (l:Label) REQUIRE l.name IS UNIQUE
+2025-03-06 16:27:58,657 - INFO - Received notification from DBMS server: {severity: INFORMATION} {code: Neo.ClientNotification.Schema.IndexOrConstraintAlreadyExists} {category: SCHEMA} {title: `CREATE CONSTRAINT label_name IF NOT EXISTS FOR (e:Label) REQUIRE (e.name) IS UNIQUE` has no effect.} {description: `CONSTRAINT label_name FOR (e:Label) REQUIRE (e.name) IS UNIQUE` already exists.} {position: None} for query: 'CREATE CONSTRAINT label_name IF NOT EXISTS FOR (l:Label) REQUIRE l.name IS UNIQUE'
+2025-03-06 16:28:12,304 - WARNING - Produit 0012354087774 sans nom ignoré
+2025-03-06 16:28:12,304 - WARNING - Produit 0012502638919 sans nom ignoré
+2025-03-06 16:28:14,637 - INFO - Progression: 10/1000 produits traités
+2025-03-06 16:28:39,840 - INFO - Progression: 20/1000 produits traités
+2025-03-06 16:29:04,004 - INFO - Progression: 30/1000 produits traités
+2025-03-06 16:29:08,630 - WARNING - Produit 0018486700048 sans nom ignoré
+2025-03-06 16:29:30,408 - INFO - Progression: 40/1000 produits traités
+2025-03-06 16:29:30,408 - WARNING - Produit 0018627575870 sans nom ignoré
+2025-03-06 16:29:55,719 - INFO - Progression: 50/1000 produits traités
+2025-03-06 16:30:05,307 - WARNING - Produit 0022851202013 sans nom ignoré
+2025-03-06 16:30:15,625 - INFO - Progression: 60/1000 produits traités
+2025-03-06 16:30:45,487 - INFO - Progression: 70/1000 produits traités
+2025-03-06 16:31:06,965 - INFO - Progression: 80/1000 produits traités
+2025-03-06 16:31:27,049 - INFO - Progression: 90/1000 produits traités
+2025-03-06 16:31:32,290 - WARNING - Produit 0037000308539 sans nom ignoré
+2025-03-06 16:31:45,275 - INFO - Progression: 100/1000 produits traités
+2025-03-06 16:32:04,768 - INFO - Progression: 110/1000 produits traités
+2025-03-06 16:32:20,160 - INFO - Progression: 120/1000 produits traités
+2025-03-06 16:32:42,140 - INFO - Progression: 130/1000 produits traités
+2025-03-06 16:32:53,937 - WARNING - Produit 0043009043036 sans nom ignoré
+2025-03-06 16:32:55,811 - INFO - Progression: 140/1000 produits traités
+2025-03-06 16:33:19,030 - INFO - Progression: 150/1000 produits traités
+2025-03-06 16:33:19,654 - WARNING - Produit 0047600002331 sans nom ignoré
+2025-03-06 16:33:25,006 - WARNING - Produit 0048107165956 sans nom ignoré
+2025-03-06 16:33:32,300 - INFO - Progression: 160/1000 produits traités
+2025-03-06 16:33:32,609 - WARNING - Produit 0048500020616 sans nom ignoré
+2025-03-06 16:33:46,967 - INFO - Progression: 170/1000 produits traités
+2025-03-06 16:34:05,911 - INFO - Progression: 180/1000 produits traités
+2025-03-06 16:34:27,280 - INFO - Progression: 190/1000 produits traités
+2025-03-06 16:34:33,941 - WARNING - Produit 0055000125956 sans nom ignoré
+2025-03-06 16:34:40,217 - INFO - Progression: 200/1000 produits traités
+2025-03-06 16:34:56,637 - INFO - Progression: 210/1000 produits traités
+2025-03-06 16:35:11,174 - INFO - Progression: 220/1000 produits traités
+2025-03-06 16:35:31,098 - INFO - Progression: 230/1000 produits traités
+2025-03-06 16:35:51,262 - INFO - Progression: 240/1000 produits traités
+2025-03-06 16:36:14,677 - INFO - Progression: 250/1000 produits traités
+2025-03-06 16:36:32,865 - INFO - Progression: 260/1000 produits traités
+2025-03-06 16:37:03,260 - INFO - Progression: 270/1000 produits traités
+2025-03-06 16:37:25,054 - INFO - Progression: 280/1000 produits traités
+2025-03-06 16:37:36,373 - INFO - Progression: 290/1000 produits traités
+2025-03-06 16:37:54,257 - INFO - Progression: 300/1000 produits traités
+2025-03-06 16:38:07,599 - INFO - Progression: 310/1000 produits traités
+2025-03-06 16:38:23,831 - INFO - Progression: 320/1000 produits traités
+2025-03-06 16:38:40,638 - INFO - Progression: 330/1000 produits traités
+2025-03-06 16:39:01,383 - INFO - Progression: 340/1000 produits traités
+2025-03-06 16:39:18,992 - INFO - Progression: 350/1000 produits traités
+2025-03-06 16:39:43,755 - INFO - Progression: 360/1000 produits traités
+2025-03-06 16:39:46,491 - WARNING - Produit 0056649160148 sans nom ignoré
+2025-03-06 16:40:02,550 - INFO - Progression: 370/1000 produits traités
+2025-03-06 16:40:27,325 - INFO - Progression: 380/1000 produits traités
+2025-03-06 16:40:48,974 - INFO - Progression: 390/1000 produits traités
+2025-03-06 16:41:07,034 - INFO - Progression: 400/1000 produits traités
+2025-03-06 16:41:25,173 - INFO - Progression: 410/1000 produits traités
+2025-03-06 16:41:47,194 - INFO - Progression: 420/1000 produits traités
+2025-03-06 16:41:49,589 - WARNING - Produit 0057449505566 sans nom ignoré
+2025-03-06 16:41:50,068 - WARNING - Produit 0057496007631 sans nom ignoré
+2025-03-06 16:41:50,069 - WARNING - Produit 0057606988324 sans nom ignoré
+2025-03-06 16:41:56,187 - INFO - Progression: 430/1000 produits traités
+2025-03-06 16:41:59,336 - WARNING - Produit 0057700329375 sans nom ignoré
+2025-03-06 16:42:02,912 - WARNING - Produit 0057800843047 sans nom ignoré
+2025-03-06 16:42:09,154 - INFO - Progression: 440/1000 produits traités
+2025-03-06 16:42:29,236 - INFO - Progression: 450/1000 produits traités
+2025-03-06 16:42:37,424 - WARNING - Produit 0058336013362 sans nom ignoré
+2025-03-06 16:42:49,702 - INFO - Progression: 460/1000 produits traités
+2025-03-06 16:43:08,203 - INFO - Progression: 470/1000 produits traités
+2025-03-06 16:43:31,869 - INFO - Progression: 480/1000 produits traités
+2025-03-06 16:43:56,671 - INFO - Progression: 490/1000 produits traités
+2025-03-06 16:44:16,593 - INFO - Progression: 500/1000 produits traités
+2025-03-06 16:44:38,227 - INFO - Progression: 510/1000 produits traités
+2025-03-06 16:44:42,351 - WARNING - Produit 0058807600145 sans nom ignoré
+2025-03-06 16:44:56,240 - INFO - Progression: 520/1000 produits traités
+2025-03-06 16:45:11,958 - INFO - Progression: 530/1000 produits traités
+2025-03-06 16:45:34,209 - INFO - Progression: 540/1000 produits traités
+2025-03-06 16:45:55,009 - INFO - Progression: 550/1000 produits traités
+2025-03-06 16:46:12,079 - INFO - Progression: 560/1000 produits traités
+2025-03-06 16:46:27,762 - INFO - Progression: 570/1000 produits traités
+2025-03-06 16:46:42,208 - INFO - Progression: 580/1000 produits traités
+2025-03-06 16:47:01,433 - INFO - Progression: 590/1000 produits traités
+2025-03-06 16:47:14,161 - INFO - Progression: 600/1000 produits traités
+2025-03-06 16:47:26,614 - INFO - Progression: 610/1000 produits traités
+2025-03-06 16:47:51,932 - INFO - Progression: 620/1000 produits traités
+2025-03-06 16:48:02,729 - WARNING - Produit 0060100005060 sans nom ignoré
+2025-03-06 16:48:07,286 - INFO - Progression: 630/1000 produits traités
+2025-03-06 16:48:07,287 - WARNING - Produit 0060323018847 sans nom ignoré
+2025-03-06 16:48:26,007 - INFO - Progression: 640/1000 produits traités
+2025-03-06 16:48:40,827 - INFO - Progression: 650/1000 produits traités
+2025-03-06 16:48:58,688 - INFO - Progression: 660/1000 produits traités
+2025-03-06 16:49:01,380 - WARNING - Produit 0060383152000 sans nom ignoré
+2025-03-06 16:49:16,518 - INFO - Progression: 670/1000 produits traités
+2025-03-06 16:49:35,588 - INFO - Progression: 680/1000 produits traités
+2025-03-06 16:49:49,825 - INFO - Progression: 690/1000 produits traités
+2025-03-06 16:50:09,367 - INFO - Progression: 700/1000 produits traités
+2025-03-06 16:50:21,680 - WARNING - Produit 0060383876319 sans nom ignoré
+2025-03-06 16:50:23,273 - INFO - Progression: 710/1000 produits traités
+2025-03-06 16:50:39,986 - INFO - Progression: 720/1000 produits traités
+2025-03-06 16:50:54,808 - INFO - Progression: 730/1000 produits traités
+2025-03-06 16:51:11,193 - INFO - Progression: 740/1000 produits traités
+2025-03-06 16:51:13,421 - WARNING - Produit 0060410030073 sans nom ignoré
+2025-03-06 16:51:26,923 - WARNING - Produit 0060410074985 sans nom ignoré
+2025-03-06 16:51:26,923 - INFO - Progression: 750/1000 produits traités
+2025-03-06 16:51:45,691 - INFO - Progression: 760/1000 produits traités
+2025-03-06 16:52:09,443 - INFO - Progression: 770/1000 produits traités
+2025-03-06 16:52:20,807 - WARNING - Produit 0061120100353 sans nom ignoré
+2025-03-06 16:52:33,301 - INFO - Progression: 780/1000 produits traités
+2025-03-06 16:52:54,064 - INFO - Progression: 790/1000 produits traités
+2025-03-06 16:52:57,627 - WARNING - Produit 0061483060516 sans nom ignoré
+2025-03-06 16:53:04,672 - INFO - Progression: 800/1000 produits traités
+2025-03-06 16:53:11,793 - WARNING - Produit 0061900107220 sans nom ignoré
+2025-03-06 16:53:23,133 - INFO - Progression: 810/1000 produits traités
+2025-03-06 16:53:23,133 - WARNING - Produit 0062020023650 sans nom ignoré
+2025-03-06 16:53:34,742 - INFO - Progression: 820/1000 produits traités
+2025-03-06 16:53:50,907 - INFO - Progression: 830/1000 produits traités
+2025-03-06 16:54:03,929 - INFO - Progression: 840/1000 produits traités
+2025-03-06 16:54:18,564 - INFO - Progression: 850/1000 produits traités
+2025-03-06 16:54:35,843 - INFO - Progression: 860/1000 produits traités
+2025-03-06 16:54:56,528 - INFO - Progression: 870/1000 produits traités
+2025-03-06 16:55:10,246 - WARNING - Produit 0063348005939 sans nom ignoré
+2025-03-06 16:55:12,747 - INFO - Progression: 880/1000 produits traités
+2025-03-06 16:55:30,837 - INFO - Progression: 890/1000 produits traités
+2025-03-06 16:55:56,673 - INFO - Progression: 900/1000 produits traités
+2025-03-06 16:56:22,150 - INFO - Progression: 910/1000 produits traités
+2025-03-06 16:56:24,264 - WARNING - Produit 0064000002143 sans nom ignoré
+2025-03-06 16:56:38,342 - INFO - Progression: 920/1000 produits traités
+2025-03-06 16:56:56,990 - INFO - Progression: 930/1000 produits traités
+2025-03-06 16:57:18,599 - INFO - Progression: 940/1000 produits traités
+2025-03-06 16:57:47,828 - INFO - Progression: 950/1000 produits traités
+2025-03-06 16:58:12,084 - INFO - Progression: 960/1000 produits traités
+2025-03-06 16:58:36,476 - INFO - Progression: 970/1000 produits traités
+2025-03-06 16:59:02,152 - WARNING - Produit 0064100780170 sans nom ignoré
+2025-03-06 16:59:02,152 - INFO - Progression: 980/1000 produits traités
+2025-03-06 16:59:28,649 - INFO - Progression: 990/1000 produits traités
+2025-03-06 16:59:43,267 - INFO - Progression: 1000/1000 produits traités
+2025-03-06 16:59:43,267 - INFO - === Statistiques de chargement ===
+2025-03-06 16:59:43,268 - INFO - marques: 1032
+2025-03-06 16:59:43,268 - INFO - categories: 4358
+2025-03-06 16:59:43,268 - INFO - pays: 1472
+2025-03-06 16:59:43,269 - INFO - ingredients: 7159
+2025-03-06 16:59:43,269 - INFO - nutriments: 6465
+2025-03-06 16:59:43,269 - INFO - labels: 1704
+2025-03-06 16:59:43,269 - INFO - produits_ajoutes: 968
+2025-03-06 16:59:43,269 - INFO - allergenes: 969
+2025-03-06 16:59:43,269 - INFO - produits_sans_nom: 32
+2025-03-06 16:59:43,678 - INFO - 968 produits ont été chargés dans le graphe Neo4j.
+2025-03-06 16:59:43,756 - INFO - Index créé: CREATE INDEX product_name_index IF NOT EXISTS FOR (p:Product) ON (p.name)
+2025-03-06 16:59:43,834 - INFO - Index créé: CREATE INDEX brand_name_index IF NOT EXISTS FOR (b:Brand) ON (b.name)
+2025-03-06 16:59:43,835 - INFO - Received notification from DBMS server: {severity: INFORMATION} {code: Neo.ClientNotification.Schema.IndexOrConstraintAlreadyExists} {category: SCHEMA} {title: `CREATE RANGE INDEX brand_name_index IF NOT EXISTS FOR (e:Brand) ON (e.name)` has no effect.} {description: `RANGE INDEX brand_name FOR (e:Brand) ON (e.name)` already exists.} {position: None} for query: 'CREATE INDEX brand_name_index IF NOT EXISTS FOR (b:Brand) ON (b.name)'
+2025-03-06 16:59:43,900 - INFO - Index créé: CREATE INDEX category_name_index IF NOT EXISTS FOR (c:Category) ON (c.name)
+2025-03-06 16:59:43,900 - INFO - Received notification from DBMS server: {severity: INFORMATION} {code: Neo.ClientNotification.Schema.IndexOrConstraintAlreadyExists} {category: SCHEMA} {title: `CREATE RANGE INDEX category_name_index IF NOT EXISTS FOR (e:Category) ON (e.name)` has no effect.} {description: `RANGE INDEX category_name FOR (e:Category) ON (e.name)` already exists.} {position: None} for query: 'CREATE INDEX category_name_index IF NOT EXISTS FOR (c:Category) ON (c.name)'
+2025-03-06 16:59:43,967 - INFO - Index créé: CREATE INDEX ingredient_name_index IF NOT EXISTS FOR (i:Ingredient) ON (i.name)
+2025-03-06 16:59:43,968 - INFO - Received notification from DBMS server: {severity: INFORMATION} {code: Neo.ClientNotification.Schema.IndexOrConstraintAlreadyExists} {category: SCHEMA} {title: `CREATE RANGE INDEX ingredient_name_index IF NOT EXISTS FOR (e:Ingredient) ON (e.name)` has no effect.} {description: `RANGE INDEX ingredient_name FOR (e:Ingredient) ON (e.name)` already exists.} {position: None} for query: 'CREATE INDEX ingredient_name_index IF NOT EXISTS FOR (i:Ingredient) ON (i.name)'
+2025-03-06 16:59:44,035 - INFO - Index créé: CREATE INDEX product_nutriscore_index IF NOT EXISTS FOR (p:Product) ON (p.nutriscore)
+2025-03-06 16:59:44,150 - INFO - Index créé: CREATE INDEX product_nova_index IF NOT EXISTS FOR (p:Product) ON (p.nova_group)
+2025-03-06 16:59:44,242 - INFO - Index créé: CREATE INDEX product_ecoscore_index IF NOT EXISTS FOR (p:Product) ON (p.ecoscore)
+2025-03-06 16:59:44,246 - INFO - Temps d'exécution: 1935.32 secondes
+2025-03-06 17:09:39,219 - INFO - Base de données Neo4j effacée avec succès
+2025-03-06 17:09:40,038 - INFO - Chargement du fichier ../../data/openfoodfacts-canadian-products.jsonl
+2025-03-06 17:10:14,865 - INFO - Fichier chargé: 97439 produits trouvés
+2025-03-06 17:10:16,920 - INFO - Limitation à 1000 produits...
+2025-03-06 17:10:17,053 - INFO - Contrainte créée: CREATE CONSTRAINT product_id IF NOT EXISTS FOR (p:Product) REQUIRE p.id IS UNIQUE
+2025-03-06 17:10:17,128 - INFO - Contrainte créée: CREATE CONSTRAINT brand_name IF NOT EXISTS FOR (b:Brand) REQUIRE b.name IS UNIQUE
+2025-03-06 17:10:17,205 - INFO - Contrainte créée: CREATE CONSTRAINT ingredient_name IF NOT EXISTS FOR (i:Ingredient) REQUIRE i.name IS UNIQUE
+2025-03-06 17:10:17,281 - INFO - Contrainte créée: CREATE CONSTRAINT category_name IF NOT EXISTS FOR (c:Category) REQUIRE c.name IS UNIQUE
+2025-03-06 17:10:17,373 - INFO - Contrainte créée: CREATE CONSTRAINT country_name IF NOT EXISTS FOR (c:Country) REQUIRE c.name IS UNIQUE
+2025-03-06 17:10:17,459 - INFO - Contrainte créée: CREATE CONSTRAINT allergen_name IF NOT EXISTS FOR (a:Allergen) REQUIRE a.name IS UNIQUE
+2025-03-06 17:10:17,531 - INFO - Contrainte créée: CREATE CONSTRAINT nutrient_name IF NOT EXISTS FOR (n:Nutrient) REQUIRE n.name IS UNIQUE
+2025-03-06 17:10:17,603 - INFO - Contrainte créée: CREATE CONSTRAINT label_name IF NOT EXISTS FOR (l:Label) REQUIRE l.name IS UNIQUE
+2025-03-06 17:10:17,607 - INFO - Prétraitement des produits...
+2025-03-06 17:10:17,666 - INFO - Prétraitement terminé: 968 produits valides
+2025-03-06 17:10:17,666 - INFO - Création de 8 nœuds de type Nutrient
+2025-03-06 17:10:17,774 - INFO - Progrès Nutrient: 8/8
+2025-03-06 17:10:17,774 - INFO - Création des nœuds Nutrient terminée en 0.11 secondes
+2025-03-06 17:10:17,774 - INFO - Création de 466 nœuds de type Brand
+2025-03-06 17:10:17,967 - INFO - Progrès Brand: 466/466
+2025-03-06 17:10:17,967 - INFO - Création des nœuds Brand terminée en 0.19 secondes
+2025-03-06 17:10:17,967 - INFO - Création de 1019 nœuds de type Category
+2025-03-06 17:10:18,173 - INFO - Progrès Category: 1000/1019
+2025-03-06 17:10:18,314 - INFO - Progrès Category: 1019/1019
+2025-03-06 17:10:18,315 - INFO - Création des nœuds Category terminée en 0.35 secondes
+2025-03-06 17:10:18,315 - INFO - Création de 46 nœuds de type Country
+2025-03-06 17:10:18,421 - INFO - Progrès Country: 46/46
+2025-03-06 17:10:18,421 - INFO - Création des nœuds Country terminée en 0.11 secondes
+2025-03-06 17:10:18,422 - INFO - Création de 3316 nœuds de type Ingredient
+2025-03-06 17:10:18,661 - INFO - Progrès Ingredient: 1000/3316
+2025-03-06 17:10:18,849 - INFO - Progrès Ingredient: 2000/3316
+2025-03-06 17:10:18,987 - INFO - Progrès Ingredient: 3000/3316
+2025-03-06 17:10:19,080 - INFO - Progrès Ingredient: 3316/3316
+2025-03-06 17:10:19,082 - INFO - Création des nœuds Ingredient terminée en 0.66 secondes
+2025-03-06 17:10:19,082 - INFO - Création de 31 nœuds de type Allergen
+2025-03-06 17:10:19,172 - INFO - Progrès Allergen: 31/31
+2025-03-06 17:10:19,172 - INFO - Création des nœuds Allergen terminée en 0.09 secondes
+2025-03-06 17:10:19,172 - INFO - Création de 265 nœuds de type Label
+2025-03-06 17:10:19,276 - INFO - Progrès Label: 265/265
+2025-03-06 17:10:19,276 - INFO - Création des nœuds Label terminée en 0.10 secondes
+2025-03-06 17:10:19,276 - INFO - Création de 968 nœuds de produits
+2025-03-06 17:10:19,552 - INFO - Progrès produits: 500/968
+2025-03-06 17:10:19,685 - INFO - Progrès produits: 968/968
+2025-03-06 17:10:19,686 - INFO - Création des nœuds de produits terminée en 0.41 secondes
+2025-03-06 17:10:19,686 - INFO - Création des relations de type BELONGS_TO
+2025-03-06 17:10:20,131 - INFO - Progrès relations BELONGS_TO: 500/968
+2025-03-06 17:10:20,243 - INFO - Progrès relations BELONGS_TO: 968/968
+2025-03-06 17:10:20,243 - INFO - Création des relations BELONGS_TO terminée en 0.56 secondes
+2025-03-06 17:10:20,244 - INFO - Création des relations de type CATEGORIZED_AS
+2025-03-06 17:10:20,523 - INFO - Progrès relations CATEGORIZED_AS: 500/968
+2025-03-06 17:10:20,786 - INFO - Progrès relations CATEGORIZED_AS: 968/968
+2025-03-06 17:10:20,787 - INFO - Création des relations CATEGORIZED_AS terminée en 0.54 secondes
+2025-03-06 17:10:20,787 - INFO - Création des relations de type PRODUCED_IN
+2025-03-06 17:10:21,030 - INFO - Progrès relations PRODUCED_IN: 500/968
+2025-03-06 17:10:21,129 - INFO - Progrès relations PRODUCED_IN: 968/968
+2025-03-06 17:10:21,130 - INFO - Création des relations PRODUCED_IN terminée en 0.34 secondes
+2025-03-06 17:10:21,130 - INFO - Création des relations de type CONTAINS
+2025-03-06 17:10:21,713 - INFO - Progrès relations CONTAINS: 500/968
+2025-03-06 17:10:21,936 - INFO - Progrès relations CONTAINS: 968/968
+2025-03-06 17:10:21,936 - INFO - Création des relations CONTAINS terminée en 0.81 secondes
+2025-03-06 17:10:21,936 - INFO - Création des relations de type CONTAINS_ALLERGEN
+2025-03-06 17:10:22,103 - INFO - Progrès relations CONTAINS_ALLERGEN: 500/968
+2025-03-06 17:10:22,224 - INFO - Progrès relations CONTAINS_ALLERGEN: 968/968
+2025-03-06 17:10:22,224 - INFO - Création des relations CONTAINS_ALLERGEN terminée en 0.29 secondes
+2025-03-06 17:10:22,224 - INFO - Création des relations de type HAS_LABEL
+2025-03-06 17:10:22,434 - INFO - Progrès relations HAS_LABEL: 500/968
+2025-03-06 17:10:22,521 - INFO - Progrès relations HAS_LABEL: 968/968
+2025-03-06 17:10:22,521 - INFO - Création des relations HAS_LABEL terminée en 0.30 secondes
+2025-03-06 17:10:22,521 - INFO - Création des relations de type HAS_NUTRIENT
+2025-03-06 17:10:22,918 - INFO - Progrès relations HAS_NUTRIENT: 500/968
+2025-03-06 17:10:23,208 - INFO - Progrès relations HAS_NUTRIENT: 968/968
+2025-03-06 17:10:23,208 - INFO - Création des relations HAS_NUTRIENT terminée en 0.69 secondes
+2025-03-06 17:10:23,243 - INFO - Chargement terminé en 43.21 secondes (0.72 minutes)
+2025-03-06 17:10:23,244 - INFO - === Statistiques de chargement ===
+2025-03-06 17:10:23,244 - INFO - produits_sans_nom: 32
+2025-03-06 17:10:23,244 - INFO - marques: 1032
+2025-03-06 17:10:23,244 - INFO - categories: 4358
+2025-03-06 17:10:23,244 - INFO - pays: 1472
+2025-03-06 17:10:23,244 - INFO - ingredients: 7159
+2025-03-06 17:10:23,244 - INFO - allergenes: 969
+2025-03-06 17:10:23,244 - INFO - labels: 1704
+2025-03-06 17:10:23,244 - INFO - nutriments: 6465
+2025-03-06 17:10:23,244 - INFO - produits_ajoutes: 968
+2025-03-06 17:10:23,646 - INFO - 968 produits ont été chargés dans le graphe Neo4j.
+2025-03-06 17:10:23,706 - INFO - Index créé: CREATE INDEX product_name_index IF NOT EXISTS FOR (p:Product) ON (p.name)
+2025-03-06 17:10:23,769 - INFO - Index créé: CREATE INDEX brand_name_index IF NOT EXISTS FOR (b:Brand) ON (b.name)
+2025-03-06 17:10:23,770 - INFO - Received notification from DBMS server: {severity: INFORMATION} {code: Neo.ClientNotification.Schema.IndexOrConstraintAlreadyExists} {category: SCHEMA} {title: `CREATE RANGE INDEX brand_name_index IF NOT EXISTS FOR (e:Brand) ON (e.name)` has no effect.} {description: `RANGE INDEX brand_name FOR (e:Brand) ON (e.name)` already exists.} {position: None} for query: 'CREATE INDEX brand_name_index IF NOT EXISTS FOR (b:Brand) ON (b.name)'
+2025-03-06 17:10:23,829 - INFO - Index créé: CREATE INDEX category_name_index IF NOT EXISTS FOR (c:Category) ON (c.name)
+2025-03-06 17:10:23,830 - INFO - Received notification from DBMS server: {severity: INFORMATION} {code: Neo.ClientNotification.Schema.IndexOrConstraintAlreadyExists} {category: SCHEMA} {title: `CREATE RANGE INDEX category_name_index IF NOT EXISTS FOR (e:Category) ON (e.name)` has no effect.} {description: `RANGE INDEX category_name FOR (e:Category) ON (e.name)` already exists.} {position: None} for query: 'CREATE INDEX category_name_index IF NOT EXISTS FOR (c:Category) ON (c.name)'
+2025-03-06 17:10:23,883 - INFO - Index créé: CREATE INDEX ingredient_name_index IF NOT EXISTS FOR (i:Ingredient) ON (i.name)
+2025-03-06 17:10:23,885 - INFO - Received notification from DBMS server: {severity: INFORMATION} {code: Neo.ClientNotification.Schema.IndexOrConstraintAlreadyExists} {category: SCHEMA} {title: `CREATE RANGE INDEX ingredient_name_index IF NOT EXISTS FOR (e:Ingredient) ON (e.name)` has no effect.} {description: `RANGE INDEX ingredient_name FOR (e:Ingredient) ON (e.name)` already exists.} {position: None} for query: 'CREATE INDEX ingredient_name_index IF NOT EXISTS FOR (i:Ingredient) ON (i.name)'
+2025-03-06 17:10:23,948 - INFO - Index créé: CREATE INDEX product_nutriscore_index IF NOT EXISTS FOR (p:Product) ON (p.nutriscore)
+2025-03-06 17:10:24,013 - INFO - Index créé: CREATE INDEX product_nova_index IF NOT EXISTS FOR (p:Product) ON (p.nova_group)
+2025-03-06 17:10:24,078 - INFO - Index créé: CREATE INDEX product_ecoscore_index IF NOT EXISTS FOR (p:Product) ON (p.ecoscore)
+2025-03-06 17:10:24,079 - INFO - Temps d'exécution: 46.17 secondes
+2025-03-06 17:11:14,451 - INFO - Base de données Neo4j effacée avec succès
+2025-03-06 17:11:15,019 - INFO - Chargement du fichier ../../data/openfoodfacts-canadian-products.jsonl
+2025-03-06 17:11:43,482 - INFO - Fichier chargé: 97439 produits trouvés
+2025-03-06 17:11:45,419 - INFO - Limitation à 10000 produits...
+2025-03-06 17:11:45,573 - INFO - Contrainte créée: CREATE CONSTRAINT product_id IF NOT EXISTS FOR (p:Product) REQUIRE p.id IS UNIQUE
+2025-03-06 17:11:45,645 - INFO - Contrainte créée: CREATE CONSTRAINT brand_name IF NOT EXISTS FOR (b:Brand) REQUIRE b.name IS UNIQUE
+2025-03-06 17:11:45,710 - INFO - Contrainte créée: CREATE CONSTRAINT ingredient_name IF NOT EXISTS FOR (i:Ingredient) REQUIRE i.name IS UNIQUE
+2025-03-06 17:11:45,778 - INFO - Contrainte créée: CREATE CONSTRAINT category_name IF NOT EXISTS FOR (c:Category) REQUIRE c.name IS UNIQUE
+2025-03-06 17:11:45,856 - INFO - Contrainte créée: CREATE CONSTRAINT country_name IF NOT EXISTS FOR (c:Country) REQUIRE c.name IS UNIQUE
+2025-03-06 17:11:45,927 - INFO - Contrainte créée: CREATE CONSTRAINT allergen_name IF NOT EXISTS FOR (a:Allergen) REQUIRE a.name IS UNIQUE
+2025-03-06 17:11:45,996 - INFO - Contrainte créée: CREATE CONSTRAINT nutrient_name IF NOT EXISTS FOR (n:Nutrient) REQUIRE n.name IS UNIQUE
+2025-03-06 17:11:46,068 - INFO - Contrainte créée: CREATE CONSTRAINT label_name IF NOT EXISTS FOR (l:Label) REQUIRE l.name IS UNIQUE
+2025-03-06 17:11:46,071 - INFO - Prétraitement des produits...
+2025-03-06 17:11:46,380 - INFO - Prétraitement terminé: 9479 produits valides
+2025-03-06 17:11:46,380 - INFO - Création de 8 nœuds de type Nutrient
+2025-03-06 17:11:46,465 - INFO - Progrès Nutrient: 8/8
+2025-03-06 17:11:46,465 - INFO - Création des nœuds Nutrient terminée en 0.08 secondes
+2025-03-06 17:11:46,465 - INFO - Création de 3073 nœuds de type Brand
+2025-03-06 17:11:46,571 - INFO - Progrès Brand: 1000/3073
+2025-03-06 17:11:46,673 - INFO - Progrès Brand: 2000/3073
+2025-03-06 17:11:46,768 - INFO - Progrès Brand: 3000/3073
+2025-03-06 17:11:46,862 - INFO - Progrès Brand: 3073/3073
+2025-03-06 17:11:46,863 - INFO - Création des nœuds Brand terminée en 0.40 secondes
+2025-03-06 17:11:46,863 - INFO - Création de 3885 nœuds de type Category
+2025-03-06 17:11:46,979 - INFO - Progrès Category: 1000/3885
+2025-03-06 17:11:47,119 - INFO - Progrès Category: 2000/3885
+2025-03-06 17:11:47,217 - INFO - Progrès Category: 3000/3885
+2025-03-06 17:11:47,307 - INFO - Progrès Category: 3885/3885
+2025-03-06 17:11:47,307 - INFO - Création des nœuds Category terminée en 0.44 secondes
+2025-03-06 17:11:47,307 - INFO - Création de 247 nœuds de type Country
+2025-03-06 17:11:47,415 - INFO - Progrès Country: 247/247
+2025-03-06 17:11:47,415 - INFO - Création des nœuds Country terminée en 0.11 secondes
+2025-03-06 17:11:47,416 - INFO - Création de 18186 nœuds de type Ingredient
+2025-03-06 17:11:47,554 - INFO - Progrès Ingredient: 1000/18186
+2025-03-06 17:11:47,689 - INFO - Progrès Ingredient: 2000/18186
+2025-03-06 17:11:47,799 - INFO - Progrès Ingredient: 3000/18186
+2025-03-06 17:11:47,916 - INFO - Progrès Ingredient: 4000/18186
+2025-03-06 17:11:48,036 - INFO - Progrès Ingredient: 5000/18186
+2025-03-06 17:11:48,147 - INFO - Progrès Ingredient: 6000/18186
+2025-03-06 17:11:48,266 - INFO - Progrès Ingredient: 7000/18186
+2025-03-06 17:11:48,379 - INFO - Progrès Ingredient: 8000/18186
+2025-03-06 17:11:48,493 - INFO - Progrès Ingredient: 9000/18186
+2025-03-06 17:11:48,607 - INFO - Progrès Ingredient: 10000/18186
+2025-03-06 17:11:48,956 - INFO - Progrès Ingredient: 11000/18186
+2025-03-06 17:11:49,111 - INFO - Progrès Ingredient: 12000/18186
+2025-03-06 17:11:49,228 - INFO - Progrès Ingredient: 13000/18186
+2025-03-06 17:11:49,339 - INFO - Progrès Ingredient: 14000/18186
+2025-03-06 17:11:49,453 - INFO - Progrès Ingredient: 15000/18186
+2025-03-06 17:11:49,567 - INFO - Progrès Ingredient: 16000/18186
+2025-03-06 17:11:49,676 - INFO - Progrès Ingredient: 17000/18186
+2025-03-06 17:11:49,793 - INFO - Progrès Ingredient: 18000/18186
+2025-03-06 17:11:49,873 - INFO - Progrès Ingredient: 18186/18186
+2025-03-06 17:11:49,874 - INFO - Création des nœuds Ingredient terminée en 2.46 secondes
+2025-03-06 17:11:49,874 - INFO - Création de 66 nœuds de type Allergen
+2025-03-06 17:11:49,969 - INFO - Progrès Allergen: 66/66
+2025-03-06 17:11:49,969 - INFO - Création des nœuds Allergen terminée en 0.09 secondes
+2025-03-06 17:11:49,969 - INFO - Création de 916 nœuds de type Label
+2025-03-06 17:11:50,064 - INFO - Progrès Label: 916/916
+2025-03-06 17:11:50,065 - INFO - Création des nœuds Label terminée en 0.10 secondes
+2025-03-06 17:11:50,065 - INFO - Création de 9479 nœuds de produits
+2025-03-06 17:11:50,262 - INFO - Progrès produits: 500/9479
+2025-03-06 17:11:50,385 - INFO - Progrès produits: 1000/9479
+2025-03-06 17:11:50,509 - INFO - Progrès produits: 1500/9479
+2025-03-06 17:11:50,629 - INFO - Progrès produits: 2000/9479
+2025-03-06 17:11:50,786 - INFO - Progrès produits: 2500/9479
+2025-03-06 17:11:50,918 - INFO - Progrès produits: 3000/9479
+2025-03-06 17:11:51,043 - INFO - Progrès produits: 3500/9479
+2025-03-06 17:11:51,172 - INFO - Progrès produits: 4000/9479
+2025-03-06 17:11:51,309 - INFO - Progrès produits: 4500/9479
+2025-03-06 17:11:51,435 - INFO - Progrès produits: 5000/9479
+2025-03-06 17:11:51,555 - INFO - Progrès produits: 5500/9479
+2025-03-06 17:11:51,686 - INFO - Progrès produits: 6000/9479
+2025-03-06 17:11:51,813 - INFO - Progrès produits: 6500/9479
+2025-03-06 17:11:51,936 - INFO - Progrès produits: 7000/9479
+2025-03-06 17:11:52,068 - INFO - Progrès produits: 7500/9479
+2025-03-06 17:11:52,187 - INFO - Progrès produits: 8000/9479
+2025-03-06 17:11:52,303 - INFO - Progrès produits: 8500/9479
+2025-03-06 17:11:52,450 - INFO - Progrès produits: 9000/9479
+2025-03-06 17:11:52,563 - INFO - Progrès produits: 9479/9479
+2025-03-06 17:11:52,564 - INFO - Création des nœuds de produits terminée en 2.50 secondes
+2025-03-06 17:11:52,564 - INFO - Création des relations de type BELONGS_TO
+2025-03-06 17:11:52,809 - INFO - Progrès relations BELONGS_TO: 500/9479
+2025-03-06 17:11:52,919 - INFO - Progrès relations BELONGS_TO: 1000/9479
+2025-03-06 17:11:53,020 - INFO - Progrès relations BELONGS_TO: 1500/9479
+2025-03-06 17:11:53,111 - INFO - Progrès relations BELONGS_TO: 2000/9479
+2025-03-06 17:11:53,212 - INFO - Progrès relations BELONGS_TO: 2500/9479
+2025-03-06 17:11:53,320 - INFO - Progrès relations BELONGS_TO: 3000/9479
+2025-03-06 17:11:53,424 - INFO - Progrès relations BELONGS_TO: 3500/9479
+2025-03-06 17:11:53,518 - INFO - Progrès relations BELONGS_TO: 4000/9479
+2025-03-06 17:11:53,602 - INFO - Progrès relations BELONGS_TO: 4500/9479
+2025-03-06 17:11:53,700 - INFO - Progrès relations BELONGS_TO: 5000/9479
+2025-03-06 17:11:53,795 - INFO - Progrès relations BELONGS_TO: 5500/9479
+2025-03-06 17:11:53,881 - INFO - Progrès relations BELONGS_TO: 6000/9479
+2025-03-06 17:11:53,963 - INFO - Progrès relations BELONGS_TO: 6500/9479
+2025-03-06 17:11:54,046 - INFO - Progrès relations BELONGS_TO: 7000/9479
+2025-03-06 17:11:54,129 - INFO - Progrès relations BELONGS_TO: 7500/9479
+2025-03-06 17:11:54,203 - INFO - Progrès relations BELONGS_TO: 8000/9479
+2025-03-06 17:11:54,278 - INFO - Progrès relations BELONGS_TO: 8500/9479
+2025-03-06 17:11:54,349 - INFO - Progrès relations BELONGS_TO: 9000/9479
+2025-03-06 17:11:54,425 - INFO - Progrès relations BELONGS_TO: 9479/9479
+2025-03-06 17:11:54,425 - INFO - Création des relations BELONGS_TO terminée en 1.86 secondes
+2025-03-06 17:11:54,426 - INFO - Création des relations de type CATEGORIZED_AS
+2025-03-06 17:11:54,634 - INFO - Progrès relations CATEGORIZED_AS: 500/9479
+2025-03-06 17:11:54,789 - INFO - Progrès relations CATEGORIZED_AS: 1000/9479
+2025-03-06 17:11:54,952 - INFO - Progrès relations CATEGORIZED_AS: 1500/9479
+2025-03-06 17:11:55,158 - INFO - Progrès relations CATEGORIZED_AS: 2000/9479
+2025-03-06 17:11:55,413 - INFO - Progrès relations CATEGORIZED_AS: 2500/9479
+2025-03-06 17:11:55,556 - INFO - Progrès relations CATEGORIZED_AS: 3000/9479
+2025-03-06 17:11:55,963 - INFO - Progrès relations CATEGORIZED_AS: 3500/9479
+2025-03-06 17:11:56,099 - INFO - Progrès relations CATEGORIZED_AS: 4000/9479
+2025-03-06 17:11:56,248 - INFO - Progrès relations CATEGORIZED_AS: 4500/9479
+2025-03-06 17:11:56,396 - INFO - Progrès relations CATEGORIZED_AS: 5000/9479
+2025-03-06 17:11:56,530 - INFO - Progrès relations CATEGORIZED_AS: 5500/9479
+2025-03-06 17:11:56,686 - INFO - Progrès relations CATEGORIZED_AS: 6000/9479
+2025-03-06 17:11:56,807 - INFO - Progrès relations CATEGORIZED_AS: 6500/9479
+2025-03-06 17:11:56,932 - INFO - Progrès relations CATEGORIZED_AS: 7000/9479
+2025-03-06 17:11:57,040 - INFO - Progrès relations CATEGORIZED_AS: 7500/9479
+2025-03-06 17:11:57,151 - INFO - Progrès relations CATEGORIZED_AS: 8000/9479
+2025-03-06 17:11:57,352 - INFO - Progrès relations CATEGORIZED_AS: 8500/9479
+2025-03-06 17:11:57,517 - INFO - Progrès relations CATEGORIZED_AS: 9000/9479
+2025-03-06 17:11:57,632 - INFO - Progrès relations CATEGORIZED_AS: 9479/9479
+2025-03-06 17:11:57,633 - INFO - Création des relations CATEGORIZED_AS terminée en 3.21 secondes
+2025-03-06 17:11:57,633 - INFO - Création des relations de type PRODUCED_IN
+2025-03-06 17:11:57,831 - INFO - Progrès relations PRODUCED_IN: 500/9479
+2025-03-06 17:11:57,919 - INFO - Progrès relations PRODUCED_IN: 1000/9479
+2025-03-06 17:11:58,020 - INFO - Progrès relations PRODUCED_IN: 1500/9479
+2025-03-06 17:11:58,111 - INFO - Progrès relations PRODUCED_IN: 2000/9479
+2025-03-06 17:11:58,259 - INFO - Progrès relations PRODUCED_IN: 2500/9479
+2025-03-06 17:11:58,365 - INFO - Progrès relations PRODUCED_IN: 3000/9479
+2025-03-06 17:11:58,453 - INFO - Progrès relations PRODUCED_IN: 3500/9479
+2025-03-06 17:11:58,536 - INFO - Progrès relations PRODUCED_IN: 4000/9479
+2025-03-06 17:11:58,623 - INFO - Progrès relations PRODUCED_IN: 4500/9479
+2025-03-06 17:11:58,717 - INFO - Progrès relations PRODUCED_IN: 5000/9479
+2025-03-06 17:11:58,801 - INFO - Progrès relations PRODUCED_IN: 5500/9479
+2025-03-06 17:11:58,933 - INFO - Progrès relations PRODUCED_IN: 6000/9479
+2025-03-06 17:11:59,015 - INFO - Progrès relations PRODUCED_IN: 6500/9479
+2025-03-06 17:11:59,102 - INFO - Progrès relations PRODUCED_IN: 7000/9479
+2025-03-06 17:11:59,179 - INFO - Progrès relations PRODUCED_IN: 7500/9479
+2025-03-06 17:11:59,262 - INFO - Progrès relations PRODUCED_IN: 8000/9479
+2025-03-06 17:11:59,343 - INFO - Progrès relations PRODUCED_IN: 8500/9479
+2025-03-06 17:11:59,431 - INFO - Progrès relations PRODUCED_IN: 9000/9479
+2025-03-06 17:11:59,531 - INFO - Progrès relations PRODUCED_IN: 9479/9479
+2025-03-06 17:11:59,531 - INFO - Création des relations PRODUCED_IN terminée en 1.90 secondes
+2025-03-06 17:11:59,531 - INFO - Création des relations de type CONTAINS
+2025-03-06 17:11:59,779 - INFO - Progrès relations CONTAINS: 500/9479
+2025-03-06 17:11:59,983 - INFO - Progrès relations CONTAINS: 1000/9479
+2025-03-06 17:12:00,192 - INFO - Progrès relations CONTAINS: 1500/9479
+2025-03-06 17:12:00,379 - INFO - Progrès relations CONTAINS: 2000/9479
+2025-03-06 17:12:00,573 - INFO - Progrès relations CONTAINS: 2500/9479
+2025-03-06 17:12:00,929 - INFO - Progrès relations CONTAINS: 3000/9479
+2025-03-06 17:12:01,199 - INFO - Progrès relations CONTAINS: 3500/9479
+2025-03-06 17:12:01,418 - INFO - Progrès relations CONTAINS: 4000/9479
+2025-03-06 17:12:01,613 - INFO - Progrès relations CONTAINS: 4500/9479
+2025-03-06 17:12:01,781 - INFO - Progrès relations CONTAINS: 5000/9479
+2025-03-06 17:12:02,012 - INFO - Progrès relations CONTAINS: 5500/9479
+2025-03-06 17:12:02,218 - INFO - Progrès relations CONTAINS: 6000/9479
+2025-03-06 17:12:02,412 - INFO - Progrès relations CONTAINS: 6500/9479
+2025-03-06 17:12:02,584 - INFO - Progrès relations CONTAINS: 7000/9479
+2025-03-06 17:12:02,759 - INFO - Progrès relations CONTAINS: 7500/9479
+2025-03-06 17:12:02,900 - INFO - Progrès relations CONTAINS: 8000/9479
+2025-03-06 17:12:03,030 - INFO - Progrès relations CONTAINS: 8500/9479
+2025-03-06 17:12:03,170 - INFO - Progrès relations CONTAINS: 9000/9479
+2025-03-06 17:12:03,311 - INFO - Progrès relations CONTAINS: 9479/9479
+2025-03-06 17:12:03,312 - INFO - Création des relations CONTAINS terminée en 3.78 secondes
+2025-03-06 17:12:03,312 - INFO - Création des relations de type CONTAINS_ALLERGEN
+2025-03-06 17:12:03,466 - INFO - Progrès relations CONTAINS_ALLERGEN: 500/9479
+2025-03-06 17:12:03,538 - INFO - Progrès relations CONTAINS_ALLERGEN: 1000/9479
+2025-03-06 17:12:03,617 - INFO - Progrès relations CONTAINS_ALLERGEN: 1500/9479
+2025-03-06 17:12:03,689 - INFO - Progrès relations CONTAINS_ALLERGEN: 2000/9479
+2025-03-06 17:12:03,775 - INFO - Progrès relations CONTAINS_ALLERGEN: 2500/9479
+2025-03-06 17:12:03,849 - INFO - Progrès relations CONTAINS_ALLERGEN: 3000/9479
+2025-03-06 17:12:03,920 - INFO - Progrès relations CONTAINS_ALLERGEN: 3500/9479
+2025-03-06 17:12:03,993 - INFO - Progrès relations CONTAINS_ALLERGEN: 4000/9479
+2025-03-06 17:12:04,058 - INFO - Progrès relations CONTAINS_ALLERGEN: 4500/9479
+2025-03-06 17:12:04,131 - INFO - Progrès relations CONTAINS_ALLERGEN: 5000/9479
+2025-03-06 17:12:04,209 - INFO - Progrès relations CONTAINS_ALLERGEN: 5500/9479
+2025-03-06 17:12:04,281 - INFO - Progrès relations CONTAINS_ALLERGEN: 6000/9479
+2025-03-06 17:12:04,352 - INFO - Progrès relations CONTAINS_ALLERGEN: 6500/9479
+2025-03-06 17:12:04,417 - INFO - Progrès relations CONTAINS_ALLERGEN: 7000/9479
+2025-03-06 17:12:04,482 - INFO - Progrès relations CONTAINS_ALLERGEN: 7500/9479
+2025-03-06 17:12:04,543 - INFO - Progrès relations CONTAINS_ALLERGEN: 8000/9479
+2025-03-06 17:12:04,605 - INFO - Progrès relations CONTAINS_ALLERGEN: 8500/9479
+2025-03-06 17:12:04,667 - INFO - Progrès relations CONTAINS_ALLERGEN: 9000/9479
+2025-03-06 17:12:04,730 - INFO - Progrès relations CONTAINS_ALLERGEN: 9479/9479
+2025-03-06 17:12:04,730 - INFO - Création des relations CONTAINS_ALLERGEN terminée en 1.42 secondes
+2025-03-06 17:12:04,730 - INFO - Création des relations de type HAS_LABEL
+2025-03-06 17:12:04,858 - INFO - Progrès relations HAS_LABEL: 500/9479
+2025-03-06 17:12:04,950 - INFO - Progrès relations HAS_LABEL: 1000/9479
+2025-03-06 17:12:05,040 - INFO - Progrès relations HAS_LABEL: 1500/9479
+2025-03-06 17:12:05,189 - INFO - Progrès relations HAS_LABEL: 2000/9479
+2025-03-06 17:12:05,296 - INFO - Progrès relations HAS_LABEL: 2500/9479
+2025-03-06 17:12:05,397 - INFO - Progrès relations HAS_LABEL: 3000/9479
+2025-03-06 17:12:05,484 - INFO - Progrès relations HAS_LABEL: 3500/9479
+2025-03-06 17:12:05,570 - INFO - Progrès relations HAS_LABEL: 4000/9479
+2025-03-06 17:12:05,659 - INFO - Progrès relations HAS_LABEL: 4500/9479
+2025-03-06 17:12:05,747 - INFO - Progrès relations HAS_LABEL: 5000/9479
+2025-03-06 17:12:05,839 - INFO - Progrès relations HAS_LABEL: 5500/9479
+2025-03-06 17:12:05,980 - INFO - Progrès relations HAS_LABEL: 6000/9479
+2025-03-06 17:12:06,118 - INFO - Progrès relations HAS_LABEL: 6500/9479
+2025-03-06 17:12:06,210 - INFO - Progrès relations HAS_LABEL: 7000/9479
+2025-03-06 17:12:06,307 - INFO - Progrès relations HAS_LABEL: 7500/9479
+2025-03-06 17:12:06,383 - INFO - Progrès relations HAS_LABEL: 8000/9479
+2025-03-06 17:12:06,460 - INFO - Progrès relations HAS_LABEL: 8500/9479
+2025-03-06 17:12:06,533 - INFO - Progrès relations HAS_LABEL: 9000/9479
+2025-03-06 17:12:06,615 - INFO - Progrès relations HAS_LABEL: 9479/9479
+2025-03-06 17:12:06,616 - INFO - Création des relations HAS_LABEL terminée en 1.89 secondes
+2025-03-06 17:12:06,616 - INFO - Création des relations de type HAS_NUTRIENT
+2025-03-06 17:12:06,922 - INFO - Progrès relations HAS_NUTRIENT: 500/9479
+2025-03-06 17:12:07,165 - INFO - Progrès relations HAS_NUTRIENT: 1000/9479
+2025-03-06 17:12:07,407 - INFO - Progrès relations HAS_NUTRIENT: 1500/9479
+2025-03-06 17:12:07,616 - INFO - Progrès relations HAS_NUTRIENT: 2000/9479
+2025-03-06 17:12:07,844 - INFO - Progrès relations HAS_NUTRIENT: 2500/9479
+2025-03-06 17:12:08,081 - INFO - Progrès relations HAS_NUTRIENT: 3000/9479
+2025-03-06 17:12:08,279 - INFO - Progrès relations HAS_NUTRIENT: 3500/9479
+2025-03-06 17:12:08,496 - INFO - Progrès relations HAS_NUTRIENT: 4000/9479
+2025-03-06 17:12:08,689 - INFO - Progrès relations HAS_NUTRIENT: 4500/9479
+2025-03-06 17:12:08,897 - INFO - Progrès relations HAS_NUTRIENT: 5000/9479
+2025-03-06 17:12:09,132 - INFO - Progrès relations HAS_NUTRIENT: 5500/9479
+2025-03-06 17:12:09,345 - INFO - Progrès relations HAS_NUTRIENT: 6000/9479
+2025-03-06 17:12:09,561 - INFO - Progrès relations HAS_NUTRIENT: 6500/9479
+2025-03-06 17:12:09,748 - INFO - Progrès relations HAS_NUTRIENT: 7000/9479
+2025-03-06 17:12:09,988 - INFO - Progrès relations HAS_NUTRIENT: 7500/9479
+2025-03-06 17:12:10,209 - INFO - Progrès relations HAS_NUTRIENT: 8000/9479
+2025-03-06 17:12:10,431 - INFO - Progrès relations HAS_NUTRIENT: 8500/9479
+2025-03-06 17:12:10,647 - INFO - Progrès relations HAS_NUTRIENT: 9000/9479
+2025-03-06 17:12:10,865 - INFO - Progrès relations HAS_NUTRIENT: 9479/9479
+2025-03-06 17:12:10,865 - INFO - Création des relations HAS_NUTRIENT terminée en 4.25 secondes
+2025-03-06 17:12:10,885 - INFO - Chargement terminé en 55.87 secondes (0.93 minutes)
+2025-03-06 17:12:10,885 - INFO - === Statistiques de chargement ===
+2025-03-06 17:12:10,886 - INFO - produits_sans_nom: 521
+2025-03-06 17:12:10,886 - INFO - marques: 8259
+2025-03-06 17:12:10,886 - INFO - categories: 30445
+2025-03-06 17:12:10,886 - INFO - pays: 12673
+2025-03-06 17:12:10,886 - INFO - ingredients: 55035
+2025-03-06 17:12:10,886 - INFO - allergenes: 6030
+2025-03-06 17:12:10,886 - INFO - labels: 13117
+2025-03-06 17:12:10,886 - INFO - nutriments: 61826
+2025-03-06 17:12:10,886 - INFO - produits_ajoutes: 9479
+2025-03-06 17:12:11,372 - INFO - 9479 produits ont été chargés dans le graphe Neo4j.
+2025-03-06 17:12:11,428 - INFO - Index créé: CREATE INDEX product_name_index IF NOT EXISTS FOR (p:Product) ON (p.name)
+2025-03-06 17:12:11,490 - INFO - Index créé: CREATE INDEX brand_name_index IF NOT EXISTS FOR (b:Brand) ON (b.name)
+2025-03-06 17:12:11,491 - INFO - Received notification from DBMS server: {severity: INFORMATION} {code: Neo.ClientNotification.Schema.IndexOrConstraintAlreadyExists} {category: SCHEMA} {title: `CREATE RANGE INDEX brand_name_index IF NOT EXISTS FOR (e:Brand) ON (e.name)` has no effect.} {description: `RANGE INDEX brand_name FOR (e:Brand) ON (e.name)` already exists.} {position: None} for query: 'CREATE INDEX brand_name_index IF NOT EXISTS FOR (b:Brand) ON (b.name)'
+2025-03-06 17:12:11,550 - INFO - Index créé: CREATE INDEX category_name_index IF NOT EXISTS FOR (c:Category) ON (c.name)
+2025-03-06 17:12:11,551 - INFO - Received notification from DBMS server: {severity: INFORMATION} {code: Neo.ClientNotification.Schema.IndexOrConstraintAlreadyExists} {category: SCHEMA} {title: `CREATE RANGE INDEX category_name_index IF NOT EXISTS FOR (e:Category) ON (e.name)` has no effect.} {description: `RANGE INDEX category_name FOR (e:Category) ON (e.name)` already exists.} {position: None} for query: 'CREATE INDEX category_name_index IF NOT EXISTS FOR (c:Category) ON (c.name)'
+2025-03-06 17:12:11,617 - INFO - Index créé: CREATE INDEX ingredient_name_index IF NOT EXISTS FOR (i:Ingredient) ON (i.name)
+2025-03-06 17:12:11,617 - INFO - Received notification from DBMS server: {severity: INFORMATION} {code: Neo.ClientNotification.Schema.IndexOrConstraintAlreadyExists} {category: SCHEMA} {title: `CREATE RANGE INDEX ingredient_name_index IF NOT EXISTS FOR (e:Ingredient) ON (e.name)` has no effect.} {description: `RANGE INDEX ingredient_name FOR (e:Ingredient) ON (e.name)` already exists.} {position: None} for query: 'CREATE INDEX ingredient_name_index IF NOT EXISTS FOR (i:Ingredient) ON (i.name)'
+2025-03-06 17:12:11,710 - INFO - Index créé: CREATE INDEX product_nutriscore_index IF NOT EXISTS FOR (p:Product) ON (p.nutriscore)
+2025-03-06 17:12:11,808 - INFO - Index créé: CREATE INDEX product_nova_index IF NOT EXISTS FOR (p:Product) ON (p.nova_group)
+2025-03-06 17:12:11,908 - INFO - Index créé: CREATE INDEX product_ecoscore_index IF NOT EXISTS FOR (p:Product) ON (p.ecoscore)
+2025-03-06 17:12:11,913 - INFO - Temps d'exécution: 58.87 secondes
+2025-03-06 17:15:37,826 - INFO - Base de données Neo4j effacée avec succès
+2025-03-06 17:15:45,437 - INFO - Chargement du fichier ../../data/openfoodfacts-canadian-products.jsonl
+2025-03-06 17:16:12,790 - INFO - Fichier chargé: 97439 produits trouvés
+2025-03-06 17:16:12,973 - INFO - Contrainte créée: CREATE CONSTRAINT product_id IF NOT EXISTS FOR (p:Product) REQUIRE p.id IS UNIQUE
+2025-03-06 17:16:13,068 - INFO - Contrainte créée: CREATE CONSTRAINT brand_name IF NOT EXISTS FOR (b:Brand) REQUIRE b.name IS UNIQUE
+2025-03-06 17:16:13,162 - INFO - Contrainte créée: CREATE CONSTRAINT ingredient_name IF NOT EXISTS FOR (i:Ingredient) REQUIRE i.name IS UNIQUE
+2025-03-06 17:16:13,256 - INFO - Contrainte créée: CREATE CONSTRAINT category_name IF NOT EXISTS FOR (c:Category) REQUIRE c.name IS UNIQUE
+2025-03-06 17:16:13,347 - INFO - Contrainte créée: CREATE CONSTRAINT country_name IF NOT EXISTS FOR (c:Country) REQUIRE c.name IS UNIQUE
+2025-03-06 17:16:13,432 - INFO - Contrainte créée: CREATE CONSTRAINT allergen_name IF NOT EXISTS FOR (a:Allergen) REQUIRE a.name IS UNIQUE
+2025-03-06 17:16:13,515 - INFO - Contrainte créée: CREATE CONSTRAINT nutrient_name IF NOT EXISTS FOR (n:Nutrient) REQUIRE n.name IS UNIQUE
+2025-03-06 17:16:13,598 - INFO - Contrainte créée: CREATE CONSTRAINT label_name IF NOT EXISTS FOR (l:Label) REQUIRE l.name IS UNIQUE
+2025-03-06 17:16:13,601 - INFO - Prétraitement des produits...
+2025-03-06 17:16:27,520 - INFO - Prétraitement terminé: 94709 produits valides
+2025-03-06 17:16:27,521 - INFO - Création de 8 nœuds de type Nutrient
+2025-03-06 17:16:28,030 - INFO - Progrès Nutrient: 8/8
+2025-03-06 17:16:28,031 - INFO - Création des nœuds Nutrient terminée en 0.51 secondes
+2025-03-06 17:16:28,031 - INFO - Création de 11390 nœuds de type Brand
+2025-03-06 17:16:28,549 - INFO - Progrès Brand: 1000/11390
+2025-03-06 17:16:28,786 - INFO - Progrès Brand: 2000/11390
+2025-03-06 17:16:28,936 - INFO - Progrès Brand: 3000/11390
+2025-03-06 17:16:29,087 - INFO - Progrès Brand: 4000/11390
+2025-03-06 17:16:29,227 - INFO - Progrès Brand: 5000/11390
+2025-03-06 17:16:29,369 - INFO - Progrès Brand: 6000/11390
+2025-03-06 17:16:29,507 - INFO - Progrès Brand: 7000/11390
+2025-03-06 17:16:29,652 - INFO - Progrès Brand: 8000/11390
+2025-03-06 17:16:29,795 - INFO - Progrès Brand: 9000/11390
+2025-03-06 17:16:29,943 - INFO - Progrès Brand: 10000/11390
+2025-03-06 17:16:30,086 - INFO - Progrès Brand: 11000/11390
+2025-03-06 17:16:30,183 - INFO - Progrès Brand: 11390/11390
+2025-03-06 17:16:30,184 - INFO - Création des nœuds Brand terminée en 2.15 secondes
+2025-03-06 17:16:30,184 - INFO - Création de 8005 nœuds de type Category
+2025-03-06 17:16:30,336 - INFO - Progrès Category: 1000/8005
+2025-03-06 17:16:30,458 - INFO - Progrès Category: 2000/8005
+2025-03-06 17:16:30,580 - INFO - Progrès Category: 3000/8005
+2025-03-06 17:16:30,704 - INFO - Progrès Category: 4000/8005
+2025-03-06 17:16:30,822 - INFO - Progrès Category: 5000/8005
+2025-03-06 17:16:30,939 - INFO - Progrès Category: 6000/8005
+2025-03-06 17:16:31,058 - INFO - Progrès Category: 7000/8005
+2025-03-06 17:16:31,172 - INFO - Progrès Category: 8000/8005
+2025-03-06 17:16:31,308 - INFO - Progrès Category: 8005/8005
+2025-03-06 17:16:31,308 - INFO - Création des nœuds Category terminée en 1.12 secondes
+2025-03-06 17:16:31,308 - INFO - Création de 306 nœuds de type Country
+2025-03-06 17:16:31,515 - INFO - Progrès Country: 306/306
+2025-03-06 17:16:31,515 - INFO - Création des nœuds Country terminée en 0.21 secondes
+2025-03-06 17:16:31,516 - INFO - Création de 50663 nœuds de type Ingredient
+2025-03-06 17:16:31,734 - INFO - Progrès Ingredient: 1000/50663
+2025-03-06 17:16:31,872 - INFO - Progrès Ingredient: 2000/50663
+2025-03-06 17:16:32,007 - INFO - Progrès Ingredient: 3000/50663
+2025-03-06 17:16:32,158 - INFO - Progrès Ingredient: 4000/50663
+2025-03-06 17:16:32,297 - INFO - Progrès Ingredient: 5000/50663
+2025-03-06 17:16:32,440 - INFO - Progrès Ingredient: 6000/50663
+2025-03-06 17:16:32,570 - INFO - Progrès Ingredient: 7000/50663
+2025-03-06 17:16:32,704 - INFO - Progrès Ingredient: 8000/50663
+2025-03-06 17:16:32,840 - INFO - Progrès Ingredient: 9000/50663
+2025-03-06 17:16:32,975 - INFO - Progrès Ingredient: 10000/50663
+2025-03-06 17:16:33,106 - INFO - Progrès Ingredient: 11000/50663
+2025-03-06 17:16:33,237 - INFO - Progrès Ingredient: 12000/50663
+2025-03-06 17:16:33,362 - INFO - Progrès Ingredient: 13000/50663
+2025-03-06 17:16:33,488 - INFO - Progrès Ingredient: 14000/50663
+2025-03-06 17:16:33,611 - INFO - Progrès Ingredient: 15000/50663
+2025-03-06 17:16:33,730 - INFO - Progrès Ingredient: 16000/50663
+2025-03-06 17:16:33,867 - INFO - Progrès Ingredient: 17000/50663
+2025-03-06 17:16:34,054 - INFO - Progrès Ingredient: 18000/50663
+2025-03-06 17:16:34,191 - INFO - Progrès Ingredient: 19000/50663
+2025-03-06 17:16:34,305 - INFO - Progrès Ingredient: 20000/50663
+2025-03-06 17:16:34,428 - INFO - Progrès Ingredient: 21000/50663
+2025-03-06 17:16:34,547 - INFO - Progrès Ingredient: 22000/50663
+2025-03-06 17:16:34,667 - INFO - Progrès Ingredient: 23000/50663
+2025-03-06 17:16:34,792 - INFO - Progrès Ingredient: 24000/50663
+2025-03-06 17:16:34,922 - INFO - Progrès Ingredient: 25000/50663
+2025-03-06 17:16:35,045 - INFO - Progrès Ingredient: 26000/50663
+2025-03-06 17:16:35,184 - INFO - Progrès Ingredient: 27000/50663
+2025-03-06 17:16:35,297 - INFO - Progrès Ingredient: 28000/50663
+2025-03-06 17:16:35,411 - INFO - Progrès Ingredient: 29000/50663
+2025-03-06 17:16:35,518 - INFO - Progrès Ingredient: 30000/50663
+2025-03-06 17:16:35,634 - INFO - Progrès Ingredient: 31000/50663
+2025-03-06 17:16:35,751 - INFO - Progrès Ingredient: 32000/50663
+2025-03-06 17:16:35,860 - INFO - Progrès Ingredient: 33000/50663
+2025-03-06 17:16:35,989 - INFO - Progrès Ingredient: 34000/50663
+2025-03-06 17:16:36,122 - INFO - Progrès Ingredient: 35000/50663
+2025-03-06 17:16:36,244 - INFO - Progrès Ingredient: 36000/50663
+2025-03-06 17:16:36,368 - INFO - Progrès Ingredient: 37000/50663
+2025-03-06 17:16:36,491 - INFO - Progrès Ingredient: 38000/50663
+2025-03-06 17:16:36,637 - INFO - Progrès Ingredient: 39000/50663
+2025-03-06 17:16:36,754 - INFO - Progrès Ingredient: 40000/50663
+2025-03-06 17:16:36,870 - INFO - Progrès Ingredient: 41000/50663
+2025-03-06 17:16:36,996 - INFO - Progrès Ingredient: 42000/50663
+2025-03-06 17:16:37,118 - INFO - Progrès Ingredient: 43000/50663
+2025-03-06 17:16:37,231 - INFO - Progrès Ingredient: 44000/50663
+2025-03-06 17:16:37,362 - INFO - Progrès Ingredient: 45000/50663
+2025-03-06 17:16:37,529 - INFO - Progrès Ingredient: 46000/50663
+2025-03-06 17:16:37,650 - INFO - Progrès Ingredient: 47000/50663
+2025-03-06 17:16:37,768 - INFO - Progrès Ingredient: 48000/50663
+2025-03-06 17:16:37,887 - INFO - Progrès Ingredient: 49000/50663
+2025-03-06 17:16:38,275 - INFO - Progrès Ingredient: 50000/50663
+2025-03-06 17:16:38,376 - INFO - Progrès Ingredient: 50663/50663
+2025-03-06 17:16:38,377 - INFO - Création des nœuds Ingredient terminée en 6.86 secondes
+2025-03-06 17:16:38,377 - INFO - Création de 132 nœuds de type Allergen
+2025-03-06 17:16:38,484 - INFO - Progrès Allergen: 132/132
+2025-03-06 17:16:38,484 - INFO - Création des nœuds Allergen terminée en 0.11 secondes
+2025-03-06 17:16:38,484 - INFO - Création de 1975 nœuds de type Label
+2025-03-06 17:16:38,591 - INFO - Progrès Label: 1000/1975
+2025-03-06 17:16:38,678 - INFO - Progrès Label: 1975/1975
+2025-03-06 17:16:38,678 - INFO - Création des nœuds Label terminée en 0.19 secondes
+2025-03-06 17:16:38,678 - INFO - Création de 94709 nœuds de produits
+2025-03-06 17:16:38,909 - INFO - Progrès produits: 500/94709
+2025-03-06 17:16:39,051 - INFO - Progrès produits: 1000/94709
+2025-03-06 17:16:39,209 - INFO - Progrès produits: 1500/94709
+2025-03-06 17:16:39,344 - INFO - Progrès produits: 2000/94709
+2025-03-06 17:16:39,473 - INFO - Progrès produits: 2500/94709
+2025-03-06 17:16:39,600 - INFO - Progrès produits: 3000/94709
+2025-03-06 17:16:39,724 - INFO - Progrès produits: 3500/94709
+2025-03-06 17:16:39,866 - INFO - Progrès produits: 4000/94709
+2025-03-06 17:16:40,034 - INFO - Progrès produits: 4500/94709
+2025-03-06 17:16:40,159 - INFO - Progrès produits: 5000/94709
+2025-03-06 17:16:40,366 - INFO - Progrès produits: 5500/94709
+2025-03-06 17:16:40,501 - INFO - Progrès produits: 6000/94709
+2025-03-06 17:16:40,641 - INFO - Progrès produits: 6500/94709
+2025-03-06 17:16:40,773 - INFO - Progrès produits: 7000/94709
+2025-03-06 17:16:40,897 - INFO - Progrès produits: 7500/94709
+2025-03-06 17:16:41,030 - INFO - Progrès produits: 8000/94709
+2025-03-06 17:16:41,157 - INFO - Progrès produits: 8500/94709
+2025-03-06 17:16:41,283 - INFO - Progrès produits: 9000/94709
+2025-03-06 17:16:41,427 - INFO - Progrès produits: 9500/94709
+2025-03-06 17:16:41,561 - INFO - Progrès produits: 10000/94709
+2025-03-06 17:16:41,700 - INFO - Progrès produits: 10500/94709
+2025-03-06 17:16:41,836 - INFO - Progrès produits: 11000/94709
+2025-03-06 17:16:41,977 - INFO - Progrès produits: 11500/94709
+2025-03-06 17:16:42,119 - INFO - Progrès produits: 12000/94709
+2025-03-06 17:16:42,258 - INFO - Progrès produits: 12500/94709
+2025-03-06 17:16:42,374 - INFO - Progrès produits: 13000/94709
+2025-03-06 17:16:42,489 - INFO - Progrès produits: 13500/94709
+2025-03-06 17:16:42,606 - INFO - Progrès produits: 14000/94709
+2025-03-06 17:16:42,727 - INFO - Progrès produits: 14500/94709
+2025-03-06 17:16:42,853 - INFO - Progrès produits: 15000/94709
+2025-03-06 17:16:42,971 - INFO - Progrès produits: 15500/94709
+2025-03-06 17:16:43,095 - INFO - Progrès produits: 16000/94709
+2025-03-06 17:16:43,217 - INFO - Progrès produits: 16500/94709
+2025-03-06 17:16:43,340 - INFO - Progrès produits: 17000/94709
+2025-03-06 17:16:43,519 - INFO - Progrès produits: 17500/94709
+2025-03-06 17:16:43,650 - INFO - Progrès produits: 18000/94709
+2025-03-06 17:16:43,765 - INFO - Progrès produits: 18500/94709
+2025-03-06 17:16:43,889 - INFO - Progrès produits: 19000/94709
+2025-03-06 17:16:44,089 - INFO - Progrès produits: 19500/94709
+2025-03-06 17:16:44,230 - INFO - Progrès produits: 20000/94709
+2025-03-06 17:16:44,355 - INFO - Progrès produits: 20500/94709
+2025-03-06 17:16:44,490 - INFO - Progrès produits: 21000/94709
+2025-03-06 17:16:44,616 - INFO - Progrès produits: 21500/94709
+2025-03-06 17:16:44,753 - INFO - Progrès produits: 22000/94709
+2025-03-06 17:16:44,898 - INFO - Progrès produits: 22500/94709
+2025-03-06 17:16:45,024 - INFO - Progrès produits: 23000/94709
+2025-03-06 17:16:45,164 - INFO - Progrès produits: 23500/94709
+2025-03-06 17:16:45,275 - INFO - Progrès produits: 24000/94709
+2025-03-06 17:16:45,404 - INFO - Progrès produits: 24500/94709
+2025-03-06 17:16:45,526 - INFO - Progrès produits: 25000/94709
+2025-03-06 17:16:45,652 - INFO - Progrès produits: 25500/94709
+2025-03-06 17:16:45,775 - INFO - Progrès produits: 26000/94709
+2025-03-06 17:16:45,886 - INFO - Progrès produits: 26500/94709
+2025-03-06 17:16:45,998 - INFO - Progrès produits: 27000/94709
+2025-03-06 17:16:46,117 - INFO - Progrès produits: 27500/94709
+2025-03-06 17:16:46,247 - INFO - Progrès produits: 28000/94709
+2025-03-06 17:16:46,393 - INFO - Progrès produits: 28500/94709
+2025-03-06 17:16:46,541 - INFO - Progrès produits: 29000/94709
+2025-03-06 17:16:46,676 - INFO - Progrès produits: 29500/94709
+2025-03-06 17:16:46,804 - INFO - Progrès produits: 30000/94709
+2025-03-06 17:16:46,935 - INFO - Progrès produits: 30500/94709
+2025-03-06 17:16:47,055 - INFO - Progrès produits: 31000/94709
+2025-03-06 17:16:47,186 - INFO - Progrès produits: 31500/94709
+2025-03-06 17:16:47,326 - INFO - Progrès produits: 32000/94709
+2025-03-06 17:16:47,466 - INFO - Progrès produits: 32500/94709
+2025-03-06 17:16:47,636 - INFO - Progrès produits: 33000/94709
+2025-03-06 17:16:47,776 - INFO - Progrès produits: 33500/94709
+2025-03-06 17:16:47,894 - INFO - Progrès produits: 34000/94709
+2025-03-06 17:16:48,021 - INFO - Progrès produits: 34500/94709
+2025-03-06 17:16:48,134 - INFO - Progrès produits: 35000/94709
+2025-03-06 17:16:48,263 - INFO - Progrès produits: 35500/94709
+2025-03-06 17:16:48,461 - INFO - Progrès produits: 36000/94709
+2025-03-06 17:16:48,583 - INFO - Progrès produits: 36500/94709
+2025-03-06 17:16:48,693 - INFO - Progrès produits: 37000/94709
+2025-03-06 17:16:48,808 - INFO - Progrès produits: 37500/94709
+2025-03-06 17:16:48,931 - INFO - Progrès produits: 38000/94709
+2025-03-06 17:16:49,055 - INFO - Progrès produits: 38500/94709
+2025-03-06 17:16:49,173 - INFO - Progrès produits: 39000/94709
+2025-03-06 17:16:49,291 - INFO - Progrès produits: 39500/94709
+2025-03-06 17:16:49,419 - INFO - Progrès produits: 40000/94709
+2025-03-06 17:16:49,552 - INFO - Progrès produits: 40500/94709
+2025-03-06 17:16:49,672 - INFO - Progrès produits: 41000/94709
+2025-03-06 17:16:49,803 - INFO - Progrès produits: 41500/94709
+2025-03-06 17:16:49,924 - INFO - Progrès produits: 42000/94709
+2025-03-06 17:16:50,181 - INFO - Progrès produits: 42500/94709
+2025-03-06 17:16:50,351 - INFO - Progrès produits: 43000/94709
+2025-03-06 17:16:50,621 - INFO - Progrès produits: 43500/94709
+2025-03-06 17:16:50,770 - INFO - Progrès produits: 44000/94709
+2025-03-06 17:16:50,890 - INFO - Progrès produits: 44500/94709
+2025-03-06 17:16:51,021 - INFO - Progrès produits: 45000/94709
+2025-03-06 17:16:51,137 - INFO - Progrès produits: 45500/94709
+2025-03-06 17:16:51,250 - INFO - Progrès produits: 46000/94709
+2025-03-06 17:16:51,367 - INFO - Progrès produits: 46500/94709
+2025-03-06 17:16:51,499 - INFO - Progrès produits: 47000/94709
+2025-03-06 17:16:51,623 - INFO - Progrès produits: 47500/94709
+2025-03-06 17:16:51,745 - INFO - Progrès produits: 48000/94709
+2025-03-06 17:16:51,863 - INFO - Progrès produits: 48500/94709
+2025-03-06 17:16:51,976 - INFO - Progrès produits: 49000/94709
+2025-03-06 17:16:52,090 - INFO - Progrès produits: 49500/94709
+2025-03-06 17:16:52,199 - INFO - Progrès produits: 50000/94709
+2025-03-06 17:16:52,319 - INFO - Progrès produits: 50500/94709
+2025-03-06 17:16:52,440 - INFO - Progrès produits: 51000/94709
+2025-03-06 17:16:52,563 - INFO - Progrès produits: 51500/94709
+2025-03-06 17:16:52,685 - INFO - Progrès produits: 52000/94709
+2025-03-06 17:16:52,798 - INFO - Progrès produits: 52500/94709
+2025-03-06 17:16:52,914 - INFO - Progrès produits: 53000/94709
+2025-03-06 17:16:53,043 - INFO - Progrès produits: 53500/94709
+2025-03-06 17:16:53,165 - INFO - Progrès produits: 54000/94709
+2025-03-06 17:16:53,284 - INFO - Progrès produits: 54500/94709
+2025-03-06 17:16:53,400 - INFO - Progrès produits: 55000/94709
+2025-03-06 17:16:53,518 - INFO - Progrès produits: 55500/94709
+2025-03-06 17:16:53,629 - INFO - Progrès produits: 56000/94709
+2025-03-06 17:16:53,759 - INFO - Progrès produits: 56500/94709
+2025-03-06 17:16:53,881 - INFO - Progrès produits: 57000/94709
+2025-03-06 17:16:54,002 - INFO - Progrès produits: 57500/94709
+2025-03-06 17:16:54,133 - INFO - Progrès produits: 58000/94709
+2025-03-06 17:16:54,251 - INFO - Progrès produits: 58500/94709
+2025-03-06 17:16:54,379 - INFO - Progrès produits: 59000/94709
+2025-03-06 17:16:54,496 - INFO - Progrès produits: 59500/94709
+2025-03-06 17:16:54,611 - INFO - Progrès produits: 60000/94709
+2025-03-06 17:16:54,741 - INFO - Progrès produits: 60500/94709
+2025-03-06 17:16:55,003 - INFO - Progrès produits: 61000/94709
+2025-03-06 17:16:55,172 - INFO - Progrès produits: 61500/94709
+2025-03-06 17:16:55,300 - INFO - Progrès produits: 62000/94709
+2025-03-06 17:16:55,429 - INFO - Progrès produits: 62500/94709
+2025-03-06 17:16:55,549 - INFO - Progrès produits: 63000/94709
+2025-03-06 17:16:55,666 - INFO - Progrès produits: 63500/94709
+2025-03-06 17:16:55,781 - INFO - Progrès produits: 64000/94709
+2025-03-06 17:16:55,895 - INFO - Progrès produits: 64500/94709
+2025-03-06 17:16:56,014 - INFO - Progrès produits: 65000/94709
+2025-03-06 17:16:56,149 - INFO - Progrès produits: 65500/94709
+2025-03-06 17:16:56,267 - INFO - Progrès produits: 66000/94709
+2025-03-06 17:16:56,396 - INFO - Progrès produits: 66500/94709
+2025-03-06 17:16:56,515 - INFO - Progrès produits: 67000/94709
+2025-03-06 17:16:56,631 - INFO - Progrès produits: 67500/94709
+2025-03-06 17:16:56,750 - INFO - Progrès produits: 68000/94709
+2025-03-06 17:16:56,881 - INFO - Progrès produits: 68500/94709
+2025-03-06 17:16:57,028 - INFO - Progrès produits: 69000/94709
+2025-03-06 17:16:57,151 - INFO - Progrès produits: 69500/94709
+2025-03-06 17:16:57,273 - INFO - Progrès produits: 70000/94709
+2025-03-06 17:16:57,399 - INFO - Progrès produits: 70500/94709
+2025-03-06 17:16:57,522 - INFO - Progrès produits: 71000/94709
+2025-03-06 17:16:57,653 - INFO - Progrès produits: 71500/94709
+2025-03-06 17:16:57,799 - INFO - Progrès produits: 72000/94709
+2025-03-06 17:16:57,963 - INFO - Progrès produits: 72500/94709
+2025-03-06 17:16:58,107 - INFO - Progrès produits: 73000/94709
+2025-03-06 17:16:58,237 - INFO - Progrès produits: 73500/94709
+2025-03-06 17:16:58,354 - INFO - Progrès produits: 74000/94709
+2025-03-06 17:16:58,556 - INFO - Progrès produits: 74500/94709
+2025-03-06 17:16:58,681 - INFO - Progrès produits: 75000/94709
+2025-03-06 17:16:58,801 - INFO - Progrès produits: 75500/94709
+2025-03-06 17:16:58,922 - INFO - Progrès produits: 76000/94709
+2025-03-06 17:16:59,054 - INFO - Progrès produits: 76500/94709
+2025-03-06 17:16:59,177 - INFO - Progrès produits: 77000/94709
+2025-03-06 17:16:59,294 - INFO - Progrès produits: 77500/94709
+2025-03-06 17:16:59,414 - INFO - Progrès produits: 78000/94709
+2025-03-06 17:16:59,541 - INFO - Progrès produits: 78500/94709
+2025-03-06 17:16:59,657 - INFO - Progrès produits: 79000/94709
+2025-03-06 17:16:59,774 - INFO - Progrès produits: 79500/94709
+2025-03-06 17:16:59,897 - INFO - Progrès produits: 80000/94709
+2025-03-06 17:17:00,022 - INFO - Progrès produits: 80500/94709
+2025-03-06 17:17:00,143 - INFO - Progrès produits: 81000/94709
+2025-03-06 17:17:00,266 - INFO - Progrès produits: 81500/94709
+2025-03-06 17:17:00,392 - INFO - Progrès produits: 82000/94709
+2025-03-06 17:17:00,524 - INFO - Progrès produits: 82500/94709
+2025-03-06 17:17:00,649 - INFO - Progrès produits: 83000/94709
+2025-03-06 17:17:00,774 - INFO - Progrès produits: 83500/94709
+2025-03-06 17:17:00,902 - INFO - Progrès produits: 84000/94709
+2025-03-06 17:17:01,023 - INFO - Progrès produits: 84500/94709
+2025-03-06 17:17:01,142 - INFO - Progrès produits: 85000/94709
+2025-03-06 17:17:01,274 - INFO - Progrès produits: 85500/94709
+2025-03-06 17:17:01,396 - INFO - Progrès produits: 86000/94709
+2025-03-06 17:17:01,521 - INFO - Progrès produits: 86500/94709
+2025-03-06 17:17:01,662 - INFO - Progrès produits: 87000/94709
+2025-03-06 17:17:01,788 - INFO - Progrès produits: 87500/94709
+2025-03-06 17:17:01,908 - INFO - Progrès produits: 88000/94709
+2025-03-06 17:17:02,033 - INFO - Progrès produits: 88500/94709
+2025-03-06 17:17:02,148 - INFO - Progrès produits: 89000/94709
+2025-03-06 17:17:02,273 - INFO - Progrès produits: 89500/94709
+2025-03-06 17:17:02,396 - INFO - Progrès produits: 90000/94709
+2025-03-06 17:17:02,526 - INFO - Progrès produits: 90500/94709
+2025-03-06 17:17:02,657 - INFO - Progrès produits: 91000/94709
+2025-03-06 17:17:02,774 - INFO - Progrès produits: 91500/94709
+2025-03-06 17:17:02,907 - INFO - Progrès produits: 92000/94709
+2025-03-06 17:17:03,046 - INFO - Progrès produits: 92500/94709
+2025-03-06 17:17:03,166 - INFO - Progrès produits: 93000/94709
+2025-03-06 17:17:03,292 - INFO - Progrès produits: 93500/94709
+2025-03-06 17:17:03,420 - INFO - Progrès produits: 94000/94709
+2025-03-06 17:17:03,562 - INFO - Progrès produits: 94500/94709
+2025-03-06 17:17:03,644 - INFO - Progrès produits: 94709/94709
+2025-03-06 17:17:03,645 - INFO - Création des nœuds de produits terminée en 24.97 secondes
+2025-03-06 17:17:03,645 - INFO - Création des relations de type BELONGS_TO
+2025-03-06 17:17:03,876 - INFO - Progrès relations BELONGS_TO: 500/94709
+2025-03-06 17:17:04,017 - INFO - Progrès relations BELONGS_TO: 1000/94709
+2025-03-06 17:17:04,113 - INFO - Progrès relations BELONGS_TO: 1500/94709
+2025-03-06 17:17:04,209 - INFO - Progrès relations BELONGS_TO: 2000/94709
+2025-03-06 17:17:04,311 - INFO - Progrès relations BELONGS_TO: 2500/94709
+2025-03-06 17:17:04,429 - INFO - Progrès relations BELONGS_TO: 3000/94709
+2025-03-06 17:17:04,516 - INFO - Progrès relations BELONGS_TO: 3500/94709
+2025-03-06 17:17:04,618 - INFO - Progrès relations BELONGS_TO: 4000/94709
+2025-03-06 17:17:04,719 - INFO - Progrès relations BELONGS_TO: 4500/94709
+2025-03-06 17:17:04,801 - INFO - Progrès relations BELONGS_TO: 5000/94709
+2025-03-06 17:17:04,910 - INFO - Progrès relations BELONGS_TO: 5500/94709
+2025-03-06 17:17:04,999 - INFO - Progrès relations BELONGS_TO: 6000/94709
+2025-03-06 17:17:05,075 - INFO - Progrès relations BELONGS_TO: 6500/94709
+2025-03-06 17:17:05,158 - INFO - Progrès relations BELONGS_TO: 7000/94709
+2025-03-06 17:17:05,245 - INFO - Progrès relations BELONGS_TO: 7500/94709
+2025-03-06 17:17:05,321 - INFO - Progrès relations BELONGS_TO: 8000/94709
+2025-03-06 17:17:05,410 - INFO - Progrès relations BELONGS_TO: 8500/94709
+2025-03-06 17:17:05,505 - INFO - Progrès relations BELONGS_TO: 9000/94709
+2025-03-06 17:17:05,583 - INFO - Progrès relations BELONGS_TO: 9500/94709
+2025-03-06 17:17:05,683 - INFO - Progrès relations BELONGS_TO: 10000/94709
+2025-03-06 17:17:05,758 - INFO - Progrès relations BELONGS_TO: 10500/94709
+2025-03-06 17:17:05,831 - INFO - Progrès relations BELONGS_TO: 11000/94709
+2025-03-06 17:17:05,909 - INFO - Progrès relations BELONGS_TO: 11500/94709
+2025-03-06 17:17:05,995 - INFO - Progrès relations BELONGS_TO: 12000/94709
+2025-03-06 17:17:06,066 - INFO - Progrès relations BELONGS_TO: 12500/94709
+2025-03-06 17:17:06,140 - INFO - Progrès relations BELONGS_TO: 13000/94709
+2025-03-06 17:17:06,215 - INFO - Progrès relations BELONGS_TO: 13500/94709
+2025-03-06 17:17:06,288 - INFO - Progrès relations BELONGS_TO: 14000/94709
+2025-03-06 17:17:06,374 - INFO - Progrès relations BELONGS_TO: 14500/94709
+2025-03-06 17:17:06,442 - INFO - Progrès relations BELONGS_TO: 15000/94709
+2025-03-06 17:17:06,519 - INFO - Progrès relations BELONGS_TO: 15500/94709
+2025-03-06 17:17:06,593 - INFO - Progrès relations BELONGS_TO: 16000/94709
+2025-03-06 17:17:06,666 - INFO - Progrès relations BELONGS_TO: 16500/94709
+2025-03-06 17:17:06,736 - INFO - Progrès relations BELONGS_TO: 17000/94709
+2025-03-06 17:17:06,809 - INFO - Progrès relations BELONGS_TO: 17500/94709
+2025-03-06 17:17:06,880 - INFO - Progrès relations BELONGS_TO: 18000/94709
+2025-03-06 17:17:06,951 - INFO - Progrès relations BELONGS_TO: 18500/94709
+2025-03-06 17:17:07,030 - INFO - Progrès relations BELONGS_TO: 19000/94709
+2025-03-06 17:17:07,102 - INFO - Progrès relations BELONGS_TO: 19500/94709
+2025-03-06 17:17:07,168 - INFO - Progrès relations BELONGS_TO: 20000/94709
+2025-03-06 17:17:07,238 - INFO - Progrès relations BELONGS_TO: 20500/94709
+2025-03-06 17:17:07,317 - INFO - Progrès relations BELONGS_TO: 21000/94709
+2025-03-06 17:17:07,390 - INFO - Progrès relations BELONGS_TO: 21500/94709
+2025-03-06 17:17:07,458 - INFO - Progrès relations BELONGS_TO: 22000/94709
+2025-03-06 17:17:07,524 - INFO - Progrès relations BELONGS_TO: 22500/94709
+2025-03-06 17:17:07,593 - INFO - Progrès relations BELONGS_TO: 23000/94709
+2025-03-06 17:17:07,658 - INFO - Progrès relations BELONGS_TO: 23500/94709
+2025-03-06 17:17:07,730 - INFO - Progrès relations BELONGS_TO: 24000/94709
+2025-03-06 17:17:07,798 - INFO - Progrès relations BELONGS_TO: 24500/94709
+2025-03-06 17:17:07,867 - INFO - Progrès relations BELONGS_TO: 25000/94709
+2025-03-06 17:17:07,937 - INFO - Progrès relations BELONGS_TO: 25500/94709
+2025-03-06 17:17:08,006 - INFO - Progrès relations BELONGS_TO: 26000/94709
+2025-03-06 17:17:08,078 - INFO - Progrès relations BELONGS_TO: 26500/94709
+2025-03-06 17:17:08,139 - INFO - Progrès relations BELONGS_TO: 27000/94709
+2025-03-06 17:17:08,207 - INFO - Progrès relations BELONGS_TO: 27500/94709
+2025-03-06 17:17:08,279 - INFO - Progrès relations BELONGS_TO: 28000/94709
+2025-03-06 17:17:08,353 - INFO - Progrès relations BELONGS_TO: 28500/94709
+2025-03-06 17:17:08,427 - INFO - Progrès relations BELONGS_TO: 29000/94709
+2025-03-06 17:17:08,496 - INFO - Progrès relations BELONGS_TO: 29500/94709
+2025-03-06 17:17:08,627 - INFO - Progrès relations BELONGS_TO: 30000/94709
+2025-03-06 17:17:08,690 - INFO - Progrès relations BELONGS_TO: 30500/94709
+2025-03-06 17:17:08,757 - INFO - Progrès relations BELONGS_TO: 31000/94709
+2025-03-06 17:17:08,819 - INFO - Progrès relations BELONGS_TO: 31500/94709
+2025-03-06 17:17:08,887 - INFO - Progrès relations BELONGS_TO: 32000/94709
+2025-03-06 17:17:08,956 - INFO - Progrès relations BELONGS_TO: 32500/94709
+2025-03-06 17:17:09,028 - INFO - Progrès relations BELONGS_TO: 33000/94709
+2025-03-06 17:17:09,102 - INFO - Progrès relations BELONGS_TO: 33500/94709
+2025-03-06 17:17:09,182 - INFO - Progrès relations BELONGS_TO: 34000/94709
+2025-03-06 17:17:09,251 - INFO - Progrès relations BELONGS_TO: 34500/94709
+2025-03-06 17:17:09,321 - INFO - Progrès relations BELONGS_TO: 35000/94709
+2025-03-06 17:17:09,389 - INFO - Progrès relations BELONGS_TO: 35500/94709
+2025-03-06 17:17:09,470 - INFO - Progrès relations BELONGS_TO: 36000/94709
+2025-03-06 17:17:09,538 - INFO - Progrès relations BELONGS_TO: 36500/94709
+2025-03-06 17:17:09,600 - INFO - Progrès relations BELONGS_TO: 37000/94709
+2025-03-06 17:17:09,665 - INFO - Progrès relations BELONGS_TO: 37500/94709
+2025-03-06 17:17:09,726 - INFO - Progrès relations BELONGS_TO: 38000/94709
+2025-03-06 17:17:09,786 - INFO - Progrès relations BELONGS_TO: 38500/94709
+2025-03-06 17:17:09,852 - INFO - Progrès relations BELONGS_TO: 39000/94709
+2025-03-06 17:17:09,912 - INFO - Progrès relations BELONGS_TO: 39500/94709
+2025-03-06 17:17:09,983 - INFO - Progrès relations BELONGS_TO: 40000/94709
+2025-03-06 17:17:10,048 - INFO - Progrès relations BELONGS_TO: 40500/94709
+2025-03-06 17:17:10,124 - INFO - Progrès relations BELONGS_TO: 41000/94709
+2025-03-06 17:17:10,193 - INFO - Progrès relations BELONGS_TO: 41500/94709
+2025-03-06 17:17:10,262 - INFO - Progrès relations BELONGS_TO: 42000/94709
+2025-03-06 17:17:10,334 - INFO - Progrès relations BELONGS_TO: 42500/94709
+2025-03-06 17:17:10,399 - INFO - Progrès relations BELONGS_TO: 43000/94709
+2025-03-06 17:17:10,463 - INFO - Progrès relations BELONGS_TO: 43500/94709
+2025-03-06 17:17:10,530 - INFO - Progrès relations BELONGS_TO: 44000/94709
+2025-03-06 17:17:10,600 - INFO - Progrès relations BELONGS_TO: 44500/94709
+2025-03-06 17:17:10,675 - INFO - Progrès relations BELONGS_TO: 45000/94709
+2025-03-06 17:17:10,737 - INFO - Progrès relations BELONGS_TO: 45500/94709
+2025-03-06 17:17:10,799 - INFO - Progrès relations BELONGS_TO: 46000/94709
+2025-03-06 17:17:10,863 - INFO - Progrès relations BELONGS_TO: 46500/94709
+2025-03-06 17:17:10,924 - INFO - Progrès relations BELONGS_TO: 47000/94709
+2025-03-06 17:17:10,993 - INFO - Progrès relations BELONGS_TO: 47500/94709
+2025-03-06 17:17:11,071 - INFO - Progrès relations BELONGS_TO: 48000/94709
+2025-03-06 17:17:11,136 - INFO - Progrès relations BELONGS_TO: 48500/94709
+2025-03-06 17:17:11,210 - INFO - Progrès relations BELONGS_TO: 49000/94709
+2025-03-06 17:17:11,278 - INFO - Progrès relations BELONGS_TO: 49500/94709
+2025-03-06 17:17:11,356 - INFO - Progrès relations BELONGS_TO: 50000/94709
+2025-03-06 17:17:11,415 - INFO - Progrès relations BELONGS_TO: 50500/94709
+2025-03-06 17:17:11,482 - INFO - Progrès relations BELONGS_TO: 51000/94709
+2025-03-06 17:17:11,552 - INFO - Progrès relations BELONGS_TO: 51500/94709
+2025-03-06 17:17:11,625 - INFO - Progrès relations BELONGS_TO: 52000/94709
+2025-03-06 17:17:11,691 - INFO - Progrès relations BELONGS_TO: 52500/94709
+2025-03-06 17:17:11,760 - INFO - Progrès relations BELONGS_TO: 53000/94709
+2025-03-06 17:17:11,827 - INFO - Progrès relations BELONGS_TO: 53500/94709
+2025-03-06 17:17:11,896 - INFO - Progrès relations BELONGS_TO: 54000/94709
+2025-03-06 17:17:11,957 - INFO - Progrès relations BELONGS_TO: 54500/94709
+2025-03-06 17:17:12,035 - INFO - Progrès relations BELONGS_TO: 55000/94709
+2025-03-06 17:17:12,106 - INFO - Progrès relations BELONGS_TO: 55500/94709
+2025-03-06 17:17:12,172 - INFO - Progrès relations BELONGS_TO: 56000/94709
+2025-03-06 17:17:12,238 - INFO - Progrès relations BELONGS_TO: 56500/94709
+2025-03-06 17:17:12,309 - INFO - Progrès relations BELONGS_TO: 57000/94709
+2025-03-06 17:17:12,378 - INFO - Progrès relations BELONGS_TO: 57500/94709
+2025-03-06 17:17:12,444 - INFO - Progrès relations BELONGS_TO: 58000/94709
+2025-03-06 17:17:12,514 - INFO - Progrès relations BELONGS_TO: 58500/94709
+2025-03-06 17:17:12,577 - INFO - Progrès relations BELONGS_TO: 59000/94709
+2025-03-06 17:17:12,639 - INFO - Progrès relations BELONGS_TO: 59500/94709
+2025-03-06 17:17:12,703 - INFO - Progrès relations BELONGS_TO: 60000/94709
+2025-03-06 17:17:12,768 - INFO - Progrès relations BELONGS_TO: 60500/94709
+2025-03-06 17:17:12,836 - INFO - Progrès relations BELONGS_TO: 61000/94709
+2025-03-06 17:17:12,898 - INFO - Progrès relations BELONGS_TO: 61500/94709
+2025-03-06 17:17:12,958 - INFO - Progrès relations BELONGS_TO: 62000/94709
+2025-03-06 17:17:13,020 - INFO - Progrès relations BELONGS_TO: 62500/94709
+2025-03-06 17:17:13,081 - INFO - Progrès relations BELONGS_TO: 63000/94709
+2025-03-06 17:17:13,145 - INFO - Progrès relations BELONGS_TO: 63500/94709
+2025-03-06 17:17:13,212 - INFO - Progrès relations BELONGS_TO: 64000/94709
+2025-03-06 17:17:13,273 - INFO - Progrès relations BELONGS_TO: 64500/94709
+2025-03-06 17:17:13,336 - INFO - Progrès relations BELONGS_TO: 65000/94709
+2025-03-06 17:17:13,400 - INFO - Progrès relations BELONGS_TO: 65500/94709
+2025-03-06 17:17:13,463 - INFO - Progrès relations BELONGS_TO: 66000/94709
+2025-03-06 17:17:13,528 - INFO - Progrès relations BELONGS_TO: 66500/94709
+2025-03-06 17:17:13,588 - INFO - Progrès relations BELONGS_TO: 67000/94709
+2025-03-06 17:17:13,656 - INFO - Progrès relations BELONGS_TO: 67500/94709
+2025-03-06 17:17:13,721 - INFO - Progrès relations BELONGS_TO: 68000/94709
+2025-03-06 17:17:13,787 - INFO - Progrès relations BELONGS_TO: 68500/94709
+2025-03-06 17:17:13,915 - INFO - Progrès relations BELONGS_TO: 69000/94709
+2025-03-06 17:17:13,984 - INFO - Progrès relations BELONGS_TO: 69500/94709
+2025-03-06 17:17:14,047 - INFO - Progrès relations BELONGS_TO: 70000/94709
+2025-03-06 17:17:14,109 - INFO - Progrès relations BELONGS_TO: 70500/94709
+2025-03-06 17:17:14,168 - INFO - Progrès relations BELONGS_TO: 71000/94709
+2025-03-06 17:17:14,232 - INFO - Progrès relations BELONGS_TO: 71500/94709
+2025-03-06 17:17:14,291 - INFO - Progrès relations BELONGS_TO: 72000/94709
+2025-03-06 17:17:14,353 - INFO - Progrès relations BELONGS_TO: 72500/94709
+2025-03-06 17:17:14,418 - INFO - Progrès relations BELONGS_TO: 73000/94709
+2025-03-06 17:17:14,487 - INFO - Progrès relations BELONGS_TO: 73500/94709
+2025-03-06 17:17:14,552 - INFO - Progrès relations BELONGS_TO: 74000/94709
+2025-03-06 17:17:14,619 - INFO - Progrès relations BELONGS_TO: 74500/94709
+2025-03-06 17:17:14,680 - INFO - Progrès relations BELONGS_TO: 75000/94709
+2025-03-06 17:17:14,742 - INFO - Progrès relations BELONGS_TO: 75500/94709
+2025-03-06 17:17:14,804 - INFO - Progrès relations BELONGS_TO: 76000/94709
+2025-03-06 17:17:14,871 - INFO - Progrès relations BELONGS_TO: 76500/94709
+2025-03-06 17:17:14,934 - INFO - Progrès relations BELONGS_TO: 77000/94709
+2025-03-06 17:17:15,003 - INFO - Progrès relations BELONGS_TO: 77500/94709
+2025-03-06 17:17:15,070 - INFO - Progrès relations BELONGS_TO: 78000/94709
+2025-03-06 17:17:15,139 - INFO - Progrès relations BELONGS_TO: 78500/94709
+2025-03-06 17:17:15,197 - INFO - Progrès relations BELONGS_TO: 79000/94709
+2025-03-06 17:17:15,264 - INFO - Progrès relations BELONGS_TO: 79500/94709
+2025-03-06 17:17:15,324 - INFO - Progrès relations BELONGS_TO: 80000/94709
+2025-03-06 17:17:15,387 - INFO - Progrès relations BELONGS_TO: 80500/94709
+2025-03-06 17:17:15,455 - INFO - Progrès relations BELONGS_TO: 81000/94709
+2025-03-06 17:17:15,529 - INFO - Progrès relations BELONGS_TO: 81500/94709
+2025-03-06 17:17:15,604 - INFO - Progrès relations BELONGS_TO: 82000/94709
+2025-03-06 17:17:15,683 - INFO - Progrès relations BELONGS_TO: 82500/94709
+2025-03-06 17:17:15,769 - INFO - Progrès relations BELONGS_TO: 83000/94709
+2025-03-06 17:17:15,853 - INFO - Progrès relations BELONGS_TO: 83500/94709
+2025-03-06 17:17:15,939 - INFO - Progrès relations BELONGS_TO: 84000/94709
+2025-03-06 17:17:16,123 - INFO - Progrès relations BELONGS_TO: 84500/94709
+2025-03-06 17:17:16,213 - INFO - Progrès relations BELONGS_TO: 85000/94709
+2025-03-06 17:17:16,294 - INFO - Progrès relations BELONGS_TO: 85500/94709
+2025-03-06 17:17:16,382 - INFO - Progrès relations BELONGS_TO: 86000/94709
+2025-03-06 17:17:16,461 - INFO - Progrès relations BELONGS_TO: 86500/94709
+2025-03-06 17:17:16,551 - INFO - Progrès relations BELONGS_TO: 87000/94709
+2025-03-06 17:17:16,620 - INFO - Progrès relations BELONGS_TO: 87500/94709
+2025-03-06 17:17:16,689 - INFO - Progrès relations BELONGS_TO: 88000/94709
+2025-03-06 17:17:16,770 - INFO - Progrès relations BELONGS_TO: 88500/94709
+2025-03-06 17:17:16,854 - INFO - Progrès relations BELONGS_TO: 89000/94709
+2025-03-06 17:17:16,943 - INFO - Progrès relations BELONGS_TO: 89500/94709
+2025-03-06 17:17:17,020 - INFO - Progrès relations BELONGS_TO: 90000/94709
+2025-03-06 17:17:17,110 - INFO - Progrès relations BELONGS_TO: 90500/94709
+2025-03-06 17:17:17,200 - INFO - Progrès relations BELONGS_TO: 91000/94709
+2025-03-06 17:17:17,282 - INFO - Progrès relations BELONGS_TO: 91500/94709
+2025-03-06 17:17:17,368 - INFO - Progrès relations BELONGS_TO: 92000/94709
+2025-03-06 17:17:17,454 - INFO - Progrès relations BELONGS_TO: 92500/94709
+2025-03-06 17:17:17,544 - INFO - Progrès relations BELONGS_TO: 93000/94709
+2025-03-06 17:17:17,626 - INFO - Progrès relations BELONGS_TO: 93500/94709
+2025-03-06 17:17:17,725 - INFO - Progrès relations BELONGS_TO: 94000/94709
+2025-03-06 17:17:17,822 - INFO - Progrès relations BELONGS_TO: 94500/94709
+2025-03-06 17:17:17,907 - INFO - Progrès relations BELONGS_TO: 94709/94709
+2025-03-06 17:17:17,908 - INFO - Création des relations BELONGS_TO terminée en 14.26 secondes
+2025-03-06 17:17:17,908 - INFO - Création des relations de type CATEGORIZED_AS
+2025-03-06 17:17:18,150 - INFO - Progrès relations CATEGORIZED_AS: 500/94709
+2025-03-06 17:17:18,444 - INFO - Progrès relations CATEGORIZED_AS: 1000/94709
+2025-03-06 17:17:18,638 - INFO - Progrès relations CATEGORIZED_AS: 1500/94709
+2025-03-06 17:17:18,830 - INFO - Progrès relations CATEGORIZED_AS: 2000/94709
+2025-03-06 17:17:18,992 - INFO - Progrès relations CATEGORIZED_AS: 2500/94709
+2025-03-06 17:17:19,145 - INFO - Progrès relations CATEGORIZED_AS: 3000/94709
+2025-03-06 17:17:19,275 - INFO - Progrès relations CATEGORIZED_AS: 3500/94709
+2025-03-06 17:17:19,403 - INFO - Progrès relations CATEGORIZED_AS: 4000/94709
+2025-03-06 17:17:19,528 - INFO - Progrès relations CATEGORIZED_AS: 4500/94709
+2025-03-06 17:17:19,659 - INFO - Progrès relations CATEGORIZED_AS: 5000/94709
+2025-03-06 17:17:19,804 - INFO - Progrès relations CATEGORIZED_AS: 5500/94709
+2025-03-06 17:17:19,944 - INFO - Progrès relations CATEGORIZED_AS: 6000/94709
+2025-03-06 17:17:20,065 - INFO - Progrès relations CATEGORIZED_AS: 6500/94709
+2025-03-06 17:17:20,180 - INFO - Progrès relations CATEGORIZED_AS: 7000/94709
+2025-03-06 17:17:20,293 - INFO - Progrès relations CATEGORIZED_AS: 7500/94709
+2025-03-06 17:17:20,409 - INFO - Progrès relations CATEGORIZED_AS: 8000/94709
+2025-03-06 17:17:20,564 - INFO - Progrès relations CATEGORIZED_AS: 8500/94709
+2025-03-06 17:17:20,668 - INFO - Progrès relations CATEGORIZED_AS: 9000/94709
+2025-03-06 17:17:20,778 - INFO - Progrès relations CATEGORIZED_AS: 9500/94709
+2025-03-06 17:17:20,879 - INFO - Progrès relations CATEGORIZED_AS: 10000/94709
+2025-03-06 17:17:20,989 - INFO - Progrès relations CATEGORIZED_AS: 10500/94709
+2025-03-06 17:17:21,095 - INFO - Progrès relations CATEGORIZED_AS: 11000/94709
+2025-03-06 17:17:21,206 - INFO - Progrès relations CATEGORIZED_AS: 11500/94709
+2025-03-06 17:17:21,308 - INFO - Progrès relations CATEGORIZED_AS: 12000/94709
+2025-03-06 17:17:21,404 - INFO - Progrès relations CATEGORIZED_AS: 12500/94709
+2025-03-06 17:17:21,514 - INFO - Progrès relations CATEGORIZED_AS: 13000/94709
+2025-03-06 17:17:21,613 - INFO - Progrès relations CATEGORIZED_AS: 13500/94709
+2025-03-06 17:17:21,718 - INFO - Progrès relations CATEGORIZED_AS: 14000/94709
+2025-03-06 17:17:21,808 - INFO - Progrès relations CATEGORIZED_AS: 14500/94709
+2025-03-06 17:17:21,904 - INFO - Progrès relations CATEGORIZED_AS: 15000/94709
+2025-03-06 17:17:21,999 - INFO - Progrès relations CATEGORIZED_AS: 15500/94709
+2025-03-06 17:17:22,096 - INFO - Progrès relations CATEGORIZED_AS: 16000/94709
+2025-03-06 17:17:22,188 - INFO - Progrès relations CATEGORIZED_AS: 16500/94709
+2025-03-06 17:17:22,285 - INFO - Progrès relations CATEGORIZED_AS: 17000/94709
+2025-03-06 17:17:22,376 - INFO - Progrès relations CATEGORIZED_AS: 17500/94709
+2025-03-06 17:17:22,469 - INFO - Progrès relations CATEGORIZED_AS: 18000/94709
+2025-03-06 17:17:22,560 - INFO - Progrès relations CATEGORIZED_AS: 18500/94709
+2025-03-06 17:17:22,663 - INFO - Progrès relations CATEGORIZED_AS: 19000/94709
+2025-03-06 17:17:22,760 - INFO - Progrès relations CATEGORIZED_AS: 19500/94709
+2025-03-06 17:17:22,844 - INFO - Progrès relations CATEGORIZED_AS: 20000/94709
+2025-03-06 17:17:22,942 - INFO - Progrès relations CATEGORIZED_AS: 20500/94709
+2025-03-06 17:17:23,031 - INFO - Progrès relations CATEGORIZED_AS: 21000/94709
+2025-03-06 17:17:23,122 - INFO - Progrès relations CATEGORIZED_AS: 21500/94709
+2025-03-06 17:17:23,208 - INFO - Progrès relations CATEGORIZED_AS: 22000/94709
+2025-03-06 17:17:23,297 - INFO - Progrès relations CATEGORIZED_AS: 22500/94709
+2025-03-06 17:17:23,397 - INFO - Progrès relations CATEGORIZED_AS: 23000/94709
+2025-03-06 17:17:23,480 - INFO - Progrès relations CATEGORIZED_AS: 23500/94709
+2025-03-06 17:17:23,555 - INFO - Progrès relations CATEGORIZED_AS: 24000/94709
+2025-03-06 17:17:23,650 - INFO - Progrès relations CATEGORIZED_AS: 24500/94709
+2025-03-06 17:17:23,730 - INFO - Progrès relations CATEGORIZED_AS: 25000/94709
+2025-03-06 17:17:23,821 - INFO - Progrès relations CATEGORIZED_AS: 25500/94709
+2025-03-06 17:17:23,917 - INFO - Progrès relations CATEGORIZED_AS: 26000/94709
+2025-03-06 17:17:24,006 - INFO - Progrès relations CATEGORIZED_AS: 26500/94709
+2025-03-06 17:17:24,098 - INFO - Progrès relations CATEGORIZED_AS: 27000/94709
+2025-03-06 17:17:24,182 - INFO - Progrès relations CATEGORIZED_AS: 27500/94709
+2025-03-06 17:17:24,263 - INFO - Progrès relations CATEGORIZED_AS: 28000/94709
+2025-03-06 17:17:24,355 - INFO - Progrès relations CATEGORIZED_AS: 28500/94709
+2025-03-06 17:17:24,438 - INFO - Progrès relations CATEGORIZED_AS: 29000/94709
+2025-03-06 17:17:24,515 - INFO - Progrès relations CATEGORIZED_AS: 29500/94709
+2025-03-06 17:17:24,591 - INFO - Progrès relations CATEGORIZED_AS: 30000/94709
+2025-03-06 17:17:24,672 - INFO - Progrès relations CATEGORIZED_AS: 30500/94709
+2025-03-06 17:17:24,753 - INFO - Progrès relations CATEGORIZED_AS: 31000/94709
+2025-03-06 17:17:24,835 - INFO - Progrès relations CATEGORIZED_AS: 31500/94709
+2025-03-06 17:17:24,923 - INFO - Progrès relations CATEGORIZED_AS: 32000/94709
+2025-03-06 17:17:25,010 - INFO - Progrès relations CATEGORIZED_AS: 32500/94709
+2025-03-06 17:17:25,094 - INFO - Progrès relations CATEGORIZED_AS: 33000/94709
+2025-03-06 17:17:25,175 - INFO - Progrès relations CATEGORIZED_AS: 33500/94709
+2025-03-06 17:17:25,253 - INFO - Progrès relations CATEGORIZED_AS: 34000/94709
+2025-03-06 17:17:25,337 - INFO - Progrès relations CATEGORIZED_AS: 34500/94709
+2025-03-06 17:17:25,421 - INFO - Progrès relations CATEGORIZED_AS: 35000/94709
+2025-03-06 17:17:25,506 - INFO - Progrès relations CATEGORIZED_AS: 35500/94709
+2025-03-06 17:17:25,610 - INFO - Progrès relations CATEGORIZED_AS: 36000/94709
+2025-03-06 17:17:25,703 - INFO - Progrès relations CATEGORIZED_AS: 36500/94709
+2025-03-06 17:17:25,780 - INFO - Progrès relations CATEGORIZED_AS: 37000/94709
+2025-03-06 17:17:25,864 - INFO - Progrès relations CATEGORIZED_AS: 37500/94709
+2025-03-06 17:17:25,947 - INFO - Progrès relations CATEGORIZED_AS: 38000/94709
+2025-03-06 17:17:26,035 - INFO - Progrès relations CATEGORIZED_AS: 38500/94709
+2025-03-06 17:17:26,112 - INFO - Progrès relations CATEGORIZED_AS: 39000/94709
+2025-03-06 17:17:26,197 - INFO - Progrès relations CATEGORIZED_AS: 39500/94709
+2025-03-06 17:17:26,293 - INFO - Progrès relations CATEGORIZED_AS: 40000/94709
+2025-03-06 17:17:26,371 - INFO - Progrès relations CATEGORIZED_AS: 40500/94709
+2025-03-06 17:17:26,454 - INFO - Progrès relations CATEGORIZED_AS: 41000/94709
+2025-03-06 17:17:26,527 - INFO - Progrès relations CATEGORIZED_AS: 41500/94709
+2025-03-06 17:17:26,599 - INFO - Progrès relations CATEGORIZED_AS: 42000/94709
+2025-03-06 17:17:26,678 - INFO - Progrès relations CATEGORIZED_AS: 42500/94709
+2025-03-06 17:17:26,753 - INFO - Progrès relations CATEGORIZED_AS: 43000/94709
+2025-03-06 17:17:26,831 - INFO - Progrès relations CATEGORIZED_AS: 43500/94709
+2025-03-06 17:17:26,911 - INFO - Progrès relations CATEGORIZED_AS: 44000/94709
+2025-03-06 17:17:26,987 - INFO - Progrès relations CATEGORIZED_AS: 44500/94709
+2025-03-06 17:17:27,051 - INFO - Progrès relations CATEGORIZED_AS: 45000/94709
+2025-03-06 17:17:27,125 - INFO - Progrès relations CATEGORIZED_AS: 45500/94709
+2025-03-06 17:17:27,223 - INFO - Progrès relations CATEGORIZED_AS: 46000/94709
+2025-03-06 17:17:27,336 - INFO - Progrès relations CATEGORIZED_AS: 46500/94709
+2025-03-06 17:17:27,456 - INFO - Progrès relations CATEGORIZED_AS: 47000/94709
+2025-03-06 17:17:27,566 - INFO - Progrès relations CATEGORIZED_AS: 47500/94709
+2025-03-06 17:17:27,729 - INFO - Progrès relations CATEGORIZED_AS: 48000/94709
+2025-03-06 17:17:27,861 - INFO - Progrès relations CATEGORIZED_AS: 48500/94709
+2025-03-06 17:17:27,966 - INFO - Progrès relations CATEGORIZED_AS: 49000/94709
+2025-03-06 17:17:28,067 - INFO - Progrès relations CATEGORIZED_AS: 49500/94709
+2025-03-06 17:17:28,157 - INFO - Progrès relations CATEGORIZED_AS: 50000/94709
+2025-03-06 17:17:28,239 - INFO - Progrès relations CATEGORIZED_AS: 50500/94709
+2025-03-06 17:17:28,310 - INFO - Progrès relations CATEGORIZED_AS: 51000/94709
+2025-03-06 17:17:28,379 - INFO - Progrès relations CATEGORIZED_AS: 51500/94709
+2025-03-06 17:17:28,472 - INFO - Progrès relations CATEGORIZED_AS: 52000/94709
+2025-03-06 17:17:28,554 - INFO - Progrès relations CATEGORIZED_AS: 52500/94709
+2025-03-06 17:17:28,629 - INFO - Progrès relations CATEGORIZED_AS: 53000/94709
+2025-03-06 17:17:28,694 - INFO - Progrès relations CATEGORIZED_AS: 53500/94709
+2025-03-06 17:17:28,761 - INFO - Progrès relations CATEGORIZED_AS: 54000/94709
+2025-03-06 17:17:28,886 - INFO - Progrès relations CATEGORIZED_AS: 54500/94709
+2025-03-06 17:17:28,957 - INFO - Progrès relations CATEGORIZED_AS: 55000/94709
+2025-03-06 17:17:29,035 - INFO - Progrès relations CATEGORIZED_AS: 55500/94709
+2025-03-06 17:17:29,113 - INFO - Progrès relations CATEGORIZED_AS: 56000/94709
+2025-03-06 17:17:29,179 - INFO - Progrès relations CATEGORIZED_AS: 56500/94709
+2025-03-06 17:17:29,254 - INFO - Progrès relations CATEGORIZED_AS: 57000/94709
+2025-03-06 17:17:29,337 - INFO - Progrès relations CATEGORIZED_AS: 57500/94709
+2025-03-06 17:17:29,407 - INFO - Progrès relations CATEGORIZED_AS: 58000/94709
+2025-03-06 17:17:29,478 - INFO - Progrès relations CATEGORIZED_AS: 58500/94709
+2025-03-06 17:17:29,559 - INFO - Progrès relations CATEGORIZED_AS: 59000/94709
+2025-03-06 17:17:29,647 - INFO - Progrès relations CATEGORIZED_AS: 59500/94709
+2025-03-06 17:17:29,715 - INFO - Progrès relations CATEGORIZED_AS: 60000/94709
+2025-03-06 17:17:29,796 - INFO - Progrès relations CATEGORIZED_AS: 60500/94709
+2025-03-06 17:17:29,871 - INFO - Progrès relations CATEGORIZED_AS: 61000/94709
+2025-03-06 17:17:29,955 - INFO - Progrès relations CATEGORIZED_AS: 61500/94709
+2025-03-06 17:17:30,040 - INFO - Progrès relations CATEGORIZED_AS: 62000/94709
+2025-03-06 17:17:30,105 - INFO - Progrès relations CATEGORIZED_AS: 62500/94709
+2025-03-06 17:17:30,178 - INFO - Progrès relations CATEGORIZED_AS: 63000/94709
+2025-03-06 17:17:30,241 - INFO - Progrès relations CATEGORIZED_AS: 63500/94709
+2025-03-06 17:17:30,315 - INFO - Progrès relations CATEGORIZED_AS: 64000/94709
+2025-03-06 17:17:30,393 - INFO - Progrès relations CATEGORIZED_AS: 64500/94709
+2025-03-06 17:17:30,462 - INFO - Progrès relations CATEGORIZED_AS: 65000/94709
+2025-03-06 17:17:30,546 - INFO - Progrès relations CATEGORIZED_AS: 65500/94709
+2025-03-06 17:17:30,624 - INFO - Progrès relations CATEGORIZED_AS: 66000/94709
+2025-03-06 17:17:30,697 - INFO - Progrès relations CATEGORIZED_AS: 66500/94709
+2025-03-06 17:17:30,773 - INFO - Progrès relations CATEGORIZED_AS: 67000/94709
+2025-03-06 17:17:30,845 - INFO - Progrès relations CATEGORIZED_AS: 67500/94709
+2025-03-06 17:17:30,919 - INFO - Progrès relations CATEGORIZED_AS: 68000/94709
+2025-03-06 17:17:30,993 - INFO - Progrès relations CATEGORIZED_AS: 68500/94709
+2025-03-06 17:17:31,071 - INFO - Progrès relations CATEGORIZED_AS: 69000/94709
+2025-03-06 17:17:31,139 - INFO - Progrès relations CATEGORIZED_AS: 69500/94709
+2025-03-06 17:17:31,209 - INFO - Progrès relations CATEGORIZED_AS: 70000/94709
+2025-03-06 17:17:31,281 - INFO - Progrès relations CATEGORIZED_AS: 70500/94709
+2025-03-06 17:17:31,351 - INFO - Progrès relations CATEGORIZED_AS: 71000/94709
+2025-03-06 17:17:31,423 - INFO - Progrès relations CATEGORIZED_AS: 71500/94709
+2025-03-06 17:17:31,500 - INFO - Progrès relations CATEGORIZED_AS: 72000/94709
+2025-03-06 17:17:31,572 - INFO - Progrès relations CATEGORIZED_AS: 72500/94709
+2025-03-06 17:17:31,639 - INFO - Progrès relations CATEGORIZED_AS: 73000/94709
+2025-03-06 17:17:31,710 - INFO - Progrès relations CATEGORIZED_AS: 73500/94709
+2025-03-06 17:17:31,784 - INFO - Progrès relations CATEGORIZED_AS: 74000/94709
+2025-03-06 17:17:31,861 - INFO - Progrès relations CATEGORIZED_AS: 74500/94709
+2025-03-06 17:17:31,924 - INFO - Progrès relations CATEGORIZED_AS: 75000/94709
+2025-03-06 17:17:31,995 - INFO - Progrès relations CATEGORIZED_AS: 75500/94709
+2025-03-06 17:17:32,077 - INFO - Progrès relations CATEGORIZED_AS: 76000/94709
+2025-03-06 17:17:32,161 - INFO - Progrès relations CATEGORIZED_AS: 76500/94709
+2025-03-06 17:17:32,247 - INFO - Progrès relations CATEGORIZED_AS: 77000/94709
+2025-03-06 17:17:32,338 - INFO - Progrès relations CATEGORIZED_AS: 77500/94709
+2025-03-06 17:17:32,426 - INFO - Progrès relations CATEGORIZED_AS: 78000/94709
+2025-03-06 17:17:32,498 - INFO - Progrès relations CATEGORIZED_AS: 78500/94709
+2025-03-06 17:17:32,570 - INFO - Progrès relations CATEGORIZED_AS: 79000/94709
+2025-03-06 17:17:32,640 - INFO - Progrès relations CATEGORIZED_AS: 79500/94709
+2025-03-06 17:17:32,716 - INFO - Progrès relations CATEGORIZED_AS: 80000/94709
+2025-03-06 17:17:32,797 - INFO - Progrès relations CATEGORIZED_AS: 80500/94709
+2025-03-06 17:17:32,888 - INFO - Progrès relations CATEGORIZED_AS: 81000/94709
+2025-03-06 17:17:33,062 - INFO - Progrès relations CATEGORIZED_AS: 81500/94709
+2025-03-06 17:17:33,190 - INFO - Progrès relations CATEGORIZED_AS: 82000/94709
+2025-03-06 17:17:33,277 - INFO - Progrès relations CATEGORIZED_AS: 82500/94709
+2025-03-06 17:17:33,346 - INFO - Progrès relations CATEGORIZED_AS: 83000/94709
+2025-03-06 17:17:33,409 - INFO - Progrès relations CATEGORIZED_AS: 83500/94709
+2025-03-06 17:17:33,472 - INFO - Progrès relations CATEGORIZED_AS: 84000/94709
+2025-03-06 17:17:33,584 - INFO - Progrès relations CATEGORIZED_AS: 84500/94709
+2025-03-06 17:17:33,651 - INFO - Progrès relations CATEGORIZED_AS: 85000/94709
+2025-03-06 17:17:33,724 - INFO - Progrès relations CATEGORIZED_AS: 85500/94709
+2025-03-06 17:17:33,782 - INFO - Progrès relations CATEGORIZED_AS: 86000/94709
+2025-03-06 17:17:33,840 - INFO - Progrès relations CATEGORIZED_AS: 86500/94709
+2025-03-06 17:17:33,901 - INFO - Progrès relations CATEGORIZED_AS: 87000/94709
+2025-03-06 17:17:33,989 - INFO - Progrès relations CATEGORIZED_AS: 87500/94709
+2025-03-06 17:17:34,096 - INFO - Progrès relations CATEGORIZED_AS: 88000/94709
+2025-03-06 17:17:34,159 - INFO - Progrès relations CATEGORIZED_AS: 88500/94709
+2025-03-06 17:17:34,224 - INFO - Progrès relations CATEGORIZED_AS: 89000/94709
+2025-03-06 17:17:34,286 - INFO - Progrès relations CATEGORIZED_AS: 89500/94709
+2025-03-06 17:17:34,343 - INFO - Progrès relations CATEGORIZED_AS: 90000/94709
+2025-03-06 17:17:34,405 - INFO - Progrès relations CATEGORIZED_AS: 90500/94709
+2025-03-06 17:17:34,465 - INFO - Progrès relations CATEGORIZED_AS: 91000/94709
+2025-03-06 17:17:34,530 - INFO - Progrès relations CATEGORIZED_AS: 91500/94709
+2025-03-06 17:17:34,595 - INFO - Progrès relations CATEGORIZED_AS: 92000/94709
+2025-03-06 17:17:34,647 - INFO - Progrès relations CATEGORIZED_AS: 92500/94709
+2025-03-06 17:17:34,700 - INFO - Progrès relations CATEGORIZED_AS: 93000/94709
+2025-03-06 17:17:34,765 - INFO - Progrès relations CATEGORIZED_AS: 93500/94709
+2025-03-06 17:17:34,831 - INFO - Progrès relations CATEGORIZED_AS: 94000/94709
+2025-03-06 17:17:34,882 - INFO - Progrès relations CATEGORIZED_AS: 94500/94709
+2025-03-06 17:17:34,988 - INFO - Progrès relations CATEGORIZED_AS: 94709/94709
+2025-03-06 17:17:34,988 - INFO - Création des relations CATEGORIZED_AS terminée en 17.08 secondes
+2025-03-06 17:17:34,988 - INFO - Création des relations de type PRODUCED_IN
+2025-03-06 17:17:35,158 - INFO - Progrès relations PRODUCED_IN: 500/94709
+2025-03-06 17:17:35,304 - INFO - Progrès relations PRODUCED_IN: 1000/94709
+2025-03-06 17:17:35,395 - INFO - Progrès relations PRODUCED_IN: 1500/94709
+2025-03-06 17:17:35,524 - INFO - Progrès relations PRODUCED_IN: 2000/94709
+2025-03-06 17:17:35,671 - INFO - Progrès relations PRODUCED_IN: 2500/94709
+2025-03-06 17:17:35,772 - INFO - Progrès relations PRODUCED_IN: 3000/94709
+2025-03-06 17:17:35,858 - INFO - Progrès relations PRODUCED_IN: 3500/94709
+2025-03-06 17:17:35,936 - INFO - Progrès relations PRODUCED_IN: 4000/94709
+2025-03-06 17:17:36,024 - INFO - Progrès relations PRODUCED_IN: 4500/94709
+2025-03-06 17:17:36,118 - INFO - Progrès relations PRODUCED_IN: 5000/94709
+2025-03-06 17:17:36,206 - INFO - Progrès relations PRODUCED_IN: 5500/94709
+2025-03-06 17:17:36,304 - INFO - Progrès relations PRODUCED_IN: 6000/94709
+2025-03-06 17:17:36,395 - INFO - Progrès relations PRODUCED_IN: 6500/94709
+2025-03-06 17:17:36,484 - INFO - Progrès relations PRODUCED_IN: 7000/94709
+2025-03-06 17:17:36,563 - INFO - Progrès relations PRODUCED_IN: 7500/94709
+2025-03-06 17:17:36,645 - INFO - Progrès relations PRODUCED_IN: 8000/94709
+2025-03-06 17:17:36,734 - INFO - Progrès relations PRODUCED_IN: 8500/94709
+2025-03-06 17:17:36,827 - INFO - Progrès relations PRODUCED_IN: 9000/94709
+2025-03-06 17:17:36,914 - INFO - Progrès relations PRODUCED_IN: 9500/94709
+2025-03-06 17:17:37,000 - INFO - Progrès relations PRODUCED_IN: 10000/94709
+2025-03-06 17:17:37,083 - INFO - Progrès relations PRODUCED_IN: 10500/94709
+2025-03-06 17:17:37,164 - INFO - Progrès relations PRODUCED_IN: 11000/94709
+2025-03-06 17:17:37,245 - INFO - Progrès relations PRODUCED_IN: 11500/94709
+2025-03-06 17:17:37,330 - INFO - Progrès relations PRODUCED_IN: 12000/94709
+2025-03-06 17:17:37,415 - INFO - Progrès relations PRODUCED_IN: 12500/94709
+2025-03-06 17:17:37,499 - INFO - Progrès relations PRODUCED_IN: 13000/94709
+2025-03-06 17:17:37,588 - INFO - Progrès relations PRODUCED_IN: 13500/94709
+2025-03-06 17:17:37,668 - INFO - Progrès relations PRODUCED_IN: 14000/94709
+2025-03-06 17:17:37,750 - INFO - Progrès relations PRODUCED_IN: 14500/94709
+2025-03-06 17:17:37,837 - INFO - Progrès relations PRODUCED_IN: 15000/94709
+2025-03-06 17:17:37,923 - INFO - Progrès relations PRODUCED_IN: 15500/94709
+2025-03-06 17:17:38,008 - INFO - Progrès relations PRODUCED_IN: 16000/94709
+2025-03-06 17:17:38,092 - INFO - Progrès relations PRODUCED_IN: 16500/94709
+2025-03-06 17:17:38,168 - INFO - Progrès relations PRODUCED_IN: 17000/94709
+2025-03-06 17:17:38,242 - INFO - Progrès relations PRODUCED_IN: 17500/94709
+2025-03-06 17:17:38,328 - INFO - Progrès relations PRODUCED_IN: 18000/94709
+2025-03-06 17:17:38,419 - INFO - Progrès relations PRODUCED_IN: 18500/94709
+2025-03-06 17:17:38,494 - INFO - Progrès relations PRODUCED_IN: 19000/94709
+2025-03-06 17:17:38,582 - INFO - Progrès relations PRODUCED_IN: 19500/94709
+2025-03-06 17:17:38,659 - INFO - Progrès relations PRODUCED_IN: 20000/94709
+2025-03-06 17:17:38,733 - INFO - Progrès relations PRODUCED_IN: 20500/94709
+2025-03-06 17:17:38,806 - INFO - Progrès relations PRODUCED_IN: 21000/94709
+2025-03-06 17:17:38,884 - INFO - Progrès relations PRODUCED_IN: 21500/94709
+2025-03-06 17:17:39,028 - INFO - Progrès relations PRODUCED_IN: 22000/94709
+2025-03-06 17:17:39,116 - INFO - Progrès relations PRODUCED_IN: 22500/94709
+2025-03-06 17:17:39,193 - INFO - Progrès relations PRODUCED_IN: 23000/94709
+2025-03-06 17:17:39,281 - INFO - Progrès relations PRODUCED_IN: 23500/94709
+2025-03-06 17:17:39,363 - INFO - Progrès relations PRODUCED_IN: 24000/94709
+2025-03-06 17:17:39,444 - INFO - Progrès relations PRODUCED_IN: 24500/94709
+2025-03-06 17:17:39,539 - INFO - Progrès relations PRODUCED_IN: 25000/94709
+2025-03-06 17:17:39,621 - INFO - Progrès relations PRODUCED_IN: 25500/94709
+2025-03-06 17:17:39,711 - INFO - Progrès relations PRODUCED_IN: 26000/94709
+2025-03-06 17:17:39,788 - INFO - Progrès relations PRODUCED_IN: 26500/94709
+2025-03-06 17:17:39,878 - INFO - Progrès relations PRODUCED_IN: 27000/94709
+2025-03-06 17:17:39,982 - INFO - Progrès relations PRODUCED_IN: 27500/94709
+2025-03-06 17:17:40,072 - INFO - Progrès relations PRODUCED_IN: 28000/94709
+2025-03-06 17:17:40,154 - INFO - Progrès relations PRODUCED_IN: 28500/94709
+2025-03-06 17:17:40,237 - INFO - Progrès relations PRODUCED_IN: 29000/94709
+2025-03-06 17:17:40,318 - INFO - Progrès relations PRODUCED_IN: 29500/94709
+2025-03-06 17:17:40,396 - INFO - Progrès relations PRODUCED_IN: 30000/94709
+2025-03-06 17:17:40,483 - INFO - Progrès relations PRODUCED_IN: 30500/94709
+2025-03-06 17:17:40,569 - INFO - Progrès relations PRODUCED_IN: 31000/94709
+2025-03-06 17:17:40,654 - INFO - Progrès relations PRODUCED_IN: 31500/94709
+2025-03-06 17:17:40,748 - INFO - Progrès relations PRODUCED_IN: 32000/94709
+2025-03-06 17:17:40,827 - INFO - Progrès relations PRODUCED_IN: 32500/94709
+2025-03-06 17:17:40,928 - INFO - Progrès relations PRODUCED_IN: 33000/94709
+2025-03-06 17:17:41,020 - INFO - Progrès relations PRODUCED_IN: 33500/94709
+2025-03-06 17:17:41,113 - INFO - Progrès relations PRODUCED_IN: 34000/94709
+2025-03-06 17:17:41,205 - INFO - Progrès relations PRODUCED_IN: 34500/94709
+2025-03-06 17:17:41,305 - INFO - Progrès relations PRODUCED_IN: 35000/94709
+2025-03-06 17:17:41,398 - INFO - Progrès relations PRODUCED_IN: 35500/94709
+2025-03-06 17:17:41,487 - INFO - Progrès relations PRODUCED_IN: 36000/94709
+2025-03-06 17:17:41,572 - INFO - Progrès relations PRODUCED_IN: 36500/94709
+2025-03-06 17:17:41,658 - INFO - Progrès relations PRODUCED_IN: 37000/94709
+2025-03-06 17:17:41,743 - INFO - Progrès relations PRODUCED_IN: 37500/94709
+2025-03-06 17:17:42,031 - INFO - Progrès relations PRODUCED_IN: 38000/94709
+2025-03-06 17:17:42,114 - INFO - Progrès relations PRODUCED_IN: 38500/94709
+2025-03-06 17:17:42,203 - INFO - Progrès relations PRODUCED_IN: 39000/94709
+2025-03-06 17:17:42,287 - INFO - Progrès relations PRODUCED_IN: 39500/94709
+2025-03-06 17:17:42,376 - INFO - Progrès relations PRODUCED_IN: 40000/94709
+2025-03-06 17:17:42,454 - INFO - Progrès relations PRODUCED_IN: 40500/94709
+2025-03-06 17:17:42,541 - INFO - Progrès relations PRODUCED_IN: 41000/94709
+2025-03-06 17:17:42,622 - INFO - Progrès relations PRODUCED_IN: 41500/94709
+2025-03-06 17:17:42,711 - INFO - Progrès relations PRODUCED_IN: 42000/94709
+2025-03-06 17:17:42,804 - INFO - Progrès relations PRODUCED_IN: 42500/94709
+2025-03-06 17:17:42,892 - INFO - Progrès relations PRODUCED_IN: 43000/94709
+2025-03-06 17:17:42,974 - INFO - Progrès relations PRODUCED_IN: 43500/94709
+2025-03-06 17:17:43,054 - INFO - Progrès relations PRODUCED_IN: 44000/94709
+2025-03-06 17:17:43,133 - INFO - Progrès relations PRODUCED_IN: 44500/94709
+2025-03-06 17:17:43,217 - INFO - Progrès relations PRODUCED_IN: 45000/94709
+2025-03-06 17:17:43,298 - INFO - Progrès relations PRODUCED_IN: 45500/94709
+2025-03-06 17:17:43,376 - INFO - Progrès relations PRODUCED_IN: 46000/94709
+2025-03-06 17:17:43,461 - INFO - Progrès relations PRODUCED_IN: 46500/94709
+2025-03-06 17:17:43,546 - INFO - Progrès relations PRODUCED_IN: 47000/94709
+2025-03-06 17:17:43,633 - INFO - Progrès relations PRODUCED_IN: 47500/94709
+2025-03-06 17:17:43,711 - INFO - Progrès relations PRODUCED_IN: 48000/94709
+2025-03-06 17:17:43,790 - INFO - Progrès relations PRODUCED_IN: 48500/94709
+2025-03-06 17:17:43,870 - INFO - Progrès relations PRODUCED_IN: 49000/94709
+2025-03-06 17:17:43,974 - INFO - Progrès relations PRODUCED_IN: 49500/94709
+2025-03-06 17:17:44,057 - INFO - Progrès relations PRODUCED_IN: 50000/94709
+2025-03-06 17:17:44,147 - INFO - Progrès relations PRODUCED_IN: 50500/94709
+2025-03-06 17:17:44,228 - INFO - Progrès relations PRODUCED_IN: 51000/94709
+2025-03-06 17:17:44,304 - INFO - Progrès relations PRODUCED_IN: 51500/94709
+2025-03-06 17:17:44,398 - INFO - Progrès relations PRODUCED_IN: 52000/94709
+2025-03-06 17:17:44,476 - INFO - Progrès relations PRODUCED_IN: 52500/94709
+2025-03-06 17:17:44,561 - INFO - Progrès relations PRODUCED_IN: 53000/94709
+2025-03-06 17:17:44,647 - INFO - Progrès relations PRODUCED_IN: 53500/94709
+2025-03-06 17:17:44,733 - INFO - Progrès relations PRODUCED_IN: 54000/94709
+2025-03-06 17:17:44,821 - INFO - Progrès relations PRODUCED_IN: 54500/94709
+2025-03-06 17:17:44,904 - INFO - Progrès relations PRODUCED_IN: 55000/94709
+2025-03-06 17:17:44,982 - INFO - Progrès relations PRODUCED_IN: 55500/94709
+2025-03-06 17:17:45,076 - INFO - Progrès relations PRODUCED_IN: 56000/94709
+2025-03-06 17:17:45,167 - INFO - Progrès relations PRODUCED_IN: 56500/94709
+2025-03-06 17:17:45,250 - INFO - Progrès relations PRODUCED_IN: 57000/94709
+2025-03-06 17:17:45,330 - INFO - Progrès relations PRODUCED_IN: 57500/94709
+2025-03-06 17:17:45,412 - INFO - Progrès relations PRODUCED_IN: 58000/94709
+2025-03-06 17:17:45,493 - INFO - Progrès relations PRODUCED_IN: 58500/94709
+2025-03-06 17:17:45,620 - INFO - Progrès relations PRODUCED_IN: 59000/94709
+2025-03-06 17:17:45,712 - INFO - Progrès relations PRODUCED_IN: 59500/94709
+2025-03-06 17:17:45,793 - INFO - Progrès relations PRODUCED_IN: 60000/94709
+2025-03-06 17:17:45,894 - INFO - Progrès relations PRODUCED_IN: 60500/94709
+2025-03-06 17:17:45,981 - INFO - Progrès relations PRODUCED_IN: 61000/94709
+2025-03-06 17:17:46,104 - INFO - Progrès relations PRODUCED_IN: 61500/94709
+2025-03-06 17:17:46,184 - INFO - Progrès relations PRODUCED_IN: 62000/94709
+2025-03-06 17:17:46,272 - INFO - Progrès relations PRODUCED_IN: 62500/94709
+2025-03-06 17:17:46,379 - INFO - Progrès relations PRODUCED_IN: 63000/94709
+2025-03-06 17:17:46,452 - INFO - Progrès relations PRODUCED_IN: 63500/94709
+2025-03-06 17:17:46,538 - INFO - Progrès relations PRODUCED_IN: 64000/94709
+2025-03-06 17:17:46,629 - INFO - Progrès relations PRODUCED_IN: 64500/94709
+2025-03-06 17:17:46,716 - INFO - Progrès relations PRODUCED_IN: 65000/94709
+2025-03-06 17:17:46,819 - INFO - Progrès relations PRODUCED_IN: 65500/94709
+2025-03-06 17:17:46,904 - INFO - Progrès relations PRODUCED_IN: 66000/94709
+2025-03-06 17:17:46,980 - INFO - Progrès relations PRODUCED_IN: 66500/94709
+2025-03-06 17:17:47,063 - INFO - Progrès relations PRODUCED_IN: 67000/94709
+2025-03-06 17:17:47,143 - INFO - Progrès relations PRODUCED_IN: 67500/94709
+2025-03-06 17:17:47,225 - INFO - Progrès relations PRODUCED_IN: 68000/94709
+2025-03-06 17:17:47,316 - INFO - Progrès relations PRODUCED_IN: 68500/94709
+2025-03-06 17:17:47,430 - INFO - Progrès relations PRODUCED_IN: 69000/94709
+2025-03-06 17:17:47,507 - INFO - Progrès relations PRODUCED_IN: 69500/94709
+2025-03-06 17:17:47,593 - INFO - Progrès relations PRODUCED_IN: 70000/94709
+2025-03-06 17:17:47,672 - INFO - Progrès relations PRODUCED_IN: 70500/94709
+2025-03-06 17:17:47,754 - INFO - Progrès relations PRODUCED_IN: 71000/94709
+2025-03-06 17:17:47,834 - INFO - Progrès relations PRODUCED_IN: 71500/94709
+2025-03-06 17:17:47,918 - INFO - Progrès relations PRODUCED_IN: 72000/94709
+2025-03-06 17:17:47,999 - INFO - Progrès relations PRODUCED_IN: 72500/94709
+2025-03-06 17:17:48,074 - INFO - Progrès relations PRODUCED_IN: 73000/94709
+2025-03-06 17:17:48,155 - INFO - Progrès relations PRODUCED_IN: 73500/94709
+2025-03-06 17:17:48,250 - INFO - Progrès relations PRODUCED_IN: 74000/94709
+2025-03-06 17:17:48,344 - INFO - Progrès relations PRODUCED_IN: 74500/94709
+2025-03-06 17:17:48,426 - INFO - Progrès relations PRODUCED_IN: 75000/94709
+2025-03-06 17:17:48,504 - INFO - Progrès relations PRODUCED_IN: 75500/94709
+2025-03-06 17:17:48,580 - INFO - Progrès relations PRODUCED_IN: 76000/94709
+2025-03-06 17:17:48,682 - INFO - Progrès relations PRODUCED_IN: 76500/94709
+2025-03-06 17:17:48,763 - INFO - Progrès relations PRODUCED_IN: 77000/94709
+2025-03-06 17:17:48,847 - INFO - Progrès relations PRODUCED_IN: 77500/94709
+2025-03-06 17:17:48,934 - INFO - Progrès relations PRODUCED_IN: 78000/94709
+2025-03-06 17:17:49,012 - INFO - Progrès relations PRODUCED_IN: 78500/94709
+2025-03-06 17:17:49,160 - INFO - Progrès relations PRODUCED_IN: 79000/94709
+2025-03-06 17:17:49,236 - INFO - Progrès relations PRODUCED_IN: 79500/94709
+2025-03-06 17:17:49,321 - INFO - Progrès relations PRODUCED_IN: 80000/94709
+2025-03-06 17:17:49,409 - INFO - Progrès relations PRODUCED_IN: 80500/94709
+2025-03-06 17:17:49,492 - INFO - Progrès relations PRODUCED_IN: 81000/94709
+2025-03-06 17:17:49,573 - INFO - Progrès relations PRODUCED_IN: 81500/94709
+2025-03-06 17:17:49,651 - INFO - Progrès relations PRODUCED_IN: 82000/94709
+2025-03-06 17:17:49,733 - INFO - Progrès relations PRODUCED_IN: 82500/94709
+2025-03-06 17:17:49,823 - INFO - Progrès relations PRODUCED_IN: 83000/94709
+2025-03-06 17:17:49,910 - INFO - Progrès relations PRODUCED_IN: 83500/94709
+2025-03-06 17:17:49,992 - INFO - Progrès relations PRODUCED_IN: 84000/94709
+2025-03-06 17:17:50,076 - INFO - Progrès relations PRODUCED_IN: 84500/94709
+2025-03-06 17:17:50,172 - INFO - Progrès relations PRODUCED_IN: 85000/94709
+2025-03-06 17:17:50,258 - INFO - Progrès relations PRODUCED_IN: 85500/94709
+2025-03-06 17:17:50,344 - INFO - Progrès relations PRODUCED_IN: 86000/94709
+2025-03-06 17:17:50,428 - INFO - Progrès relations PRODUCED_IN: 86500/94709
+2025-03-06 17:17:50,507 - INFO - Progrès relations PRODUCED_IN: 87000/94709
+2025-03-06 17:17:50,591 - INFO - Progrès relations PRODUCED_IN: 87500/94709
+2025-03-06 17:17:50,682 - INFO - Progrès relations PRODUCED_IN: 88000/94709
+2025-03-06 17:17:50,760 - INFO - Progrès relations PRODUCED_IN: 88500/94709
+2025-03-06 17:17:50,833 - INFO - Progrès relations PRODUCED_IN: 89000/94709
+2025-03-06 17:17:50,916 - INFO - Progrès relations PRODUCED_IN: 89500/94709
+2025-03-06 17:17:51,002 - INFO - Progrès relations PRODUCED_IN: 90000/94709
+2025-03-06 17:17:51,090 - INFO - Progrès relations PRODUCED_IN: 90500/94709
+2025-03-06 17:17:51,182 - INFO - Progrès relations PRODUCED_IN: 91000/94709
+2025-03-06 17:17:51,267 - INFO - Progrès relations PRODUCED_IN: 91500/94709
+2025-03-06 17:17:51,347 - INFO - Progrès relations PRODUCED_IN: 92000/94709
+2025-03-06 17:17:51,424 - INFO - Progrès relations PRODUCED_IN: 92500/94709
+2025-03-06 17:17:51,510 - INFO - Progrès relations PRODUCED_IN: 93000/94709
+2025-03-06 17:17:51,586 - INFO - Progrès relations PRODUCED_IN: 93500/94709
+2025-03-06 17:17:51,663 - INFO - Progrès relations PRODUCED_IN: 94000/94709
+2025-03-06 17:17:51,750 - INFO - Progrès relations PRODUCED_IN: 94500/94709
+2025-03-06 17:17:51,817 - INFO - Progrès relations PRODUCED_IN: 94709/94709
+2025-03-06 17:17:51,818 - INFO - Création des relations PRODUCED_IN terminée en 16.83 secondes
+2025-03-06 17:17:51,818 - INFO - Création des relations de type CONTAINS
+2025-03-06 17:17:52,108 - INFO - Progrès relations CONTAINS: 500/94709
+2025-03-06 17:17:52,376 - INFO - Progrès relations CONTAINS: 1000/94709
+2025-03-06 17:17:52,654 - INFO - Progrès relations CONTAINS: 1500/94709
+2025-03-06 17:17:52,869 - INFO - Progrès relations CONTAINS: 2000/94709
+2025-03-06 17:17:53,115 - INFO - Progrès relations CONTAINS: 2500/94709
+2025-03-06 17:17:53,340 - INFO - Progrès relations CONTAINS: 3000/94709
+2025-03-06 17:17:53,557 - INFO - Progrès relations CONTAINS: 3500/94709
+2025-03-06 17:17:53,785 - INFO - Progrès relations CONTAINS: 4000/94709
+2025-03-06 17:17:54,012 - INFO - Progrès relations CONTAINS: 4500/94709
+2025-03-06 17:17:54,218 - INFO - Progrès relations CONTAINS: 5000/94709
+2025-03-06 17:17:54,453 - INFO - Progrès relations CONTAINS: 5500/94709
+2025-03-06 17:17:54,694 - INFO - Progrès relations CONTAINS: 6000/94709
+2025-03-06 17:17:54,921 - INFO - Progrès relations CONTAINS: 6500/94709
+2025-03-06 17:17:55,130 - INFO - Progrès relations CONTAINS: 7000/94709
+2025-03-06 17:17:55,317 - INFO - Progrès relations CONTAINS: 7500/94709
+2025-03-06 17:17:55,466 - INFO - Progrès relations CONTAINS: 8000/94709
+2025-03-06 17:17:55,596 - INFO - Progrès relations CONTAINS: 8500/94709
+2025-03-06 17:17:55,762 - INFO - Progrès relations CONTAINS: 9000/94709
+2025-03-06 17:17:55,890 - INFO - Progrès relations CONTAINS: 9500/94709
+2025-03-06 17:17:56,025 - INFO - Progrès relations CONTAINS: 10000/94709
+2025-03-06 17:17:56,164 - INFO - Progrès relations CONTAINS: 10500/94709
+2025-03-06 17:17:56,321 - INFO - Progrès relations CONTAINS: 11000/94709
+2025-03-06 17:17:56,464 - INFO - Progrès relations CONTAINS: 11500/94709
+2025-03-06 17:17:56,625 - INFO - Progrès relations CONTAINS: 12000/94709
+2025-03-06 17:17:56,790 - INFO - Progrès relations CONTAINS: 12500/94709
+2025-03-06 17:17:56,923 - INFO - Progrès relations CONTAINS: 13000/94709
+2025-03-06 17:17:57,049 - INFO - Progrès relations CONTAINS: 13500/94709
+2025-03-06 17:17:57,192 - INFO - Progrès relations CONTAINS: 14000/94709
+2025-03-06 17:17:57,324 - INFO - Progrès relations CONTAINS: 14500/94709
+2025-03-06 17:17:57,452 - INFO - Progrès relations CONTAINS: 15000/94709
+2025-03-06 17:17:57,573 - INFO - Progrès relations CONTAINS: 15500/94709
+2025-03-06 17:17:57,706 - INFO - Progrès relations CONTAINS: 16000/94709
+2025-03-06 17:17:57,881 - INFO - Progrès relations CONTAINS: 16500/94709
+2025-03-06 17:17:58,024 - INFO - Progrès relations CONTAINS: 17000/94709
+2025-03-06 17:17:58,160 - INFO - Progrès relations CONTAINS: 17500/94709
+2025-03-06 17:17:58,278 - INFO - Progrès relations CONTAINS: 18000/94709
+2025-03-06 17:17:58,408 - INFO - Progrès relations CONTAINS: 18500/94709
+2025-03-06 17:17:58,537 - INFO - Progrès relations CONTAINS: 19000/94709
+2025-03-06 17:17:58,670 - INFO - Progrès relations CONTAINS: 19500/94709
+2025-03-06 17:17:58,792 - INFO - Progrès relations CONTAINS: 20000/94709
+2025-03-06 17:17:58,914 - INFO - Progrès relations CONTAINS: 20500/94709
+2025-03-06 17:17:59,039 - INFO - Progrès relations CONTAINS: 21000/94709
+2025-03-06 17:17:59,157 - INFO - Progrès relations CONTAINS: 21500/94709
+2025-03-06 17:17:59,331 - INFO - Progrès relations CONTAINS: 22000/94709
+2025-03-06 17:17:59,446 - INFO - Progrès relations CONTAINS: 22500/94709
+2025-03-06 17:17:59,585 - INFO - Progrès relations CONTAINS: 23000/94709
+2025-03-06 17:17:59,701 - INFO - Progrès relations CONTAINS: 23500/94709
+2025-03-06 17:17:59,809 - INFO - Progrès relations CONTAINS: 24000/94709
+2025-03-06 17:17:59,928 - INFO - Progrès relations CONTAINS: 24500/94709
+2025-03-06 17:18:00,025 - INFO - Progrès relations CONTAINS: 25000/94709
+2025-03-06 17:18:00,126 - INFO - Progrès relations CONTAINS: 25500/94709
+2025-03-06 17:18:00,258 - INFO - Progrès relations CONTAINS: 26000/94709
+2025-03-06 17:18:00,363 - INFO - Progrès relations CONTAINS: 26500/94709
+2025-03-06 17:18:00,475 - INFO - Progrès relations CONTAINS: 27000/94709
+2025-03-06 17:18:00,590 - INFO - Progrès relations CONTAINS: 27500/94709
+2025-03-06 17:18:00,725 - INFO - Progrès relations CONTAINS: 28000/94709
+2025-03-06 17:18:00,835 - INFO - Progrès relations CONTAINS: 28500/94709
+2025-03-06 17:18:00,955 - INFO - Progrès relations CONTAINS: 29000/94709
+2025-03-06 17:18:01,102 - INFO - Progrès relations CONTAINS: 29500/94709
+2025-03-06 17:18:01,231 - INFO - Progrès relations CONTAINS: 30000/94709
+2025-03-06 17:18:01,353 - INFO - Progrès relations CONTAINS: 30500/94709
+2025-03-06 17:18:01,467 - INFO - Progrès relations CONTAINS: 31000/94709
+2025-03-06 17:18:01,584 - INFO - Progrès relations CONTAINS: 31500/94709
+2025-03-06 17:18:01,694 - INFO - Progrès relations CONTAINS: 32000/94709
+2025-03-06 17:18:01,813 - INFO - Progrès relations CONTAINS: 32500/94709
+2025-03-06 17:18:01,915 - INFO - Progrès relations CONTAINS: 33000/94709
+2025-03-06 17:18:02,077 - INFO - Progrès relations CONTAINS: 33500/94709
+2025-03-06 17:18:02,182 - INFO - Progrès relations CONTAINS: 34000/94709
+2025-03-06 17:18:02,307 - INFO - Progrès relations CONTAINS: 34500/94709
+2025-03-06 17:18:02,405 - INFO - Progrès relations CONTAINS: 35000/94709
+2025-03-06 17:18:02,495 - INFO - Progrès relations CONTAINS: 35500/94709
+2025-03-06 17:18:02,614 - INFO - Progrès relations CONTAINS: 36000/94709
+2025-03-06 17:18:02,769 - INFO - Progrès relations CONTAINS: 36500/94709
+2025-03-06 17:18:02,879 - INFO - Progrès relations CONTAINS: 37000/94709
+2025-03-06 17:18:02,985 - INFO - Progrès relations CONTAINS: 37500/94709
+2025-03-06 17:18:03,099 - INFO - Progrès relations CONTAINS: 38000/94709
+2025-03-06 17:18:03,192 - INFO - Progrès relations CONTAINS: 38500/94709
+2025-03-06 17:18:03,289 - INFO - Progrès relations CONTAINS: 39000/94709
+2025-03-06 17:18:03,393 - INFO - Progrès relations CONTAINS: 39500/94709
+2025-03-06 17:18:03,501 - INFO - Progrès relations CONTAINS: 40000/94709
+2025-03-06 17:18:03,588 - INFO - Progrès relations CONTAINS: 40500/94709
+2025-03-06 17:18:03,691 - INFO - Progrès relations CONTAINS: 41000/94709
+2025-03-06 17:18:03,788 - INFO - Progrès relations CONTAINS: 41500/94709
+2025-03-06 17:18:03,885 - INFO - Progrès relations CONTAINS: 42000/94709
+2025-03-06 17:18:03,972 - INFO - Progrès relations CONTAINS: 42500/94709
+2025-03-06 17:18:04,058 - INFO - Progrès relations CONTAINS: 43000/94709
+2025-03-06 17:18:04,154 - INFO - Progrès relations CONTAINS: 43500/94709
+2025-03-06 17:18:04,243 - INFO - Progrès relations CONTAINS: 44000/94709
+2025-03-06 17:18:04,328 - INFO - Progrès relations CONTAINS: 44500/94709
+2025-03-06 17:18:04,422 - INFO - Progrès relations CONTAINS: 45000/94709
+2025-03-06 17:18:04,518 - INFO - Progrès relations CONTAINS: 45500/94709
+2025-03-06 17:18:04,610 - INFO - Progrès relations CONTAINS: 46000/94709
+2025-03-06 17:18:04,696 - INFO - Progrès relations CONTAINS: 46500/94709
+2025-03-06 17:18:04,785 - INFO - Progrès relations CONTAINS: 47000/94709
+2025-03-06 17:18:04,874 - INFO - Progrès relations CONTAINS: 47500/94709
+2025-03-06 17:18:04,968 - INFO - Progrès relations CONTAINS: 48000/94709
+2025-03-06 17:18:05,055 - INFO - Progrès relations CONTAINS: 48500/94709
+2025-03-06 17:18:05,152 - INFO - Progrès relations CONTAINS: 49000/94709
+2025-03-06 17:18:05,247 - INFO - Progrès relations CONTAINS: 49500/94709
+2025-03-06 17:18:05,343 - INFO - Progrès relations CONTAINS: 50000/94709
+2025-03-06 17:18:05,436 - INFO - Progrès relations CONTAINS: 50500/94709
+2025-03-06 17:18:05,516 - INFO - Progrès relations CONTAINS: 51000/94709
+2025-03-06 17:18:05,609 - INFO - Progrès relations CONTAINS: 51500/94709
+2025-03-06 17:18:05,701 - INFO - Progrès relations CONTAINS: 52000/94709
+2025-03-06 17:18:05,789 - INFO - Progrès relations CONTAINS: 52500/94709
+2025-03-06 17:18:05,881 - INFO - Progrès relations CONTAINS: 53000/94709
+2025-03-06 17:20:06,994 - ERROR - [#F995]  _: <CONNECTION> error: Failed to read from defunct connection IPv4Address(('si-ef4bfe2f-83af.production-orch-0702.neo4j.io', 7687)) (ResolvedIPv4Address(('34.31.169.230', 7687))): OSError('No data')
+2025-03-06 17:20:06,996 - ERROR - Erreur lors de l'effacement de la base de données: Failed to read from defunct connection IPv4Address(('si-ef4bfe2f-83af.production-orch-0702.neo4j.io', 7687)) (ResolvedIPv4Address(('34.31.169.230', 7687)))
+2025-03-06 17:20:06,996 - INFO - Chargement du fichier ../../data/openfoodfacts-canadian-products.jsonl
+2025-03-06 17:20:34,080 - INFO - Fichier chargé: 97439 produits trouvés
+2025-03-06 17:20:35,849 - INFO - Limitation à 10000 produits...
+2025-03-06 17:20:35,852 - ERROR - [#F994]  _: <CONNECTION> error: Failed to read from defunct connection ResolvedIPv4Address(('34.31.169.230', 7687)) (ResolvedIPv4Address(('34.31.169.230', 7687))): OSError('No data')
+2025-03-06 17:20:35,852 - ERROR - Unable to retrieve routing information
+2025-03-06 17:20:35,853 - ERROR - Erreur lors de la création de la contrainte: Unable to retrieve routing information
+2025-03-06 17:20:36,945 - INFO - Contrainte créée: CREATE CONSTRAINT brand_name IF NOT EXISTS FOR (b:Brand) REQUIRE b.name IS UNIQUE
+2025-03-06 17:20:37,762 - INFO - Contrainte créée: CREATE CONSTRAINT ingredient_name IF NOT EXISTS FOR (i:Ingredient) REQUIRE i.name IS UNIQUE
+2025-03-06 17:20:37,915 - INFO - Contrainte créée: CREATE CONSTRAINT category_name IF NOT EXISTS FOR (c:Category) REQUIRE c.name IS UNIQUE
+2025-03-06 17:20:38,011 - INFO - Contrainte créée: CREATE CONSTRAINT country_name IF NOT EXISTS FOR (c:Country) REQUIRE c.name IS UNIQUE
+2025-03-06 17:20:38,097 - INFO - Contrainte créée: CREATE CONSTRAINT allergen_name IF NOT EXISTS FOR (a:Allergen) REQUIRE a.name IS UNIQUE
+2025-03-06 17:20:38,186 - INFO - Contrainte créée: CREATE CONSTRAINT nutrient_name IF NOT EXISTS FOR (n:Nutrient) REQUIRE n.name IS UNIQUE
+2025-03-06 17:20:38,284 - INFO - Contrainte créée: CREATE CONSTRAINT label_name IF NOT EXISTS FOR (l:Label) REQUIRE l.name IS UNIQUE
+2025-03-06 17:20:38,290 - INFO - Prétraitement des produits...
+2025-03-06 17:20:38,555 - INFO - Prétraitement terminé: 9479 produits valides
+2025-03-06 17:20:38,555 - INFO - Création de 8 nœuds de type Nutrient
+2025-03-06 17:20:38,736 - INFO - Progrès Nutrient: 8/8
+2025-03-06 17:20:38,736 - INFO - Création des nœuds Nutrient terminée en 0.18 secondes
+2025-03-06 17:20:38,736 - INFO - Création de 3073 nœuds de type Brand
+2025-03-06 17:20:39,105 - INFO - Progrès Brand: 1000/3073
+2025-03-06 17:20:39,246 - INFO - Progrès Brand: 2000/3073
+2025-03-06 17:20:39,410 - INFO - Progrès Brand: 3000/3073
+2025-03-06 17:20:39,549 - INFO - Progrès Brand: 3073/3073
+2025-03-06 17:20:39,549 - INFO - Création des nœuds Brand terminée en 0.81 secondes
+2025-03-06 17:20:39,549 - INFO - Création de 3885 nœuds de type Category
+2025-03-06 17:20:39,744 - INFO - Progrès Category: 1000/3885
+2025-03-06 17:20:39,875 - INFO - Progrès Category: 2000/3885
+2025-03-06 17:20:40,013 - INFO - Progrès Category: 3000/3885
+2025-03-06 17:20:40,097 - INFO - Progrès Category: 3885/3885
+2025-03-06 17:20:40,098 - INFO - Création des nœuds Category terminée en 0.55 secondes
+2025-03-06 17:20:40,098 - INFO - Création de 247 nœuds de type Country
+2025-03-06 17:20:40,210 - INFO - Progrès Country: 247/247
+2025-03-06 17:20:40,210 - INFO - Création des nœuds Country terminée en 0.11 secondes
+2025-03-06 17:20:40,210 - INFO - Création de 18186 nœuds de type Ingredient
+2025-03-06 17:20:40,526 - INFO - Progrès Ingredient: 1000/18186
+2025-03-06 17:20:40,738 - INFO - Progrès Ingredient: 2000/18186
+2025-03-06 17:20:40,942 - INFO - Progrès Ingredient: 3000/18186
+2025-03-06 17:20:41,122 - INFO - Progrès Ingredient: 4000/18186
+2025-03-06 17:20:41,300 - INFO - Progrès Ingredient: 5000/18186
+2025-03-06 17:20:41,500 - INFO - Progrès Ingredient: 6000/18186
+2025-03-06 17:20:41,663 - INFO - Progrès Ingredient: 7000/18186
+2025-03-06 17:20:41,819 - INFO - Progrès Ingredient: 8000/18186
+2025-03-06 17:20:42,003 - INFO - Progrès Ingredient: 9000/18186
+2025-03-06 17:20:42,163 - INFO - Progrès Ingredient: 10000/18186
+2025-03-06 17:20:42,370 - INFO - Progrès Ingredient: 11000/18186
+2025-03-06 17:20:42,480 - INFO - Progrès Ingredient: 12000/18186
+2025-03-06 17:20:42,584 - INFO - Progrès Ingredient: 13000/18186
+2025-03-06 17:20:42,696 - INFO - Progrès Ingredient: 14000/18186
+2025-03-06 17:20:42,806 - INFO - Progrès Ingredient: 15000/18186
+2025-03-06 17:20:42,911 - INFO - Progrès Ingredient: 16000/18186
+2025-03-06 17:20:43,019 - INFO - Progrès Ingredient: 17000/18186
+2025-03-06 17:20:43,138 - INFO - Progrès Ingredient: 18000/18186
+2025-03-06 17:20:43,212 - INFO - Progrès Ingredient: 18186/18186
+2025-03-06 17:20:43,212 - INFO - Création des nœuds Ingredient terminée en 3.00 secondes
+2025-03-06 17:20:43,212 - INFO - Création de 66 nœuds de type Allergen
+2025-03-06 17:20:43,311 - INFO - Progrès Allergen: 66/66
+2025-03-06 17:20:43,311 - INFO - Création des nœuds Allergen terminée en 0.10 secondes
+2025-03-06 17:20:43,312 - INFO - Création de 916 nœuds de type Label
+2025-03-06 17:20:43,417 - INFO - Progrès Label: 916/916
+2025-03-06 17:20:43,417 - INFO - Création des nœuds Label terminée en 0.11 secondes
+2025-03-06 17:20:43,417 - INFO - Création de 9479 nœuds de produits
+2025-03-06 17:21:10,630 - INFO - Progrès produits: 500/9479
+2025-03-06 17:21:36,711 - INFO - Progrès produits: 1000/9479
+2025-03-06 17:22:02,137 - INFO - Progrès produits: 1500/9479
+2025-03-06 17:22:27,373 - INFO - Progrès produits: 2000/9479
+2025-03-06 17:22:52,621 - INFO - Progrès produits: 2500/9479
+2025-03-06 17:23:17,608 - INFO - Progrès produits: 3000/9479
+2025-03-06 17:23:43,107 - INFO - Progrès produits: 3500/9479
+2025-03-06 17:24:08,295 - INFO - Progrès produits: 4000/9479
+2025-03-06 17:24:33,822 - INFO - Progrès produits: 4500/9479
+2025-03-06 17:24:59,075 - INFO - Progrès produits: 5000/9479
+2025-03-06 17:25:24,204 - INFO - Progrès produits: 5500/9479
+2025-03-06 17:25:49,248 - INFO - Progrès produits: 6000/9479
+2025-03-06 17:26:13,744 - INFO - Progrès produits: 6500/9479
+2025-03-06 17:26:38,633 - INFO - Progrès produits: 7000/9479
+2025-03-06 17:27:03,338 - INFO - Progrès produits: 7500/9479
+2025-03-06 17:27:28,451 - INFO - Progrès produits: 8000/9479
+2025-03-06 17:27:53,680 - INFO - Progrès produits: 8500/9479
+2025-03-06 17:28:18,712 - INFO - Progrès produits: 9000/9479
+2025-03-06 17:28:42,423 - INFO - Progrès produits: 9479/9479
+2025-03-06 17:28:42,425 - INFO - Création des nœuds de produits terminée en 479.01 secondes
+2025-03-06 17:28:42,425 - INFO - Création des relations de type BELONGS_TO
+2025-03-06 17:29:10,241 - INFO - Progrès relations BELONGS_TO: 500/9479
+2025-03-06 17:29:36,567 - INFO - Progrès relations BELONGS_TO: 1000/9479
+2025-03-06 17:30:03,628 - INFO - Progrès relations BELONGS_TO: 1500/9479
+2025-03-06 17:30:31,787 - INFO - Progrès relations BELONGS_TO: 2000/9479
+2025-03-06 17:31:01,275 - INFO - Progrès relations BELONGS_TO: 2500/9479
+2025-03-06 17:31:26,626 - INFO - Progrès relations BELONGS_TO: 3000/9479
+2025-03-06 17:31:52,069 - INFO - Progrès relations BELONGS_TO: 3500/9479
+2025-03-06 17:32:20,385 - INFO - Progrès relations BELONGS_TO: 4000/9479
+2025-03-06 17:32:44,273 - INFO - Progrès relations BELONGS_TO: 4500/9479
+2025-03-06 17:33:06,208 - INFO - Progrès relations BELONGS_TO: 5000/9479
+2025-03-06 17:33:29,849 - INFO - Progrès relations BELONGS_TO: 5500/9479
+2025-03-06 17:33:51,592 - INFO - Progrès relations BELONGS_TO: 6000/9479
+2025-03-06 17:34:11,449 - INFO - Progrès relations BELONGS_TO: 6500/9479
+2025-03-06 17:34:31,536 - INFO - Progrès relations BELONGS_TO: 7000/9479
+2025-03-06 17:34:50,558 - INFO - Progrès relations BELONGS_TO: 7500/9479
+2025-03-06 17:35:08,176 - INFO - Progrès relations BELONGS_TO: 8000/9479
+2025-03-06 17:35:23,504 - INFO - Progrès relations BELONGS_TO: 8500/9479
+2025-03-06 17:35:37,667 - INFO - Progrès relations BELONGS_TO: 9000/9479
+2025-03-06 17:35:51,825 - INFO - Progrès relations BELONGS_TO: 9479/9479
+2025-03-06 17:35:51,825 - INFO - Création des relations BELONGS_TO terminée en 429.40 secondes
+2025-03-06 17:35:51,825 - INFO - Création des relations de type CATEGORIZED_AS
+2025-03-06 17:37:37,887 - INFO - Progrès relations CATEGORIZED_AS: 500/9479
+2025-03-06 17:39:38,821 - INFO - Progrès relations CATEGORIZED_AS: 1000/9479
+2025-03-06 17:41:51,434 - INFO - Progrès relations CATEGORIZED_AS: 1500/9479
+2025-03-06 17:43:42,233 - INFO - Progrès relations CATEGORIZED_AS: 2000/9479
+2025-03-06 17:45:46,367 - INFO - Progrès relations CATEGORIZED_AS: 2500/9479
+2025-03-06 17:47:05,477 - INFO - Progrès relations CATEGORIZED_AS: 3000/9479
+2025-03-06 17:49:01,792 - ERROR - [#FB91]  _: <CONNECTION> error: Failed to read from defunct connection IPv4Address(('si-ef4bfe2f-83af.production-orch-0702.neo4j.io', 7687)) (ResolvedIPv4Address(('34.31.169.230', 7687))): OSError('No data')
+2025-03-06 17:49:01,795 - ERROR - Erreur lors de l'effacement de la base de données: Failed to read from defunct connection IPv4Address(('si-ef4bfe2f-83af.production-orch-0702.neo4j.io', 7687)) (ResolvedIPv4Address(('34.31.169.230', 7687)))
+2025-03-06 17:49:01,795 - INFO - Chargement du fichier ../../data/openfoodfacts-canadian-products.jsonl
+2025-03-06 17:49:31,232 - INFO - Fichier chargé: 97439 produits trouvés
+2025-03-06 17:49:32,926 - INFO - Limitation à 10000 produits...
+2025-03-06 17:49:32,931 - ERROR - [#FB90]  _: <CONNECTION> error: Failed to read from defunct connection ResolvedIPv4Address(('34.31.169.230', 7687)) (ResolvedIPv4Address(('34.31.169.230', 7687))): OSError('No data')
+2025-03-06 17:49:32,932 - ERROR - Unable to retrieve routing information
+2025-03-06 17:49:32,932 - ERROR - Erreur lors de la création de la contrainte: Unable to retrieve routing information
+2025-03-06 17:49:34,692 - INFO - Contrainte créée: CREATE CONSTRAINT brand_name IF NOT EXISTS FOR (b:Brand) REQUIRE b.name IS UNIQUE
+2025-03-06 17:49:35,472 - INFO - Contrainte créée: CREATE CONSTRAINT ingredient_name IF NOT EXISTS FOR (i:Ingredient) REQUIRE i.name IS UNIQUE
+2025-03-06 17:49:35,672 - INFO - Contrainte créée: CREATE CONSTRAINT category_name IF NOT EXISTS FOR (c:Category) REQUIRE c.name IS UNIQUE
+2025-03-06 17:49:35,848 - INFO - Contrainte créée: CREATE CONSTRAINT country_name IF NOT EXISTS FOR (c:Country) REQUIRE c.name IS UNIQUE
+2025-03-06 17:49:35,960 - INFO - Contrainte créée: CREATE CONSTRAINT allergen_name IF NOT EXISTS FOR (a:Allergen) REQUIRE a.name IS UNIQUE
+2025-03-06 17:49:36,077 - INFO - Contrainte créée: CREATE CONSTRAINT nutrient_name IF NOT EXISTS FOR (n:Nutrient) REQUIRE n.name IS UNIQUE
+2025-03-06 17:49:36,199 - INFO - Contrainte créée: CREATE CONSTRAINT label_name IF NOT EXISTS FOR (l:Label) REQUIRE l.name IS UNIQUE
+2025-03-06 17:49:36,205 - INFO - Prétraitement des produits...
+2025-03-06 17:49:36,465 - INFO - Prétraitement terminé: 9479 produits valides
+2025-03-06 17:49:36,465 - INFO - Création de 8 nœuds de type Nutrient
+2025-03-06 17:49:36,675 - INFO - Progrès Nutrient: 8/8
+2025-03-06 17:49:36,676 - INFO - Création des nœuds Nutrient terminée en 0.21 secondes
+2025-03-06 17:49:36,676 - INFO - Création de 3073 nœuds de type Brand
+2025-03-06 17:49:36,982 - INFO - Progrès Brand: 1000/3073
+2025-03-06 17:49:37,084 - INFO - Progrès Brand: 2000/3073
+2025-03-06 17:49:37,313 - INFO - Progrès Brand: 3000/3073
+2025-03-06 17:49:37,436 - INFO - Progrès Brand: 3073/3073
+2025-03-06 17:49:37,436 - INFO - Création des nœuds Brand terminée en 0.76 secondes
+2025-03-06 17:49:37,437 - INFO - Création de 3885 nœuds de type Category
+2025-03-06 17:49:37,635 - INFO - Progrès Category: 1000/3885
+2025-03-06 17:49:37,779 - INFO - Progrès Category: 2000/3885
+2025-03-06 17:49:37,905 - INFO - Progrès Category: 3000/3885
+2025-03-06 17:49:38,011 - INFO - Progrès Category: 3885/3885
+2025-03-06 17:49:38,011 - INFO - Création des nœuds Category terminée en 0.57 secondes
+2025-03-06 17:49:38,011 - INFO - Création de 247 nœuds de type Country
+2025-03-06 17:49:38,130 - INFO - Progrès Country: 247/247
+2025-03-06 17:49:38,130 - INFO - Création des nœuds Country terminée en 0.12 secondes
+2025-03-06 17:49:38,131 - INFO - Création de 18186 nœuds de type Ingredient
+2025-03-06 17:49:38,896 - INFO - Progrès Ingredient: 1000/18186
+2025-03-06 17:49:39,817 - INFO - Progrès Ingredient: 2000/18186
+2025-03-06 17:49:40,007 - INFO - Progrès Ingredient: 3000/18186
+2025-03-06 17:49:40,159 - INFO - Progrès Ingredient: 4000/18186
+2025-03-06 17:49:40,310 - INFO - Progrès Ingredient: 5000/18186
+2025-03-06 17:49:40,455 - INFO - Progrès Ingredient: 6000/18186
+2025-03-06 17:49:40,594 - INFO - Progrès Ingredient: 7000/18186
+2025-03-06 17:49:40,744 - INFO - Progrès Ingredient: 8000/18186
+2025-03-06 17:49:40,875 - INFO - Progrès Ingredient: 9000/18186
+2025-03-06 17:49:41,009 - INFO - Progrès Ingredient: 10000/18186
+2025-03-06 17:49:41,123 - INFO - Progrès Ingredient: 11000/18186
+2025-03-06 17:49:41,357 - INFO - Progrès Ingredient: 12000/18186
+2025-03-06 17:49:41,480 - INFO - Progrès Ingredient: 13000/18186
+2025-03-06 17:49:41,609 - INFO - Progrès Ingredient: 14000/18186
+2025-03-06 17:49:41,743 - INFO - Progrès Ingredient: 15000/18186
+2025-03-06 17:49:41,858 - INFO - Progrès Ingredient: 16000/18186
+2025-03-06 17:49:41,972 - INFO - Progrès Ingredient: 17000/18186
+2025-03-06 17:49:42,075 - INFO - Progrès Ingredient: 18000/18186
+2025-03-06 17:49:42,151 - INFO - Progrès Ingredient: 18186/18186
+2025-03-06 17:49:42,151 - INFO - Création des nœuds Ingredient terminée en 4.02 secondes
+2025-03-06 17:49:42,151 - INFO - Création de 66 nœuds de type Allergen
+2025-03-06 17:49:42,252 - INFO - Progrès Allergen: 66/66
+2025-03-06 17:49:42,253 - INFO - Création des nœuds Allergen terminée en 0.10 secondes
+2025-03-06 17:49:42,253 - INFO - Création de 916 nœuds de type Label
+2025-03-06 17:49:42,363 - INFO - Progrès Label: 916/916
+2025-03-06 17:49:42,364 - INFO - Création des nœuds Label terminée en 0.11 secondes
+2025-03-06 17:49:42,364 - INFO - Création de 9479 nœuds de produits
+2025-03-06 17:50:09,206 - INFO - Progrès produits: 500/9479
+2025-03-06 17:50:36,138 - INFO - Progrès produits: 1000/9479
+2025-03-06 17:51:02,429 - INFO - Progrès produits: 1500/9479
+2025-03-06 17:51:33,176 - INFO - Progrès produits: 2000/9479
+2025-03-06 17:52:00,106 - INFO - Progrès produits: 2500/9479
+2025-03-06 17:52:26,622 - INFO - Progrès produits: 3000/9479
+2025-03-06 17:52:52,639 - INFO - Progrès produits: 3500/9479
+2025-03-06 17:53:18,853 - INFO - Progrès produits: 4000/9479
+2025-03-06 17:53:46,297 - INFO - Progrès produits: 4500/9479
+2025-03-06 17:54:16,098 - INFO - Progrès produits: 5000/9479
+2025-03-06 17:54:46,456 - INFO - Progrès produits: 5500/9479
+2025-03-06 17:55:16,002 - INFO - Progrès produits: 6000/9479
+2025-03-06 17:55:43,752 - INFO - Progrès produits: 6500/9479
+2025-03-06 17:56:10,887 - INFO - Progrès produits: 7000/9479
+2025-03-06 17:56:37,205 - INFO - Progrès produits: 7500/9479
+2025-03-06 17:57:02,538 - INFO - Progrès produits: 8000/9479
+2025-03-06 17:57:27,877 - INFO - Progrès produits: 8500/9479
+2025-03-06 17:57:53,494 - INFO - Progrès produits: 9000/9479
+2025-03-06 17:58:17,396 - INFO - Progrès produits: 9479/9479
+2025-03-06 17:58:17,396 - INFO - Création des nœuds de produits terminée en 515.03 secondes
+2025-03-06 17:58:17,397 - INFO - Création des relations de type BELONGS_TO
+2025-03-06 17:58:46,026 - INFO - Progrès relations BELONGS_TO: 500/9479
+2025-03-06 17:59:13,162 - INFO - Progrès relations BELONGS_TO: 1000/9479
+2025-03-06 17:59:42,130 - INFO - Progrès relations BELONGS_TO: 1500/9479
+2025-03-06 18:00:10,323 - INFO - Progrès relations BELONGS_TO: 2000/9479
+2025-03-06 18:00:41,930 - INFO - Progrès relations BELONGS_TO: 2500/9479
+2025-03-06 18:01:10,126 - INFO - Progrès relations BELONGS_TO: 3000/9479
+2025-03-06 18:01:37,421 - INFO - Progrès relations BELONGS_TO: 3500/9479
+2025-03-06 18:02:03,749 - INFO - Progrès relations BELONGS_TO: 4000/9479
+2025-03-06 18:02:28,120 - INFO - Progrès relations BELONGS_TO: 4500/9479
+2025-03-06 18:02:50,955 - INFO - Progrès relations BELONGS_TO: 5000/9479
+2025-03-06 18:03:15,019 - INFO - Progrès relations BELONGS_TO: 5500/9479
+2025-03-06 18:03:37,446 - INFO - Progrès relations BELONGS_TO: 6000/9479
+2025-03-06 18:03:57,209 - INFO - Progrès relations BELONGS_TO: 6500/9479
+2025-03-06 18:04:16,870 - INFO - Progrès relations BELONGS_TO: 7000/9479
+2025-03-06 18:04:35,712 - INFO - Progrès relations BELONGS_TO: 7500/9479
+2025-03-06 18:04:52,199 - INFO - Progrès relations BELONGS_TO: 8000/9479
+2025-03-06 18:05:07,866 - INFO - Progrès relations BELONGS_TO: 8500/9479
+2025-03-06 18:05:22,201 - INFO - Progrès relations BELONGS_TO: 9000/9479
+2025-03-06 18:05:36,487 - INFO - Progrès relations BELONGS_TO: 9479/9479
+2025-03-06 18:05:36,487 - INFO - Création des relations BELONGS_TO terminée en 439.09 secondes
+2025-03-06 18:05:36,487 - INFO - Création des relations de type CATEGORIZED_AS
+2025-03-06 18:07:27,439 - INFO - Progrès relations CATEGORIZED_AS: 500/9479
+2025-03-06 18:09:34,825 - INFO - Progrès relations CATEGORIZED_AS: 1000/9479
+2025-03-06 18:11:36,887 - INFO - Progrès relations CATEGORIZED_AS: 1500/9479
+2025-03-06 18:13:22,024 - INFO - Progrès relations CATEGORIZED_AS: 2000/9479
+2025-03-06 18:15:28,486 - INFO - Progrès relations CATEGORIZED_AS: 2500/9479
+2025-03-06 18:16:49,415 - INFO - Progrès relations CATEGORIZED_AS: 3000/9479
+2025-03-06 18:18:11,134 - INFO - Progrès relations CATEGORIZED_AS: 3500/9479
+2025-03-06 18:19:34,588 - INFO - Progrès relations CATEGORIZED_AS: 4000/9479
+2025-03-06 18:20:57,328 - INFO - Progrès relations CATEGORIZED_AS: 4500/9479
+2025-03-06 18:22:17,719 - INFO - Progrès relations CATEGORIZED_AS: 5000/9479
+2025-03-06 18:23:46,488 - INFO - Progrès relations CATEGORIZED_AS: 5500/9479
+2025-03-06 18:25:22,372 - INFO - Progrès relations CATEGORIZED_AS: 6000/9479
+2025-03-06 18:26:34,257 - INFO - Progrès relations CATEGORIZED_AS: 6500/9479
+2025-03-06 18:27:39,076 - INFO - Progrès relations CATEGORIZED_AS: 7000/9479
+2025-03-06 18:28:34,985 - INFO - Progrès relations CATEGORIZED_AS: 7500/9479
+2025-03-06 18:29:38,678 - INFO - Progrès relations CATEGORIZED_AS: 8000/9479
+2025-03-06 18:30:26,702 - INFO - Progrès relations CATEGORIZED_AS: 8500/9479
+2025-03-06 18:31:12,373 - INFO - Progrès relations CATEGORIZED_AS: 9000/9479
+2025-03-06 18:32:12,481 - INFO - Progrès relations CATEGORIZED_AS: 9479/9479
+2025-03-06 18:32:12,481 - INFO - Création des relations CATEGORIZED_AS terminée en 1595.99 secondes
+2025-03-06 18:32:12,482 - INFO - Création des relations de type PRODUCED_IN
+2025-03-06 18:33:02,042 - INFO - Progrès relations PRODUCED_IN: 500/9479
+2025-03-06 18:33:42,183 - INFO - Progrès relations PRODUCED_IN: 1000/9479
+2025-03-06 18:34:26,624 - INFO - Progrès relations PRODUCED_IN: 1500/9479
+2025-03-06 18:35:07,071 - INFO - Progrès relations PRODUCED_IN: 2000/9479
+2025-03-06 18:36:07,235 - INFO - Progrès relations PRODUCED_IN: 2500/9479
+2025-03-06 18:36:39,026 - INFO - Progrès relations PRODUCED_IN: 3000/9479
+2025-03-06 18:37:09,643 - INFO - Progrès relations PRODUCED_IN: 3500/9479
+2025-03-06 18:37:43,423 - INFO - Progrès relations PRODUCED_IN: 4000/9479
+2025-03-06 18:38:19,275 - INFO - Progrès relations PRODUCED_IN: 4500/9479
+2025-03-06 18:39:02,283 - INFO - Progrès relations PRODUCED_IN: 5000/9479
+2025-03-06 18:39:36,279 - INFO - Progrès relations PRODUCED_IN: 5500/9479
+2025-03-06 18:40:14,269 - INFO - Progrès relations PRODUCED_IN: 6000/9479
+2025-03-06 18:40:47,594 - INFO - Progrès relations PRODUCED_IN: 6500/9479
+2025-03-06 18:41:17,550 - INFO - Progrès relations PRODUCED_IN: 7000/9479
+2025-03-06 18:41:46,950 - INFO - Progrès relations PRODUCED_IN: 7500/9479
+2025-03-06 18:42:16,584 - INFO - Progrès relations PRODUCED_IN: 8000/9479
+2025-03-06 18:42:45,838 - INFO - Progrès relations PRODUCED_IN: 8500/9479
+2025-03-06 18:43:14,798 - INFO - Progrès relations PRODUCED_IN: 9000/9479
+2025-03-06 18:43:41,994 - INFO - Progrès relations PRODUCED_IN: 9479/9479
+2025-03-06 18:43:41,995 - INFO - Création des relations PRODUCED_IN terminée en 689.51 secondes
+2025-03-06 18:43:41,995 - INFO - Création des relations de type CONTAINS
+2025-03-06 18:47:00,805 - INFO - Progrès relations CONTAINS: 500/9479
+2025-03-06 18:50:01,087 - ERROR - [#FBA2]  _: <CONNECTION> error: Failed to read from defunct connection IPv4Address(('si-ef4bfe2f-83af.production-orch-0702.neo4j.io', 7687)) (ResolvedIPv4Address(('34.31.169.230', 7687))): TimeoutError('The read operation timed out')
+2025-03-06 18:50:47,190 - ERROR - [#FC43]  _: <CONNECTION> error: Failed to read from defunct connection IPv4Address(('si-ef4bfe2f-83af.production-orch-0702.neo4j.io', 7687)) (ResolvedIPv4Address(('34.31.169.230', 7687))): OSError('No data')
+2025-03-06 18:50:47,192 - ERROR - Erreur lors de l'effacement de la base de données: Failed to read from defunct connection IPv4Address(('si-ef4bfe2f-83af.production-orch-0702.neo4j.io', 7687)) (ResolvedIPv4Address(('34.31.169.230', 7687)))
+2025-03-06 18:50:47,193 - INFO - Chargement du fichier ../../data/openfoodfacts-canadian-products.jsonl
+2025-03-07 08:10:22,011 - INFO - Base de données Neo4j effacée avec succès
+2025-03-07 08:10:22,012 - INFO - Chargement du fichier ../../data/openfoodfacts-canadian-products.jsonl
+2025-03-07 08:10:57,037 - INFO - Fichier chargé: 97439 produits trouvés
+2025-03-07 08:10:59,055 - INFO - Limitation à 1000 produits...
+2025-03-07 08:10:59,241 - INFO - Contrainte créée: CREATE CONSTRAINT product_id IF NOT EXISTS FOR (p:Product) REQUIRE p.id IS UNIQUE
+2025-03-07 08:10:59,342 - INFO - Contrainte créée: CREATE CONSTRAINT brand_name IF NOT EXISTS FOR (b:Brand) REQUIRE b.name IS UNIQUE
+2025-03-07 08:10:59,425 - INFO - Contrainte créée: CREATE CONSTRAINT ingredient_name IF NOT EXISTS FOR (i:Ingredient) REQUIRE i.name IS UNIQUE
+2025-03-07 08:10:59,512 - INFO - Contrainte créée: CREATE CONSTRAINT category_name IF NOT EXISTS FOR (c:Category) REQUIRE c.name IS UNIQUE
+2025-03-07 08:10:59,607 - INFO - Contrainte créée: CREATE CONSTRAINT country_name IF NOT EXISTS FOR (c:Country) REQUIRE c.name IS UNIQUE
+2025-03-07 08:10:59,695 - INFO - Contrainte créée: CREATE CONSTRAINT allergen_name IF NOT EXISTS FOR (a:Allergen) REQUIRE a.name IS UNIQUE
+2025-03-07 08:10:59,789 - INFO - Contrainte créée: CREATE CONSTRAINT nutrient_name IF NOT EXISTS FOR (n:Nutrient) REQUIRE n.name IS UNIQUE
+2025-03-07 08:10:59,876 - INFO - Contrainte créée: CREATE CONSTRAINT label_name IF NOT EXISTS FOR (l:Label) REQUIRE l.name IS UNIQUE
+2025-03-07 08:10:59,881 - INFO - Prétraitement des produits...
+2025-03-07 08:10:59,928 - INFO - Prétraitement terminé: 968 produits valides
+2025-03-07 08:10:59,928 - INFO - Création de 8 nœuds de type Nutrient
+2025-03-07 08:11:00,031 - INFO - Progrès Nutrient: 8/8
+2025-03-07 08:11:00,031 - INFO - Création des nœuds Nutrient terminée en 0.10 secondes
+2025-03-07 08:11:00,031 - INFO - Création de 466 nœuds de type Brand
+2025-03-07 08:11:00,350 - INFO - Progrès Brand: 466/466
+2025-03-07 08:11:00,350 - INFO - Création des nœuds Brand terminée en 0.32 secondes
+2025-03-07 08:11:00,350 - INFO - Création de 1019 nœuds de type Category
+2025-03-07 08:11:00,959 - INFO - Progrès Category: 1000/1019
+2025-03-07 08:11:01,093 - INFO - Progrès Category: 1019/1019
+2025-03-07 08:11:01,094 - INFO - Création des nœuds Category terminée en 0.74 secondes
+2025-03-07 08:11:01,094 - INFO - Création de 46 nœuds de type Country
+2025-03-07 08:11:01,189 - INFO - Progrès Country: 46/46
+2025-03-07 08:11:01,189 - INFO - Création des nœuds Country terminée en 0.10 secondes
+2025-03-07 08:11:01,189 - INFO - Création de 3316 nœuds de type Ingredient
+2025-03-07 08:11:01,677 - INFO - Progrès Ingredient: 1000/3316
+2025-03-07 08:11:01,968 - INFO - Progrès Ingredient: 2000/3316
+2025-03-07 08:11:02,412 - INFO - Progrès Ingredient: 3000/3316
+2025-03-07 08:11:02,585 - INFO - Progrès Ingredient: 3316/3316
+2025-03-07 08:11:02,586 - INFO - Création des nœuds Ingredient terminée en 1.40 secondes
+2025-03-07 08:11:02,586 - INFO - Création de 31 nœuds de type Allergen
+2025-03-07 08:11:02,709 - INFO - Progrès Allergen: 31/31
+2025-03-07 08:11:02,710 - INFO - Création des nœuds Allergen terminée en 0.12 secondes
+2025-03-07 08:11:02,710 - INFO - Création de 265 nœuds de type Label
+2025-03-07 08:11:02,838 - INFO - Progrès Label: 265/265
+2025-03-07 08:11:02,838 - INFO - Création des nœuds Label terminée en 0.13 secondes
+2025-03-07 08:11:02,838 - INFO - Création de 968 nœuds de produits
+2025-03-07 08:11:03,211 - INFO - Progrès produits: 500/968
+2025-03-07 08:11:03,437 - INFO - Progrès produits: 968/968
+2025-03-07 08:11:03,437 - INFO - Création des nœuds de produits terminée en 0.60 secondes
+2025-03-07 08:11:03,437 - INFO - Création des relations de type BELONGS_TO
+2025-03-07 08:11:03,931 - INFO - Progrès relations BELONGS_TO: 500/968
+2025-03-07 08:11:04,127 - INFO - Progrès relations BELONGS_TO: 968/968
+2025-03-07 08:11:04,127 - INFO - Création des relations BELONGS_TO terminée en 0.69 secondes
+2025-03-07 08:11:04,127 - INFO - Création des relations de type CATEGORIZED_AS
+2025-03-07 08:11:04,851 - INFO - Progrès relations CATEGORIZED_AS: 500/968
+2025-03-07 08:11:05,261 - INFO - Progrès relations CATEGORIZED_AS: 968/968
+2025-03-07 08:11:05,262 - INFO - Création des relations CATEGORIZED_AS terminée en 1.13 secondes
+2025-03-07 08:11:05,262 - INFO - Création des relations de type PRODUCED_IN
+2025-03-07 08:11:05,464 - INFO - Progrès relations PRODUCED_IN: 500/968
+2025-03-07 08:11:05,667 - INFO - Progrès relations PRODUCED_IN: 968/968
+2025-03-07 08:11:05,667 - INFO - Création des relations PRODUCED_IN terminée en 0.41 secondes
+2025-03-07 08:11:05,667 - INFO - Création des relations de type CONTAINS
+2025-03-07 08:11:06,441 - INFO - Progrès relations CONTAINS: 500/968
+2025-03-07 08:11:06,913 - INFO - Progrès relations CONTAINS: 968/968
+2025-03-07 08:11:06,913 - INFO - Création des relations CONTAINS terminée en 1.25 secondes
+2025-03-07 08:11:06,913 - INFO - Création des relations de type CONTAINS_ALLERGEN
+2025-03-07 08:11:07,216 - INFO - Progrès relations CONTAINS_ALLERGEN: 500/968
+2025-03-07 08:11:07,371 - INFO - Progrès relations CONTAINS_ALLERGEN: 968/968
+2025-03-07 08:11:07,371 - INFO - Création des relations CONTAINS_ALLERGEN terminée en 0.46 secondes
+2025-03-07 08:11:07,371 - INFO - Création des relations de type HAS_LABEL
+2025-03-07 08:11:07,655 - INFO - Progrès relations HAS_LABEL: 500/968
+2025-03-07 08:11:07,790 - INFO - Progrès relations HAS_LABEL: 968/968
+2025-03-07 08:11:07,791 - INFO - Création des relations HAS_LABEL terminée en 0.42 secondes
+2025-03-07 08:11:07,791 - INFO - Création des relations de type HAS_NUTRIENT
+2025-03-07 08:11:08,435 - INFO - Progrès relations HAS_NUTRIENT: 500/968
+2025-03-07 08:11:08,736 - INFO - Progrès relations HAS_NUTRIENT: 968/968
+2025-03-07 08:11:08,737 - INFO - Création des relations HAS_NUTRIENT terminée en 0.95 secondes
+2025-03-07 08:11:08,844 - INFO - Chargement terminé en 46.83 secondes (0.78 minutes)
+2025-03-07 08:11:08,845 - INFO - === Statistiques de chargement ===
+2025-03-07 08:11:08,845 - INFO - produits_sans_nom: 32
+2025-03-07 08:11:08,845 - INFO - marques: 1032
+2025-03-07 08:11:08,846 - INFO - categories: 4358
+2025-03-07 08:11:08,846 - INFO - pays: 1472
+2025-03-07 08:11:08,846 - INFO - ingredients: 7159
+2025-03-07 08:11:08,846 - INFO - allergenes: 969
+2025-03-07 08:11:08,846 - INFO - labels: 1704
+2025-03-07 08:11:08,846 - INFO - nutriments: 6465
+2025-03-07 08:11:08,846 - INFO - produits_ajoutes: 968
+2025-03-07 08:11:09,222 - INFO - 968 produits ont été chargés dans le graphe Neo4j.
+2025-03-07 08:11:09,581 - INFO - Index créé: CREATE INDEX product_name_index IF NOT EXISTS FOR (p:Product) ON (p.name)
+2025-03-07 08:11:09,674 - INFO - Index créé: CREATE INDEX brand_name_index IF NOT EXISTS FOR (b:Brand) ON (b.name)
+2025-03-07 08:11:09,686 - INFO - Received notification from DBMS server: {severity: INFORMATION} {code: Neo.ClientNotification.Schema.IndexOrConstraintAlreadyExists} {category: SCHEMA} {title: `CREATE RANGE INDEX brand_name_index IF NOT EXISTS FOR (e:Brand) ON (e.name)` has no effect.} {description: `RANGE INDEX brand_name FOR (e:Brand) ON (e.name)` already exists.} {position: None} for query: 'CREATE INDEX brand_name_index IF NOT EXISTS FOR (b:Brand) ON (b.name)'
+2025-03-07 08:11:09,751 - INFO - Index créé: CREATE INDEX category_name_index IF NOT EXISTS FOR (c:Category) ON (c.name)
+2025-03-07 08:11:09,753 - INFO - Received notification from DBMS server: {severity: INFORMATION} {code: Neo.ClientNotification.Schema.IndexOrConstraintAlreadyExists} {category: SCHEMA} {title: `CREATE RANGE INDEX category_name_index IF NOT EXISTS FOR (e:Category) ON (e.name)` has no effect.} {description: `RANGE INDEX category_name FOR (e:Category) ON (e.name)` already exists.} {position: None} for query: 'CREATE INDEX category_name_index IF NOT EXISTS FOR (c:Category) ON (c.name)'
+2025-03-07 08:11:09,817 - INFO - Index créé: CREATE INDEX ingredient_name_index IF NOT EXISTS FOR (i:Ingredient) ON (i.name)
+2025-03-07 08:11:09,818 - INFO - Received notification from DBMS server: {severity: INFORMATION} {code: Neo.ClientNotification.Schema.IndexOrConstraintAlreadyExists} {category: SCHEMA} {title: `CREATE RANGE INDEX ingredient_name_index IF NOT EXISTS FOR (e:Ingredient) ON (e.name)` has no effect.} {description: `RANGE INDEX ingredient_name FOR (e:Ingredient) ON (e.name)` already exists.} {position: None} for query: 'CREATE INDEX ingredient_name_index IF NOT EXISTS FOR (i:Ingredient) ON (i.name)'
+2025-03-07 08:11:09,878 - INFO - Index créé: CREATE INDEX product_nutriscore_index IF NOT EXISTS FOR (p:Product) ON (p.nutriscore)
+2025-03-07 08:11:09,944 - INFO - Index créé: CREATE INDEX product_nova_index IF NOT EXISTS FOR (p:Product) ON (p.nova_group)
+2025-03-07 08:11:10,020 - INFO - Index créé: CREATE INDEX product_ecoscore_index IF NOT EXISTS FOR (p:Product) ON (p.ecoscore)
+2025-03-07 08:11:10,024 - INFO - Temps d'exécution: 48.94 secondes
+2025-03-07 08:53:47,010 - INFO - Base de données Neo4j effacée avec succès
+2025-03-07 08:53:47,920 - INFO - Chargement du fichier ../../data/openfoodfacts-canadian-products.jsonl
+2025-03-07 08:54:26,755 - INFO - Fichier chargé: 97439 produits trouvés
+2025-03-07 08:54:28,928 - INFO - Limitation à 1000 produits...
+2025-03-07 08:54:29,073 - INFO - Contrainte créée: CREATE CONSTRAINT product_id IF NOT EXISTS FOR (p:Product) REQUIRE p.id IS UNIQUE
+2025-03-07 08:54:29,166 - INFO - Contrainte créée: CREATE CONSTRAINT brand_name IF NOT EXISTS FOR (b:Brand) REQUIRE b.name IS UNIQUE
+2025-03-07 08:54:29,252 - INFO - Contrainte créée: CREATE CONSTRAINT ingredient_name IF NOT EXISTS FOR (i:Ingredient) REQUIRE i.name IS UNIQUE
+2025-03-07 08:54:29,344 - INFO - Contrainte créée: CREATE CONSTRAINT category_name IF NOT EXISTS FOR (c:Category) REQUIRE c.name IS UNIQUE
+2025-03-07 08:54:29,426 - INFO - Contrainte créée: CREATE CONSTRAINT country_name IF NOT EXISTS FOR (c:Country) REQUIRE c.name IS UNIQUE
+2025-03-07 08:54:29,502 - INFO - Contrainte créée: CREATE CONSTRAINT allergen_name IF NOT EXISTS FOR (a:Allergen) REQUIRE a.name IS UNIQUE
+2025-03-07 08:54:29,583 - INFO - Contrainte créée: CREATE CONSTRAINT nutrient_name IF NOT EXISTS FOR (n:Nutrient) REQUIRE n.name IS UNIQUE
+2025-03-07 08:54:29,663 - INFO - Contrainte créée: CREATE CONSTRAINT label_name IF NOT EXISTS FOR (l:Label) REQUIRE l.name IS UNIQUE
+2025-03-07 08:54:29,667 - INFO - Prétraitement des produits...
+2025-03-07 08:54:29,734 - INFO - Use pytorch device_name: mps
+2025-03-07 08:54:29,735 - INFO - Load pretrained SentenceTransformer: paraphrase-multilingual-mpnet-base-v2
+2025-03-07 08:54:57,562 - INFO - Use pytorch device_name: mps
+2025-03-07 08:54:57,562 - INFO - Load pretrained SentenceTransformer: paraphrase-multilingual-mpnet-base-v2
+2025-03-07 08:55:02,011 - INFO - Use pytorch device_name: mps
+2025-03-07 08:55:02,011 - INFO - Load pretrained SentenceTransformer: paraphrase-multilingual-mpnet-base-v2
+2025-03-07 08:55:06,438 - INFO - Use pytorch device_name: mps
+2025-03-07 08:55:06,438 - INFO - Load pretrained SentenceTransformer: paraphrase-multilingual-mpnet-base-v2
+2025-03-07 08:55:10,973 - INFO - Prétraitement terminé: 0 produits valides
+2025-03-07 08:55:10,973 - INFO - Création de 8 nœuds de type Nutrient
+2025-03-07 08:55:11,408 - INFO - Progrès Nutrient: 8/8
+2025-03-07 08:55:11,409 - INFO - Création des nœuds Nutrient terminée en 0.44 secondes
+2025-03-07 08:55:11,409 - INFO - Création de 1 nœuds de type Brand
+2025-03-07 08:55:11,601 - INFO - Progrès Brand: 1/1
+2025-03-07 08:55:11,602 - INFO - Création des nœuds Brand terminée en 0.19 secondes
+2025-03-07 08:55:11,602 - INFO - Création de 4 nœuds de type Category
+2025-03-07 08:55:11,714 - INFO - Progrès Category: 4/4
+2025-03-07 08:55:11,714 - INFO - Création des nœuds Category terminée en 0.11 secondes
+2025-03-07 08:55:11,714 - INFO - Création de 2 nœuds de type Country
+2025-03-07 08:55:11,802 - INFO - Progrès Country: 2/2
+2025-03-07 08:55:11,802 - INFO - Création des nœuds Country terminée en 0.09 secondes
+2025-03-07 08:55:11,802 - INFO - Création de 1 nœuds de type Ingredient
+2025-03-07 08:55:11,941 - INFO - Progrès Ingredient: 1/1
+2025-03-07 08:55:11,941 - INFO - Création des nœuds Ingredient terminée en 0.14 secondes
+2025-03-07 08:55:11,945 - INFO - Chargement terminé en 84.02 secondes (1.40 minutes)
+2025-03-07 08:55:11,945 - INFO - === Statistiques de chargement ===
+2025-03-07 08:55:11,945 - INFO - produits_ajoutes: 0
+2025-03-07 08:55:12,214 - INFO - 0 produits ont été chargés dans le graphe Neo4j.
+2025-03-07 08:55:12,269 - INFO - Index créé: CREATE INDEX product_name_index IF NOT EXISTS FOR (p:Product) ON (p.name)
+2025-03-07 08:55:12,356 - INFO - Index créé: CREATE INDEX brand_name_index IF NOT EXISTS FOR (b:Brand) ON (b.name)
+2025-03-07 08:55:12,357 - INFO - Received notification from DBMS server: {severity: INFORMATION} {code: Neo.ClientNotification.Schema.IndexOrConstraintAlreadyExists} {category: SCHEMA} {title: `CREATE RANGE INDEX brand_name_index IF NOT EXISTS FOR (e:Brand) ON (e.name)` has no effect.} {description: `RANGE INDEX brand_name FOR (e:Brand) ON (e.name)` already exists.} {position: None} for query: 'CREATE INDEX brand_name_index IF NOT EXISTS FOR (b:Brand) ON (b.name)'
+2025-03-07 08:55:12,423 - INFO - Index créé: CREATE INDEX category_name_index IF NOT EXISTS FOR (c:Category) ON (c.name)
+2025-03-07 08:55:12,423 - INFO - Received notification from DBMS server: {severity: INFORMATION} {code: Neo.ClientNotification.Schema.IndexOrConstraintAlreadyExists} {category: SCHEMA} {title: `CREATE RANGE INDEX category_name_index IF NOT EXISTS FOR (e:Category) ON (e.name)` has no effect.} {description: `RANGE INDEX category_name FOR (e:Category) ON (e.name)` already exists.} {position: None} for query: 'CREATE INDEX category_name_index IF NOT EXISTS FOR (c:Category) ON (c.name)'
+2025-03-07 08:55:12,489 - INFO - Index créé: CREATE INDEX ingredient_name_index IF NOT EXISTS FOR (i:Ingredient) ON (i.name)
+2025-03-07 08:55:12,490 - INFO - Received notification from DBMS server: {severity: INFORMATION} {code: Neo.ClientNotification.Schema.IndexOrConstraintAlreadyExists} {category: SCHEMA} {title: `CREATE RANGE INDEX ingredient_name_index IF NOT EXISTS FOR (e:Ingredient) ON (e.name)` has no effect.} {description: `RANGE INDEX ingredient_name FOR (e:Ingredient) ON (e.name)` already exists.} {position: None} for query: 'CREATE INDEX ingredient_name_index IF NOT EXISTS FOR (i:Ingredient) ON (i.name)'
+2025-03-07 08:55:12,549 - INFO - Index créé: CREATE INDEX product_nutriscore_index IF NOT EXISTS FOR (p:Product) ON (p.nutriscore)
+2025-03-07 08:55:12,621 - INFO - Index créé: CREATE INDEX product_nova_index IF NOT EXISTS FOR (p:Product) ON (p.nova_group)
+2025-03-07 08:55:12,683 - INFO - Index créé: CREATE INDEX product_ecoscore_index IF NOT EXISTS FOR (p:Product) ON (p.ecoscore)
+2025-03-07 08:55:12,688 - INFO - Temps d'exécution: 87.66 secondes
+2025-03-07 09:17:29,598 - INFO - Base de données Neo4j effacée avec succès
+2025-03-07 09:17:29,627 - INFO - Chargement du fichier ../../data/openfoodfacts-canadian-products.jsonl
+2025-03-07 09:18:05,330 - INFO - Fichier chargé: 97439 produits trouvés
+2025-03-07 09:18:07,311 - INFO - Limitation à 100 produits...
+2025-03-07 09:18:07,451 - INFO - Contrainte créée: CREATE CONSTRAINT product_id IF NOT EXISTS FOR (p:Product) REQUIRE p.id IS UNIQUE
+2025-03-07 09:18:07,537 - INFO - Contrainte créée: CREATE CONSTRAINT brand_name IF NOT EXISTS FOR (b:Brand) REQUIRE b.name IS UNIQUE
+2025-03-07 09:18:07,613 - INFO - Contrainte créée: CREATE CONSTRAINT ingredient_name IF NOT EXISTS FOR (i:Ingredient) REQUIRE i.name IS UNIQUE
+2025-03-07 09:18:07,700 - INFO - Contrainte créée: CREATE CONSTRAINT category_name IF NOT EXISTS FOR (c:Category) REQUIRE c.name IS UNIQUE
+2025-03-07 09:18:07,798 - INFO - Contrainte créée: CREATE CONSTRAINT country_name IF NOT EXISTS FOR (c:Country) REQUIRE c.name IS UNIQUE
+2025-03-07 09:18:07,925 - INFO - Contrainte créée: CREATE CONSTRAINT allergen_name IF NOT EXISTS FOR (a:Allergen) REQUIRE a.name IS UNIQUE
+2025-03-07 09:18:08,019 - INFO - Contrainte créée: CREATE CONSTRAINT nutrient_name IF NOT EXISTS FOR (n:Nutrient) REQUIRE n.name IS UNIQUE
+2025-03-07 09:18:08,098 - INFO - Contrainte créée: CREATE CONSTRAINT label_name IF NOT EXISTS FOR (l:Label) REQUIRE l.name IS UNIQUE
+2025-03-07 09:18:08,102 - INFO - Prétraitement des produits...
+2025-03-07 09:18:08,102 - INFO - DIAGNOSTIC - Examen des 3 premiers produits sur 100 total:
+2025-03-07 09:18:08,102 - INFO -   Produit #1:
+2025-03-07 09:18:08,102 - INFO -     ID: 0008577002786
+2025-03-07 09:18:08,102 - INFO -     Nom: Organic Vermont Maple Syrup Grade A Dark Color Robust Taste
+2025-03-07 09:18:08,102 - INFO -     Marques: usda organic Butternut Mountain Farm,Butternut Mountain Farm
+2025-03-07 09:18:08,103 - INFO -     Catégories: Sweeteners,Syrups,Simple syrups,Maple syrups
+2025-03-07 09:18:08,103 - INFO -     A des ingrédients: Oui
+2025-03-07 09:18:08,103 - INFO -     A des nutriments: Oui
+2025-03-07 09:18:08,103 - INFO -   Produit #2:
+2025-03-07 09:18:08,103 - INFO -     ID: 0011110020758
+2025-03-07 09:18:08,103 - INFO -     Nom: Imitation vanilla flavor
+2025-03-07 09:18:08,103 - INFO -     Marques: Kroger
+2025-03-07 09:18:08,104 - INFO -     Catégories: MANQUANT
+2025-03-07 09:18:08,104 - INFO -     A des ingrédients: Oui
+2025-03-07 09:18:08,104 - INFO -     A des nutriments: Oui
+2025-03-07 09:18:08,104 - INFO -   Produit #3:
+2025-03-07 09:18:08,105 - INFO -     ID: 0011110416469
+2025-03-07 09:18:08,105 - INFO -     Nom: 1% low-fat milk
+2025-03-07 09:18:08,105 - INFO -     Marques: Kroger
+2025-03-07 09:18:08,105 - INFO -     Catégories: MANQUANT
+2025-03-07 09:18:08,105 - INFO -     A des ingrédients: Oui
+2025-03-07 09:18:08,105 - INFO -     A des nutriments: Oui
+2025-03-07 09:18:08,111 - INFO - Prétraitement - Total: 100, Valides: 100, Ignorés: 0
+2025-03-07 09:18:08,112 - INFO -   Raison d'exclusion: default_name_used - 6 produits
+2025-03-07 09:18:08,112 - INFO - Création des mappings de normalisation pour toutes les entités...
+2025-03-07 09:18:08,142 - INFO - Use pytorch device_name: mps
+2025-03-07 09:18:08,142 - INFO - Load pretrained SentenceTransformer: paraphrase-multilingual-mpnet-base-v2
+2025-03-07 09:18:13,714 - INFO - Use pytorch device_name: mps
+2025-03-07 09:18:13,715 - INFO - Load pretrained SentenceTransformer: paraphrase-multilingual-mpnet-base-v2
+2025-03-07 09:18:16,120 - INFO - Use pytorch device_name: mps
+2025-03-07 09:18:16,120 - INFO - Load pretrained SentenceTransformer: paraphrase-multilingual-mpnet-base-v2
+2025-03-07 09:18:19,128 - INFO - Use pytorch device_name: mps
+2025-03-07 09:18:19,129 - INFO - Load pretrained SentenceTransformer: paraphrase-multilingual-mpnet-base-v2
+2025-03-07 09:18:21,619 - INFO - Use pytorch device_name: mps
+2025-03-07 09:18:21,621 - INFO - Load pretrained SentenceTransformer: paraphrase-multilingual-mpnet-base-v2
+2025-03-07 09:18:25,921 - INFO - Use pytorch device_name: mps
+2025-03-07 09:18:25,921 - INFO - Load pretrained SentenceTransformer: paraphrase-multilingual-mpnet-base-v2
+2025-03-07 09:18:28,439 - INFO - Prétraitement terminé: 100 produits valides
+2025-03-07 09:18:28,439 - INFO - Prétraitement terminé: 100 produits valides
+2025-03-07 09:18:28,439 - INFO - Création de 8 nœuds de type Nutrient
+2025-03-07 09:18:28,848 - INFO - Progrès Nutrient: 8/8
+2025-03-07 09:18:28,850 - INFO - Création des nœuds Nutrient terminée en 0.41 secondes
+2025-03-07 09:18:28,850 - INFO - Création de 63 nœuds de type Brand
+2025-03-07 09:18:28,976 - INFO - Progrès Brand: 63/63
+2025-03-07 09:18:28,976 - INFO - Création des nœuds Brand terminée en 0.13 secondes
+2025-03-07 09:18:28,977 - INFO - Création de 139 nœuds de type Category
+2025-03-07 09:18:29,137 - INFO - Progrès Category: 139/139
+2025-03-07 09:18:29,137 - INFO - Création des nœuds Category terminée en 0.16 secondes
+2025-03-07 09:18:29,137 - INFO - Création de 22 nœuds de type Country
+2025-03-07 09:18:29,253 - INFO - Progrès Country: 22/22
+2025-03-07 09:18:29,253 - INFO - Création des nœuds Country terminée en 0.12 secondes
+2025-03-07 09:18:29,254 - INFO - Création de 382 nœuds de type Ingredient
+2025-03-07 09:18:29,530 - INFO - Progrès Ingredient: 382/382
+2025-03-07 09:18:29,530 - INFO - Création des nœuds Ingredient terminée en 0.28 secondes
+2025-03-07 09:18:29,530 - INFO - Création de 12 nœuds de type Allergen
+2025-03-07 09:18:29,633 - INFO - Progrès Allergen: 12/12
+2025-03-07 09:18:29,634 - INFO - Création des nœuds Allergen terminée en 0.10 secondes
+2025-03-07 09:18:29,634 - INFO - Création de 75 nœuds de type Label
+2025-03-07 09:18:29,724 - INFO - Progrès Label: 75/75
+2025-03-07 09:18:29,725 - INFO - Création des nœuds Label terminée en 0.09 secondes
+2025-03-07 09:18:29,725 - INFO - Création de 100 nœuds de produits
+2025-03-07 09:18:29,881 - INFO - Progrès produits: 100/100
+2025-03-07 09:18:29,881 - INFO - Création des nœuds de produits terminée en 0.16 secondes
+2025-03-07 09:18:29,881 - INFO - Création des relations de type BELONGS_TO
+2025-03-07 09:18:30,133 - INFO - Progrès relations BELONGS_TO: 100/100
+2025-03-07 09:18:30,133 - INFO - Création des relations BELONGS_TO terminée en 0.25 secondes
+2025-03-07 09:18:30,134 - INFO - Création des relations de type CATEGORIZED_AS
+2025-03-07 09:18:30,474 - INFO - Progrès relations CATEGORIZED_AS: 100/100
+2025-03-07 09:18:30,474 - INFO - Création des relations CATEGORIZED_AS terminée en 0.34 secondes
+2025-03-07 09:18:30,475 - INFO - Création des relations de type PRODUCED_IN
+2025-03-07 09:18:30,674 - INFO - Progrès relations PRODUCED_IN: 100/100
+2025-03-07 09:18:30,674 - INFO - Création des relations PRODUCED_IN terminée en 0.20 secondes
+2025-03-07 09:18:30,674 - INFO - Création des relations de type CONTAINS
+2025-03-07 09:18:30,847 - INFO - Progrès relations CONTAINS: 100/100
+2025-03-07 09:18:30,847 - INFO - Création des relations CONTAINS terminée en 0.17 secondes
+2025-03-07 09:18:30,848 - INFO - Création des relations de type CONTAINS_ALLERGEN
+2025-03-07 09:18:30,978 - INFO - Progrès relations CONTAINS_ALLERGEN: 100/100
+2025-03-07 09:18:30,978 - INFO - Création des relations CONTAINS_ALLERGEN terminée en 0.13 secondes
+2025-03-07 09:18:30,979 - INFO - Création des relations de type HAS_LABEL
+2025-03-07 09:18:31,108 - INFO - Progrès relations HAS_LABEL: 100/100
+2025-03-07 09:18:31,109 - INFO - Création des relations HAS_LABEL terminée en 0.13 secondes
+2025-03-07 09:18:31,109 - INFO - Création des relations de type HAS_NUTRIENT
+2025-03-07 09:18:31,460 - INFO - Progrès relations HAS_NUTRIENT: 100/100
+2025-03-07 09:18:31,460 - INFO - Création des relations HAS_NUTRIENT terminée en 0.35 secondes
+2025-03-07 09:18:31,461 - INFO - Chargement terminé en 61.83 secondes (1.03 minutes)
+2025-03-07 09:18:31,461 - INFO - === Statistiques de chargement ===
+2025-03-07 09:18:31,461 - INFO - marques: 100
+2025-03-07 09:18:31,461 - INFO - categories: 470
+2025-03-07 09:18:31,461 - INFO - pays: 201
+2025-03-07 09:18:31,461 - INFO - ingredients: 892
+2025-03-07 09:18:31,461 - INFO - allergenes: 121
+2025-03-07 09:18:31,461 - INFO - labels: 306
+2025-03-07 09:18:31,461 - INFO - nutriments: 646
+2025-03-07 09:18:31,461 - INFO - produits_ajoutes: 100
+2025-03-07 09:18:31,672 - INFO - 100 produits ont été chargés dans le graphe Neo4j.
+2025-03-07 09:18:31,738 - INFO - Index créé: CREATE INDEX product_name_index IF NOT EXISTS FOR (p:Product) ON (p.name)
+2025-03-07 09:18:31,805 - INFO - Index créé: CREATE INDEX brand_name_index IF NOT EXISTS FOR (b:Brand) ON (b.name)
+2025-03-07 09:18:31,806 - INFO - Received notification from DBMS server: {severity: INFORMATION} {code: Neo.ClientNotification.Schema.IndexOrConstraintAlreadyExists} {category: SCHEMA} {title: `CREATE RANGE INDEX brand_name_index IF NOT EXISTS FOR (e:Brand) ON (e.name)` has no effect.} {description: `RANGE INDEX brand_name FOR (e:Brand) ON (e.name)` already exists.} {position: None} for query: 'CREATE INDEX brand_name_index IF NOT EXISTS FOR (b:Brand) ON (b.name)'
+2025-03-07 09:18:31,870 - INFO - Index créé: CREATE INDEX category_name_index IF NOT EXISTS FOR (c:Category) ON (c.name)
+2025-03-07 09:18:31,871 - INFO - Received notification from DBMS server: {severity: INFORMATION} {code: Neo.ClientNotification.Schema.IndexOrConstraintAlreadyExists} {category: SCHEMA} {title: `CREATE RANGE INDEX category_name_index IF NOT EXISTS FOR (e:Category) ON (e.name)` has no effect.} {description: `RANGE INDEX category_name FOR (e:Category) ON (e.name)` already exists.} {position: None} for query: 'CREATE INDEX category_name_index IF NOT EXISTS FOR (c:Category) ON (c.name)'
+2025-03-07 09:18:31,926 - INFO - Index créé: CREATE INDEX ingredient_name_index IF NOT EXISTS FOR (i:Ingredient) ON (i.name)
+2025-03-07 09:18:31,927 - INFO - Received notification from DBMS server: {severity: INFORMATION} {code: Neo.ClientNotification.Schema.IndexOrConstraintAlreadyExists} {category: SCHEMA} {title: `CREATE RANGE INDEX ingredient_name_index IF NOT EXISTS FOR (e:Ingredient) ON (e.name)` has no effect.} {description: `RANGE INDEX ingredient_name FOR (e:Ingredient) ON (e.name)` already exists.} {position: None} for query: 'CREATE INDEX ingredient_name_index IF NOT EXISTS FOR (i:Ingredient) ON (i.name)'
+2025-03-07 09:18:31,985 - INFO - Index créé: CREATE INDEX product_nutriscore_index IF NOT EXISTS FOR (p:Product) ON (p.nutriscore)
+2025-03-07 09:18:32,050 - INFO - Index créé: CREATE INDEX product_nova_index IF NOT EXISTS FOR (p:Product) ON (p.nova_group)
+2025-03-07 09:18:32,110 - INFO - Index créé: CREATE INDEX product_ecoscore_index IF NOT EXISTS FOR (p:Product) ON (p.ecoscore)
+2025-03-07 09:18:32,114 - INFO - Temps d'exécution: 63.42 secondes

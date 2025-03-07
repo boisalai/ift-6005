@@ -15,6 +15,7 @@ sqlglotrs==0.3.14
 accelerate==1.4.0
 mlx-lm==0.21.5
 transformers==4.48.3
+neo4j==5.28.1
 
 # Télémétrie avec Arize AI Phoenix
 # pip install arize-phoenix opentelemetry-sdk opentelemetry-exporter-otlp openinference-instrumentation-smolagents

@@ -1,223 +1,133 @@
 import json
-import os
-import logging
-from collections import Counter
-from datetime import datetime
+from collections import Counter, defaultdict
+import pandas as pd
 
-def setup_logger(log_file='jsonl_analysis.log'):
-    """
-    Configure un logger pour écrire dans un fichier et sur la console
+def analyze_json_structure(file_path):
+    """Analyser la structure des données JSON pour identifier les champs pertinents"""
     
-    Args:
-        log_file: Nom du fichier de log
-    
-    Returns:
-        Un objet logger configuré
-    """
-    # Créer le répertoire de logs s'il n'existe pas
-    log_dir = os.path.dirname(log_file)
-    if log_dir and not os.path.exists(log_dir):
-        os.makedirs(log_dir)
-    
-    # Configurer le logger
-    logger = logging.getLogger('jsonl_analyzer')
-    logger.setLevel(logging.INFO)
-    
-    # Empêcher la duplication des logs si le logger est déjà configuré
-    if not logger.handlers:
-        # Handler pour le fichier
-        file_handler = logging.FileHandler(log_file, encoding='utf-8')
-        file_format = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
-        file_handler.setFormatter(file_format)
-        logger.addHandler(file_handler)
-        
-        # Handler pour la console
-        console_handler = logging.StreamHandler()
-        console_format = logging.Formatter('%(message)s')
-        console_handler.setFormatter(console_format)
-        logger.addHandler(console_handler)
-    
-    return logger
-
-def analyze_jsonl_structure(filepath, sample_size=5, logger=None):
-    """
-    Analyse la structure d'un fichier JSONL volumineux sans le charger entièrement en mémoire.
-    
-    Args:
-        filepath: Chemin vers le fichier JSONL
-        sample_size: Nombre d'objets à analyser pour comprendre la structure
-        logger: Logger pour enregistrer les résultats
-    """
-    if logger is None:
-        logger = setup_logger()
-    
-    # Enregistrer les métadonnées de l'analyse
-    logger.info(f"=== Analyse du fichier JSONL: {filepath} ===")
-    logger.info(f"Date et heure: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-    
-    # Vérifier si le fichier existe
-    if not os.path.exists(filepath):
-        logger.error(f"Erreur: Le fichier {filepath} n'existe pas")
-        return
-    
-    # Obtenir la taille du fichier
-    file_size = os.path.getsize(filepath) / (1024 * 1024 * 1024)  # Taille en Go
-    logger.info(f"Taille du fichier: {file_size:.2f} Go")
-    
-    # Collecter des statistiques sur les clés
+    # Dictionnaires pour stocker les statistiques
     all_keys = Counter()
-    key_types = {}
-    key_depths = {}
-    sample_objects = []
+    field_types = defaultdict(Counter)
+    field_examples = {}
+    field_non_empty = Counter()
     
-    try:
-        with open(filepath, 'r', encoding='utf-8') as f:
-            for i, line in enumerate(f):
-                if i >= sample_size:
-                    break
-                    
-                try:
-                    obj = json.loads(line.strip())
-                    sample_objects.append(obj)
-                    
-                    # Analyser récursivement la structure
-                    def explore_structure(data, prefix='', depth=0):
-                        if isinstance(data, dict):
-                            for key, value in data.items():
-                                full_key = f"{prefix}.{key}" if prefix else key
-                                all_keys[full_key] += 1
-                                key_types[full_key] = type(value).__name__
-                                key_depths[full_key] = depth
-                                
-                                # Exploration récursive
-                                if isinstance(value, (dict, list)):
-                                    explore_structure(value, full_key, depth + 1)
-                        elif isinstance(data, list) and data and prefix:
-                            # Pour les listes, examiner le premier élément comme exemple
-                            if data and isinstance(data[0], (dict, list)):
-                                explore_structure(data[0], f"{prefix}[0]", depth + 1)
-                    
-                    explore_structure(obj)
-                    
-                except json.JSONDecodeError:
-                    logger.error(f"Erreur de décodage JSON à la ligne {i+1}")
-    except Exception as e:
-        logger.error(f"Erreur lors de la lecture du fichier: {str(e)}")
-        return
+    # Chargement des produits
+    products = []
+    with open(file_path, 'r', encoding='utf-8') as f:
+        for line in f:
+            if line.strip():
+                products.append(json.loads(line))
     
-    # Enregistrer les résultats
-    logger.info("\nStructure du fichier JSONL (basée sur un échantillon):")
-    logger.info("-" * 50)
-    logger.info(f"Nombre d'objets analysés: {len(sample_objects)}")
+    # Analyse de chaque produit
+    total_products = len(products)
+    print(f"Analyse de {total_products} produits...")
     
-    logger.info("\nClés trouvées (triées par profondeur puis par fréquence):")
-    # Grouper les clés par profondeur
-    depth_groups = {}
-    for key, count in all_keys.items():
-        depth = key_depths.get(key, 0)
-        if depth not in depth_groups:
-            depth_groups[depth] = []
-        depth_groups[depth].append((key, count))
+    # Parcourir chaque produit et collecter des statistiques
+    for product in products:
+        # Compter les clés présentes
+        for key in product.keys():
+            all_keys[key] += 1
+            
+            # Déterminer le type de chaque champ
+            field_type = type(product[key]).__name__
+            field_types[key][field_type] += 1
+            
+            # Sauvegarder un exemple de valeur non vide
+            if product[key] and key not in field_examples:
+                field_examples[key] = product[key]
+            
+            # Compter les champs non vides
+            if product[key]:
+                field_non_empty[key] += 1
     
-    # Afficher les clés par niveau de profondeur
-    for depth in sorted(depth_groups.keys()):
-        logger.info(f"\nNiveau de profondeur {depth}:")
-        for key, count in sorted(depth_groups[depth], key=lambda x: x[1], reverse=True):
-            logger.info(f"  - {key} ({count}/{len(sample_objects)}): {key_types.get(key, 'inconnu')}")
-    
-    # Enregistrer un exemple d'objet
-    logger.info("\nExemple d'objet:")
-    if sample_objects:
-        logger.info(json.dumps(sample_objects[0], indent=2, ensure_ascii=False))
-    
-    logger.info("\n=== Fin de l'analyse ===\n")
-    return all_keys, key_types, sample_objects
-
-def count_total_objects(filepath, logger=None):
-    """Compte le nombre total d'objets dans le fichier JSONL."""
-    if logger is None:
-        logger = setup_logger()
-    
-    count = 0
-    try:
-        with open(filepath, 'r', encoding='utf-8') as f:
-            for _ in f:
-                count += 1
-                if count % 1000000 == 0:
-                    logger.info(f"Progression: {count:,} objets comptés")
-    except Exception as e:
-        logger.error(f"Erreur lors du comptage des objets: {str(e)}")
-    
-    logger.info(f"Nombre total d'objets: {count:,}")
-    return count
-
-def process_jsonl_in_chunks(filepath, chunk_size=10000, process_func=None, logger=None):
-    """
-    Traite un fichier JSONL en morceaux pour économiser la mémoire.
-    
-    Args:
-        filepath: Chemin vers le fichier JSONL
-        chunk_size: Nombre d'objets à traiter par lot
-        process_func: Fonction appelée pour chaque lot d'objets
-        logger: Logger pour enregistrer les résultats
-    """
-    if logger is None:
-        logger = setup_logger()
-    
-    chunk = []
-    processed_count = 0
-    
-    try:
-        with open(filepath, 'r', encoding='utf-8') as f:
-            for i, line in enumerate(f):
-                try:
-                    obj = json.loads(line.strip())
-                    chunk.append(obj)
-                    
-                    if len(chunk) >= chunk_size:
-                        if process_func:
-                            process_func(chunk, logger)
-                        processed_count += len(chunk)
-                        logger.info(f"Progression: {processed_count:,} objets traités")
-                        chunk = []
-                except json.JSONDecodeError:
-                    logger.error(f"Erreur de décodage JSON à la ligne {i+1}")
+    # Créer un DataFrame pour l'analyse
+    analysis_data = []
+    for key in all_keys:
+        presence_percentage = (all_keys[key] / total_products) * 100
+        non_empty_percentage = (field_non_empty[key] / all_keys[key]) * 100 if all_keys[key] > 0 else 0
         
-        # Traiter le dernier lot s'il n'est pas vide
-        if chunk and process_func:
-            process_func(chunk, logger)
-            processed_count += len(chunk)
-            logger.info(f"Terminé: {processed_count:,} objets traités au total")
-    except Exception as e:
-        logger.error(f"Erreur lors du traitement du fichier: {str(e)}")
+        # Déterminer les types de données les plus courants pour ce champ
+        most_common_type = field_types[key].most_common(1)[0][0] if field_types[key] else "N/A"
+        
+        # Obtenir un exemple de valeur
+        example = str(field_examples.get(key, ""))
+        if len(example) > 50:  # Tronquer les exemples trop longs
+            example = example[:50] + "..."
+            
+        analysis_data.append({
+            "Champ": key,
+            "Présence (%)": round(presence_percentage, 1),
+            "Non vide (%)": round(non_empty_percentage, 1),
+            "Type le plus courant": most_common_type,
+            "Exemple": example
+        })
+    
+    # Convertir en DataFrame et trier par présence
+    df = pd.DataFrame(analysis_data)
+    df = df.sort_values(by=["Présence (%)", "Non vide (%)"], ascending=False)
+    
+    return df
 
-# Exemple d'utilisation
+def suggest_important_fields(df, threshold=50):
+    """Suggérer les champs les plus importants basés sur leur présence et leur contenu"""
+    
+    # Filtrer les champs qui sont présents et non vides dans au moins X% des produits
+    important_fields = df[(df["Présence (%)"] >= threshold) & (df["Non vide (%)"] >= threshold)]
+    
+    return important_fields
+
+def analyze_nested_structures(file_path, nested_fields=["nutriments", "ingredients"]):
+    """Analyser la structure des champs imbriqués importants"""
+    
+    nested_analysis = {}
+    
+    # Chargement des produits
+    products = []
+    with open(file_path, 'r', encoding='utf-8') as f:
+        for line in f:
+            if line.strip():
+                products.append(json.loads(line))
+    
+    # Pour chaque champ imbriqué
+    for field in nested_fields:
+        keys_counter = Counter()
+        
+        # Parcourir chaque produit
+        for product in products:
+            if field in product and isinstance(product[field], dict):
+                # Compter les clés présentes dans ce champ imbriqué
+                for nested_key in product[field].keys():
+                    keys_counter[nested_key] += 1
+        
+        # Stocker les résultats
+        nested_analysis[field] = keys_counter
+    
+    return nested_analysis
+
+def main():
+    file_path = "../../data/openfoodfacts-canadian-products-first-3.jsonl"
+    
+    # Analyser la structure générale
+    print("Analyse de la structure des données...")
+    df = analyze_json_structure(file_path)
+    
+    # Afficher les 20 premiers champs les plus courants
+    print("\nLes 20 champs les plus courants:")
+    print(df.head(20).to_string(index=False))
+    
+    # Suggestion de champs importants
+    print("\nChamps suggérés comme importants (présents dans au moins 80% des produits):")
+    important_df = suggest_important_fields(df, 80)
+    print(important_df.to_string(index=False))
+    
+    # Analyser les structures imbriquées
+    print("\nAnalyse des structures imbriquées...")
+    nested_analysis = analyze_nested_structures(file_path)
+    
+    for field, counter in nested_analysis.items():
+        print(f"\nChamps présents dans '{field}':")
+        for key, count in counter.most_common(10):
+            print(f"  - {key}: présent dans {count} produits")
+
 if __name__ == "__main__":
-    # Chemin vers le fichier JSONL
-    filepath = "../data/openfoodfacts-products.jsonl"
-    
-    # Configurer le logger avec un nom de fichier spécifique
-    log_filename = f"../logs/jsonl_analysis_{datetime.now().strftime('%Y%m%d_%H%M%S')}.log"
-    logger = setup_logger(log_filename)
-    
-    logger.info("Démarrage de l'analyse du fichier JSONL")
-    
-    # Analyser la structure du fichier
-    analyze_jsonl_structure(filepath, sample_size=10, logger=logger)
-    
-    # Compter le nombre total d'objets (peut prendre du temps pour un fichier de 60 Go)
-    # Décommentez pour exécuter
-    # logger.info("Comptage du nombre total d'objets...")
-    # count_total_objects(filepath, logger=logger)
-    
-    # Exemple de fonction de traitement par lot
-    def process_batch(batch, logger=None):
-        if logger:
-            logger.info(f"Traitement d'un lot de {len(batch)} objets")
-        # Votre logique de traitement ici
-    
-    # Décommentez pour traiter tout le fichier
-    # logger.info("Traitement du fichier par lots...")
-    # process_jsonl_in_chunks(filepath, chunk_size=10000, process_func=process_batch, logger=logger)
-    
-    logger.info("Analyse terminée. Log enregistré dans: " + log_filename)
+    main()

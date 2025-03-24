@@ -1,161 +1,110 @@
-# Documentation de l'Agent Conversationnel OpenFoodFacts
+# Répertoire SRC/JSONL
 
 ## Vue d'ensemble
 
 Ce système permet aux utilisateurs d'interroger en langage naturel une base de données Neo4j contenant des informations sur des produits alimentaires provenant d'OpenFoodFacts. Le système est composé de trois modules principaux:
 
-1. **Agent OpenFoodFacts** (`food_agent.py`) - Gère les interactions avec la base de données Neo4j et traite les requêtes
-2. **Gestionnaire d'intentions** (`intent_handler.py`) - Identifie le type de demande et l'entité concernée
-3. **Interface utilisateur** (`app.py`) - Interface conversationnelle en Streamlit
+TODO: À compléter.
 
-## Architecture du système
+## Installation des bibliothèques
 
-```
-                 ┌───────────────────┐
-                 │                   │
-                 │    Interface      │
-                 │    Streamlit      │
-                 │                   │
-                 └─────────┬─────────┘
-                           │
-                           ▼
-┌────────────────────────────────────────────┐
-│                                            │
-│            Agent OpenFoodFacts             │
-│                                            │
-│  ┌───────────────┐       ┌──────────────┐  │
-│  │ GraphCypherQA │       │  Gestionnaire │  │
-│  │    Chain      │◄─────►│  d'intentions │  │
-│  └───────────────┘       └──────────────┘  │
-│                                            │
-└────────────────────┬───────────────────────┘
-                     │
-                     ▼
-              ┌─────────────┐
-              │             │
-              │   Neo4j     │
-              │ OpenFoodFacts│
-              │             │
-              └─────────────┘
-```
+Pour installer l’ensemble des bibliothèques nécessaires au fonctionnement du système, procédez comme suit :
 
-## Installation et configuration
+1. **Créer un environnement virtuel**  
+   Dans le répertoire racine du projet, exécutez :
+   ```bash
+   python -m venv venv
+   ```
+2. **Activer l’environnement virtuel**  
+   - Sous Linux/macOS :
+     ```bash
+     source venv/bin/activate
+     ```
+   - Sous Windows :
+     ```bash
+     venv\Scripts\activate
+     ```
+3. **Installer les dépendances**  
+   Installez les bibliothèques listées dans le fichier requirements.txt en lançant :
+   ```bash
+   pip install -r requirements.txt
+   ```
+   Cela installera notamment les packages pour la recherche vectorielle (faiss-cpu, duckdb), le traitement du langage (sentence-transformers, langchain), ainsi que les outils de développement (smolagents, streamlit, etc.).
+4. **Configurer les variables d'environnement**
+   Créez un fichier `.env` à la racine du projet et ajoutez-y les variables d'environnement nécessaires.
+   ```
+   ANTHROPIC_API_KEY=sk-ant-...
 
-### Prérequis
+   # Wait 60 seconds before connecting using these details, or login to https://console.neo4j.io to validate the Aura Instance is available
+   NEO4J_URI=neo4j+s://a3d3e8c5.databases.neo4j.io
+   NEO4J_USERNAME=neo4j
+   NEO4J_PASSWORD=...
+   AURA_INSTANCEID=...
+   AURA_INSTANCENAME=Instance01
+   ```
+5. **Démarrer l'interface Streamlit**
+   Lancez l'interface utilisateur Streamlit avec la commande:
+   ```bash
+   streamlit run app.py
+   ```
 
-- Python 3.8+
-- Neo4j Database
-- OpenAI API key (pour LangChain)
+## Description sommaires des fichiers
 
-### Variables d'environnement
+- **Préparation des données**
+  - `filter.py` : Filtre un fichier JSONL pour ne garder que les produits du Canada.
+  - `extract.py` : Extrait les n premiers produits d'un fichier JSONL et les écrire dans un nouveau fichier.
+- **Exploration des données**
+  - `taxonomy.py` : Explore la taxonomie des catégories de produits. 
+  - `analyse.py` : Analyser la structure des données JSON pour identifier les champs pertinents.
+- **Création de la base de données vectorielle**
+  - `create_graph_*.py` : Crée un graphe Neo4j à partir des données JSONL. Ce script créé le fichier `openfoodfacts_loader.log`.
+  - `query.py` : Code pour interroger le graphe Neo4j avec des requêtes Cypher.
+- **Construction de l'agent conversationnel**
+  - `agent_*.py` : L'agent principal qui gère les interactions avec Neo4j et traite les requêtes en langage naturel.
+  - `intent_handler.py` et `llm_intent_handler.py` : Gestionnaires d'intentions pour l'agent principal, utilisés par `agent_*.py`.
+- **Interface utilisateur**
+  - `app.py` : Point d'entrée alternatif basé sur Streamlit pour lancer une interface web permettant d'interagir avec l'agent. L'interface permet d’entrer nos questions en anglais ou en français et d’obtenir les résultats en temps réel.
+- **Documentation**
+  - `README.md`et `notes.md` : Fichiers de documentation
 
-Créez un fichier `.env` avec les variables suivantes:
+## Fichier filter.py
 
-```
-NEO4J_URI=bolt://localhost:7687
-NEO4J_USER=neo4j
-NEO4J_PASSWORD=password
-OPENAI_API_KEY=votre_clé_api
-```
+Ce script filtre les produits d'un fichier JSONL pour ne garder que les 97&nbsp;439&nbsp;produits canadiens.
 
-### Installation des dépendances
+## Fichier extract.py
 
-```bash
-pip install neo4j langchain openai streamlit pandas python-dotenv
-```
+Ce script extrait les n premiers produits canadiens et les écrit dans un nouveau fichier nommé `data/openfoodfacts-canadian-products-first-n.jsonl`. 
+Il est utile pour créer un sous-ensemble de données à partir d'un fichier JSONL plus grand, facilitant ainsi le traitement et l'analyse.
 
-### Démarrage
+## Fichier agent.py
 
-Lancez l'interface utilisateur Streamlit avec la commande:
+Le fichier `agent.py` est un composant central du système qui fournit une interface entre les utilisateurs et la base de données Neo4j contenant les données d'Open Food Facts.
 
-```bash
-streamlit run app.py
-```
+La classe `OpenFoodFactsAgent` implémente plusieurs fonctionnalités clés :
 
-## Composants du système
+- **Initialisation et connexion à Neo4j**
+  - Utilise LangChain pour se connecter à la base de données Neo4j
+  - Configure un modèle de génération de requêtes Cypher
+  - Initialise un modèle de langage (GPT-3.5-turbo) pour comprendre les requêtes
+- **Prompt de génération Cypher**
+  - Un template détaillé pour guider le LLM à générer des requêtes Cypher correctes
+  - Comprend des instructions, des exemples et le schéma de la base de données
+  - Les exemples couvrent divers cas d'usage : recherche par marque, ingrédients, allergènes, etc.
+- **Fonctions utilitaires**
+  - `refresh_schema()` : Met à jour le schéma de la base de données
+  - `get_schema()` : Récupère le schéma actuel
+  - `execute_custom_cypher()` : Exécute des requêtes Cypher personnalisées
+- **Fonctions spécialisées**
+  - `get_product_recommendations()` : Recommande des produits similaires ou plus sains
+  - `get_nutritional_analysis()` : Analyse nutritionnelle d'un produit
+  - `get_dietary_info()` : Information sur les produits adaptés à un régime spécifique
+- **Traitement des requêtes**
+  - `query()` : Point d'entrée principal qui utilise un gestionnaire d'intentions
 
-### 1. Agent OpenFoodFacts
+### Problèmes connus
 
-L'agent principal qui gère les interactions avec Neo4j et traite les requêtes en langage naturel.
+- Problème de regroupement sémantique observé précédemment pourrait affecter la qualité des résultats. Par exemple, chercher des produits contenant du "sel" pourrait ne pas trouver ceux avec "salt" si le regroupement n'est pas optimal.
+- Je n'aime pas la façon dont est déterminé les intentions avec `IntentHandler`. Je souhaite que le LLM le détermine lui-même.
 
-**Fonctionnalités principales:**
-- Connexion à la base de données Neo4j
-- Conversion des questions en requêtes Cypher
-- Gestion des erreurs et des cas spéciaux
-- Fonctions spécialisées (recherche de produits, analyse nutritionnelle, etc.)
 
-### 2. Gestionnaire d'intentions
 
-Analyse les requêtes en langage naturel pour identifier leur intention et extraire les entités pertinentes.
-
-**Types d'intentions reconnus:**
-- Information sur un produit
-- Recherche par marque
-- Recherche par ingrédient
-- Vérification d'allergènes
-- Information nutritionnelle
-- Recommandations de produits
-- Requêtes sur les régimes alimentaires
-- Comparaison de produits
-
-### 3. Interface utilisateur Streamlit
-
-Interface conversationnelle permettant aux utilisateurs d'interagir avec l'agent.
-
-**Fonctionnalités:**
-- Chat interactif
-- Onglets pour des fonctions spécialisées
-- Affichage de données tabulaires
-- Statistiques de la base de données
-
-## Exemples d'utilisation
-
-### Requêtes générales
-- "Quels sont les produits de la marque Kroger?"
-- "Quels produits contiennent du sucre?"
-- "Montre-moi des produits sans gluten"
-
-### Requêtes nutritionnelles
-- "Quelle est la teneur en calories du lait 1%?"
-- "Quelles sont les informations nutritionnelles du sirop d'érable?"
-
-### Requêtes sur les régimes alimentaires
-- "Je suis végétalien, quels produits puis-je manger?"
-- "Montre-moi des produits biologiques"
-
-### Requêtes comparatives
-- "Compare le lait 1% et le sirop d'érable"
-- "Lequel est plus sain entre le sirop d'érable et le sirop d'imitation vanille?"
-
-## Extension du système
-
-### Ajout de nouvelles intentions
-Pour ajouter de nouveaux types d'intentions, modifiez `intent_handler.py`:
-1. Ajoutez un nouveau type dans `IntentType`
-2. Créez des patterns RegEx pour détecter cette intention
-3. Implémentez le traitement dans `handle_intent()`
-
-### Amélioration des requêtes Cypher
-Pour affiner les requêtes Cypher, modifiez les exemples dans:
-- Le template `cypher_generation_template` dans `food_agent.py`
-- Les requêtes prédéfinies dans `handle_intent()` de `intent_handler.py`
-
-### Extension de l'interface utilisateur
-Pour ajouter de nouvelles fonctionnalités à l'interface:
-1. Créez de nouveaux onglets dans l'application Streamlit
-2. Implémentez les fonctions correspondantes dans l'agent
-3. Reliez l'interface aux nouvelles fonctionnalités
-
-## Limitations actuelles et améliorations futures
-
-### Limitations:
-- Compréhension limitée des synonymes et variantes linguistiques
-- Pas de gestion des conversations multi-tours complexes
-- Performances limitées sur des grands volumes de données
-
-### Améliorations potentielles:
-- Intégration d'un modèle d'embeddings pour la recherche sémantique
-- Implémentation d'un système de suivi de contexte pour les conversations
-- Enrichissement de la base de connaissances avec d'autres sources
-- Optimisation des requêtes Cypher pour de meilleures performances
-- Ajout de visualisations (graphiques nutritionnels, comparaisons visuelles)

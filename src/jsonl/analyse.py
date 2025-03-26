@@ -2,6 +2,22 @@ import json
 from collections import Counter, defaultdict
 import pandas as pd
 
+def list_jsonl_fields(file_path, sample_lines=10):
+    fields = set()
+    with open(file_path, 'r', encoding='utf-8') as f:
+        for i, line in enumerate(f):
+            if i >= sample_lines:
+                break
+            try:
+                record = json.loads(line)
+                fields.update(record.keys())
+            except json.JSONDecodeError:
+                continue
+    return sorted(fields)
+
+
+
+
 def analyze_json_structure(file_path):
     """Analyser la structure des données JSON pour identifier les champs pertinents"""
     
@@ -105,7 +121,7 @@ def analyze_nested_structures(file_path, nested_fields=["nutriments", "ingredien
     return nested_analysis
 
 def main():
-    file_path = "../../data/openfoodfacts-canadian-products-first-3.jsonl"
+    file_path = "../../data/openfoodfacts-canadian-products.jsonl"
     
     # Analyser la structure générale
     print("Analyse de la structure des données...")
@@ -129,5 +145,11 @@ def main():
         for key, count in counter.most_common(10):
             print(f"  - {key}: présent dans {count} produits")
 
+def describe():
+    file_path = "../../data/openfoodfacts-canadian-products.jsonl"
+    fields = list_jsonl_fields(file_path)
+    print("Champs présents dans le fichier JSONL :", fields)
+
 if __name__ == "__main__":
-    main()
+    # main()
+    describe()

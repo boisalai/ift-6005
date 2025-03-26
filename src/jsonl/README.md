@@ -1,10 +1,8 @@
-# Répertoire SRC/JSONL
+# Agent conversationnel pour interroger un graphe Neo4j sur les produits alimentaires d'OpenFoodFacts
 
 ## Vue d'ensemble
 
-Ce système permet aux utilisateurs d'interroger en langage naturel une base de données Neo4j contenant des informations sur des produits alimentaires provenant d'OpenFoodFacts. Le système est composé de trois modules principaux:
-
-TODO: À compléter.
+Ce système permet aux utilisateurs d'interroger en langage naturel une base de données Neo4j contenant des informations sur des produits alimentaires provenant d'OpenFoodFacts. 
 
 ## Installation des bibliothèques
 
@@ -52,12 +50,10 @@ Pour installer l’ensemble des bibliothèques nécessaires au fonctionnement du
 
 - **Préparation des données**
   - `filter.py` : Filtre un fichier JSONL pour ne garder que les produits du Canada.
-  - `extract.py` : Extrait les n premiers produits d'un fichier JSONL et les écrire dans un nouveau fichier.
 - **Exploration des données**
-  - `taxonomy.py` : Explore la taxonomie des catégories de produits. 
   - `analyse.py` : Analyser la structure des données JSON pour identifier les champs pertinents.
 - **Création de la base de données vectorielle**
-  - `create_graph_*.py` : Crée un graphe Neo4j à partir des données JSONL. Ce script créé le fichier `openfoodfacts_loader.log`.
+  - `create_graph.py` : Crée un graphe Neo4j à partir des données JSONL. Ce script créé le fichier `openfoodfacts_loader.log`.
   - `query.py` : Code pour interroger le graphe Neo4j avec des requêtes Cypher.
 - **Construction de l'agent conversationnel**
   - `agent_*.py` : L'agent principal qui gère les interactions avec Neo4j et traite les requêtes en langage naturel.
@@ -71,10 +67,59 @@ Pour installer l’ensemble des bibliothèques nécessaires au fonctionnement du
 
 Ce script filtre les produits d'un fichier JSONL pour ne garder que les 97&nbsp;439&nbsp;produits canadiens.
 
-## Fichier extract.py
+## Fichier create_graph.py
 
-Ce script extrait les n premiers produits canadiens et les écrit dans un nouveau fichier nommé `data/openfoodfacts-canadian-products-first-n.jsonl`. 
-Il est utile pour créer un sous-ensemble de données à partir d'un fichier JSONL plus grand, facilitant ainsi le traitement et l'analyse.
+Allez à la [console Neo4j](https://console.neo4j.io) et cliquez sur **Create instance**. Sélectionnez **AuraDB Free**.
+Éventuellement, je pourrais utiliser la version **Pro** mais gratuite 14 jours.
+
+Attendez que l'instance soit prête (indiqué RUNNING en vert).
+
+Ensuite, exécutez le script `create_graph.py` pour créer un graphe Neo4j à partir des données JSONL.
+
+Ce script crée les noeuds et les relations dans la base de données Neo4j. 
+
+Ce script crée également les relations parents–enfants dans le graphe des noeuds qui font l'objet d'une taxonomie documentée. Par exemple, dans 
+`create_category_nodes()`, après avoir créé tous les nœuds de catégories, le code itére sur le fichier de taxonomie `categories.txt` 
+et exécuter des requêtes Cypher pour ajouter des relations entre chaque parent et chacun de ses enfants. 
+Les fichiers de taxonomie sont disponibles [ici](https://github.com/openfoodfacts/openfoodfacts-server/tree/main/taxonomies).
+
+Voici les points importants à noter dans la sortie :
+
+1. **Chargement initial** : Le script a correctement chargé 1000 produits sur les 97439 disponibles (échantillon limité pour le test).
+
+2. **Création des nœuds et relations de base** :
+   - 1000 produits avec leurs embeddings
+   - 1040 relations HAS_BRAND
+   - 4363 relations HAS_CATEGORY
+   - 16471 relations CONTAINS pour les ingrédients
+   - 1717 relations HAS_LABEL
+   - 1522 relations CONTAINS_ADDITIF
+   - 970 relations CONTAINS_ALLERGEN
+   - 1486 relations SOLD_IN pour les pays
+   - 6778 relations HAS_NUTRIMENT
+
+3. **Intégration des taxonomies hiérarchiques** :
+   - Taxonomie des catégories : 10099 relations HAS_CHILD créées, 8214 nœuds enrichis avec des traductions
+   - Taxonomie des ingrédients : 4516 relations CONTAINS créées, 4019 nœuds enrichis
+   - Taxonomie des additifs : 115 relations PART_OF créées, 115 nœuds enrichis
+   - Taxonomie des labels : 2078 relations INCLUDES créées, 2037 nœuds enrichis
+
+4. **Recherche sémantique** :
+   - Le test de recherche pour "Produit sans gluten riche en protéines" a retourné 5 résultats, montrant que l'index vectoriel fonctionne.
+
+
+Cette structure de graphe enrichie permettra désormais des requêtes sophistiquées, exploitant à la fois :
+- Les relations entre produits et leurs attributs (ingrédients, marques, etc.)
+- Les relations hiérarchiques au sein de chaque taxonomie
+- Les synonymes et traductions en français et en anglais
+
+Nous avons maintenant une base solide pour développer des applications qui peuvent répondre à des requêtes en langage naturel sur les produits alimentaires, tenant compte des relations sémantiques et hiérarchiques.
+
+## Fichier query.py
+
+
+
+
 
 ## Fichier agent.py
 

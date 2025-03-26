@@ -2,6 +2,7 @@ duckdb==1.2.0
 faiss-cpu==1.10.0
 markdownify==0.14.1
 matplotlib==3.10.1
+openai==1.68.2
 scipy==1.15.2
 numpy==2.2.2
 pandas==2.2.3
@@ -10,7 +11,7 @@ pydantic==2.10.6
 pydantic_core==2.27.2
 python-dotenv==1.0.1
 sentence-transformers==3.4.1
-smolagents[litellm]==1.9.2
+smolagents==1.12.0
 sqlglot==26.6.0
 sqlglotrs==0.3.14
 accelerate==1.4.0

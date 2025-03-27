@@ -83,7 +83,42 @@ en: Child name in English
 fr: Child name in French
 ```
 
-## Schéma de la base de données Neo4j
+## Fonctionnement du script create_graph.py 
+
+Ce script crée une base de données graphe dans Neo4j à partir des données alimentaires d'Open Food Facts. Voici son fonctionnement étape par étape:
+
+1. **Préparation** : Il se connecte à votre base de données Neo4j et charge un modèle d'intelligence artificielle (SentenceTransformer) qui permet de transformer du texte en vecteurs numériques.
+
+2. **Création de la structure** : Le script efface d'abord toutes les données existantes puis crée des contraintes pour s'assurer que chaque produit, marque, ingrédient, etc. soit unique.
+
+3. **Importation des produits** : Il lit le fichier JSONL contenant les données alimentaires et crée un nœud dans la base de données pour chaque produit avec ses propriétés (nom, code-barre, nutriscore, etc.).
+
+4. **Génération d'embeddings** : Pour chaque produit, il génère un "embedding" - un vecteur numérique qui représente le produit à partir de sa description, permettant plus tard de trouver des produits similaires.
+
+5. **Création des relations** : Il relie chaque produit à ses:
+   - Marques (HAS_BRAND)
+   - Catégories (HAS_CATEGORY)
+   - Ingrédients (CONTAINS)
+   - Étiquettes/labels (HAS_LABEL)
+   - Additifs (CONTAINS_ADDITIF)
+   - Allergènes (CONTAINS_ALLERGEN)
+   - Pays de vente (SOLD_IN)
+   - Nutriments (HAS_NUTRIMENT)
+
+6. **Intégration des taxonomies** : Il ajoute des hiérarchies entre les catégories et les ingrédients (par exemple, "pomme" est un enfant de "fruit").
+
+7. **Création d'index vectoriel** : Il crée un index spécial permettant des recherches par similarité sémantique, comme "trouve-moi des produits similaires à X".
+
+8. **Test final** : Il exécute une recherche sémantique pour vérifier que tout fonctionne correctement.
+
+Ce script transforme donc des données "plates" en une riche base de données graphe où tout est connecté, ce qui permet ensuite à un
+agent conversationnel de répondre à des questions complexes comme "Trouve-moi des alternatives plus saines au Nutella" ou "Quels snacks sans gluten contiennent du chocolat?".
+
+La force de cette approche est que les relations entre entités (produits, ingrédients, etc.) sont explicitement modélisées, ce 
+qui facilite la navigation et les requêtes complexes dans les données.
+
+
+## Schéma du graphe dans Neo4j
 
 Notre base de données Neo4j créé par `create_graph.py` suit cette structure :
 

@@ -15,9 +15,6 @@ def list_jsonl_fields(file_path, sample_lines=10):
                 continue
     return sorted(fields)
 
-
-
-
 def analyze_json_structure(file_path):
     """Analyser la structure des données JSON pour identifier les champs pertinents"""
     

@@ -48,6 +48,9 @@ Ce système permet aux utilisateurs d'interroger en langage naturel une base de 
    NEO4J_PASSWORD=...
    ```
 
+4. **Télécharger le fichier JSONL**
+   Téléchargez le fichier `openfoodfacts-products.jsonl` depuis le dépôt OpenFoodFacts 
+   ([JSONL data export](https://world.openfoodfacts.org/data)) et placez-le dans le dossier `data/`.
 
 ## Composants principaux
 
@@ -62,15 +65,32 @@ Le projet s'articule autour de quatre composants principaux :
    - Génération d'embeddings pour la recherche sémantique
    - Enrichissement avec les taxonomies d'OpenFoodFacts
 
-3. **Requêtes et interrogation de la base** (`query.py`, `cypher_queries.py`)
+3. **Validation et inspection du schéma** (`verify_neo4j_schema.py`)
+   - Vérification structurelle de la base Neo4j
+   - Identification des types de nœuds et relations existants
+   - Comptage des relations par type et validation des propriétés
+   - Contrôle de qualité des embeddings et des traductions
+   - Confirmation de l'existence et configuration de l'index vectoriel
+  
+4. **Requêtes et interrogation de la base** (`query.py`, `cypher_queries.py`)
    - Encapsulation des requêtes Cypher
    - Fonctions spécialisées pour différents cas d'usage
 
-4. **Implémentation de l'agent conversationnel** (`agent.py`)
+5. **Implémentation de l'agent conversationnel** (`agent.py`)
    - Analyse des intentions en langage naturel
    - Traduction en requêtes Cypher
    - Formatage des résultats en réponses naturelles
 
+## Exécution
+
+Excécuter ces scripts dans l'ordre suivant :
+
+```bash
+python src/jsonl/filter.py  # Filtrage des données
+python src/jsonl/analyse.py  # Analyse des données
+python src/jsonl/create_graph.py  # Création de la base Neo4j
+python src/jsonl/agent.py  # Lancement de l'agent
+```
 
 ## Structure des taxonomies
 
@@ -83,7 +103,7 @@ en: Child name in English
 fr: Child name in French
 ```
 
-## Fonctionnement du script create_graph.py 
+## Fonctionnement du script `create_graph.py` 
 
 Ce script crée une base de données graphe dans Neo4j à partir des données alimentaires d'Open Food Facts. Voici son fonctionnement étape par étape:
 
@@ -118,39 +138,58 @@ La force de cette approche est que les relations entre entités (produits, ingr�
 qui facilite la navigation et les requêtes complexes dans les données.
 
 
+J'ai examiné le schéma actuel décrit dans le README.md et les résultats de `verify_neo4j_schema.py`. La section du README est globalement correcte, mais il y a quelques informations à ajuster pour qu'elle reflète parfaitement les résultats de la vérification. Voici une version révisée de cette section:
+
 ## Schéma du graphe dans Neo4j
 
-Notre base de données Neo4j créé par `create_graph.py` suit cette structure :
+La base de données Neo4j créée par `create_graph.py` suit cette structure&nbsp;:
 
 ### Nœuds
-- **Product** : Produits alimentaires (code, name, nutriscore_grade, embedding...)
-- **Brand** : Marques commerciales
-- **Category** : Catégories de produits (hiérarchisées)
-- **Ingredient** : Ingrédients (hiérarchisés)
-- **Nutriment** : Nutriments et valeurs nutritives
-- **Label** : Labels et certifications (bio, commerce équitable...)
-- **Additif** : Additifs alimentaires
-- **Allergen** : Allergènes potentiels
-- **Country** : Pays de commercialisation
+- **Product**: Produits alimentaires avec propriétés:
+  - code (identifiant unique)
+  - name (nom du produit)
+  - product_name_en, product_name_fr (traductions)
+  - generic_name (description générique)
+  - quantity (quantité)
+  - nutriscore_grade (score nutritionnel)
+  - nova_group (classification NOVA)
+  - ecoscore_grade (impact environnemental)
+  - embedding (vecteur pour la recherche sémantique)
+
+- **Brand**: Marques commerciales (propriété: name)
+- **Category**: Catégories de produits (propriété: name)
+- **Ingredient**: Ingrédients (propriété: name)
+- **Nutriment**: Nutriments et valeurs nutritives (propriété: name)
+- **Label**: Labels et certifications (propriété: name)
+- **Additif**: Additifs alimentaires (propriété: name)
+- **Allergen**: Allergènes potentiels (propriété: name)
+- **Country**: Pays de commercialisation (propriété: name)
+- **Nutrient**: Informations nutritionnelles complémentaires (propriété: name)
 
 ### Relations principales
-- **(Product)-[:HAS_BRAND]->(Brand)** : Relie produits et marques
-- **(Product)-[:HAS_CATEGORY]->(Category)** : Catégorisation des produits
-- **(Product)-[:CONTAINS]->(Ingredient)** : Ingrédients contenus dans un produit
-- **(Product)-[:CONTAINS_ADDITIF]->(Additif)** : Additifs présents dans un produit
-- **(Product)-[:CONTAINS_ALLERGEN]->(Allergen)** : Allergènes présents dans un produit
-- **(Product)-[:HAS_LABEL]->(Label)** : Labels/certifications d'un produit
-- **(Product)-[:SOLD_IN]->(Country)** : Pays où le produit est commercialisé
-- **(Product)-[:HAS_NUTRIMENT {value, unit}]->(Nutriment)** : Valeurs nutritionnelles
+- **(Product)-[:HAS_BRAND]->(Brand)**: Relie produits et marques
+- **(Product)-[:HAS_CATEGORY]->(Category)**: Catégorisation des produits
+- **(Product)-[:CONTAINS]->(Ingredient)**: Ingrédients contenus dans un produit
+- **(Product)-[:CONTAINS_ADDITIF]->(Additif)**: Additifs présents dans un produit
+- **(Product)-[:CONTAINS_ALLERGEN]->(Allergen)**: Allergènes présents dans un produit
+- **(Product)-[:HAS_LABEL]->(Label)**: Labels/certifications d'un produit
+- **(Product)-[:SOLD_IN]->(Country)**: Pays où le produit est commercialisé
+- **(Product)-[:HAS_NUTRIMENT {value, unit}]->(Nutriment)**: Valeurs nutritionnelles avec propriétés indiquant la quantité et l'unité
 
-### Relations hiérarchiques
-- **(Category)-[:HAS_CHILD]->(Category)** : Hiérarchie des catégories
-- **(Ingredient)-[:CONTAINS]->(Ingredient)** : Hiérarchie des ingrédients
-- **(Additif)-[:PART_OF]->(Additif)** : Hiérarchie des additifs
-- **(Allergen)-[:BELONGS_TO]->(Allergen)** : Hiérarchie des allergènes
-- **(Country)-[:CONTAINS_REGION]->(Country)** : Hiérarchie géographique
-- **(Nutriment)-[:PART_OF]->(Nutriment)** : Hiérarchie des nutriments
-- **(Label)-[:INCLUDES]->(Label)** : Hiérarchie des labels
+### Relations hiérarchiques (basées sur les taxonomies d'OpenFoodFacts)
+Ces relations sont créées par la fonction `create_taxonomy_structures`:
+
+- **(Category)-[:HAS_CHILD]->(Category)**: Hiérarchie des catégories (10,099 relations)
+- **(Ingredient)-[:CONTAINS]->(Ingredient)**: Hiérarchie des ingrédients (4,511 relations)
+- **(Additif)-[:PART_OF]->(Additif)**: Hiérarchie des additifs (115 relations)
+- **(Label)-[:INCLUDES]->(Label)**: Hiérarchie des labels (2,076 relations)
+
+Notez que la relation `BELONGS_TO` entre Allergen-Allergen et `PART_OF` entre Nutriment-Nutriment sont définies dans le schéma mais ne contiennent actuellement aucune relation.
+
+### Index vectoriel
+- **product_embedding_index**: Index vectoriel créé pour les embeddings des produits, permettant des recherches par similarité sémantique (384 dimensions, similarité cosinus)
+
+Le graphe intègre des enrichissements via les taxonomies d'OpenFoodFacts, notamment des traductions et synonymes dans plusieurs langues (principalement français et anglais), stockés comme propriétés des nœuds (translations_en, translations_fr). Cette structure permet des requêtes complexes comme la recherche de produits similaires, l'identification d'alternatives plus saines, ou la navigation dans les hiérarchies d'ingrédients et de catégories.
 
 ## Configuration des modèles pour l'agent
 

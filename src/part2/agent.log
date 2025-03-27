@@ -1616,3 +1616,66 @@ LiteLLM completion() model= claude-3-5-sonnet-20240620; provider = anthropic
 2025-03-27 12:50:05,565 - LiteLLM - INFO - Wrapper: Completed Call, calling success_handler
 2025-03-27 12:50:05,565 - LiteLLM - INFO - selected model name for cost calculation: anthropic/claude-3-5-sonnet-20240620
 2025-03-27 12:50:05,568 - LiteLLM - INFO - selected model name for cost calculation: anthropic/claude-3-5-sonnet-20240620
+2025-03-27 15:50:15,655 - sentence_transformers.SentenceTransformer - INFO - Use pytorch device_name: mps
+2025-03-27 15:50:15,655 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: all-MiniLM-L6-v2
+2025-03-27 15:50:17,235 - FoodAgent - INFO - Modèle d'embedding chargé: all-MiniLM-L6-v2
+2025-03-27 15:50:17,240 - FoodAgent - INFO - LLM initialisé avec LiteLLMModel et le modèle sonnet.
+2025-03-27 15:50:17,314 - FoodAgent - INFO - CodeAgent initialisé avec succès.
+2025-03-27 15:50:18,232 - httpx - INFO - HTTP Request: GET https://raw.githubusercontent.com/BerriAI/litellm/main/model_prices_and_context_window.json "HTTP/1.1 200 OK"
+2025-03-27 15:50:18,552 - LiteLLM - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20240620; provider = anthropic
+2025-03-27 15:50:21,442 - httpx - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-03-27 15:50:21,447 - LiteLLM - INFO - Wrapper: Completed Call, calling success_handler
+2025-03-27 15:50:21,448 - LiteLLM - INFO - selected model name for cost calculation: anthropic/claude-3-5-sonnet-20240620
+2025-03-27 15:50:21,448 - LiteLLM - INFO - selected model name for cost calculation: anthropic/claude-3-5-sonnet-20240620
+2025-03-27 15:50:21,449 - LiteLLM - INFO - selected model name for cost calculation: anthropic/claude-3-5-sonnet-20240620
+2025-03-27 15:50:21,484 - FoodAgent - INFO - Traitement de la requête: 'What products are made by Kellogg's?'
+2025-03-27 15:50:21,484 - FoodAgent - INFO - Intention détectée: brand_query, Entités: ["Kellogg's"]
+2025-03-27 15:50:22,412 - FoodAgent - INFO - Exécution de la requête Cypher avec 10 résultats
+2025-03-27 15:50:22,418 - LiteLLM - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20240620; provider = anthropic
+2025-03-27 15:50:27,025 - httpx - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-03-27 15:50:27,029 - LiteLLM - INFO - Wrapper: Completed Call, calling success_handler
+2025-03-27 15:50:27,029 - LiteLLM - INFO - selected model name for cost calculation: anthropic/claude-3-5-sonnet-20240620
+2025-03-27 15:50:27,029 - LiteLLM - INFO - selected model name for cost calculation: anthropic/claude-3-5-sonnet-20240620
+2025-03-27 15:50:27,039 - LiteLLM - INFO - selected model name for cost calculation: anthropic/claude-3-5-sonnet-20240620
+2025-03-27 16:17:35,979 - sentence_transformers.SentenceTransformer - INFO - Use pytorch device_name: mps
+2025-03-27 16:17:35,979 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: all-MiniLM-L6-v2
+2025-03-27 16:17:37,431 - FoodAgent - INFO - Modèle d'embedding chargé: all-MiniLM-L6-v2
+2025-03-27 16:17:37,436 - FoodAgent - INFO - LLM initialisé avec LiteLLMModel et le modèle sonnet.
+2025-03-27 16:17:37,504 - FoodAgent - INFO - CodeAgent initialisé avec succès.
+2025-03-27 16:17:38,428 - httpx - INFO - HTTP Request: GET https://raw.githubusercontent.com/BerriAI/litellm/main/model_prices_and_context_window.json "HTTP/1.1 200 OK"
+2025-03-27 16:17:38,750 - LiteLLM - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20240620; provider = anthropic
+2025-03-27 16:17:41,245 - httpx - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-03-27 16:17:41,250 - LiteLLM - INFO - Wrapper: Completed Call, calling success_handler
+2025-03-27 16:17:41,251 - LiteLLM - INFO - selected model name for cost calculation: anthropic/claude-3-5-sonnet-20240620
+2025-03-27 16:17:41,251 - LiteLLM - INFO - selected model name for cost calculation: anthropic/claude-3-5-sonnet-20240620
+2025-03-27 16:17:41,254 - LiteLLM - INFO - selected model name for cost calculation: anthropic/claude-3-5-sonnet-20240620
+2025-03-27 16:17:41,289 - FoodAgent - INFO - Traitement de la requête: 'What products are made by Kellogg's?'
+2025-03-27 16:17:41,289 - FoodAgent - INFO - Intention détectée: brand_query, Entités: ["Kellogg's"]
+2025-03-27 16:17:42,031 - FoodAgent - INFO - Exécution de la requête Cypher avec 10 résultats
+2025-03-27 16:17:42,033 - LiteLLM - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20240620; provider = anthropic
+2025-03-27 16:17:44,416 - httpx - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-03-27 16:17:44,417 - LiteLLM - INFO - Wrapper: Completed Call, calling success_handler
+2025-03-27 16:17:44,418 - LiteLLM - INFO - selected model name for cost calculation: anthropic/claude-3-5-sonnet-20240620
+2025-03-27 16:17:44,418 - LiteLLM - INFO - selected model name for cost calculation: anthropic/claude-3-5-sonnet-20240620
+2025-03-27 16:17:44,422 - FoodAgent - INFO - Traitement de la requête: 'List all Kellogg's products'
+2025-03-27 16:17:44,422 - LiteLLM - INFO - selected model name for cost calculation: anthropic/claude-3-5-sonnet-20240620
+2025-03-27 16:17:44,423 - FoodAgent - INFO - Intention détectée: general_query, Entités: []
+2025-03-27 16:17:44,659 - FoodAgent - INFO - Embedding créé pour le texte: 'List all Kellogg's products...' (longueur: 384)
+2025-03-27 16:17:44,988 - FoodAgent - INFO - Exécution de la requête Cypher avec 5 résultats
+2025-03-27 16:17:44,992 - LiteLLM - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20240620; provider = anthropic
+2025-03-27 16:17:49,670 - httpx - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-03-27 16:17:49,673 - LiteLLM - INFO - Wrapper: Completed Call, calling success_handler
+2025-03-27 16:17:49,673 - LiteLLM - INFO - selected model name for cost calculation: anthropic/claude-3-5-sonnet-20240620
+2025-03-27 16:17:49,675 - LiteLLM - INFO - selected model name for cost calculation: anthropic/claude-3-5-sonnet-20240620
+2025-03-27 16:17:49,684 - LiteLLM - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20240620; provider = anthropic
+2025-03-27 16:17:54,657 - httpx - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-03-27 16:17:54,661 - LiteLLM - INFO - Wrapper: Completed Call, calling success_handler
+2025-03-27 16:17:54,661 - LiteLLM - INFO - selected model name for cost calculation: anthropic/claude-3-5-sonnet-20240620
+2025-03-27 16:17:54,661 - LiteLLM - INFO - selected model name for cost calculation: anthropic/claude-3-5-sonnet-20240620
+2025-03-27 16:17:54,667 - LiteLLM - INFO - selected model name for cost calculation: anthropic/claude-3-5-sonnet-20240620

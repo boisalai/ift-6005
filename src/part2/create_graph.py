@@ -17,13 +17,8 @@ print("Chargement du modèle SentenceTransformer...")
 model = SentenceTransformer('all-MiniLM-L6-v2')
 print("Modèle SentenceTransformer chargé: all-MiniLM-L6-v2")
 
-# Chemin vers le répertoire racine du projet (2 niveaux au-dessus de ce script)
-root_dir = Path(__file__).parent.parent.parent.absolute()
-dotenv_path = os.path.join(root_dir, '.env')
-print(f"Chargement des variables d'environnement depuis : {dotenv_path}")
-
-# Chargement des variables d'environnement depuis la racine
-load_dotenv(dotenv_path)
+# Chargement des variables d'environnement
+load_dotenv()
 
 # Configuration de l'accès à Neo4j
 NEO4J_URI = os.getenv("NEO4J_URI", "bolt://localhost:7687")

@@ -1,3 +1,9 @@
+"""
+Vous devriez voir quelque chose comme ceci dans le terminal:
+$ python filter.py
+Taille du fichier: 54.64 Go
+Filtrage des produits: 820000produits [02:25, 6856.33produits/s, total=820,000, filtrés=5,772, ratio=0.70%]
+"""
 import json
 from tqdm import tqdm
 import os
@@ -74,9 +80,4 @@ if __name__ == "__main__":
     # Filtrer les produits canadiens
     filter_products_by_country(input_file, output_file, country="en:canada")
 
-    """
-    Vous devriez voir ceci dans le terminal:
-    $ python filter.py
-    Taille du fichier: 54.64 Go
-    Filtrage des produits: 820000produits [02:25, 6856.33produits/s, total=820,000, filtrés=5,772, ratio=0.70%]
-    """
+    

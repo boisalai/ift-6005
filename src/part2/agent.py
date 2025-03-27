@@ -11,10 +11,7 @@ from sentence_transformers import SentenceTransformer
 from enum import Enum
 
 # Chargement des variables d'environnement
-root_dir = Path(__file__).parent.parent.parent.absolute()
-dotenv_path = os.path.join(root_dir, '.env')
-print(f"Chargement des variables d'environnement depuis : {dotenv_path}")
-load_dotenv(dotenv_path)
+load_dotenv()
 
 # Configuration Neo4j
 NEO4J_URI = os.getenv("NEO4J_URI", "bolt://localhost:7687")

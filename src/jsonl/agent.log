@@ -929,3 +929,690 @@ LiteLLM completion() model= claude-3-5-sonnet-20240620; provider = anthropic
 2025-03-25 17:14:40,053 - LiteLLM - INFO - Wrapper: Completed Call, calling success_handler
 2025-03-25 17:14:40,054 - LiteLLM - INFO - selected model name for cost calculation: anthropic/claude-3-5-sonnet-20240620
 2025-03-25 17:14:40,060 - LiteLLM - INFO - selected model name for cost calculation: anthropic/claude-3-5-sonnet-20240620
+2025-03-27 11:46:17,046 - sentence_transformers.SentenceTransformer - INFO - Use pytorch device_name: mps
+2025-03-27 11:46:17,046 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: all-MiniLM-L6-v2
+2025-03-27 11:46:18,786 - FoodAgent - INFO - Modèle d'embedding chargé: all-MiniLM-L6-v2
+2025-03-27 11:46:18,788 - FoodAgent - INFO - LLM initialisé avec LiteLLMModel et le modèle ollama/llama3.2:latest.
+2025-03-27 11:46:18,962 - FoodAgent - INFO - CodeAgent initialisé avec succès.
+2025-03-27 11:46:38,813 - sentence_transformers.SentenceTransformer - INFO - Use pytorch device_name: mps
+2025-03-27 11:46:38,814 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: all-MiniLM-L6-v2
+2025-03-27 11:46:40,384 - FoodAgent - INFO - Modèle d'embedding chargé: all-MiniLM-L6-v2
+2025-03-27 11:46:40,386 - FoodAgent - INFO - LLM initialisé avec LiteLLMModel et le modèle ollama/llama3.2:latest.
+2025-03-27 11:46:40,432 - FoodAgent - INFO - CodeAgent initialisé avec succès.
+2025-03-27 11:46:40,433 - FoodAgent - INFO - FoodDatabaseAgent initialisé avec les gestionnaires d'intention
+2025-03-27 11:46:40,433 - FoodAgent - INFO - Traitement de la requête: 'What products are made by Kellogg's?' (langue: en)
+2025-03-27 11:46:40,433 - FoodAgent - ERROR - Erreur lors du traitement de la requête: 'IntentAnalyzer' object has no attribute 'total_queries'
+2025-03-27 11:49:27,042 - sentence_transformers.SentenceTransformer - INFO - Use pytorch device_name: mps
+2025-03-27 11:49:27,043 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: all-MiniLM-L6-v2
+2025-03-27 11:49:28,983 - FoodAgent - INFO - Modèle d'embedding chargé: all-MiniLM-L6-v2
+2025-03-27 11:49:28,984 - FoodAgent - INFO - LLM initialisé avec LiteLLMModel et le modèle ollama/llama3.2:latest.
+2025-03-27 11:49:29,031 - FoodAgent - INFO - CodeAgent initialisé avec succès.
+2025-03-27 11:49:29,032 - FoodAgent - INFO - FoodDatabaseAgent initialisé avec les gestionnaires d'intention
+2025-03-27 11:49:29,032 - FoodAgent - INFO - Traitement de la requête: 'What products are made by Kellogg's?' (langue: en)
+2025-03-27 11:49:29,032 - IntentAnalyzer - INFO - Pas de match rapide, utilisation du LLM pour l'analyse
+2025-03-27 11:49:29,032 - IntentAnalyzer - ERROR - Erreur pendant l'analyse d'intention avec LLM: 'LiteLLMModel' object has no attribute 'invoke'
+2025-03-27 11:49:29,032 - IntentAnalyzer - INFO - Analyse par LLM terminée en 0.0ms
+2025-03-27 11:49:29,032 - FoodAgent - INFO - Intention identifiée: IntentType.GENERAL_QUERY, Entités: None
+2025-03-27 11:49:30,881 - FoodAgent - ERROR - Erreur lors du traitement de la requête: 'LiteLLMModel' object has no attribute 'invoke'
+2025-03-27 12:01:44,049 - sentence_transformers.SentenceTransformer - INFO - Use pytorch device_name: mps
+2025-03-27 12:01:44,050 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: all-MiniLM-L6-v2
+2025-03-27 12:01:45,470 - FoodAgent - INFO - Modèle d'embedding chargé: all-MiniLM-L6-v2
+2025-03-27 12:01:45,472 - FoodAgent - INFO - LLM initialisé avec LiteLLMModel et le modèle ollama/llama3.2:latest.
+2025-03-27 12:01:45,521 - FoodAgent - INFO - CodeAgent initialisé avec succès.
+2025-03-27 12:01:45,522 - FoodAgent - INFO - FoodDatabaseAgent initialisé avec les gestionnaires d'intention
+2025-03-27 12:01:45,522 - FoodAgent - INFO - Traitement de la requête: 'What products are made by Kellogg's?' (langue: en)
+2025-03-27 12:01:45,522 - IntentAnalyzer - INFO - Pas de match rapide, utilisation du LLM pour l'analyse
+2025-03-27 12:01:46,658 - httpx - INFO - HTTP Request: GET https://raw.githubusercontent.com/BerriAI/litellm/main/model_prices_and_context_window.json "HTTP/1.1 200 OK"
+2025-03-27 12:01:46,977 - IntentAnalyzer - ERROR - Erreur pendant l'analyse d'intention avec LLM: string indices must be integers, not 'str'
+2025-03-27 12:01:46,977 - IntentAnalyzer - INFO - Analyse par LLM terminée en 1454.7ms
+2025-03-27 12:01:46,977 - FoodAgent - INFO - Intention identifiée: IntentType.GENERAL_QUERY, Entités: None
+2025-03-27 12:01:47,828 - FoodAgent - ERROR - Erreur lors du traitement de la requête: 'FoodDatabaseAgent' object has no attribute 'logger'
+2025-03-27 12:05:30,700 - sentence_transformers.SentenceTransformer - INFO - Use pytorch device_name: mps
+2025-03-27 12:05:30,700 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: all-MiniLM-L6-v2
+2025-03-27 12:05:32,223 - FoodAgent - INFO - Modèle d'embedding chargé: all-MiniLM-L6-v2
+2025-03-27 12:05:32,227 - FoodAgent - INFO - LLM initialisé avec LiteLLMModel et le modèle ollama/llama3.2:latest.
+2025-03-27 12:05:32,278 - FoodAgent - INFO - CodeAgent initialisé avec succès.
+2025-03-27 12:05:32,279 - FoodAgent - INFO - FoodDatabaseAgent initialisé avec les gestionnaires d'intention
+2025-03-27 12:05:32,279 - FoodAgent - INFO - Traitement de la requête: 'What products are made by Kellogg's?' (langue: en)
+2025-03-27 12:05:32,279 - IntentAnalyzer - INFO - Pas de match rapide, utilisation du LLM pour l'analyse
+2025-03-27 12:05:33,129 - httpx - INFO - HTTP Request: GET https://raw.githubusercontent.com/BerriAI/litellm/main/model_prices_and_context_window.json "HTTP/1.1 200 OK"
+2025-03-27 12:05:33,410 - IntentAnalyzer - ERROR - Erreur pendant l'analyse d'intention avec LLM: string indices must be integers, not 'str'
+2025-03-27 12:05:33,410 - IntentAnalyzer - INFO - Analyse par LLM terminée en 1130.6ms
+2025-03-27 12:05:33,410 - FoodAgent - INFO - Intention identifiée: IntentType.GENERAL_QUERY, Entités: None
+2025-03-27 12:05:34,201 - FoodAgent - ERROR - Error formatting response with LLM: string indices must be integers, not 'str'
+2025-03-27 12:07:59,197 - sentence_transformers.SentenceTransformer - INFO - Use pytorch device_name: mps
+2025-03-27 12:07:59,197 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: all-MiniLM-L6-v2
+2025-03-27 12:08:00,523 - FoodAgent - INFO - Modèle d'embedding chargé: all-MiniLM-L6-v2
+2025-03-27 12:08:00,526 - FoodAgent - INFO - LLM initialisé avec LiteLLMModel et le modèle ollama/llama3.2:latest.
+2025-03-27 12:08:00,576 - FoodAgent - INFO - CodeAgent initialisé avec succès.
+2025-03-27 12:08:00,577 - FoodAgent - INFO - FoodDatabaseAgent initialisé avec les gestionnaires d'intention
+2025-03-27 12:08:00,577 - FoodAgent - INFO - Traitement de la requête: 'What products are made by Kellogg's?' (langue: en)
+2025-03-27 12:08:00,577 - IntentAnalyzer - INFO - Pas de match rapide, utilisation du LLM pour l'analyse
+2025-03-27 12:08:01,455 - httpx - INFO - HTTP Request: GET https://raw.githubusercontent.com/BerriAI/litellm/main/model_prices_and_context_window.json "HTTP/1.1 200 OK"
+2025-03-27 12:08:01,763 - IntentAnalyzer - ERROR - Erreur pendant l'analyse d'intention avec LLM: string indices must be integers, not 'str'
+2025-03-27 12:08:01,763 - IntentAnalyzer - INFO - Analyse par LLM terminée en 1185.7ms
+2025-03-27 12:08:01,763 - FoodAgent - INFO - Intention identifiée: IntentType.GENERAL_QUERY, Entités: None
+2025-03-27 12:08:02,574 - FoodAgent - ERROR - Error formatting response with LLM: string indices must be integers, not 'str'
+2025-03-27 12:09:52,426 - sentence_transformers.SentenceTransformer - INFO - Use pytorch device_name: mps
+2025-03-27 12:09:52,426 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: all-MiniLM-L6-v2
+2025-03-27 12:09:53,600 - FoodAgent - INFO - Modèle d'embedding chargé: all-MiniLM-L6-v2
+2025-03-27 12:09:53,602 - FoodAgent - INFO - LLM initialisé avec LiteLLMModel et le modèle ollama/llama3.2:latest.
+2025-03-27 12:09:53,647 - FoodAgent - INFO - CodeAgent initialisé avec succès.
+2025-03-27 12:09:53,648 - FoodAgent - INFO - FoodDatabaseAgent initialisé avec les gestionnaires d'intention
+2025-03-27 12:09:53,648 - FoodAgent - INFO - Traitement de la requête: 'What products are made by Kellogg's?' (langue: en)
+2025-03-27 12:09:53,648 - IntentAnalyzer - INFO - Pas de match rapide, utilisation du LLM pour l'analyse
+2025-03-27 12:09:54,455 - httpx - INFO - HTTP Request: GET https://raw.githubusercontent.com/BerriAI/litellm/main/model_prices_and_context_window.json "HTTP/1.1 200 OK"
+2025-03-27 12:09:54,734 - IntentAnalyzer - ERROR - Erreur pendant l'analyse d'intention avec LLM: string indices must be integers, not 'str'
+2025-03-27 12:09:54,734 - IntentAnalyzer - INFO - Analyse par LLM terminée en 1085.6ms
+2025-03-27 12:09:54,734 - FoodAgent - INFO - Intention identifiée: IntentType.GENERAL_QUERY, Entités: None
+2025-03-27 12:09:55,537 - FoodAgent - ERROR - Error formatting response with LLM: string indices must be integers, not 'str'
+2025-03-27 12:11:32,281 - sentence_transformers.SentenceTransformer - INFO - Use pytorch device_name: mps
+2025-03-27 12:11:32,281 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: all-MiniLM-L6-v2
+2025-03-27 12:11:33,619 - FoodAgent - INFO - Modèle d'embedding chargé: all-MiniLM-L6-v2
+2025-03-27 12:11:33,621 - FoodAgent - INFO - LLM initialisé avec LiteLLMModel et le modèle ollama/llama3.2:latest.
+2025-03-27 12:11:33,666 - FoodAgent - INFO - CodeAgent initialisé avec succès.
+2025-03-27 12:12:11,627 - sentence_transformers.SentenceTransformer - INFO - Use pytorch device_name: mps
+2025-03-27 12:12:11,627 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: all-MiniLM-L6-v2
+2025-03-27 12:12:12,775 - FoodAgent - INFO - Modèle d'embedding chargé: all-MiniLM-L6-v2
+2025-03-27 12:12:12,777 - FoodAgent - INFO - LLM initialisé avec LiteLLMModel et le modèle ollama/llama3.2:latest.
+2025-03-27 12:12:12,821 - FoodAgent - INFO - CodeAgent initialisé avec succès.
+2025-03-27 12:12:12,822 - FoodAgent - INFO - FoodDatabaseAgent initialisé avec les gestionnaires d'intention
+2025-03-27 12:12:12,822 - FoodAgent - INFO - Traitement de la requête: 'What products are made by Kellogg's?' (langue: en)
+2025-03-27 12:12:12,822 - IntentAnalyzer - INFO - Pas de match rapide, utilisation du LLM pour l'analyse
+2025-03-27 12:12:13,622 - httpx - INFO - HTTP Request: GET https://raw.githubusercontent.com/BerriAI/litellm/main/model_prices_and_context_window.json "HTTP/1.1 200 OK"
+2025-03-27 12:12:13,907 - IntentAnalyzer - ERROR - Erreur pendant l'analyse d'intention avec LLM: string indices must be integers, not 'str'
+2025-03-27 12:12:13,907 - IntentAnalyzer - INFO - Analyse par LLM terminée en 1085.0ms
+2025-03-27 12:12:13,907 - FoodAgent - INFO - Intention identifiée: IntentType.GENERAL_QUERY, Entités: None
+2025-03-27 12:12:14,673 - FoodAgent - ERROR - Error formatting response with LLM: string indices must be integers, not 'str'
+2025-03-27 12:17:36,394 - sentence_transformers.SentenceTransformer - INFO - Use pytorch device_name: mps
+2025-03-27 12:17:36,394 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: all-MiniLM-L6-v2
+2025-03-27 12:17:37,744 - FoodAgent - INFO - Modèle d'embedding chargé: all-MiniLM-L6-v2
+2025-03-27 12:17:37,746 - FoodAgent - INFO - LLM initialisé avec LiteLLMModel et le modèle ollama/llama3.2:latest.
+2025-03-27 12:17:37,798 - FoodAgent - INFO - CodeAgent initialisé avec succès.
+2025-03-27 12:17:37,799 - FoodAgent - INFO - FoodDatabaseAgent initialisé avec les gestionnaires d'intention
+2025-03-27 12:17:37,799 - FoodAgent - INFO - Traitement de la requête: 'What products are made by Kellogg's?' (langue: en)
+2025-03-27 12:17:37,799 - IntentAnalyzer - INFO - Pas de match rapide, utilisation du LLM pour l'analyse
+2025-03-27 12:17:38,656 - httpx - INFO - HTTP Request: GET https://raw.githubusercontent.com/BerriAI/litellm/main/model_prices_and_context_window.json "HTTP/1.1 200 OK"
+2025-03-27 12:17:38,961 - IntentAnalyzer - ERROR - Erreur pendant l'analyse d'intention avec LLM: string indices must be integers, not 'str'
+2025-03-27 12:17:38,961 - IntentAnalyzer - INFO - Analyse par LLM terminée en 1161.3ms
+2025-03-27 12:17:38,961 - FoodAgent - INFO - Intention identifiée: IntentType.GENERAL_QUERY, Entités: None
+2025-03-27 12:17:39,750 - FoodAgent - ERROR - Error formatting response with LLM: string indices must be integers, not 'str'
+2025-03-27 12:19:29,169 - sentence_transformers.SentenceTransformer - INFO - Use pytorch device_name: mps
+2025-03-27 12:19:29,169 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: all-MiniLM-L6-v2
+2025-03-27 12:19:30,663 - FoodAgent - INFO - Modèle d'embedding chargé: all-MiniLM-L6-v2
+2025-03-27 12:19:30,664 - FoodAgent - INFO - LLM initialisé avec LiteLLMModel et le modèle ollama/llama3.2:latest.
+2025-03-27 12:19:30,709 - FoodAgent - INFO - CodeAgent initialisé avec succès.
+2025-03-27 12:19:30,710 - FoodAgent - INFO - FoodDatabaseAgent initialisé avec les gestionnaires d'intention
+2025-03-27 12:19:30,710 - FoodAgent - INFO - Traitement de la requête: 'What products are made by Kellogg's?' (langue: en)
+2025-03-27 12:19:30,710 - IntentAnalyzer - INFO - Pas de match rapide, utilisation du LLM pour l'analyse
+2025-03-27 12:19:31,505 - httpx - INFO - HTTP Request: GET https://raw.githubusercontent.com/BerriAI/litellm/main/model_prices_and_context_window.json "HTTP/1.1 200 OK"
+2025-03-27 12:19:31,786 - IntentAnalyzer - ERROR - Erreur pendant l'analyse d'intention avec LLM: string indices must be integers, not 'str'
+2025-03-27 12:19:31,786 - IntentAnalyzer - INFO - Analyse par LLM terminée en 1076.5ms
+2025-03-27 12:19:31,786 - FoodAgent - INFO - Intention identifiée: IntentType.GENERAL_QUERY, Entités: None
+2025-03-27 12:19:32,527 - FoodAgent - ERROR - Error formatting response with LLM: string indices must be integers, not 'str'
+2025-03-27 12:25:47,699 - neo4j.pool - DEBUG - [#0000]  _: <POOL> created, routing address IPv4Address(('a3d3e8c5.databases.neo4j.io', 7687))
+2025-03-27 12:25:47,714 - sentence_transformers.SentenceTransformer - INFO - Use pytorch device_name: mps
+2025-03-27 12:25:47,714 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: all-MiniLM-L6-v2
+2025-03-27 12:25:47,715 - urllib3.connectionpool - DEBUG - Starting new HTTPS connection (1): huggingface.co:443
+2025-03-27 12:25:48,072 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /sentence-transformers/all-MiniLM-L6-v2/resolve/main/modules.json HTTP/11" 200 0
+2025-03-27 12:25:48,203 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /sentence-transformers/all-MiniLM-L6-v2/resolve/main/config_sentence_transformers.json HTTP/11" 200 0
+2025-03-27 12:25:48,277 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /sentence-transformers/all-MiniLM-L6-v2/resolve/main/README.md HTTP/11" 200 0
+2025-03-27 12:25:48,351 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /sentence-transformers/all-MiniLM-L6-v2/resolve/main/modules.json HTTP/11" 200 0
+2025-03-27 12:25:48,431 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /sentence-transformers/all-MiniLM-L6-v2/resolve/main/sentence_bert_config.json HTTP/11" 200 0
+2025-03-27 12:25:48,522 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /sentence-transformers/all-MiniLM-L6-v2/resolve/main/adapter_config.json HTTP/11" 404 0
+2025-03-27 12:25:48,606 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /sentence-transformers/all-MiniLM-L6-v2/resolve/main/config.json HTTP/11" 200 0
+2025-03-27 12:25:48,761 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /sentence-transformers/all-MiniLM-L6-v2/resolve/main/tokenizer_config.json HTTP/11" 200 0
+2025-03-27 12:25:48,892 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "GET /api/models/sentence-transformers/all-MiniLM-L6-v2/revision/main HTTP/11" 200 6760
+2025-03-27 12:25:49,020 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "GET /api/models/sentence-transformers/all-MiniLM-L6-v2 HTTP/11" 200 6760
+2025-03-27 12:25:49,111 - FoodAgent - INFO - Modèle d'embedding chargé: all-MiniLM-L6-v2
+2025-03-27 12:25:49,112 - FoodAgent - INFO - LLM initialisé avec LiteLLMModel et le modèle ollama/llama3.2:latest.
+2025-03-27 12:25:49,133 - primp.utils - DEBUG - Loaded CA certs
+2025-03-27 12:25:49,136 - FoodAgent - INFO - CodeAgent initialisé avec succès.
+2025-03-27 12:25:49,137 - FoodAgent - INFO - FoodDatabaseAgent initialisé avec les gestionnaires d'intention
+2025-03-27 12:25:49,137 - FoodAgent - INFO - Traitement de la requête: 'What products are made by Kellogg's?' (langue: en)
+2025-03-27 12:25:49,137 - IntentAnalyzer - INFO - Pas de match rapide, utilisation du LLM pour l'analyse
+2025-03-27 12:25:49,780 - httpcore.connection - DEBUG - connect_tcp.started host='raw.githubusercontent.com' port=443 local_address=None timeout=5 socket_options=None
+2025-03-27 12:25:49,798 - httpcore.connection - DEBUG - connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x15fcf1a50>
+2025-03-27 12:25:49,798 - httpcore.connection - DEBUG - start_tls.started ssl_context=<ssl.SSLContext object at 0x16827fad0> server_hostname='raw.githubusercontent.com' timeout=5
+2025-03-27 12:25:49,824 - httpcore.connection - DEBUG - start_tls.complete return_value=<httpcore._backends.sync.SyncStream object at 0x168327d90>
+2025-03-27 12:25:49,824 - httpcore.http11 - DEBUG - send_request_headers.started request=<Request [b'GET']>
+2025-03-27 12:25:49,824 - httpcore.http11 - DEBUG - send_request_headers.complete
+2025-03-27 12:25:49,824 - httpcore.http11 - DEBUG - send_request_body.started request=<Request [b'GET']>
+2025-03-27 12:25:49,824 - httpcore.http11 - DEBUG - send_request_body.complete
+2025-03-27 12:25:49,824 - httpcore.http11 - DEBUG - receive_response_headers.started request=<Request [b'GET']>
+2025-03-27 12:25:49,844 - httpcore.http11 - DEBUG - receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Connection', b'keep-alive'), (b'Content-Length', b'18770'), (b'Cache-Control', b'max-age=300'), (b'Content-Security-Policy', b"default-src 'none'; style-src 'unsafe-inline'; sandbox"), (b'Content-Type', b'text/plain; charset=utf-8'), (b'ETag', b'W/"ab41a11a46add79b15640c942a8d9d91708bcfcd8b2af7a987fed041fc76d0f2"'), (b'Strict-Transport-Security', b'max-age=31536000'), (b'X-Content-Type-Options', b'nosniff'), (b'X-Frame-Options', b'deny'), (b'X-XSS-Protection', b'1; mode=block'), (b'X-GitHub-Request-Id', b'0ADD:23E55E:37C8D8:4825FD:67E4EC93'), (b'Content-Encoding', b'gzip'), (b'Accept-Ranges', b'bytes'), (b'Date', b'Thu, 27 Mar 2025 16:25:49 GMT'), (b'Via', b'1.1 varnish'), (b'X-Served-By', b'cache-yul1970032-YUL'), (b'X-Cache', b'HIT'), (b'X-Cache-Hits', b'3'), (b'X-Timer', b'S1743092750.894948,VS0,VE0'), (b'Vary', b'Authorization,Accept-Encoding,Origin'), (b'Access-Control-Allow-Origin', b'*'), (b'Cross-Origin-Resource-Policy', b'cross-origin'), (b'X-Fastly-Request-ID', b'ecb7ebf6f641a4c700ef8a0bfba097ebe24d284a'), (b'Expires', b'Thu, 27 Mar 2025 16:30:49 GMT'), (b'Source-Age', b'227')])
+2025-03-27 12:25:49,845 - httpx - INFO - HTTP Request: GET https://raw.githubusercontent.com/BerriAI/litellm/main/model_prices_and_context_window.json "HTTP/1.1 200 OK"
+2025-03-27 12:25:49,845 - httpcore.http11 - DEBUG - receive_response_body.started request=<Request [b'GET']>
+2025-03-27 12:25:49,847 - httpcore.http11 - DEBUG - receive_response_body.complete
+2025-03-27 12:25:49,847 - httpcore.http11 - DEBUG - response_closed.started
+2025-03-27 12:25:49,847 - httpcore.http11 - DEBUG - response_closed.complete
+2025-03-27 12:25:49,847 - httpcore.connection - DEBUG - close.started
+2025-03-27 12:25:49,847 - httpcore.connection - DEBUG - close.complete
+2025-03-27 12:25:49,997 - asyncio - DEBUG - Using selector: KqueueSelector
+2025-03-27 12:25:50,017 - LiteLLM - DEBUG - [Non-Blocking] Unable to import GenericAPILogger - LiteLLM Enterprise Feature - No module named 'litellm.proxy.enterprise'
+2025-03-27 12:25:50,077 - IntentAnalyzer - ERROR - Erreur pendant l'analyse d'intention avec LLM: string indices must be integers, not 'str'
+2025-03-27 12:25:50,077 - IntentAnalyzer - INFO - Analyse par LLM terminée en 939.9ms
+2025-03-27 12:25:50,077 - FoodAgent - INFO - Intention identifiée: IntentType.GENERAL_QUERY, Entités: None
+2025-03-27 12:25:50,180 - neo4j - DEBUG - [#0000]  _: <WORKSPACE> resolve home database
+2025-03-27 12:25:50,180 - neo4j.pool - DEBUG - [#0000]  _: <POOL> attempting to update routing table from IPv4Address(('a3d3e8c5.databases.neo4j.io', 7687))
+2025-03-27 12:25:50,180 - neo4j.io - DEBUG - [#0000]  _: <RESOLVE> in: a3d3e8c5.databases.neo4j.io:7687
+2025-03-27 12:25:50,211 - neo4j.io - DEBUG - [#0000]  _: <RESOLVE> dns resolver out: 34.66.78.163:7687
+2025-03-27 12:25:50,211 - neo4j.pool - DEBUG - [#0000]  _: <POOL> _acquire router connection, database=None, address=ResolvedIPv4Address(('34.66.78.163', 7687))
+2025-03-27 12:25:50,212 - neo4j.pool - DEBUG - [#0000]  _: <POOL> trying to hand out new connection
+2025-03-27 12:25:50,217 - neo4j.io - DEBUG - [#0000]  C: <OPEN> 34.66.78.163:7687
+2025-03-27 12:25:50,262 - neo4j.io - DEBUG - [#F0C7]  C: <SECURE> a3d3e8c5.databases.neo4j.io
+2025-03-27 12:25:50,320 - neo4j.io - DEBUG - [#F0C7]  C: <MAGIC> 0x6060B017
+2025-03-27 12:25:50,320 - neo4j.io - DEBUG - [#F0C7]  C: <HANDSHAKE> 0x000001FF 0x00080805 0x00020404 0x00000003
+2025-03-27 12:25:50,370 - neo4j.io - DEBUG - [#F0C7]  S: <HANDSHAKE> 0x000001FF [3] 0x00040404 0x00040405 0x00020805 0x00
+2025-03-27 12:25:50,371 - neo4j.io - DEBUG - [#F0C7]  C: <HANDSHAKE> 0x00000805 0x00
+2025-03-27 12:25:50,371 - neo4j.io - DEBUG - [#F0C7]  C: HELLO {'user_agent': 'neo4j-python/5.28.1 Python/3.11.11-final-0 (darwin)', 'routing': {'address': 'a3d3e8c5.databases.neo4j.io:7687'}, 'bolt_agent': {'product': 'neo4j-python/5.28.1', 'platform': 'Darwin 24.3.0; arm64', 'language': 'Python/3.11.11-final-0', 'language_details': 'CPython; 3.11.11-final-0 (main, Dec  3 2024 17:20:40) [Clang 16.0.0 (clang-1600.0.26.4)]'}}
+2025-03-27 12:25:50,371 - neo4j.io - DEBUG - [#F0C7]  _: <CONNECTION> client state: CONNECTED > AUTHENTICATION
+2025-03-27 12:25:50,371 - neo4j.io - DEBUG - [#F0C7]  C: LOGON {'scheme': 'basic', 'principal': 'neo4j', 'credentials': '*******'}
+2025-03-27 12:25:50,371 - neo4j.io - DEBUG - [#F0C7]  _: <CONNECTION> client state: AUTHENTICATION > READY
+2025-03-27 12:25:50,426 - neo4j.io - DEBUG - [#F0C7]  S: SUCCESS {'server': 'Neo4j/5.27-aura', 'protocol_version': '5.8', 'connection_id': 'bolt-41418', 'hints': {'connection.recv_timeout_seconds': 60, 'telemetry.enabled': True, 'ssr.enabled': True}}
+2025-03-27 12:25:50,426 - neo4j.io - DEBUG - [#F0C7]  _: <CONNECTION> server state: CONNECTED > AUTHENTICATION
+2025-03-27 12:25:50,428 - neo4j.io - DEBUG - [#F0C7]  S: SUCCESS {'advertised_address': 'si-a3d3e8c5-e4dd.production-orch-0065.neo4j.io:7687'}
+2025-03-27 12:25:50,428 - neo4j.io - DEBUG - [#F0C7]  _: <CONNECTION> server state: AUTHENTICATION > READY
+2025-03-27 12:25:50,428 - neo4j.io - DEBUG - [#F0C7]  C: ROUTE {'address': 'a3d3e8c5.databases.neo4j.io:7687'} () {}
+2025-03-27 12:25:50,483 - neo4j.io - DEBUG - [#F0C7]  S: SUCCESS {'rt': {'servers': [{'addresses': ['si-a3d3e8c5-e4dd.production-orch-0065.neo4j.io:7687'], 'role': 'WRITE'}, {'addresses': ['si-a3d3e8c5-e4dd.production-orch-0065.neo4j.io:7687'], 'role': 'READ'}, {'addresses': ['si-a3d3e8c5-e4dd.production-orch-0065.neo4j.io:7687'], 'role': 'ROUTE'}], 'ttl': 10, 'db': 'neo4j'}}
+2025-03-27 12:25:50,483 - neo4j.pool - DEBUG - [#F0C7]  _: <POOL> released bolt-41418
+2025-03-27 12:25:50,484 - neo4j.pool - DEBUG - [#0000]  _: <ROUTING> updated table=RoutingTable(database='neo4j', routers={IPv4Address(('si-a3d3e8c5-e4dd.production-orch-0065.neo4j.io', 7687))}, readers={IPv4Address(('si-a3d3e8c5-e4dd.production-orch-0065.neo4j.io', 7687))}, writers={IPv4Address(('si-a3d3e8c5-e4dd.production-orch-0065.neo4j.io', 7687))}, last_updated_time=164334.405491625, ttl=10)
+2025-03-27 12:25:50,485 - neo4j.pool - DEBUG - [#0000]  _: <POOL> update routing table from address=ResolvedIPv4Address(('34.66.78.163', 7687)) (RoutingTable(database='neo4j', routers={IPv4Address(('si-a3d3e8c5-e4dd.production-orch-0065.neo4j.io', 7687))}, readers={IPv4Address(('si-a3d3e8c5-e4dd.production-orch-0065.neo4j.io', 7687))}, writers={IPv4Address(('si-a3d3e8c5-e4dd.production-orch-0065.neo4j.io', 7687))}, last_updated_time=164334.405491625, ttl=10))
+2025-03-27 12:25:50,485 - neo4j - DEBUG - [#0000]  _: <WORKSPACE> pinning database: 'neo4j'
+2025-03-27 12:25:50,485 - neo4j.pool - DEBUG - [#0000]  _: <POOL> acquire routing connection, access_mode='WRITE', database=AcquisitionDatabase(name='neo4j', guessed=False)
+2025-03-27 12:25:50,486 - neo4j.pool - DEBUG - [#0000]  _: <POOL> routing aged?, database=neo4j
+2025-03-27 12:25:50,486 - neo4j.pool - DEBUG - [#0000]  _: <ROUTING> purge check: last_updated_time=164334.405491625, ttl=10, perf_time=164334.4073785 => False
+2025-03-27 12:25:50,486 - neo4j.pool - DEBUG - [#0000]  _: <ROUTING> checking table freshness (readonly=False): table expired=False, has_server_for_mode=True, table routers={IPv4Address(('si-a3d3e8c5-e4dd.production-orch-0065.neo4j.io', 7687))} => True
+2025-03-27 12:25:50,486 - neo4j.pool - DEBUG - [#0000]  _: <POOL> using existing routing table RoutingTable(database='neo4j', routers={IPv4Address(('si-a3d3e8c5-e4dd.production-orch-0065.neo4j.io', 7687))}, readers={IPv4Address(('si-a3d3e8c5-e4dd.production-orch-0065.neo4j.io', 7687))}, writers={IPv4Address(('si-a3d3e8c5-e4dd.production-orch-0065.neo4j.io', 7687))}, last_updated_time=164334.405491625, ttl=10)
+2025-03-27 12:25:50,486 - neo4j.pool - DEBUG - [#0000]  _: <POOL> acquire address, database='neo4j' address=IPv4Address(('si-a3d3e8c5-e4dd.production-orch-0065.neo4j.io', 7687))
+2025-03-27 12:25:50,486 - neo4j.pool - DEBUG - [#0000]  _: <POOL> trying to hand out new connection
+2025-03-27 12:25:50,486 - neo4j.io - DEBUG - [#0000]  _: <RESOLVE> in: si-a3d3e8c5-e4dd.production-orch-0065.neo4j.io:7687
+2025-03-27 12:25:50,523 - neo4j.io - DEBUG - [#0000]  _: <RESOLVE> dns resolver out: 34.66.78.163:7687
+2025-03-27 12:25:50,524 - neo4j.io - DEBUG - [#0000]  C: <OPEN> 34.66.78.163:7687
+2025-03-27 12:25:50,575 - neo4j.io - DEBUG - [#F0C8]  C: <SECURE> si-a3d3e8c5-e4dd.production-orch-0065.neo4j.io
+2025-03-27 12:25:50,633 - neo4j.io - DEBUG - [#F0C8]  C: <MAGIC> 0x6060B017
+2025-03-27 12:25:50,634 - neo4j.io - DEBUG - [#F0C8]  C: <HANDSHAKE> 0x000001FF 0x00080805 0x00020404 0x00000003
+2025-03-27 12:25:50,688 - neo4j.io - DEBUG - [#F0C8]  S: <HANDSHAKE> 0x000001FF [3] 0x00040404 0x00040405 0x00020805 0x00
+2025-03-27 12:25:50,688 - neo4j.io - DEBUG - [#F0C8]  C: <HANDSHAKE> 0x00000805 0x00
+2025-03-27 12:25:50,689 - neo4j.io - DEBUG - [#F0C8]  C: HELLO {'user_agent': 'neo4j-python/5.28.1 Python/3.11.11-final-0 (darwin)', 'routing': {'address': 'a3d3e8c5.databases.neo4j.io:7687'}, 'bolt_agent': {'product': 'neo4j-python/5.28.1', 'platform': 'Darwin 24.3.0; arm64', 'language': 'Python/3.11.11-final-0', 'language_details': 'CPython; 3.11.11-final-0 (main, Dec  3 2024 17:20:40) [Clang 16.0.0 (clang-1600.0.26.4)]'}}
+2025-03-27 12:25:50,690 - neo4j.io - DEBUG - [#F0C8]  _: <CONNECTION> client state: CONNECTED > AUTHENTICATION
+2025-03-27 12:25:50,690 - neo4j.io - DEBUG - [#F0C8]  C: LOGON {'scheme': 'basic', 'principal': 'neo4j', 'credentials': '*******'}
+2025-03-27 12:25:50,690 - neo4j.io - DEBUG - [#F0C8]  _: <CONNECTION> client state: AUTHENTICATION > READY
+2025-03-27 12:25:50,744 - neo4j.io - DEBUG - [#F0C8]  S: SUCCESS {'server': 'Neo4j/5.27-aura', 'protocol_version': '5.8', 'connection_id': 'bolt-41419', 'hints': {'connection.recv_timeout_seconds': 60, 'telemetry.enabled': True, 'ssr.enabled': True}}
+2025-03-27 12:25:50,745 - neo4j.io - DEBUG - [#F0C8]  _: <CONNECTION> server state: CONNECTED > AUTHENTICATION
+2025-03-27 12:25:50,745 - neo4j.io - DEBUG - [#F0C8]  S: SUCCESS {'advertised_address': 'si-a3d3e8c5-e4dd.production-orch-0065.neo4j.io:7687'}
+2025-03-27 12:25:50,745 - neo4j.io - DEBUG - [#F0C8]  _: <CONNECTION> server state: AUTHENTICATION > READY
+2025-03-27 12:25:50,746 - neo4j.io - DEBUG - [#F0C8]  C: TELEMETRY 2  # (<TelemetryAPI.AUTO_COMMIT: 2>)
+2025-03-27 12:25:50,747 - neo4j.io - DEBUG - [#F0C8]  C: RUN '\nCALL db.index.vector.queryNodes($index_name, $limit, $embedding)\nYIELD node as product, score\nWITH product, score\nOPTIONAL MATCH (product)-[:HAS_BRAND]->(brand:Brand)\nOPTIONAL MATCH (product)-[:HAS_CATEGORY]->(category:Category)\nRETURN product.code as code, \n       product.name as name, \n       product.generic_name as generic_name, \n       product.nutriscore_grade as nutriscore,\n       collect(distinct brand.name) as brands,\n       collect(distinct category.name) as categories,\n       score\nORDER BY score DESC\n' {'index_name': 'product_embedding_index', 'embedding': [-0.07648756355047226, -0.02315935119986534, 0.009686059318482876, 0.015104112215340137, 0.03314371779561043, -0.012190778739750385, 0.07478808611631393, 0.0033828173764050007, 0.012467390857636929, -0.03960181400179863, 0.025198109447956085, -0.028158007189631462, -0.07721409201622009, -0.06904958933591843, -0.04212818667292595, -0.03511057794094086, 0.06848118454217911, 0.08387856930494308, -0.02202678471803665, -0.1404343545436859, -0.0034654673654586077, -0.017367729917168617, 0.06826324760913849, 0.08427982777357101, -0.0012456096010282636, 0.06559368968009949, 0.012525360099971294, -0.01081031933426857, -0.02530902437865734, -0.10680857300758362, -0.03489505499601364, -0.06107808277010918, 0.04586862400174141, -0.04212772846221924, 0.0019627551082521677, 0.09398797154426575, 0.036665961146354675, -0.06928052008152008, 0.002880816115066409, -0.08311756700277328, 0.03861932456493378, -0.0731339380145073, 0.018367962911725044, 0.005480458959937096, 0.012849140912294388, 0.0566767081618309, 0.005369054619222879, 0.022041330114006996, 0.013009991496801376, 0.04491983354091644, -0.04261479154229164, -0.05757274106144905, -0.003210265887901187, -0.09516209363937378, 0.008891069330275059, 0.012890218757092953, -0.13362039625644684, 0.0018212494906038046, 0.006971057504415512, 0.05028115212917328, -0.00629711477085948, -0.03360472247004509, -0.024395504966378212, 0.07091768085956573, -0.02921018749475479, 0.05918899551033974, -0.05581570416688919, -0.025634733960032463, 0.017615269869565964, -0.020632702857255936, -0.06958278268575668, -0.056846462190151215, 0.01955612562596798, 0.048312827944755554, -0.047485221177339554, 0.04287708178162575, 0.04124446213245392, -0.014611546881496906, 0.046532534062862396, -0.04658765345811844, -0.024162638932466507, -0.013430173508822918, 0.040225159376859665, 0.057670485228300095, -0.018957173451781273, -0.002254467224702239, 0.049620773643255234, 0.0625472441315651, -0.001583938137628138, -0.013442006893455982, 0.04649510979652405, -0.023739095777273178, -0.0004567359574139118, 0.01183934323489666, -0.05578017979860306, 0.019983960315585136, -0.03586861863732338, -0.042418450117111206, -0.0217283982783556, 0.02355126105248928, -0.03802096098661423, 0.04347310587763786, 0.05814284086227417, 0.015278583392500877, -0.007457760162651539, -0.04676876217126846, -0.08775030821561813, 0.013064851984381676, 0.09130312502384186, 0.12342717498540878, -0.07376716285943985, 0.024602094665169716, -0.02854735404253006, 0.0376206710934639, -0.07176782935857773, -0.08834496885538101, 0.0040386999025940895, -0.04946984350681305, 0.049715980887413025, 0.05066360905766487, 0.05611032247543335, 0.04028741642832756, 0.014602404087781906, -0.027123497799038887, -0.11865276843309402, 0.06877074390649796, -0.06714750826358795, -4.477625122885101e-33, -0.07328084111213684, 0.0622844435274601, 0.1029503345489502, 0.040202368050813675, -0.059180404990911484, -0.015273170545697212, 0.004624844528734684, -0.04937075078487396, 0.006576284300535917, 0.003203646745532751, -0.035745494067668915, 0.00022941622592043132, -0.023193970322608948, 0.015357946045696735, 0.0618961937725544, -0.04148754104971886, -0.1025770902633667, -0.03172406554222107, 0.014542486518621445, 0.013813791796565056, -0.13084156811237335, 0.10393407195806503, -0.02214607037603855, 0.04608830437064171, 0.03057747893035412, -0.06642942875623703, -0.009276468306779861, 0.01367439515888691, -0.04865245893597603, 0.0032658400014042854, 0.09599805623292923, 0.027573654428124428, -0.04496529698371887, -0.021581245586276054, -0.08252173662185669, 0.016626765951514244, -0.04316914826631546, -0.11642548441886902, -0.0025862290058285, 0.0652821734547615, -0.006172018591314554, -0.004979454446583986, 0.022907627746462822, 0.035101570188999176, -0.003405196126550436, -0.03468940779566765, -0.016096483916044235, 0.052663404494524, 0.0623699314892292, -0.0033252134453505278, -0.031375523656606674, 0.023690197616815567, 0.0016686719609424472, -0.07130464911460876, 0.06723424047231674, -0.016039138659834862, 0.028843088075518608, 0.00870105717331171, 0.031739089637994766, 0.05252828449010849, -0.051118671894073486, 0.16261963546276093, -0.01255081593990326, -0.013883943669497967, -0.06931690126657486, 0.06057631969451904, -0.02383137308061123, 0.026605121791362762, -0.06648973375558853, 0.03062574379146099, 0.07554641366004944, 0.02429022639989853, 0.05638089403510094, -0.024963894858956337, -0.0790741890668869, -0.0052532595582306385, -0.009318085387349129, 0.043607644736766815, -0.038076337426900864, 0.02267296425998211, 0.059324394911527634, -0.016207244247198105, 0.047992147505283356, 0.005357257556170225, -0.012212115339934826, -0.055155687034130096, -0.10562370717525482, 0.037821341305971146, 0.07055499404668808, 0.05126365274190903, -0.04626593366265297, -0.030004480853676796, -0.01556418277323246, 0.02419503964483738, -0.0813705176115036, 2.2322808536138094e-33, 0.007697638589888811, 0.0038609704934060574, 0.046559855341911316, 0.07887817174196243, -0.014365050941705704, -0.056256093084812164, 0.03528004139661789, -0.018612587824463844, 0.04071787744760513, 0.02969430759549141, 0.023145658895373344, 0.04478400945663452, 0.0572037398815155, -0.03154493495821953, -0.06259169429540634, 0.06357934325933456, 0.06225946918129921, 0.06170996278524399, 0.0614815317094326, -0.10728200525045395, -0.025644592940807343, 0.0885123535990715, -0.027597865089774132, 0.04020336642861366, 0.0014423135435208678, 0.014339503832161427, 0.022557130083441734, 0.012345513328909874, -0.05353838950395584, -0.07241475582122803, 0.055334582924842834, -0.10531431436538696, -0.0039023205172270536, 0.06571285426616669, 0.014658446423709393, -0.0836537778377533, -0.04315086454153061, 0.06133933737874031, 0.05627525970339775, -0.05822812765836716, 0.007662642747163773, -0.022096019238233566, 0.035257406532764435, 0.08726900070905685, -0.004898876417428255, -0.02932536043226719, -0.023870138451457024, -0.01701425574719906, 0.03680958226323128, 0.04776396229863167, -0.03984168916940689, 0.010812327265739441, -0.025605153292417526, -0.015405659563839436, -0.055165693163871765, 0.023878930136561394, 0.05905434489250183, 0.014093802310526371, -0.009932363405823708, 0.003219184698536992, 0.030737031251192093, 0.021396048367023468, 0.1060718446969986, -0.008547118864953518, 0.058253612369298935, 0.011883663013577461, -0.047793298959732056, 0.0037066750228405, 0.02148701809346676, 0.019274935126304626, 0.08799345046281815, 0.03959635645151138, 0.05122295767068863, -0.06690523773431778, -0.012562970630824566, 0.11081384867429733, 0.028453126549720764, 0.026733729988336563, -0.00854711513966322, -0.04730325564742088, 0.011641199700534344, -0.04651039093732834, 0.014571663923561573, 0.08564257621765137, -0.03576182201504707, 0.04765229672193527, 0.007815414108335972, 0.023075668141245842, 0.016226347535848618, 0.04906482622027397, -0.0005086483433842659, -0.018736230209469795, -0.017197655513882637, 0.08505379408597946, 0.07030253112316132, -1.5536564035301126e-08, 0.06105174869298935, -0.06331578642129898, -0.018093585968017578, -0.07127897441387177, 0.02362857386469841, 0.026316318660974503, 0.03282444179058075, -0.02509656921029091, -0.033972859382629395, -0.015711551532149315, -0.03757278621196747, 0.07660140097141266, -0.08440817892551422, 0.06843937188386917, 0.005691128317266703, -0.041613299399614334, -0.07160965353250504, 0.04102794826030731, -0.032181356102228165, 0.004390901420265436, -0.06328032910823822, 0.013789408840239048, 0.07628878206014633, -0.028717350214719772, -0.0813375785946846, -0.044776786118745804, 0.08907230198383331, -0.04269133135676384, 0.08449728041887283, 0.09420273452997208, -0.027783216908574104, -0.0025131821166723967, 0.006142895668745041, -0.0373290479183197, -0.054337240755558014, -0.06816012412309647, -0.06418930739164352, -0.003698867978528142, -0.03344086557626724, -0.014026490971446037, -0.04137994349002838, 0.010160981677472591, 0.009054930880665779, 0.01875579170882702, 0.02433129958808422, -0.009133651852607727, -0.03639645501971245, 0.08056911826133728, -0.0503225103020668, 0.06572409719228745, -0.005579702090471983, 0.013041367754340172, -0.016242723912000656, -0.06494050472974777, -0.03580838814377785, -0.02337581478059292, 0.03834029659628868, -0.09223473817110062, 0.03196791931986809, -0.055028121918439865, 0.013122495263814926, -0.11283154785633087, 0.18204990029335022, 0.0844198614358902], 'limit': 5} {'db': 'neo4j'}
+2025-03-27 12:25:50,748 - neo4j.io - DEBUG - [#F0C8]  _: <CONNECTION> client state: READY > STREAMING
+2025-03-27 12:25:50,749 - neo4j.io - DEBUG - [#F0C8]  C: PULL {'n': 1000}
+2025-03-27 12:25:50,805 - neo4j.io - DEBUG - [#F0C8]  S: SUCCESS {}
+2025-03-27 12:25:50,812 - neo4j.io - DEBUG - [#F0C8]  S: SUCCESS {'t_first': 4, 'fields': ['code', 'name', 'generic_name', 'nutriscore', 'brands', 'categories', 'score']}
+2025-03-27 12:25:50,813 - neo4j.io - DEBUG - [#F0C8]  _: <CONNECTION> server state: READY > STREAMING
+2025-03-27 12:25:50,818 - neo4j.io - DEBUG - [#F0C8]  S: RECORD * 1
+2025-03-27 12:25:50,819 - neo4j.io - DEBUG - [#F0C8]  S: RECORD * 1
+2025-03-27 12:25:50,820 - neo4j.io - DEBUG - [#F0C8]  S: RECORD * 1
+2025-03-27 12:25:50,820 - neo4j.io - DEBUG - [#F0C8]  S: RECORD * 1
+2025-03-27 12:25:50,820 - neo4j.io - DEBUG - [#F0C8]  S: RECORD * 1
+2025-03-27 12:25:50,820 - neo4j.io - DEBUG - [#F0C8]  S: SUCCESS {'bookmark': 'FB:kcwQYHSuJEpWSaeGJmnHSjIsSckKopA=', 'statuses': [{'gql_status': '00000', 'status_description': 'note: successful completion'}], 'type': 'r', 't_last': 7, 'db': 'neo4j'}
+2025-03-27 12:25:50,820 - neo4j.io - DEBUG - [#F0C8]  _: <CONNECTION> server state: STREAMING > READY
+2025-03-27 12:25:50,820 - neo4j.pool - DEBUG - [#F0C8]  _: <POOL> released bolt-41419
+2025-03-27 12:25:50,821 - FoodAgent - ERROR - Error formatting response with LLM: string indices must be integers, not 'str'
+2025-03-27 12:25:50,821 - neo4j.pool - DEBUG - [#0000]  _: <POOL> close
+2025-03-27 12:25:50,821 - neo4j.io - DEBUG - [#F0C7]  C: GOODBYE
+2025-03-27 12:25:50,821 - neo4j.io - DEBUG - [#F0C7]  C: <CLOSE>
+2025-03-27 12:25:50,822 - neo4j.io - DEBUG - [#F0C8]  C: GOODBYE
+2025-03-27 12:25:50,822 - neo4j.io - DEBUG - [#F0C8]  C: <CLOSE>
+2025-03-27 12:27:35,362 - sentence_transformers.SentenceTransformer - INFO - Use pytorch device_name: mps
+2025-03-27 12:27:35,362 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: all-MiniLM-L6-v2
+2025-03-27 12:27:36,625 - FoodAgent - INFO - Modèle d'embedding chargé: all-MiniLM-L6-v2
+2025-03-27 12:27:36,626 - FoodAgent - INFO - LLM initialisé avec LiteLLMModel et le modèle ollama/llama3.2:latest.
+2025-03-27 12:27:36,672 - FoodAgent - INFO - CodeAgent initialisé avec succès.
+2025-03-27 12:27:36,673 - FoodAgent - INFO - FoodDatabaseAgent initialisé avec les gestionnaires d'intention
+2025-03-27 12:27:36,673 - FoodAgent - INFO - Traitement de la requête: 'What products are made by Kellogg's?' (langue: en)
+2025-03-27 12:27:36,673 - IntentAnalyzer - INFO - Pas de match rapide, utilisation du LLM pour l'analyse
+2025-03-27 12:27:37,486 - httpx - INFO - HTTP Request: GET https://raw.githubusercontent.com/BerriAI/litellm/main/model_prices_and_context_window.json "HTTP/1.1 200 OK"
+2025-03-27 12:27:37,778 - IntentAnalyzer - ERROR - Erreur pendant l'analyse d'intention avec LLM: string indices must be integers, not 'str'
+2025-03-27 12:27:37,778 - IntentAnalyzer - INFO - Analyse par LLM terminée en 1104.9ms
+2025-03-27 12:27:37,778 - FoodAgent - INFO - Intention identifiée: IntentType.GENERAL_QUERY, Entités: None
+2025-03-27 12:27:38,587 - FoodAgent - ERROR - Error formatting response with LLM: string indices must be integers, not 'str'
+2025-03-27 12:29:17,007 - sentence_transformers.SentenceTransformer - INFO - Use pytorch device_name: mps
+2025-03-27 12:29:17,007 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: all-MiniLM-L6-v2
+2025-03-27 12:29:18,515 - FoodAgent - INFO - Modèle d'embedding chargé: all-MiniLM-L6-v2
+2025-03-27 12:29:18,517 - FoodAgent - INFO - LLM initialisé avec LiteLLMModel et le modèle ollama/llama3.2:latest.
+2025-03-27 12:29:18,573 - FoodAgent - INFO - CodeAgent initialisé avec succès.
+2025-03-27 12:29:18,574 - FoodAgent - INFO - FoodDatabaseAgent initialisé avec les gestionnaires d'intention
+2025-03-27 12:29:18,574 - FoodAgent - INFO - Traitement de la requête: 'What products are made by Kellogg's?' (langue: en)
+2025-03-27 12:29:18,574 - IntentAnalyzer - INFO - Pas de match rapide, utilisation du LLM pour l'analyse
+2025-03-27 12:29:19,418 - httpx - INFO - HTTP Request: GET https://raw.githubusercontent.com/BerriAI/litellm/main/model_prices_and_context_window.json "HTTP/1.1 200 OK"
+2025-03-27 12:29:19,702 - IntentAnalyzer - ERROR - Erreur pendant l'analyse d'intention avec LLM: string indices must be integers, not 'str'
+2025-03-27 12:29:19,702 - IntentAnalyzer - INFO - Analyse par LLM terminée en 1127.5ms
+2025-03-27 12:29:19,702 - FoodAgent - INFO - Intention identifiée: IntentType.GENERAL_QUERY, Entités: None
+2025-03-27 12:29:20,949 - FoodAgent - ERROR - Error formatting response with LLM: string indices must be integers, not 'str'
+2025-03-27 12:29:46,938 - sentence_transformers.SentenceTransformer - INFO - Use pytorch device_name: mps
+2025-03-27 12:29:46,938 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: all-MiniLM-L6-v2
+2025-03-27 12:29:48,407 - FoodAgent - INFO - Modèle d'embedding chargé: all-MiniLM-L6-v2
+2025-03-27 12:29:48,409 - FoodAgent - INFO - LLM initialisé avec LiteLLMModel et le modèle ollama/llama3.2:latest.
+2025-03-27 12:29:48,454 - FoodAgent - INFO - CodeAgent initialisé avec succès.
+2025-03-27 12:29:48,455 - FoodAgent - INFO - FoodDatabaseAgent initialisé avec les gestionnaires d'intention
+2025-03-27 12:29:48,456 - FoodAgent - INFO - Traitement de la requête: 'What products are made by Kellogg's?' (langue: en)
+2025-03-27 12:29:48,456 - IntentAnalyzer - INFO - Pas de match rapide, utilisation du LLM pour l'analyse
+2025-03-27 12:29:49,289 - httpx - INFO - HTTP Request: GET https://raw.githubusercontent.com/BerriAI/litellm/main/model_prices_and_context_window.json "HTTP/1.1 200 OK"
+2025-03-27 12:29:49,578 - IntentAnalyzer - ERROR - Erreur pendant l'analyse d'intention avec LLM: string indices must be integers, not 'str'
+2025-03-27 12:29:49,578 - IntentAnalyzer - INFO - Analyse par LLM terminée en 1122.7ms
+2025-03-27 12:29:49,578 - FoodAgent - INFO - Intention identifiée: IntentType.GENERAL_QUERY, Entités: None
+2025-03-27 12:29:50,301 - FoodAgent - ERROR - Error formatting response with LLM: string indices must be integers, not 'str'
+2025-03-27 12:31:12,252 - sentence_transformers.SentenceTransformer - INFO - Use pytorch device_name: mps
+2025-03-27 12:31:12,252 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: all-MiniLM-L6-v2
+2025-03-27 12:31:13,772 - FoodAgent - INFO - Modèle d'embedding chargé: all-MiniLM-L6-v2
+2025-03-27 12:31:13,774 - FoodAgent - INFO - LLM initialisé avec LiteLLMModel et le modèle ollama/llama3.2:latest.
+2025-03-27 12:31:13,818 - FoodAgent - INFO - CodeAgent initialisé avec succès.
+2025-03-27 12:31:13,819 - FoodAgent - INFO - FoodDatabaseAgent initialisé avec les gestionnaires d'intention
+2025-03-27 12:31:13,819 - FoodAgent - INFO - Traitement de la requête: 'What products are made by Kellogg's?' (langue: en)
+2025-03-27 12:31:13,819 - IntentAnalyzer - INFO - Pas de match rapide, utilisation du LLM pour l'analyse
+2025-03-27 12:31:14,626 - httpx - INFO - HTTP Request: GET https://raw.githubusercontent.com/BerriAI/litellm/main/model_prices_and_context_window.json "HTTP/1.1 200 OK"
+2025-03-27 12:31:14,909 - IntentAnalyzer - ERROR - Erreur pendant l'analyse d'intention avec LLM: string indices must be integers, not 'str'
+2025-03-27 12:31:14,909 - IntentAnalyzer - INFO - Analyse par LLM terminée en 1089.9ms
+2025-03-27 12:31:14,909 - FoodAgent - INFO - Intention identifiée: IntentType.GENERAL_QUERY, Entités: None
+2025-03-27 12:31:15,673 - FoodAgent - ERROR - Error formatting response with LLM: string indices must be integers, not 'str'
+2025-03-27 12:32:23,956 - sentence_transformers.SentenceTransformer - INFO - Use pytorch device_name: mps
+2025-03-27 12:32:23,956 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: all-MiniLM-L6-v2
+2025-03-27 12:32:25,305 - FoodAgent - INFO - Modèle d'embedding chargé: all-MiniLM-L6-v2
+2025-03-27 12:32:25,307 - FoodAgent - INFO - LLM initialisé avec LiteLLMModel et le modèle ollama/llama3.2:latest.
+2025-03-27 12:32:25,352 - FoodAgent - INFO - CodeAgent initialisé avec succès.
+2025-03-27 12:32:25,353 - FoodAgent - INFO - FoodDatabaseAgent initialisé avec les gestionnaires d'intention
+2025-03-27 12:32:25,353 - FoodAgent - INFO - Traitement de la requête: 'What products are made by Kellogg's?' (langue: en)
+2025-03-27 12:32:25,353 - IntentAnalyzer - INFO - Pas de match rapide, utilisation du LLM pour l'analyse
+2025-03-27 12:32:26,165 - httpx - INFO - HTTP Request: GET https://raw.githubusercontent.com/BerriAI/litellm/main/model_prices_and_context_window.json "HTTP/1.1 200 OK"
+2025-03-27 12:32:26,448 - IntentAnalyzer - ERROR - Erreur pendant l'analyse d'intention avec LLM: string indices must be integers, not 'str'
+2025-03-27 12:32:26,448 - IntentAnalyzer - INFO - Analyse par LLM terminée en 1094.3ms
+2025-03-27 12:32:26,448 - FoodAgent - INFO - Intention identifiée: IntentType.GENERAL_QUERY, Entités: None
+2025-03-27 12:32:27,143 - FoodAgent - ERROR - Error formatting response with LLM: string indices must be integers, not 'str'
+2025-03-27 12:32:56,330 - sentence_transformers.SentenceTransformer - INFO - Use pytorch device_name: mps
+2025-03-27 12:32:56,330 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: all-MiniLM-L6-v2
+2025-03-27 12:32:57,553 - FoodAgent - INFO - Modèle d'embedding chargé: all-MiniLM-L6-v2
+2025-03-27 12:32:57,554 - FoodAgent - INFO - LLM initialisé avec LiteLLMModel et le modèle ollama/llama3.2:latest.
+2025-03-27 12:32:57,580 - FoodAgent - INFO - CodeAgent initialisé avec succès.
+2025-03-27 12:32:57,581 - FoodAgent - INFO - FoodDatabaseAgent initialisé avec les gestionnaires d'intention
+2025-03-27 12:32:57,581 - FoodAgent - INFO - Traitement de la requête: 'What products are made by Kellogg's?' (langue: en)
+2025-03-27 12:32:57,581 - IntentAnalyzer - INFO - Pas de match rapide, utilisation du LLM pour l'analyse
+2025-03-27 12:32:57,581 - IntentAnalyzer - ERROR - Erreur pendant l'analyse d'intention avec LLM: 'LiteLLMModel' object has no attribute 'generate'
+2025-03-27 12:32:57,581 - IntentAnalyzer - INFO - Analyse par LLM terminée en 0.0ms
+2025-03-27 12:32:57,581 - FoodAgent - INFO - Intention identifiée: IntentType.GENERAL_QUERY, Entités: None
+2025-03-27 12:32:59,126 - httpx - INFO - HTTP Request: GET https://raw.githubusercontent.com/BerriAI/litellm/main/model_prices_and_context_window.json "HTTP/1.1 200 OK"
+2025-03-27 12:32:59,418 - FoodAgent - ERROR - Error formatting response with LLM: string indices must be integers, not 'str'
+2025-03-27 12:44:18,694 - sentence_transformers.SentenceTransformer - INFO - Use pytorch device_name: mps
+2025-03-27 12:44:18,695 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: all-MiniLM-L6-v2
+2025-03-27 12:44:20,084 - FoodAgent - INFO - Modèle d'embedding chargé: all-MiniLM-L6-v2
+2025-03-27 12:44:20,089 - FoodAgent - INFO - LLM initialisé avec LiteLLMModel et le modèle ollama/llama3.2:latest.
+2025-03-27 12:44:20,144 - FoodAgent - INFO - CodeAgent initialisé avec succès.
+2025-03-27 12:45:26,562 - sentence_transformers.SentenceTransformer - INFO - Use pytorch device_name: mps
+2025-03-27 12:45:26,562 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: all-MiniLM-L6-v2
+2025-03-27 12:45:27,993 - FoodAgent - INFO - Modèle d'embedding chargé: all-MiniLM-L6-v2
+2025-03-27 12:45:27,998 - FoodAgent - INFO - LLM initialisé avec LiteLLMModel et le modèle ollama/llama3.2:latest.
+2025-03-27 12:45:28,046 - FoodAgent - INFO - CodeAgent initialisé avec succès.
+2025-03-27 12:45:28,907 - httpx - INFO - HTTP Request: GET https://raw.githubusercontent.com/BerriAI/litellm/main/model_prices_and_context_window.json "HTTP/1.1 200 OK"
+2025-03-27 12:45:29,211 - LiteLLM - INFO - 
+LiteLLM completion() model= llama3.2:latest; provider = ollama
+2025-03-27 12:45:40,551 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/generate "HTTP/1.1 200 OK"
+2025-03-27 12:45:40,562 - LiteLLM - INFO - Wrapper: Completed Call, calling success_handler
+2025-03-27 12:45:40,563 - LiteLLM - INFO - selected model name for cost calculation: ollama/llama3.2:latest
+2025-03-27 12:45:40,564 - LiteLLM - INFO - selected model name for cost calculation: ollama/llama3.2:latest
+2025-03-27 12:45:40,601 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2025-03-27 12:45:40,601 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2025-03-27 12:45:40,629 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2025-03-27 12:45:40,629 - FoodAgent - INFO - Traitement de la requête: 'Kellogg's'
+2025-03-27 12:45:40,630 - FoodAgent - INFO - Intention détectée: general_query, Entités: []
+2025-03-27 12:45:40,630 - LiteLLM - INFO - selected model name for cost calculation: ollama/llama3.2:latest
+2025-03-27 12:45:40,654 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2025-03-27 12:45:40,669 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2025-03-27 12:45:41,076 - FoodAgent - INFO - Embedding créé pour le texte: 'Kellogg's...' (longueur: 384)
+2025-03-27 12:45:41,940 - neo4j.notifications - WARNING - Received notification from DBMS server: {severity: WARNING} {code: Neo.ClientNotification.Statement.AggregationSkippedNull} {category: UNRECOGNIZED} {title: The query contains an aggregation function that skips null values.} {description: null value eliminated in set function.} {position: None} for query: '\nCALL db.index.vector.queryNodes($index_name, $limit, $embedding)\nYIELD node as product, score\nWITH product, score\nOPTIONAL MATCH (product)-[:HAS_BRAND]->(brand:Brand)\nOPTIONAL MATCH (product)-[:HAS_CATEGORY]->(category:Category)\nRETURN product.code as code, \n       product.name as name, \n       product.generic_name as generic_name, \n       product.nutriscore_grade as nutriscore,\n       collect(distinct brand.name) as brands,\n       collect(distinct category.name) as categories,\n       score\nORDER BY score DESC\n'
+2025-03-27 12:45:41,941 - FoodAgent - INFO - Exécution de la requête Cypher avec 5 résultats
+2025-03-27 12:45:41,949 - LiteLLM - INFO - 
+LiteLLM completion() model= llama3.2:latest; provider = ollama
+2025-03-27 12:45:44,304 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/generate "HTTP/1.1 200 OK"
+2025-03-27 12:45:44,307 - LiteLLM - INFO - Wrapper: Completed Call, calling success_handler
+2025-03-27 12:45:44,307 - LiteLLM - INFO - selected model name for cost calculation: ollama/llama3.2:latest
+2025-03-27 12:45:44,307 - LiteLLM - INFO - selected model name for cost calculation: ollama/llama3.2:latest
+2025-03-27 12:45:44,321 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2025-03-27 12:45:44,321 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2025-03-27 12:45:44,323 - FoodAgent - INFO - Traitement de la requête: 'Kellogg's'
+2025-03-27 12:45:44,323 - FoodAgent - INFO - Intention détectée: general_query, Entités: []
+2025-03-27 12:45:44,337 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2025-03-27 12:45:44,337 - LiteLLM - INFO - selected model name for cost calculation: ollama/llama3.2:latest
+2025-03-27 12:45:44,354 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2025-03-27 12:45:44,369 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2025-03-27 12:45:44,375 - FoodAgent - INFO - Embedding créé pour le texte: 'Kellogg's...' (longueur: 384)
+2025-03-27 12:45:44,449 - neo4j.notifications - WARNING - Received notification from DBMS server: {severity: WARNING} {code: Neo.ClientNotification.Statement.AggregationSkippedNull} {category: UNRECOGNIZED} {title: The query contains an aggregation function that skips null values.} {description: null value eliminated in set function.} {position: None} for query: '\nCALL db.index.vector.queryNodes($index_name, $limit, $embedding)\nYIELD node as product, score\nWITH product, score\nOPTIONAL MATCH (product)-[:HAS_BRAND]->(brand:Brand)\nOPTIONAL MATCH (product)-[:HAS_CATEGORY]->(category:Category)\nRETURN product.code as code, \n       product.name as name, \n       product.generic_name as generic_name, \n       product.nutriscore_grade as nutriscore,\n       collect(distinct brand.name) as brands,\n       collect(distinct category.name) as categories,\n       score\nORDER BY score DESC\n'
+2025-03-27 12:45:44,449 - FoodAgent - INFO - Exécution de la requête Cypher avec 5 résultats
+2025-03-27 12:45:44,451 - LiteLLM - INFO - 
+LiteLLM completion() model= llama3.2:latest; provider = ollama
+2025-03-27 12:45:46,821 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/generate "HTTP/1.1 200 OK"
+2025-03-27 12:45:46,827 - LiteLLM - INFO - Wrapper: Completed Call, calling success_handler
+2025-03-27 12:45:46,828 - LiteLLM - INFO - selected model name for cost calculation: ollama/llama3.2:latest
+2025-03-27 12:45:46,828 - LiteLLM - INFO - selected model name for cost calculation: ollama/llama3.2:latest
+2025-03-27 12:45:46,843 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2025-03-27 12:45:46,844 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2025-03-27 12:45:46,848 - FoodAgent - INFO - Traitement de la requête: 'Kellogg's'
+2025-03-27 12:45:46,849 - FoodAgent - INFO - Intention détectée: general_query, Entités: []
+2025-03-27 12:45:46,864 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2025-03-27 12:45:46,865 - LiteLLM - INFO - selected model name for cost calculation: ollama/llama3.2:latest
+2025-03-27 12:45:46,880 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2025-03-27 12:45:46,902 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2025-03-27 12:45:47,003 - FoodAgent - INFO - Embedding créé pour le texte: 'Kellogg's...' (longueur: 384)
+2025-03-27 12:45:47,074 - neo4j.notifications - WARNING - Received notification from DBMS server: {severity: WARNING} {code: Neo.ClientNotification.Statement.AggregationSkippedNull} {category: UNRECOGNIZED} {title: The query contains an aggregation function that skips null values.} {description: null value eliminated in set function.} {position: None} for query: '\nCALL db.index.vector.queryNodes($index_name, $limit, $embedding)\nYIELD node as product, score\nWITH product, score\nOPTIONAL MATCH (product)-[:HAS_BRAND]->(brand:Brand)\nOPTIONAL MATCH (product)-[:HAS_CATEGORY]->(category:Category)\nRETURN product.code as code, \n       product.name as name, \n       product.generic_name as generic_name, \n       product.nutriscore_grade as nutriscore,\n       collect(distinct brand.name) as brands,\n       collect(distinct category.name) as categories,\n       score\nORDER BY score DESC\n'
+2025-03-27 12:45:47,074 - FoodAgent - INFO - Exécution de la requête Cypher avec 5 résultats
+2025-03-27 12:45:47,077 - LiteLLM - INFO - 
+LiteLLM completion() model= llama3.2:latest; provider = ollama
+2025-03-27 12:45:49,564 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/generate "HTTP/1.1 200 OK"
+2025-03-27 12:45:49,571 - LiteLLM - INFO - Wrapper: Completed Call, calling success_handler
+2025-03-27 12:45:49,571 - LiteLLM - INFO - selected model name for cost calculation: ollama/llama3.2:latest
+2025-03-27 12:45:49,572 - LiteLLM - INFO - selected model name for cost calculation: ollama/llama3.2:latest
+2025-03-27 12:45:49,588 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2025-03-27 12:45:49,588 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2025-03-27 12:45:49,592 - FoodAgent - INFO - Traitement de la requête: 'Kellogg's'
+2025-03-27 12:45:49,593 - FoodAgent - INFO - Intention détectée: general_query, Entités: []
+2025-03-27 12:45:49,609 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2025-03-27 12:45:49,610 - LiteLLM - INFO - selected model name for cost calculation: ollama/llama3.2:latest
+2025-03-27 12:45:49,625 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2025-03-27 12:45:49,646 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2025-03-27 12:45:49,734 - FoodAgent - INFO - Embedding créé pour le texte: 'Kellogg's...' (longueur: 384)
+2025-03-27 12:45:49,806 - neo4j.notifications - WARNING - Received notification from DBMS server: {severity: WARNING} {code: Neo.ClientNotification.Statement.AggregationSkippedNull} {category: UNRECOGNIZED} {title: The query contains an aggregation function that skips null values.} {description: null value eliminated in set function.} {position: None} for query: '\nCALL db.index.vector.queryNodes($index_name, $limit, $embedding)\nYIELD node as product, score\nWITH product, score\nOPTIONAL MATCH (product)-[:HAS_BRAND]->(brand:Brand)\nOPTIONAL MATCH (product)-[:HAS_CATEGORY]->(category:Category)\nRETURN product.code as code, \n       product.name as name, \n       product.generic_name as generic_name, \n       product.nutriscore_grade as nutriscore,\n       collect(distinct brand.name) as brands,\n       collect(distinct category.name) as categories,\n       score\nORDER BY score DESC\n'
+2025-03-27 12:45:49,806 - FoodAgent - INFO - Exécution de la requête Cypher avec 5 résultats
+2025-03-27 12:45:49,809 - LiteLLM - INFO - 
+LiteLLM completion() model= llama3.2:latest; provider = ollama
+2025-03-27 12:45:52,083 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/generate "HTTP/1.1 200 OK"
+2025-03-27 12:45:52,090 - LiteLLM - INFO - Wrapper: Completed Call, calling success_handler
+2025-03-27 12:45:52,091 - LiteLLM - INFO - selected model name for cost calculation: ollama/llama3.2:latest
+2025-03-27 12:45:52,091 - LiteLLM - INFO - selected model name for cost calculation: ollama/llama3.2:latest
+2025-03-27 12:45:52,108 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2025-03-27 12:45:52,108 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2025-03-27 12:45:52,112 - FoodAgent - INFO - Traitement de la requête: 'Kellogg's'
+2025-03-27 12:45:52,113 - FoodAgent - INFO - Intention détectée: general_query, Entités: []
+2025-03-27 12:45:52,130 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2025-03-27 12:45:52,131 - LiteLLM - INFO - selected model name for cost calculation: ollama/llama3.2:latest
+2025-03-27 12:45:52,149 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2025-03-27 12:45:52,165 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2025-03-27 12:45:52,176 - FoodAgent - INFO - Embedding créé pour le texte: 'Kellogg's...' (longueur: 384)
+2025-03-27 12:45:52,299 - neo4j.notifications - WARNING - Received notification from DBMS server: {severity: WARNING} {code: Neo.ClientNotification.Statement.AggregationSkippedNull} {category: UNRECOGNIZED} {title: The query contains an aggregation function that skips null values.} {description: null value eliminated in set function.} {position: None} for query: '\nCALL db.index.vector.queryNodes($index_name, $limit, $embedding)\nYIELD node as product, score\nWITH product, score\nOPTIONAL MATCH (product)-[:HAS_BRAND]->(brand:Brand)\nOPTIONAL MATCH (product)-[:HAS_CATEGORY]->(category:Category)\nRETURN product.code as code, \n       product.name as name, \n       product.generic_name as generic_name, \n       product.nutriscore_grade as nutriscore,\n       collect(distinct brand.name) as brands,\n       collect(distinct category.name) as categories,\n       score\nORDER BY score DESC\n'
+2025-03-27 12:45:52,299 - FoodAgent - INFO - Exécution de la requête Cypher avec 5 résultats
+2025-03-27 12:45:52,301 - LiteLLM - INFO - 
+LiteLLM completion() model= llama3.2:latest; provider = ollama
+2025-03-27 12:45:54,749 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/generate "HTTP/1.1 200 OK"
+2025-03-27 12:45:54,756 - LiteLLM - INFO - Wrapper: Completed Call, calling success_handler
+2025-03-27 12:45:54,757 - LiteLLM - INFO - selected model name for cost calculation: ollama/llama3.2:latest
+2025-03-27 12:45:54,758 - LiteLLM - INFO - selected model name for cost calculation: ollama/llama3.2:latest
+2025-03-27 12:45:54,775 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2025-03-27 12:45:54,775 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2025-03-27 12:45:54,782 - FoodAgent - INFO - Traitement de la requête: 'Kellogg's'
+2025-03-27 12:45:54,782 - FoodAgent - INFO - Intention détectée: general_query, Entités: []
+2025-03-27 12:45:54,796 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2025-03-27 12:45:54,797 - LiteLLM - INFO - selected model name for cost calculation: ollama/llama3.2:latest
+2025-03-27 12:45:54,814 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2025-03-27 12:45:54,834 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2025-03-27 12:45:54,890 - FoodAgent - INFO - Embedding créé pour le texte: 'Kellogg's...' (longueur: 384)
+2025-03-27 12:45:54,952 - neo4j.notifications - WARNING - Received notification from DBMS server: {severity: WARNING} {code: Neo.ClientNotification.Statement.AggregationSkippedNull} {category: UNRECOGNIZED} {title: The query contains an aggregation function that skips null values.} {description: null value eliminated in set function.} {position: None} for query: '\nCALL db.index.vector.queryNodes($index_name, $limit, $embedding)\nYIELD node as product, score\nWITH product, score\nOPTIONAL MATCH (product)-[:HAS_BRAND]->(brand:Brand)\nOPTIONAL MATCH (product)-[:HAS_CATEGORY]->(category:Category)\nRETURN product.code as code, \n       product.name as name, \n       product.generic_name as generic_name, \n       product.nutriscore_grade as nutriscore,\n       collect(distinct brand.name) as brands,\n       collect(distinct category.name) as categories,\n       score\nORDER BY score DESC\n'
+2025-03-27 12:45:54,953 - FoodAgent - INFO - Exécution de la requête Cypher avec 5 résultats
+2025-03-27 12:45:54,955 - LiteLLM - INFO - 
+LiteLLM completion() model= llama3.2:latest; provider = ollama
+2025-03-27 12:46:19,365 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/generate "HTTP/1.1 200 OK"
+2025-03-27 12:46:19,371 - LiteLLM - INFO - Wrapper: Completed Call, calling success_handler
+2025-03-27 12:46:19,372 - LiteLLM - INFO - selected model name for cost calculation: ollama/llama3.2:latest
+2025-03-27 12:46:19,375 - LiteLLM - INFO - selected model name for cost calculation: ollama/llama3.2:latest
+2025-03-27 12:46:19,402 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2025-03-27 12:46:19,402 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2025-03-27 12:46:19,429 - LiteLLM - INFO - 
+LiteLLM completion() model= llama3.2:latest; provider = ollama
+2025-03-27 12:46:19,441 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2025-03-27 12:46:19,442 - LiteLLM - INFO - selected model name for cost calculation: ollama/llama3.2:latest
+2025-03-27 12:46:19,459 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2025-03-27 12:46:19,478 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2025-03-27 12:46:25,658 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/generate "HTTP/1.1 200 OK"
+2025-03-27 12:46:25,664 - LiteLLM - INFO - Wrapper: Completed Call, calling success_handler
+2025-03-27 12:46:25,664 - LiteLLM - INFO - selected model name for cost calculation: ollama/llama3.2:latest
+2025-03-27 12:46:25,665 - LiteLLM - INFO - selected model name for cost calculation: ollama/llama3.2:latest
+2025-03-27 12:46:25,681 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2025-03-27 12:46:25,681 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2025-03-27 12:46:25,683 - FoodAgent - INFO - Traitement de la requête: 'Kellogg's'
+2025-03-27 12:46:25,684 - FoodAgent - INFO - Intention détectée: general_query, Entités: []
+2025-03-27 12:46:25,700 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2025-03-27 12:46:25,701 - LiteLLM - INFO - selected model name for cost calculation: ollama/llama3.2:latest
+2025-03-27 12:46:25,717 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2025-03-27 12:46:25,731 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2025-03-27 12:46:26,000 - FoodAgent - INFO - Embedding créé pour le texte: 'Kellogg's...' (longueur: 384)
+2025-03-27 12:46:26,349 - neo4j.notifications - WARNING - Received notification from DBMS server: {severity: WARNING} {code: Neo.ClientNotification.Statement.AggregationSkippedNull} {category: UNRECOGNIZED} {title: The query contains an aggregation function that skips null values.} {description: null value eliminated in set function.} {position: None} for query: '\nCALL db.index.vector.queryNodes($index_name, $limit, $embedding)\nYIELD node as product, score\nWITH product, score\nOPTIONAL MATCH (product)-[:HAS_BRAND]->(brand:Brand)\nOPTIONAL MATCH (product)-[:HAS_CATEGORY]->(category:Category)\nRETURN product.code as code, \n       product.name as name, \n       product.generic_name as generic_name, \n       product.nutriscore_grade as nutriscore,\n       collect(distinct brand.name) as brands,\n       collect(distinct category.name) as categories,\n       score\nORDER BY score DESC\n'
+2025-03-27 12:46:26,350 - FoodAgent - INFO - Exécution de la requête Cypher avec 5 résultats
+2025-03-27 12:46:26,365 - LiteLLM - INFO - 
+LiteLLM completion() model= llama3.2:latest; provider = ollama
+2025-03-27 12:46:29,069 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/generate "HTTP/1.1 200 OK"
+2025-03-27 12:46:29,076 - LiteLLM - INFO - Wrapper: Completed Call, calling success_handler
+2025-03-27 12:46:29,077 - LiteLLM - INFO - selected model name for cost calculation: ollama/llama3.2:latest
+2025-03-27 12:46:29,077 - LiteLLM - INFO - selected model name for cost calculation: ollama/llama3.2:latest
+2025-03-27 12:46:29,097 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2025-03-27 12:46:29,097 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2025-03-27 12:46:29,102 - FoodAgent - INFO - Traitement de la requête: 'Kellogg's'
+2025-03-27 12:46:29,102 - FoodAgent - INFO - Intention détectée: general_query, Entités: []
+2025-03-27 12:46:29,118 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2025-03-27 12:46:29,119 - LiteLLM - INFO - selected model name for cost calculation: ollama/llama3.2:latest
+2025-03-27 12:46:29,137 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2025-03-27 12:46:29,154 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2025-03-27 12:46:29,163 - FoodAgent - INFO - Embedding créé pour le texte: 'Kellogg's...' (longueur: 384)
+2025-03-27 12:46:29,221 - neo4j.notifications - WARNING - Received notification from DBMS server: {severity: WARNING} {code: Neo.ClientNotification.Statement.AggregationSkippedNull} {category: UNRECOGNIZED} {title: The query contains an aggregation function that skips null values.} {description: null value eliminated in set function.} {position: None} for query: '\nCALL db.index.vector.queryNodes($index_name, $limit, $embedding)\nYIELD node as product, score\nWITH product, score\nOPTIONAL MATCH (product)-[:HAS_BRAND]->(brand:Brand)\nOPTIONAL MATCH (product)-[:HAS_CATEGORY]->(category:Category)\nRETURN product.code as code, \n       product.name as name, \n       product.generic_name as generic_name, \n       product.nutriscore_grade as nutriscore,\n       collect(distinct brand.name) as brands,\n       collect(distinct category.name) as categories,\n       score\nORDER BY score DESC\n'
+2025-03-27 12:46:29,222 - FoodAgent - INFO - Exécution de la requête Cypher avec 5 résultats
+2025-03-27 12:46:29,224 - LiteLLM - INFO - 
+LiteLLM completion() model= llama3.2:latest; provider = ollama
+2025-03-27 12:46:32,140 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/generate "HTTP/1.1 200 OK"
+2025-03-27 12:46:32,145 - LiteLLM - INFO - Wrapper: Completed Call, calling success_handler
+2025-03-27 12:46:32,145 - LiteLLM - INFO - selected model name for cost calculation: ollama/llama3.2:latest
+2025-03-27 12:46:32,146 - LiteLLM - INFO - selected model name for cost calculation: ollama/llama3.2:latest
+2025-03-27 12:46:32,160 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2025-03-27 12:46:32,160 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2025-03-27 12:46:32,163 - FoodAgent - INFO - Traitement de la requête: 'Kellogg's'
+2025-03-27 12:46:32,163 - FoodAgent - INFO - Intention détectée: general_query, Entités: []
+2025-03-27 12:46:32,177 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2025-03-27 12:46:32,177 - LiteLLM - INFO - selected model name for cost calculation: ollama/llama3.2:latest
+2025-03-27 12:46:32,191 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2025-03-27 12:46:32,208 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2025-03-27 12:46:32,221 - FoodAgent - INFO - Embedding créé pour le texte: 'Kellogg's...' (longueur: 384)
+2025-03-27 12:46:32,281 - neo4j.notifications - WARNING - Received notification from DBMS server: {severity: WARNING} {code: Neo.ClientNotification.Statement.AggregationSkippedNull} {category: UNRECOGNIZED} {title: The query contains an aggregation function that skips null values.} {description: null value eliminated in set function.} {position: None} for query: '\nCALL db.index.vector.queryNodes($index_name, $limit, $embedding)\nYIELD node as product, score\nWITH product, score\nOPTIONAL MATCH (product)-[:HAS_BRAND]->(brand:Brand)\nOPTIONAL MATCH (product)-[:HAS_CATEGORY]->(category:Category)\nRETURN product.code as code, \n       product.name as name, \n       product.generic_name as generic_name, \n       product.nutriscore_grade as nutriscore,\n       collect(distinct brand.name) as brands,\n       collect(distinct category.name) as categories,\n       score\nORDER BY score DESC\n'
+2025-03-27 12:46:32,282 - FoodAgent - INFO - Exécution de la requête Cypher avec 5 résultats
+2025-03-27 12:46:32,284 - LiteLLM - INFO - 
+LiteLLM completion() model= llama3.2:latest; provider = ollama
+2025-03-27 12:46:35,312 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/generate "HTTP/1.1 200 OK"
+2025-03-27 12:46:35,319 - LiteLLM - INFO - Wrapper: Completed Call, calling success_handler
+2025-03-27 12:46:35,319 - LiteLLM - INFO - selected model name for cost calculation: ollama/llama3.2:latest
+2025-03-27 12:46:35,320 - LiteLLM - INFO - selected model name for cost calculation: ollama/llama3.2:latest
+2025-03-27 12:46:35,335 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2025-03-27 12:46:35,335 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2025-03-27 12:46:35,337 - FoodAgent - INFO - Traitement de la requête: 'Kellogg's'
+2025-03-27 12:46:35,337 - FoodAgent - INFO - Intention détectée: general_query, Entités: []
+2025-03-27 12:46:35,352 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2025-03-27 12:46:35,353 - LiteLLM - INFO - selected model name for cost calculation: ollama/llama3.2:latest
+2025-03-27 12:46:35,373 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2025-03-27 12:46:35,388 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2025-03-27 12:46:35,394 - FoodAgent - INFO - Embedding créé pour le texte: 'Kellogg's...' (longueur: 384)
+2025-03-27 12:46:35,466 - neo4j.notifications - WARNING - Received notification from DBMS server: {severity: WARNING} {code: Neo.ClientNotification.Statement.AggregationSkippedNull} {category: UNRECOGNIZED} {title: The query contains an aggregation function that skips null values.} {description: null value eliminated in set function.} {position: None} for query: '\nCALL db.index.vector.queryNodes($index_name, $limit, $embedding)\nYIELD node as product, score\nWITH product, score\nOPTIONAL MATCH (product)-[:HAS_BRAND]->(brand:Brand)\nOPTIONAL MATCH (product)-[:HAS_CATEGORY]->(category:Category)\nRETURN product.code as code, \n       product.name as name, \n       product.generic_name as generic_name, \n       product.nutriscore_grade as nutriscore,\n       collect(distinct brand.name) as brands,\n       collect(distinct category.name) as categories,\n       score\nORDER BY score DESC\n'
+2025-03-27 12:46:35,466 - FoodAgent - INFO - Exécution de la requête Cypher avec 5 résultats
+2025-03-27 12:46:35,468 - LiteLLM - INFO - 
+LiteLLM completion() model= llama3.2:latest; provider = ollama
+2025-03-27 12:46:39,356 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/generate "HTTP/1.1 200 OK"
+2025-03-27 12:46:39,363 - LiteLLM - INFO - Wrapper: Completed Call, calling success_handler
+2025-03-27 12:46:39,363 - LiteLLM - INFO - selected model name for cost calculation: ollama/llama3.2:latest
+2025-03-27 12:46:39,363 - LiteLLM - INFO - selected model name for cost calculation: ollama/llama3.2:latest
+2025-03-27 12:46:39,379 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2025-03-27 12:46:39,379 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2025-03-27 12:46:39,382 - FoodAgent - INFO - Traitement de la requête: 'Kellogg's'
+2025-03-27 12:46:39,382 - FoodAgent - INFO - Intention détectée: general_query, Entités: []
+2025-03-27 12:46:39,397 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2025-03-27 12:46:39,398 - LiteLLM - INFO - selected model name for cost calculation: ollama/llama3.2:latest
+2025-03-27 12:46:39,416 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2025-03-27 12:46:39,430 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2025-03-27 12:46:39,442 - FoodAgent - INFO - Embedding créé pour le texte: 'Kellogg's...' (longueur: 384)
+2025-03-27 12:46:39,782 - neo4j.notifications - WARNING - Received notification from DBMS server: {severity: WARNING} {code: Neo.ClientNotification.Statement.AggregationSkippedNull} {category: UNRECOGNIZED} {title: The query contains an aggregation function that skips null values.} {description: null value eliminated in set function.} {position: None} for query: '\nCALL db.index.vector.queryNodes($index_name, $limit, $embedding)\nYIELD node as product, score\nWITH product, score\nOPTIONAL MATCH (product)-[:HAS_BRAND]->(brand:Brand)\nOPTIONAL MATCH (product)-[:HAS_CATEGORY]->(category:Category)\nRETURN product.code as code, \n       product.name as name, \n       product.generic_name as generic_name, \n       product.nutriscore_grade as nutriscore,\n       collect(distinct brand.name) as brands,\n       collect(distinct category.name) as categories,\n       score\nORDER BY score DESC\n'
+2025-03-27 12:46:39,783 - FoodAgent - INFO - Exécution de la requête Cypher avec 5 résultats
+2025-03-27 12:46:39,791 - LiteLLM - INFO - 
+LiteLLM completion() model= llama3.2:latest; provider = ollama
+2025-03-27 12:46:42,658 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/generate "HTTP/1.1 200 OK"
+2025-03-27 12:46:42,673 - LiteLLM - INFO - Wrapper: Completed Call, calling success_handler
+2025-03-27 12:46:42,674 - LiteLLM - INFO - selected model name for cost calculation: ollama/llama3.2:latest
+2025-03-27 12:46:42,674 - LiteLLM - INFO - selected model name for cost calculation: ollama/llama3.2:latest
+2025-03-27 12:46:42,693 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2025-03-27 12:46:42,693 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2025-03-27 12:46:42,697 - FoodAgent - INFO - Traitement de la requête: 'Kellogg's'
+2025-03-27 12:46:42,697 - FoodAgent - INFO - Intention détectée: general_query, Entités: []
+2025-03-27 12:46:42,714 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2025-03-27 12:46:42,715 - LiteLLM - INFO - selected model name for cost calculation: ollama/llama3.2:latest
+2025-03-27 12:46:42,735 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2025-03-27 12:46:42,757 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2025-03-27 12:46:42,814 - FoodAgent - INFO - Embedding créé pour le texte: 'Kellogg's...' (longueur: 384)
+2025-03-27 12:46:42,877 - neo4j.notifications - WARNING - Received notification from DBMS server: {severity: WARNING} {code: Neo.ClientNotification.Statement.AggregationSkippedNull} {category: UNRECOGNIZED} {title: The query contains an aggregation function that skips null values.} {description: null value eliminated in set function.} {position: None} for query: '\nCALL db.index.vector.queryNodes($index_name, $limit, $embedding)\nYIELD node as product, score\nWITH product, score\nOPTIONAL MATCH (product)-[:HAS_BRAND]->(brand:Brand)\nOPTIONAL MATCH (product)-[:HAS_CATEGORY]->(category:Category)\nRETURN product.code as code, \n       product.name as name, \n       product.generic_name as generic_name, \n       product.nutriscore_grade as nutriscore,\n       collect(distinct brand.name) as brands,\n       collect(distinct category.name) as categories,\n       score\nORDER BY score DESC\n'
+2025-03-27 12:46:42,877 - FoodAgent - INFO - Exécution de la requête Cypher avec 5 résultats
+2025-03-27 12:46:42,882 - LiteLLM - INFO - 
+LiteLLM completion() model= llama3.2:latest; provider = ollama
+2025-03-27 12:46:45,668 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/generate "HTTP/1.1 200 OK"
+2025-03-27 12:46:45,675 - LiteLLM - INFO - Wrapper: Completed Call, calling success_handler
+2025-03-27 12:46:45,675 - LiteLLM - INFO - selected model name for cost calculation: ollama/llama3.2:latest
+2025-03-27 12:46:45,675 - LiteLLM - INFO - selected model name for cost calculation: ollama/llama3.2:latest
+2025-03-27 12:46:45,691 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2025-03-27 12:46:45,691 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2025-03-27 12:46:45,694 - FoodAgent - INFO - Traitement de la requête: 'Kellogg's'
+2025-03-27 12:46:45,694 - FoodAgent - INFO - Intention détectée: general_query, Entités: []
+2025-03-27 12:46:45,707 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2025-03-27 12:46:45,708 - LiteLLM - INFO - selected model name for cost calculation: ollama/llama3.2:latest
+2025-03-27 12:46:45,724 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2025-03-27 12:46:45,742 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2025-03-27 12:46:45,772 - FoodAgent - INFO - Embedding créé pour le texte: 'Kellogg's...' (longueur: 384)
+2025-03-27 12:46:45,828 - neo4j.notifications - WARNING - Received notification from DBMS server: {severity: WARNING} {code: Neo.ClientNotification.Statement.AggregationSkippedNull} {category: UNRECOGNIZED} {title: The query contains an aggregation function that skips null values.} {description: null value eliminated in set function.} {position: None} for query: '\nCALL db.index.vector.queryNodes($index_name, $limit, $embedding)\nYIELD node as product, score\nWITH product, score\nOPTIONAL MATCH (product)-[:HAS_BRAND]->(brand:Brand)\nOPTIONAL MATCH (product)-[:HAS_CATEGORY]->(category:Category)\nRETURN product.code as code, \n       product.name as name, \n       product.generic_name as generic_name, \n       product.nutriscore_grade as nutriscore,\n       collect(distinct brand.name) as brands,\n       collect(distinct category.name) as categories,\n       score\nORDER BY score DESC\n'
+2025-03-27 12:46:45,828 - FoodAgent - INFO - Exécution de la requête Cypher avec 5 résultats
+2025-03-27 12:46:45,830 - LiteLLM - INFO - 
+LiteLLM completion() model= llama3.2:latest; provider = ollama
+2025-03-27 12:46:48,925 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/generate "HTTP/1.1 200 OK"
+2025-03-27 12:46:48,929 - LiteLLM - INFO - Wrapper: Completed Call, calling success_handler
+2025-03-27 12:46:48,929 - LiteLLM - INFO - selected model name for cost calculation: ollama/llama3.2:latest
+2025-03-27 12:46:48,929 - LiteLLM - INFO - selected model name for cost calculation: ollama/llama3.2:latest
+2025-03-27 12:46:48,944 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2025-03-27 12:46:48,945 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2025-03-27 12:46:48,947 - FoodAgent - INFO - Traitement de la requête: 'Kellogg's'
+2025-03-27 12:46:48,947 - FoodAgent - INFO - Intention détectée: general_query, Entités: []
+2025-03-27 12:46:48,960 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2025-03-27 12:46:48,961 - LiteLLM - INFO - selected model name for cost calculation: ollama/llama3.2:latest
+2025-03-27 12:46:48,975 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2025-03-27 12:46:48,993 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2025-03-27 12:46:49,017 - FoodAgent - INFO - Embedding créé pour le texte: 'Kellogg's...' (longueur: 384)
+2025-03-27 12:46:49,084 - neo4j.notifications - WARNING - Received notification from DBMS server: {severity: WARNING} {code: Neo.ClientNotification.Statement.AggregationSkippedNull} {category: UNRECOGNIZED} {title: The query contains an aggregation function that skips null values.} {description: null value eliminated in set function.} {position: None} for query: '\nCALL db.index.vector.queryNodes($index_name, $limit, $embedding)\nYIELD node as product, score\nWITH product, score\nOPTIONAL MATCH (product)-[:HAS_BRAND]->(brand:Brand)\nOPTIONAL MATCH (product)-[:HAS_CATEGORY]->(category:Category)\nRETURN product.code as code, \n       product.name as name, \n       product.generic_name as generic_name, \n       product.nutriscore_grade as nutriscore,\n       collect(distinct brand.name) as brands,\n       collect(distinct category.name) as categories,\n       score\nORDER BY score DESC\n'
+2025-03-27 12:46:49,084 - FoodAgent - INFO - Exécution de la requête Cypher avec 5 résultats
+2025-03-27 12:46:49,087 - LiteLLM - INFO - 
+LiteLLM completion() model= llama3.2:latest; provider = ollama
+2025-03-27 12:46:52,031 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/generate "HTTP/1.1 200 OK"
+2025-03-27 12:46:52,039 - LiteLLM - INFO - Wrapper: Completed Call, calling success_handler
+2025-03-27 12:46:52,039 - LiteLLM - INFO - selected model name for cost calculation: ollama/llama3.2:latest
+2025-03-27 12:46:52,039 - LiteLLM - INFO - selected model name for cost calculation: ollama/llama3.2:latest
+2025-03-27 12:46:52,056 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2025-03-27 12:46:52,057 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2025-03-27 12:46:52,059 - FoodAgent - INFO - Traitement de la requête: 'Kellogg's'
+2025-03-27 12:46:52,060 - FoodAgent - INFO - Intention détectée: general_query, Entités: []
+2025-03-27 12:46:52,075 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2025-03-27 12:46:52,076 - LiteLLM - INFO - selected model name for cost calculation: ollama/llama3.2:latest
+2025-03-27 12:46:52,093 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2025-03-27 12:46:52,110 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2025-03-27 12:46:52,219 - FoodAgent - INFO - Embedding créé pour le texte: 'Kellogg's...' (longueur: 384)
+2025-03-27 12:46:52,576 - neo4j.notifications - WARNING - Received notification from DBMS server: {severity: WARNING} {code: Neo.ClientNotification.Statement.AggregationSkippedNull} {category: UNRECOGNIZED} {title: The query contains an aggregation function that skips null values.} {description: null value eliminated in set function.} {position: None} for query: '\nCALL db.index.vector.queryNodes($index_name, $limit, $embedding)\nYIELD node as product, score\nWITH product, score\nOPTIONAL MATCH (product)-[:HAS_BRAND]->(brand:Brand)\nOPTIONAL MATCH (product)-[:HAS_CATEGORY]->(category:Category)\nRETURN product.code as code, \n       product.name as name, \n       product.generic_name as generic_name, \n       product.nutriscore_grade as nutriscore,\n       collect(distinct brand.name) as brands,\n       collect(distinct category.name) as categories,\n       score\nORDER BY score DESC\n'
+2025-03-27 12:46:52,576 - FoodAgent - INFO - Exécution de la requête Cypher avec 5 résultats
+2025-03-27 12:46:52,581 - LiteLLM - INFO - 
+LiteLLM completion() model= llama3.2:latest; provider = ollama
+2025-03-27 12:46:55,747 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/generate "HTTP/1.1 200 OK"
+2025-03-27 12:46:55,754 - LiteLLM - INFO - Wrapper: Completed Call, calling success_handler
+2025-03-27 12:46:55,754 - LiteLLM - INFO - selected model name for cost calculation: ollama/llama3.2:latest
+2025-03-27 12:46:55,754 - LiteLLM - INFO - selected model name for cost calculation: ollama/llama3.2:latest
+2025-03-27 12:46:55,770 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2025-03-27 12:46:55,770 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2025-03-27 12:46:55,773 - FoodAgent - INFO - Traitement de la requête: 'Kellogg's'
+2025-03-27 12:46:55,773 - FoodAgent - INFO - Intention détectée: general_query, Entités: []
+2025-03-27 12:46:55,790 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2025-03-27 12:46:55,790 - LiteLLM - INFO - selected model name for cost calculation: ollama/llama3.2:latest
+2025-03-27 12:46:55,807 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2025-03-27 12:46:55,822 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2025-03-27 12:46:55,829 - FoodAgent - INFO - Embedding créé pour le texte: 'Kellogg's...' (longueur: 384)
+2025-03-27 12:46:55,900 - neo4j.notifications - WARNING - Received notification from DBMS server: {severity: WARNING} {code: Neo.ClientNotification.Statement.AggregationSkippedNull} {category: UNRECOGNIZED} {title: The query contains an aggregation function that skips null values.} {description: null value eliminated in set function.} {position: None} for query: '\nCALL db.index.vector.queryNodes($index_name, $limit, $embedding)\nYIELD node as product, score\nWITH product, score\nOPTIONAL MATCH (product)-[:HAS_BRAND]->(brand:Brand)\nOPTIONAL MATCH (product)-[:HAS_CATEGORY]->(category:Category)\nRETURN product.code as code, \n       product.name as name, \n       product.generic_name as generic_name, \n       product.nutriscore_grade as nutriscore,\n       collect(distinct brand.name) as brands,\n       collect(distinct category.name) as categories,\n       score\nORDER BY score DESC\n'
+2025-03-27 12:46:55,900 - FoodAgent - INFO - Exécution de la requête Cypher avec 5 résultats
+2025-03-27 12:46:55,902 - LiteLLM - INFO - 
+LiteLLM completion() model= llama3.2:latest; provider = ollama
+2025-03-27 12:47:27,551 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/generate "HTTP/1.1 200 OK"
+2025-03-27 12:47:27,563 - LiteLLM - INFO - Wrapper: Completed Call, calling success_handler
+2025-03-27 12:47:27,565 - LiteLLM - INFO - selected model name for cost calculation: ollama/llama3.2:latest
+2025-03-27 12:47:27,565 - LiteLLM - INFO - selected model name for cost calculation: ollama/llama3.2:latest
+2025-03-27 12:47:27,594 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2025-03-27 12:47:27,595 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2025-03-27 12:47:27,633 - LiteLLM - INFO - 
+LiteLLM completion() model= llama3.2:latest; provider = ollama
+2025-03-27 12:47:27,647 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2025-03-27 12:47:27,648 - LiteLLM - INFO - selected model name for cost calculation: ollama/llama3.2:latest
+2025-03-27 12:47:27,670 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2025-03-27 12:47:27,688 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2025-03-27 12:47:35,576 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/generate "HTTP/1.1 200 OK"
+2025-03-27 12:47:35,589 - LiteLLM - INFO - Wrapper: Completed Call, calling success_handler
+2025-03-27 12:47:35,589 - LiteLLM - INFO - selected model name for cost calculation: ollama/llama3.2:latest
+2025-03-27 12:47:35,589 - LiteLLM - INFO - selected model name for cost calculation: ollama/llama3.2:latest
+2025-03-27 12:47:35,606 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2025-03-27 12:47:35,607 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2025-03-27 12:47:35,608 - FoodAgent - INFO - Traitement de la requête: 'Kellogg's'
+2025-03-27 12:47:35,608 - FoodAgent - INFO - Intention détectée: general_query, Entités: []
+2025-03-27 12:47:35,627 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2025-03-27 12:47:35,627 - LiteLLM - INFO - selected model name for cost calculation: ollama/llama3.2:latest
+2025-03-27 12:47:35,645 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2025-03-27 12:47:35,666 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2025-03-27 12:47:35,900 - FoodAgent - INFO - Embedding créé pour le texte: 'Kellogg's...' (longueur: 384)
+2025-03-27 12:47:36,456 - neo4j.notifications - WARNING - Received notification from DBMS server: {severity: WARNING} {code: Neo.ClientNotification.Statement.AggregationSkippedNull} {category: UNRECOGNIZED} {title: The query contains an aggregation function that skips null values.} {description: null value eliminated in set function.} {position: None} for query: '\nCALL db.index.vector.queryNodes($index_name, $limit, $embedding)\nYIELD node as product, score\nWITH product, score\nOPTIONAL MATCH (product)-[:HAS_BRAND]->(brand:Brand)\nOPTIONAL MATCH (product)-[:HAS_CATEGORY]->(category:Category)\nRETURN product.code as code, \n       product.name as name, \n       product.generic_name as generic_name, \n       product.nutriscore_grade as nutriscore,\n       collect(distinct brand.name) as brands,\n       collect(distinct category.name) as categories,\n       score\nORDER BY score DESC\n'
+2025-03-27 12:47:36,457 - FoodAgent - INFO - Exécution de la requête Cypher avec 5 résultats
+2025-03-27 12:47:36,472 - LiteLLM - INFO - 
+LiteLLM completion() model= llama3.2:latest; provider = ollama
+2025-03-27 12:47:59,579 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/generate "HTTP/1.1 200 OK"
+2025-03-27 12:47:59,593 - LiteLLM - INFO - Wrapper: Completed Call, calling success_handler
+2025-03-27 12:47:59,594 - LiteLLM - INFO - selected model name for cost calculation: ollama/llama3.2:latest
+2025-03-27 12:47:59,594 - LiteLLM - INFO - selected model name for cost calculation: ollama/llama3.2:latest
+2025-03-27 12:47:59,618 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2025-03-27 12:47:59,621 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2025-03-27 12:47:59,621 - FoodAgent - INFO - Traitement de la requête: 'Kellogg's'
+2025-03-27 12:47:59,622 - FoodAgent - INFO - Intention détectée: general_query, Entités: []
+2025-03-27 12:47:59,642 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2025-03-27 12:47:59,644 - LiteLLM - INFO - selected model name for cost calculation: ollama/llama3.2:latest
+2025-03-27 12:47:59,666 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2025-03-27 12:47:59,693 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2025-03-27 12:47:59,729 - FoodAgent - INFO - Embedding créé pour le texte: 'Kellogg's...' (longueur: 384)
+2025-03-27 12:48:00,085 - neo4j.notifications - WARNING - Received notification from DBMS server: {severity: WARNING} {code: Neo.ClientNotification.Statement.AggregationSkippedNull} {category: UNRECOGNIZED} {title: The query contains an aggregation function that skips null values.} {description: null value eliminated in set function.} {position: None} for query: '\nCALL db.index.vector.queryNodes($index_name, $limit, $embedding)\nYIELD node as product, score\nWITH product, score\nOPTIONAL MATCH (product)-[:HAS_BRAND]->(brand:Brand)\nOPTIONAL MATCH (product)-[:HAS_CATEGORY]->(category:Category)\nRETURN product.code as code, \n       product.name as name, \n       product.generic_name as generic_name, \n       product.nutriscore_grade as nutriscore,\n       collect(distinct brand.name) as brands,\n       collect(distinct category.name) as categories,\n       score\nORDER BY score DESC\n'
+2025-03-27 12:48:00,085 - FoodAgent - INFO - Exécution de la requête Cypher avec 5 résultats
+2025-03-27 12:48:00,098 - LiteLLM - INFO - 
+LiteLLM completion() model= llama3.2:latest; provider = ollama
+2025-03-27 12:48:18,768 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/generate "HTTP/1.1 200 OK"
+2025-03-27 12:48:18,773 - LiteLLM - INFO - Wrapper: Completed Call, calling success_handler
+2025-03-27 12:48:18,774 - LiteLLM - INFO - selected model name for cost calculation: ollama/llama3.2:latest
+2025-03-27 12:48:18,774 - LiteLLM - INFO - selected model name for cost calculation: ollama/llama3.2:latest
+2025-03-27 12:48:18,792 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2025-03-27 12:48:18,793 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2025-03-27 12:48:18,809 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2025-03-27 12:48:18,809 - LiteLLM - INFO - selected model name for cost calculation: ollama/llama3.2:latest
+2025-03-27 12:48:18,823 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2025-03-27 12:48:18,839 - httpx - INFO - HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2025-03-27 12:49:54,289 - sentence_transformers.SentenceTransformer - INFO - Use pytorch device_name: mps
+2025-03-27 12:49:54,289 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: all-MiniLM-L6-v2
+2025-03-27 12:49:55,642 - FoodAgent - INFO - Modèle d'embedding chargé: all-MiniLM-L6-v2
+2025-03-27 12:49:55,647 - FoodAgent - INFO - LLM initialisé avec LiteLLMModel et le modèle sonnet.
+2025-03-27 12:49:55,692 - FoodAgent - INFO - CodeAgent initialisé avec succès.
+2025-03-27 12:49:56,533 - httpx - INFO - HTTP Request: GET https://raw.githubusercontent.com/BerriAI/litellm/main/model_prices_and_context_window.json "HTTP/1.1 200 OK"
+2025-03-27 12:49:56,832 - LiteLLM - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20240620; provider = anthropic
+2025-03-27 12:49:59,469 - httpx - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-03-27 12:49:59,475 - LiteLLM - INFO - Wrapper: Completed Call, calling success_handler
+2025-03-27 12:49:59,475 - LiteLLM - INFO - selected model name for cost calculation: anthropic/claude-3-5-sonnet-20240620
+2025-03-27 12:49:59,476 - LiteLLM - INFO - selected model name for cost calculation: anthropic/claude-3-5-sonnet-20240620
+2025-03-27 12:49:59,477 - LiteLLM - INFO - selected model name for cost calculation: anthropic/claude-3-5-sonnet-20240620
+2025-03-27 12:49:59,513 - FoodAgent - INFO - Traitement de la requête: 'What products are made by Kellogg's?'
+2025-03-27 12:49:59,513 - FoodAgent - INFO - Intention détectée: brand_query, Entités: ["Kellogg's"]
+2025-03-27 12:50:00,624 - FoodAgent - INFO - Exécution de la requête Cypher avec 10 résultats
+2025-03-27 12:50:00,629 - LiteLLM - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20240620; provider = anthropic
+2025-03-27 12:50:05,564 - httpx - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-03-27 12:50:05,565 - LiteLLM - INFO - Wrapper: Completed Call, calling success_handler
+2025-03-27 12:50:05,565 - LiteLLM - INFO - selected model name for cost calculation: anthropic/claude-3-5-sonnet-20240620
+2025-03-27 12:50:05,568 - LiteLLM - INFO - selected model name for cost calculation: anthropic/claude-3-5-sonnet-20240620

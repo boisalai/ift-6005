@@ -2,154 +2,185 @@
 
 ## Vue d'ensemble
 
-Ce système permet aux utilisateurs d'interroger en langage naturel une base de données Neo4j contenant des informations sur des produits alimentaires provenant d'OpenFoodFacts. 
+Ce système permet aux utilisateurs d'interroger en langage naturel une base de données Neo4j contenant des informations sur des produits alimentaires provenant d'OpenFoodFacts. L'objectif est de fournir une interface conversationnelle intelligente qui comprend les requêtes en français et en anglais, et qui peut extraire des informations pertinentes sur les produits, leurs ingrédients, valeurs nutritionnelles, allergènes, etc.
 
-## Installation des bibliothèques
+## Architecture du système
 
-Pour installer l’ensemble des bibliothèques nécessaires au fonctionnement du système, procédez comme suit :
+```
+┌──────────────┐    ┌───────────┐    ┌────────────────┐
+│ Données      │    │ Scripts de│    │ Base de données│
+│ OpenFoodFacts├───►  traitement├───►  Neo4j          │
+└──────────────┘    └───────────┘    └───────┬────────┘
+                                             │
+                                             ▼
+                   ┌───────────────────────────────────┐
+                   │         Agent conversationnel     │
+                   │  (Embeddings + Requêtes Cypher)   │
+                   └───────────────────┬───────────────┘
+                                       │
+                                       ▼
+                   ┌───────────────────────────────────┐
+                   │         Interface utilisateur     │
+                   └───────────────────────────────────┘
+```
 
-1. **Créer un environnement virtuel**  
-   Dans le répertoire racine du projet, exécutez :
+
+## Installation
+
+1. **Créer et activer un environnement virtuel**
    ```bash
    python -m venv venv
+   source venv/bin/activate  # Linux/macOS
+   venv\Scripts\activate     # Windows
    ```
-2. **Activer l’environnement virtuel**  
-   - Sous Linux/macOS :
-     ```bash
-     source venv/bin/activate
-     ```
-   - Sous Windows :
-     ```bash
-     venv\Scripts\activate
-     ```
-3. **Installer les dépendances**  
-   Installez les bibliothèques listées dans le fichier requirements.txt en lançant :
+
+2. **Installer les dépendances**
    ```bash
    pip install -r requirements.txt
    ```
-   Cela installera notamment les packages pour la recherche vectorielle (faiss-cpu, duckdb), le traitement du langage (sentence-transformers, langchain), ainsi que les outils de développement (smolagents, streamlit, etc.).
-4. **Configurer les variables d'environnement**
-   Créez un fichier `.env` à la racine du projet et ajoutez-y les variables d'environnement nécessaires.
+
+3. **Configurer les variables d'environnement**
+   Créez un fichier `.env` à la racine du projet :
    ```
    ANTHROPIC_API_KEY=sk-ant-...
-
-   # Wait 60 seconds before connecting using these details, or login to https://console.neo4j.io to validate the Aura Instance is available
-   NEO4J_URI=neo4j+s://a3d3e8c5.databases.neo4j.io
-   NEO4J_USERNAME=neo4j
+   NEO4J_URI=neo4j+s://...
+   NEO4J_USER=neo4j
    NEO4J_PASSWORD=...
-   AURA_INSTANCEID=...
-   AURA_INSTANCENAME=Instance01
    ```
-5. **Démarrer l'interface Streamlit**
-   Lancez l'interface utilisateur Streamlit avec la commande:
+
+
+## Composants principaux
+
+Le projet s'articule autour de quatre composants principaux :
+
+1. **Extraction et traitement des données** (`filter.py`, `analyse.py`)
+   - Filtrage des données brutes d'OpenFoodFacts
+   - Analyse statistique et identification des champs pertinents
+
+2. **Création et population de la base Neo4j** (`create_graph.py`)
+   - Création des nœuds et relations
+   - Génération d'embeddings pour la recherche sémantique
+   - Enrichissement avec les taxonomies d'OpenFoodFacts
+
+3. **Requêtes et interrogation de la base** (`query.py`, `cypher_queries.py`)
+   - Encapsulation des requêtes Cypher
+   - Fonctions spécialisées pour différents cas d'usage
+
+4. **Implémentation de l'agent conversationnel** (`agent.py`)
+   - Analyse des intentions en langage naturel
+   - Traduction en requêtes Cypher
+   - Formatage des résultats en réponses naturelles
+
+
+## Structure des taxonomies
+
+Les taxonomies d'OpenFoodFacts enrichissent notre graphe avec des hiérarchies et des relations entre entités. Issues du [dépôt officiel d'OpenFoodFacts](https://github.com/openfoodfacts/openfoodfacts-server/tree/main/taxonomies), elles sont organisées en graphes acycliques dirigés où chaque nœud peut avoir plusieurs parents.
+
+Les fichiers principaux (`categories.txt`, `ingredients.txt`, etc.) définissent des relations parent-enfant et contiennent des traductions multilingues et des synonymes, suivant ce format :
+```
+< en:Parent
+en: Child name in English
+fr: Child name in French
+```
+
+## Schéma de la base de données Neo4j
+
+Notre base de données Neo4j créé par `create_graph.py` suit cette structure :
+
+### Nœuds
+- **Product** : Produits alimentaires (code, name, nutriscore_grade, embedding...)
+- **Brand** : Marques commerciales
+- **Category** : Catégories de produits (hiérarchisées)
+- **Ingredient** : Ingrédients (hiérarchisés)
+- **Nutriment** : Nutriments et valeurs nutritives
+- **Label** : Labels et certifications (bio, commerce équitable...)
+- **Additif** : Additifs alimentaires
+- **Allergen** : Allergènes potentiels
+- **Country** : Pays de commercialisation
+
+### Relations principales
+- **(Product)-[:HAS_BRAND]->(Brand)** : Relie produits et marques
+- **(Product)-[:HAS_CATEGORY]->(Category)** : Catégorisation des produits
+- **(Product)-[:CONTAINS]->(Ingredient)** : Ingrédients contenus dans un produit
+- **(Product)-[:CONTAINS_ADDITIF]->(Additif)** : Additifs présents dans un produit
+- **(Product)-[:CONTAINS_ALLERGEN]->(Allergen)** : Allergènes présents dans un produit
+- **(Product)-[:HAS_LABEL]->(Label)** : Labels/certifications d'un produit
+- **(Product)-[:SOLD_IN]->(Country)** : Pays où le produit est commercialisé
+- **(Product)-[:HAS_NUTRIMENT {value, unit}]->(Nutriment)** : Valeurs nutritionnelles
+
+### Relations hiérarchiques
+- **(Category)-[:HAS_CHILD]->(Category)** : Hiérarchie des catégories
+- **(Ingredient)-[:CONTAINS]->(Ingredient)** : Hiérarchie des ingrédients
+- **(Additif)-[:PART_OF]->(Additif)** : Hiérarchie des additifs
+- **(Allergen)-[:BELONGS_TO]->(Allergen)** : Hiérarchie des allergènes
+- **(Country)-[:CONTAINS_REGION]->(Country)** : Hiérarchie géographique
+- **(Nutriment)-[:PART_OF]->(Nutriment)** : Hiérarchie des nutriments
+- **(Label)-[:INCLUDES]->(Label)** : Hiérarchie des labels
+
+## Configuration des modèles pour l'agent
+
+L'agent peut utiliser deux types de modèles de langage :
+
+### Claude d'Anthropic (recommandé)
+```python
+llm = LiteLLMModel(model_id="anthropic/claude-3-5-sonnet-20240620")
+```
+**Avantages :** Meilleure compréhension des requêtes complexes, gestion supérieure des nuances linguistiques  
+**Inconvénients :** Nécessite une clé API, coût associé, dépendance internet
+
+### Llama 3.2 via Ollama (local)
+```python
+llm = LiteLLMModel(model_id="ollama/llama3.2:latest", api_base="http://localhost:11434")
+```
+**Avantages :** Fonctionnement local, aucun coût, confidentialité  
+**Inconvénients :** Performances inférieures, installation d'Ollama requise
+
+
+## Lancement et test de l'agent
+
+1. **Vérifier les prérequis**
+   - Base Neo4j accessible
+   - Variables d'environnement configurées
+   - (Optionnel) Ollama installé pour Llama local
+
+2. **Configurer le modèle LLM**
+   Dans `agent.py`, choisissez :
+   ```python
+   engine = "sonnet"  # Pour Claude
+   # OU
+   engine = "ollama/llama3.2:latest"  # Pour Llama
+   ```
+
+3. **Lancer l'agent**
    ```bash
-   streamlit run app.py
+   python src/jsonl/agent.py
    ```
 
-## Description sommaires des fichiers
 
-- **Préparation des données**
-  - `filter.py` : Filtre un fichier JSONL pour ne garder que les produits du Canada.
-- **Exploration des données**
-  - `analyse.py` : Analyser la structure des données JSON pour identifier les champs pertinents.
-- **Création de la base de données vectorielle**
-  - `create_graph.py` : Crée un graphe Neo4j à partir des données JSONL. Ce script créé le fichier `openfoodfacts_loader.log`.
-  - `query.py` : Code pour interroger le graphe Neo4j avec des requêtes Cypher.
-- **Construction de l'agent conversationnel**
-  - `agent_*.py` : L'agent principal qui gère les interactions avec Neo4j et traite les requêtes en langage naturel.
-  - `intent_handler.py` et `llm_intent_handler.py` : Gestionnaires d'intentions pour l'agent principal, utilisés par `agent_*.py`.
-- **Interface utilisateur**
-  - `app.py` : Point d'entrée alternatif basé sur Streamlit pour lancer une interface web permettant d'interagir avec l'agent. L'interface permet d’entrer nos questions en anglais ou en français et d’obtenir les résultats en temps réel.
-- **Documentation**
-  - `README.md`et `notes.md` : Fichiers de documentation
+## Exemples de requêtes
 
-## Fichier filter.py
+```
+Quels produits sont fabriqués par Kellogg's?
+Quels produits contiennent du sucre?
+Montre-moi des produits sans gluten.
+Parle-moi du Nutella.
+Compare Coca-Cola et Pepsi.
+Donne-moi des produits végétaliens.
+```
 
-Ce script filtre les produits d'un fichier JSONL pour ne garder que les 97&nbsp;439&nbsp;produits canadiens.
+## Prochaines étapes
 
-## Fichier create_graph.py
+- Analyser les performances de l'agent interrogeant la base Neo4j par rapport à l'agent qui interroge la base DuckDB créé dans la première partie du projet.
 
-Allez à la [console Neo4j](https://console.neo4j.io) et cliquez sur **Create instance**. Sélectionnez **AuraDB Free**.
-Éventuellement, je pourrais utiliser la version **Pro** mais gratuite 14 jours.
+## Développements futurs
 
-Attendez que l'instance soit prête (indiqué RUNNING en vert).
+1. **Interface web** : Implementation via Streamlit ou Flask avec visualisation du graphe
+2. **Détection d'intention avancée** : Classification fine-tunée pour le domaine alimentaire
+3. **Recommandations personnalisées** : Système de profils et de préférences utilisateurs
+4. **Enrichissement de données** : Intégration de sources nutritionnelles supplémentaires
+5. **Analyse avancée des requêtes** : Correction orthographique et suggestions
+6. **Optimisation des performances** : Mise en cache et requêtes optimisées
 
-Ensuite, exécutez le script `create_graph.py` pour créer un graphe Neo4j à partir des données JSONL.
+## Conclusion
 
-Ce script crée les noeuds et les relations dans la base de données Neo4j. 
-
-Ce script crée également les relations parents–enfants dans le graphe des noeuds qui font l'objet d'une taxonomie documentée. Par exemple, dans 
-`create_category_nodes()`, après avoir créé tous les nœuds de catégories, le code itére sur le fichier de taxonomie `categories.txt` 
-et exécuter des requêtes Cypher pour ajouter des relations entre chaque parent et chacun de ses enfants. 
-Les fichiers de taxonomie sont disponibles [ici](https://github.com/openfoodfacts/openfoodfacts-server/tree/main/taxonomies).
-
-Voici les points importants à noter dans la sortie :
-
-1. **Chargement initial** : Le script a correctement chargé 1000 produits sur les 97439 disponibles (échantillon limité pour le test).
-
-2. **Création des nœuds et relations de base** :
-   - 1000 produits avec leurs embeddings
-   - 1040 relations HAS_BRAND
-   - 4363 relations HAS_CATEGORY
-   - 16471 relations CONTAINS pour les ingrédients
-   - 1717 relations HAS_LABEL
-   - 1522 relations CONTAINS_ADDITIF
-   - 970 relations CONTAINS_ALLERGEN
-   - 1486 relations SOLD_IN pour les pays
-   - 6778 relations HAS_NUTRIMENT
-
-3. **Intégration des taxonomies hiérarchiques** :
-   - Taxonomie des catégories : 10099 relations HAS_CHILD créées, 8214 nœuds enrichis avec des traductions
-   - Taxonomie des ingrédients : 4516 relations CONTAINS créées, 4019 nœuds enrichis
-   - Taxonomie des additifs : 115 relations PART_OF créées, 115 nœuds enrichis
-   - Taxonomie des labels : 2078 relations INCLUDES créées, 2037 nœuds enrichis
-
-4. **Recherche sémantique** :
-   - Le test de recherche pour "Produit sans gluten riche en protéines" a retourné 5 résultats, montrant que l'index vectoriel fonctionne.
-
-
-Cette structure de graphe enrichie permettra désormais des requêtes sophistiquées, exploitant à la fois :
-- Les relations entre produits et leurs attributs (ingrédients, marques, etc.)
-- Les relations hiérarchiques au sein de chaque taxonomie
-- Les synonymes et traductions en français et en anglais
-
-Nous avons maintenant une base solide pour développer des applications qui peuvent répondre à des requêtes en langage naturel sur les produits alimentaires, tenant compte des relations sémantiques et hiérarchiques.
-
-## Fichier query.py
-
-
-
-
-
-## Fichier agent.py
-
-Le fichier `agent.py` est un composant central du système qui fournit une interface entre les utilisateurs et la base de données Neo4j contenant les données d'Open Food Facts.
-
-La classe `OpenFoodFactsAgent` implémente plusieurs fonctionnalités clés :
-
-- **Initialisation et connexion à Neo4j**
-  - Utilise LangChain pour se connecter à la base de données Neo4j
-  - Configure un modèle de génération de requêtes Cypher
-  - Initialise un modèle de langage (GPT-3.5-turbo) pour comprendre les requêtes
-- **Prompt de génération Cypher**
-  - Un template détaillé pour guider le LLM à générer des requêtes Cypher correctes
-  - Comprend des instructions, des exemples et le schéma de la base de données
-  - Les exemples couvrent divers cas d'usage : recherche par marque, ingrédients, allergènes, etc.
-- **Fonctions utilitaires**
-  - `refresh_schema()` : Met à jour le schéma de la base de données
-  - `get_schema()` : Récupère le schéma actuel
-  - `execute_custom_cypher()` : Exécute des requêtes Cypher personnalisées
-- **Fonctions spécialisées**
-  - `get_product_recommendations()` : Recommande des produits similaires ou plus sains
-  - `get_nutritional_analysis()` : Analyse nutritionnelle d'un produit
-  - `get_dietary_info()` : Information sur les produits adaptés à un régime spécifique
-- **Traitement des requêtes**
-  - `query()` : Point d'entrée principal qui utilise un gestionnaire d'intentions
-
-### Problèmes connus
-
-- Problème de regroupement sémantique observé précédemment pourrait affecter la qualité des résultats. Par exemple, chercher des produits contenant du "sel" pourrait ne pas trouver ceux avec "salt" si le regroupement n'est pas optimal.
-- Je n'aime pas la façon dont est déterminé les intentions avec `IntentHandler`. Je souhaite que le LLM le détermine lui-même.
-
-
-
+Ce projet démontre comment combiner une base de données graphe Neo4j avec des techniques d'IA conversationnelle pour créer un agent capable de répondre à des questions complexes sur les produits alimentaires. La structure du graphe, enrichie par des taxonomies et des embeddings vectoriels, permet des recherches sémantiques puissantes qui dépassent les simples correspondances de mots-clés.

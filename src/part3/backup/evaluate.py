@@ -16,6 +16,10 @@ Le script:
 Ce script est structuré pour isoler les fonctionnalités nécessaires sans
 dépendre des modules existants dans 'src/part1/' et 'src/part2/'.
 
+Important:pip list 
+- Dans le rapport, il est important d'indiquer que j'ai limité le nombre d'étapes des agents à 5 (max_steps=5).
+- Assurez-vous que l'instance du graphe Neo4j soit démarrée (https://console-preview.neo4j.io/) avant d'exécuter ce script.
+
 Utilisation:
     python evaluate.py [--limit N] [--lang LANG] [--model MODEL]
 
@@ -35,6 +39,14 @@ from datetime import datetime
 from dataclasses import dataclass, field
 from typing import Dict, List, Any, Optional, Tuple
 import statistics
+
+from tabulate import tabulate
+import matplotlib.pyplot as plt
+import seaborn as sns
+import numpy as np
+
+from nltk.translate.bleu_score import sentence_bleu
+from rouge import Rouge
 
 import duckdb
 from neo4j import GraphDatabase
@@ -299,6 +311,7 @@ def create_duckdb_agent(model: LiteLLMModel) -> CodeAgent:
         tools=[query_tool],
         model=model,
         additional_authorized_imports=["json"],
+        max_steps=5,
     )
     
     return agent
@@ -317,6 +330,7 @@ def create_neo4j_agent(model: LiteLLMModel) -> CodeAgent:
         tools=[query_tool, embedding_tool],
         model=model,
         additional_authorized_imports=["json"],
+        max_steps=5,
     )
     
     return agent
@@ -361,20 +375,24 @@ def load_qa_pairs(qa_path: Path, lang: str = "fr", limit: Optional[int] = None) 
         return []
 
 
-def evaluate_agent_response(expected: str, actual: str, model: LiteLLMModel) -> bool:
+def evaluate_agent_response_hybrid(expected: str, actual: str, model: LiteLLMModel, threshold: float = 0.5) -> dict:
     """
-    Évalue si la réponse de l'agent est correcte en utilisant le LLM.
+    Combine évaluation LLM et métriques automatiques pour une évaluation nuancée.
     
     Args:
         expected: Réponse attendue
         actual: Réponse de l'agent
         model: Modèle LLM pour l'évaluation
+        threshold: Seuil pour considérer une réponse comme correcte (défaut: 0.5)
         
     Returns:
-        True si la réponse est considérée comme correcte, False sinon
+        Dictionnaire contenant les scores et l'évaluation
     """
-    evaluator = CodeAgent(model=model, tools=[])
+    # 1. Calcul des métriques automatiques
+    metrics = evaluate_agent_response_with_metrics(expected, actual)
     
+    # 2. Évaluation par LLM
+    evaluator = CodeAgent(model=model, tools=[])
     prompt = f"""
     Compare ces deux réponses et détermine si la Réponse B contient l'information 
     factuelle principale de la Réponse A, même si la formulation est différente.
@@ -383,20 +401,96 @@ def evaluate_agent_response(expected: str, actual: str, model: LiteLLMModel) -> 
     
     Réponse B (à évaluer): {actual}
     
-    Réponds par exactement un mot: 'oui' si les informations clés sont présentes 
-    et factuellement correctes, ou 'non' si des informations essentielles sont 
-    manquantes ou incorrectes.
+    Évalue la correspondance sur une échelle de 0 à 5, où:
+    0 = Complètement incorrect ou non pertinent
+    1 = Minimal, manque la plupart des informations clés
+    2 = Partiellement correct, avec des omissions importantes
+    3 = Majoritairement correct, avec quelques omissions mineures
+    4 = Presque parfait, informations complètes avec formulation différente
+    5 = Parfait, toutes les informations clés sont présentes et correctes
+    
+    Réponds uniquement par un chiffre entre 0 et 5.
     """
     
-    evaluation = evaluator.run(prompt)
-    logger.debug(f"Évaluation: {evaluation}")
+    llm_score_str = evaluator.run(prompt)
     
-    # Analyse de la réponse
-    evaluation = evaluation.lower().strip()
-    is_correct = 'oui' in evaluation or 'correct' in evaluation or 'equivalent' in evaluation
+    # Extraire le score numérique
+    try:
+        llm_score = float(llm_score_str.strip())
+        llm_normalized = llm_score / 5.0  # Normaliser entre 0 et 1
+    except ValueError:
+        llm_normalized = 0.0
+        
+    # 3. Combiner les scores
+    combined_score = 0.0
+    if "error" not in metrics:
+        combined_score = (metrics.get("rouge_l", 0) * 0.3) + (metrics.get("bleu_2", 0) * 0.2) + (llm_normalized * 0.5)
+    else:
+        combined_score = llm_normalized  # Utiliser seulement le score LLM si les métriques échouent
     
-    return is_correct
+    # 4. Déterminer si la réponse est correcte selon un seuil
+    is_correct = combined_score >= threshold
+    
+    return {
+        "is_correct": is_correct,
+        "combined_score": combined_score,
+        "llm_score": llm_normalized,
+        "llm_raw_score": llm_score if "llm_score" in locals() else None,
+        "metrics": metrics
+    }
 
+def evaluate_agent_response_with_metrics(expected: str, actual: str) -> dict:
+    """
+    Évalue la réponse de l'agent en utilisant les métriques BLEU et ROUGE.
+    
+    Args:
+        expected: Réponse attendue
+        actual: Réponse de l'agent
+        
+    Returns:
+        Dictionnaire contenant les scores BLEU et ROUGE
+    """
+    try:
+        from nltk.translate.bleu_score import sentence_bleu
+        from rouge import Rouge
+        import nltk
+        
+        # S'assurer que les tokenizers NLTK sont disponibles
+        try:
+            nltk.data.find('tokenizers/punkt')
+        except LookupError:
+            nltk.download('punkt')
+        
+        # Prétraitement des textes
+        expected_tokens = expected.lower().split()
+        actual_tokens = actual.lower().split()
+        
+        # Calcul du score BLEU
+        # BLEU considère différentes longueurs de n-grammes (1, 2, 3, 4)
+        weights_unigrams = (1, 0, 0, 0)  # Uniquement les unigrammes
+        weights_bigrams = (0.5, 0.5, 0, 0)  # Unigrammes et bigrammes
+        
+        bleu_score_1 = sentence_bleu([expected_tokens], actual_tokens, weights=weights_unigrams)
+        bleu_score_2 = sentence_bleu([expected_tokens], actual_tokens, weights=weights_bigrams)
+        
+        # Calcul des scores ROUGE
+        rouge = Rouge()
+        rouge_scores = rouge.get_scores(actual, expected)
+        
+        return {
+            "bleu_1": bleu_score_1,
+            "bleu_2": bleu_score_2,
+            "rouge_1": rouge_scores[0]["rouge-1"]["f"],
+            "rouge_2": rouge_scores[0]["rouge-2"]["f"],
+            "rouge_l": rouge_scores[0]["rouge-l"]["f"]
+        }
+    except ImportError:
+        print("Modules NLTK et/ou Rouge non installés. Exécutez: pip install nltk rouge")
+        return {"error": "Modules requis non disponibles"}
+    except Exception as e:
+        print(f"Erreur lors du calcul des métriques: {e}")
+        return {"error": str(e)}
+    
 
 def evaluate_agent(
     agent: CodeAgent,
@@ -418,7 +512,16 @@ def evaluate_agent(
     Returns:
         Objet AgentPerformance contenant les résultats
     """
+    try:
+        # Importez beepy de manière conditionnelle pour ne pas bloquer l'exécution si non disponible
+        import beepy
+        has_beepy = True
+    except ImportError:
+        has_beepy = False
+        print("Module 'beepy' non installé. Pas de son disponible. Installez-le avec: pip install beepy")
+    
     performance = AgentPerformance(agent_type=agent_type)
+    total_pairs = len(qa_pairs)
     
     # Préparer les instructions spécifiques pour chaque agent
     if agent_type == "duckdb":
@@ -451,12 +554,25 @@ def evaluate_agent(
         """
     
     # Évaluer chaque paire question-réponse
+    print(f"\n--- Évaluation avec l'agent {agent_type.upper()} ---")
     for idx, qa_pair in enumerate(qa_pairs, 1):
         question = qa_pair["questions"][lang]
         expected_answer = qa_pair["answers"][lang]
         
-        logger.info(f"Évaluation [{agent_type}] - Question {idx}/{len(qa_pairs)}")
+        # Afficher la progression
+        progress_percent = (idx / total_pairs) * 100
+        progress_bar = f"[{'=' * int(progress_percent / 5):<20}]"
+        print(f"\rProgression: {progress_bar} {progress_percent:.1f}% ({idx}/{total_pairs})", end="")
+        
+        logger.info(f"Évaluation [{agent_type}] - Question {idx}/{len(qa_pairs)} ({progress_percent:.1f}%)")
         logger.info(f"Question: {question}")
+        
+        # Jouer un son au début de chaque question
+        if has_beepy:
+            try:
+                beepy.beep(sound=1)  # 1 = son simple
+            except Exception as e:
+                logger.warning(f"Erreur lors de la lecture du son: {e}")
         
         try:
             # Mesurer le temps de réponse
@@ -470,8 +586,16 @@ def evaluate_agent(
             logger.info(f"Temps de réponse: {response_time:.2f}s")
             logger.info(f"Réponse de l'agent: {agent_response}")
             
-            # Évaluer la réponse
-            is_correct = evaluate_agent_response(expected_answer, agent_response, model)
+            # Évaluation hybride (LLM + métriques)
+            evaluation_results = evaluate_agent_response_hybrid(
+                expected_answer, 
+                agent_response, 
+                model, 
+                threshold=0.4  # Seuil pour considérer une réponse comme correcte
+            )
+            
+            is_correct = evaluation_results["is_correct"]
+            combined_score = evaluation_results["combined_score"]
             
             # Enregistrer le résultat
             result = EvaluationResult(
@@ -480,8 +604,22 @@ def evaluate_agent(
                 expected_answer=expected_answer,
                 agent_answer=agent_response,
                 is_correct=is_correct,
-                response_time=response_time
+                response_time=response_time,
+                # Stockez les métriques détaillées dans l'attribut error pour l'instant
+                # Idéalement, vous pourriez étendre la classe EvaluationResult pour inclure ces métriques
+                error=f"Score: {combined_score:.2f}, LLM: {evaluation_results['llm_score']:.2f}, "
+                      f"BLEU-2: {evaluation_results['metrics'].get('bleu_2', 'N/A')}, "
+                      f"ROUGE-L: {evaluation_results['metrics'].get('rouge_l', 'N/A')}"
             )
+            
+            # Jouer un son différent selon le résultat
+            if has_beepy:
+                try:
+                    # Son 3 (succès) ou 4 (échec)
+                    sound_type = 3 if is_correct else 4
+                    beepy.beep(sound=sound_type)
+                except Exception as e:
+                    logger.warning(f"Erreur lors de la lecture du son: {e}")
             
         except Exception as e:
             logger.error(f"Erreur lors de l'évaluation: {e}")
@@ -496,13 +634,42 @@ def evaluate_agent(
                 response_time=0.0,
                 error=str(e)
             )
+            
+            # Son d'erreur
+            if has_beepy:
+                try:
+                    beepy.beep(sound=5)  # 5 = son d'erreur/alerte
+                except Exception as e:
+                    logger.warning(f"Erreur lors de la lecture du son: {e}")
         
         performance.results.append(result)
+        # Ajoutez un indicateur de succès/échec à la fin de chaque question
+        success_indicator = "✓" if result.is_correct else "✗"
+        print(f"\rQuestion {idx}/{total_pairs} {success_indicator} ({response_time:.1f}s)                  ")
         logger.info(f"Résultat: {'Correct' if result.is_correct else 'Incorrect'}")
+        
+        # Si nous avons des métriques détaillées, les journaliser
+        if hasattr(result, 'error') and result.error and not result.error.startswith("Score:"):
+            logger.info(f"Erreur: {result.error}")
+        elif hasattr(result, 'error') and result.error:
+            logger.info(f"Métriques: {result.error}")
+            
         logger.info("-" * 50)
     
+    # Son final indiquant la fin de l'évaluation pour cet agent
+    if has_beepy:
+        try:
+            beepy.beep(sound=7)  # 7 = son de fin
+        except Exception as e:
+            logger.warning(f"Erreur lors de la lecture du son: {e}")
+    
+    # Afficher le résumé à la fin de l'évaluation
+    print(f"\nRésumé {agent_type}:")
+    print(f"  Taux de réussite : {performance.success_rate:.1f}%")
+    print(f"  Temps moyen      : {performance.avg_response_time:.2f}s")
+    print()
+    
     return performance
-
 
 def generate_report(duckdb_perf: AgentPerformance, neo4j_perf: AgentPerformance, output_path: Optional[Path] = None) -> str:
     """
@@ -582,22 +749,156 @@ def generate_report(duckdb_perf: AgentPerformance, neo4j_perf: AgentPerformance,
     
     return report
 
+def extract_detailed_metrics(results: List[EvaluationResult]) -> Dict:
+    """
+    Extrait les métriques détaillées des résultats d'évaluation.
+    
+    Args:
+        results: Liste des résultats d'évaluation
+        
+    Returns:
+        Dictionnaire contenant les métriques moyennes
+    """
+    metrics = {
+        "avg_combined_score": 0.0,
+        "avg_llm_score": 0.0,
+        "avg_bleu_2": 0.0,
+        "avg_rouge_l": 0.0,
+        "count": 0
+    }
+    
+    for result in results:
+        if hasattr(result, 'error') and result.error and result.error.startswith("Score:"):
+            try:
+                # Extraire les métriques à partir de la chaîne stockée dans error
+                error_parts = result.error.split(", ")
+                for part in error_parts:
+                    if "Score:" in part:
+                        metrics["avg_combined_score"] += float(part.split(": ")[1])
+                    elif "LLM:" in part:
+                        metrics["avg_llm_score"] += float(part.split(": ")[1])
+                    elif "BLEU-2:" in part:
+                        bleu = part.split(": ")[1]
+                        if bleu != "N/A":
+                            metrics["avg_bleu_2"] += float(bleu)
+                    elif "ROUGE-L:" in part:
+                        rouge = part.split(": ")[1]
+                        if rouge != "N/A":
+                            metrics["avg_rouge_l"] += float(rouge)
+                
+                metrics["count"] += 1
+            except Exception:
+                pass
+    
+    # Calculer les moyennes
+    if metrics["count"] > 0:
+        metrics["avg_combined_score"] /= metrics["count"]
+        metrics["avg_llm_score"] /= metrics["count"]
+        metrics["avg_bleu_2"] /= metrics["count"]
+        metrics["avg_rouge_l"] /= metrics["count"]
+    
+    return metrics
 
 def visualize_results(duckdb_perf: AgentPerformance, neo4j_perf: AgentPerformance, output_path: Optional[Path] = None):
     """
-    Génère des visualisations pour comparer les performances.
-    Nécessite matplotlib et seaborn.
+    Génère des visualisations et un tableau récapitulatif pour comparer les performances.
     
     Args:
         duckdb_perf: Performances de l'agent DuckDB
         neo4j_perf: Performances de l'agent Neo4j
         output_path: Chemin où sauvegarder les visualisations (optionnel)
     """
+    # Extraire les métriques détaillées si disponibles
+    duckdb_metrics = extract_detailed_metrics(duckdb_perf.results)
+    neo4j_metrics = extract_detailed_metrics(neo4j_perf.results)
+    
+    # Générer un tableau récapitulatif des métriques
     try:
-        import matplotlib.pyplot as plt
-        import seaborn as sns
-        import numpy as np
+        from tabulate import tabulate
         
+        # Préparer les données du tableau
+        headers = ["Métrique", "DuckDB", "Neo4j", "Différence"]
+        metrics_data = [
+            ["Taux de réussite (%)", 
+             f"{duckdb_perf.success_rate:.2f}", 
+             f"{neo4j_perf.success_rate:.2f}", 
+             f"{abs(duckdb_perf.success_rate - neo4j_perf.success_rate):.2f}"],
+            
+            ["Taux d'échec (%)", 
+             f"{duckdb_perf.failure_rate:.2f}", 
+             f"{neo4j_perf.failure_rate:.2f}", 
+             f"{abs(duckdb_perf.failure_rate - neo4j_perf.failure_rate):.2f}"],
+            
+            ["Temps moyen (s)", 
+             f"{duckdb_perf.avg_response_time:.2f}", 
+             f"{neo4j_perf.avg_response_time:.2f}", 
+             f"{abs(duckdb_perf.avg_response_time - neo4j_perf.avg_response_time):.2f}"],
+            
+            ["Temps médian (s)", 
+             f"{statistics.median([r.response_time for r in duckdb_perf.results if r.response_time > 0]):.2f}", 
+             f"{statistics.median([r.response_time for r in neo4j_perf.results if r.response_time > 0]):.2f}", 
+             ""]
+        ]
+        
+        # Ajouter les métriques détaillées si disponibles
+        if duckdb_metrics.get("avg_combined_score") and neo4j_metrics.get("avg_combined_score"):
+            metrics_data.extend([
+                ["Score combiné moyen", 
+                 f"{duckdb_metrics['avg_combined_score']:.2f}", 
+                 f"{neo4j_metrics['avg_combined_score']:.2f}", 
+                 f"{abs(duckdb_metrics['avg_combined_score'] - neo4j_metrics['avg_combined_score']):.2f}"],
+                
+                ["Score LLM moyen", 
+                 f"{duckdb_metrics['avg_llm_score']:.2f}", 
+                 f"{neo4j_metrics['avg_llm_score']:.2f}", 
+                 f"{abs(duckdb_metrics['avg_llm_score'] - neo4j_metrics['avg_llm_score']):.2f}"],
+                
+                ["BLEU-2 moyen", 
+                 f"{duckdb_metrics['avg_bleu_2']:.4f}", 
+                 f"{neo4j_metrics['avg_bleu_2']:.4f}", 
+                 f"{abs(duckdb_metrics['avg_bleu_2'] - neo4j_metrics['avg_bleu_2']):.4f}"],
+                
+                ["ROUGE-L moyen", 
+                 f"{duckdb_metrics['avg_rouge_l']:.4f}", 
+                 f"{neo4j_metrics['avg_rouge_l']:.4f}", 
+                 f"{abs(duckdb_metrics['avg_rouge_l'] - neo4j_metrics['avg_rouge_l']):.4f}"]
+            ])
+        
+        # Créer et afficher le tableau
+        table = tabulate(metrics_data, headers=headers, tablefmt="grid")
+        print("\nTABLEAU RÉCAPITULATIF DES MÉTRIQUES")
+        print(table)
+        
+        # Sauvegarder le tableau dans un fichier si demandé
+        if output_path:
+            metrics_file = output_path / "metrics_summary.txt"
+            with open(metrics_file, 'w', encoding='utf-8') as f:
+                f.write("TABLEAU RÉCAPITULATIF DES MÉTRIQUES\n\n")
+                f.write(table)
+            print(f"\nTableau des métriques sauvegardé dans {metrics_file}")
+            
+            # Créer un fichier CSV pour une utilisation ultérieure
+            csv_file = output_path / "metrics_summary.csv"
+            with open(csv_file, 'w', encoding='utf-8') as f:
+                f.write("Metric,DuckDB,Neo4j,Difference\n")
+                for row in metrics_data:
+                    f.write(f"{row[0]},{row[1]},{row[2]},{row[3]}\n")
+            print(f"CSV des métriques sauvegardé dans {csv_file}")
+            
+    except ImportError:
+        print("\nModule 'tabulate' non installé. Impossible de générer le tableau formaté.")
+        print("Installez-le avec: pip install tabulate\n")
+        
+        # Affichage simple sans tabulate
+        print("\nRÉCAPITULATIF DES MÉTRIQUES:")
+        print(f"Taux de réussite:  DuckDB={duckdb_perf.success_rate:.2f}%, Neo4j={neo4j_perf.success_rate:.2f}%")
+        print(f"Taux d'échec:      DuckDB={duckdb_perf.failure_rate:.2f}%, Neo4j={neo4j_perf.failure_rate:.2f}%")
+        print(f"Temps moyen:       DuckDB={duckdb_perf.avg_response_time:.2f}s, Neo4j={neo4j_perf.avg_response_time:.2f}s")
+        duckdb_median = statistics.median([r.response_time for r in duckdb_perf.results if r.response_time > 0])
+        neo4j_median = statistics.median([r.response_time for r in neo4j_perf.results if r.response_time > 0])
+        print(f"Temps médian:      DuckDB={duckdb_median:.2f}s, Neo4j={neo4j_median:.2f}s")
+
+    try:        
         sns.set(style="whitegrid")
         
         # Créer le répertoire de sortie si nécessaire
@@ -698,7 +999,6 @@ def parse_arguments():
     
     parser.add_argument("--output", type=str, default=None,
                         help="Chemin où enregistrer les résultats")
-    
     
     return parser.parse_args()
 

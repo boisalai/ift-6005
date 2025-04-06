@@ -12,6 +12,7 @@ data/*.parquet
 data/*.duckdb
 data/*.jsonl
 data/cache/*.index
+*.pkl
 data/graphs/*.pkl
 
 # Logs

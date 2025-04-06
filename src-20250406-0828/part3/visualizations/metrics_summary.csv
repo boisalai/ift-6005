@@ -1,0 +1,9 @@
+Metric,DuckDB,NetworkX,Difference
+Taux de réussite (%),50.00,50.00,0.00
+Taux d'échec (%),0.00,0.00,0.00
+Temps moyen (s),29.78,31.48,1.70
+Temps médian (s),30.21,26.73,
+Score combiné moyen,0.41,0.38,0.03
+Score LLM moyen,0.52,0.48,0.04
+BLEU-2 moyen,0.0713,0.0530,0.0183
+ROUGE-L moyen,0.1340,0.1335,0.0005

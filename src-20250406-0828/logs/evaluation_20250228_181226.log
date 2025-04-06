@@ -1,0 +1,2208 @@
+2025-02-28 18:12:26,670 - food_agent - evaluate_04.<module>:70 - INFO - General information about execution progress
+2025-02-28 18:12:26,670 - food_agent - evaluate_04.<module>:71 - INFO - Logging initialized. Writing to logs/evaluation_20250228_181226.log
+2025-02-28 18:12:26,670 - food_agent - evaluate_04.<module>:72 - WARNING - Non-critical warnings
+2025-02-28 18:12:26,670 - food_agent - evaluate_04.<module>:73 - ERROR - Important but non-fatal errors
+2025-02-28 18:12:26,670 - food_agent - evaluate_04.<module>:74 - CRITICAL - Critical errors that prevent evaluation
+2025-02-28 18:12:26,671 - food_agent - evaluate_04.main:1187 - INFO - Starting evaluation script
+2025-02-28 18:12:26,809 - root - evaluate_04.main:1245 - INFO - Agent initialized successfully
+2025-02-28 18:12:26,823 - sentence_transformers.SentenceTransformer - SentenceTransformer.__init__:210 - INFO - Use pytorch device_name: mps
+2025-02-28 18:12:26,823 - sentence_transformers.SentenceTransformer - SentenceTransformer.__init__:218 - INFO - Load pretrained SentenceTransformer: all-MiniLM-L6-v2
+2025-02-28 18:12:28,247 - food_agent - evaluate_04._initialize_faiss:382 - INFO - Successfully loaded FAISS index and metadata from cache
+2025-02-28 18:12:28,247 - food_agent - evaluate_04.evaluate_all:1021 - INFO - Evaluating question 1/20
+2025-02-28 18:12:28,394 - food_agent - evaluate_04._search_relevant_columns:524 - INFO - Found 5 relevant columns for query: Quels sont les produits alimentaires sans additifs disponibles dans la base de données?
+2025-02-28 18:12:28,394 - food_agent - evaluate_04._search_relevant_columns:526 - INFO - Column 'additives_tags' with similarity 0.250
+2025-02-28 18:12:28,394 - food_agent - evaluate_04._search_relevant_columns:526 - INFO - Column 'additives_n' with similarity 0.249
+2025-02-28 18:12:28,394 - food_agent - evaluate_04._search_relevant_columns:526 - INFO - Column 'new_additives_n' with similarity 0.198
+2025-02-28 18:12:28,394 - food_agent - evaluate_04._search_relevant_columns:526 - INFO - Column 'ingredients_without_ciqual_codes' with similarity 0.190
+2025-02-28 18:12:28,394 - food_agent - evaluate_04._search_relevant_columns:526 - INFO - Column 'minerals_tags' with similarity 0.190
+2025-02-28 18:12:28,394 - food_agent - evaluate_04._get_agent_response:562 - INFO - Getting agent response
+2025-02-28 18:12:28,394 - food_agent - evaluate_04._get_agent_response:624 - INFO - Additional notes for agent: You are a helpful assistant that answers questions about food products 
+using the Open Food Facts database.
+
+POTENTIALLY RELEVANT COLUMNS:
+The following columns have been identified through semantic search as potentially relevant, 
+with their similarity scores (higher means more likely relevant):
+
+
+
+SEARCH SEQUENCE RULES:
+1. ALWAYS start with database queries using the most relevant columns
+2. If initial query fails, try alternative database queries with different columns or approaches
+3. Only if database queries are unsuccessful, search the Canada Food Guide
+4. Document EVERY attempt in the steps array, including failures
+5. Never skip straight to Food Guide without trying database first
+6. Always include the source of the information in the answer ("Open Food Facts" or "Canada Food Guide")
+7. Always respond in the same language as the question (French or English)
+
+RESPONSE FORMAT REQUIREMENTS:
+1. Provide ONLY the natural language answer to the user's question
+2. Maximum response length: 200 characters
+3. DO NOT include SQL queries, code snippets, or technical details
+4. DO NOT explain your reasoning or methodology
+5. Respond in the same language as the question (French or English)
+6. DO mention the source of information ("Open Food Facts" or "Canada Food Guide")
+
+Please follow these rules to ensure a consistent and effective search strategy.
+
+2025-02-28 18:12:29,018 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: GET https://raw.githubusercontent.com/BerriAI/litellm/main/model_prices_and_context_window.json "HTTP/1.1 200 OK"
+2025-02-28 18:12:29,411 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:12:43,836 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:12:43,840 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:12:43,843 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:12:49,946 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:12:49,947 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:12:49,953 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:12:56,810 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:12:56,813 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:12:56,886 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:13:04,476 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:13:04,479 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:13:04,492 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:13:11,315 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:13:11,318 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:13:11,337 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:13:17,499 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:13:17,502 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:13:17,576 - food_agent - evaluate_04._calculate_semantic_accuracy:922 - INFO - prompt: Compare these two responses and rate their semantic similarity from 0 to 1:
+Response #1: La base de données contient 5843 produits sans additifs, incluant des produits comme le sirop d'érable biologique du Vermont, le lait faible en gras, l'agave bleu biologique, et le lait de coco.
+Response #2: D'après Open Food Facts, plusieurs produits sans additifs sont disponibles, notamment des sirops d'érable et d'agave, des boissons végétales (lait de coco, eau de coco), et des assaisonnements naturels.
+
+Consider:
+1. Key information present in both responses
+2. Factual consistency
+3. Completeness of information
+
+Output format: 
+Return exactly one line containing only a number between 0 and 1, with no 
+explanation or additional text. For example: 0.75
+
+2025-02-28 18:13:17,579 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:13:22,485 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:13:22,487 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:13:22,492 - food_agent - evaluate_04.evaluate_all:1021 - INFO - Evaluating question 2/20
+2025-02-28 18:13:22,629 - food_agent - evaluate_04._search_relevant_columns:524 - INFO - Found 5 relevant columns for query: Quelle est la répartition des produits alimentaires en fonction du nombre d'additifs qu'ils contiennent ?
+2025-02-28 18:13:22,629 - food_agent - evaluate_04._search_relevant_columns:526 - INFO - Column 'additives_n' with similarity 0.371
+2025-02-28 18:13:22,629 - food_agent - evaluate_04._search_relevant_columns:526 - INFO - Column 'additives_tags' with similarity 0.308
+2025-02-28 18:13:22,629 - food_agent - evaluate_04._search_relevant_columns:526 - INFO - Column 'new_additives_n' with similarity 0.278
+2025-02-28 18:13:22,629 - food_agent - evaluate_04._search_relevant_columns:526 - INFO - Column 'ingredients_with_unspecified_percent_n' with similarity 0.248
+2025-02-28 18:13:22,629 - food_agent - evaluate_04._search_relevant_columns:526 - INFO - Column 'ingredients_n' with similarity 0.237
+2025-02-28 18:13:22,629 - food_agent - evaluate_04._get_agent_response:562 - INFO - Getting agent response
+2025-02-28 18:13:22,629 - food_agent - evaluate_04._get_agent_response:624 - INFO - Additional notes for agent: You are a helpful assistant that answers questions about food products 
+using the Open Food Facts database.
+
+POTENTIALLY RELEVANT COLUMNS:
+The following columns have been identified through semantic search as potentially relevant, 
+with their similarity scores (higher means more likely relevant):
+
+
+
+SEARCH SEQUENCE RULES:
+1. ALWAYS start with database queries using the most relevant columns
+2. If initial query fails, try alternative database queries with different columns or approaches
+3. Only if database queries are unsuccessful, search the Canada Food Guide
+4. Document EVERY attempt in the steps array, including failures
+5. Never skip straight to Food Guide without trying database first
+6. Always include the source of the information in the answer ("Open Food Facts" or "Canada Food Guide")
+7. Always respond in the same language as the question (French or English)
+
+RESPONSE FORMAT REQUIREMENTS:
+1. Provide ONLY the natural language answer to the user's question
+2. Maximum response length: 200 characters
+3. DO NOT include SQL queries, code snippets, or technical details
+4. DO NOT explain your reasoning or methodology
+5. Respond in the same language as the question (French or English)
+6. DO mention the source of information ("Open Food Facts" or "Canada Food Guide")
+
+Please follow these rules to ensure a consistent and effective search strategy.
+
+2025-02-28 18:13:22,633 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:13:28,439 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:13:28,442 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:13:28,444 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:13:34,959 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:13:34,962 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:13:34,966 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:13:39,964 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:13:39,966 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:13:39,983 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:13:44,734 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:13:44,738 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:13:44,751 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:13:49,319 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:13:49,322 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:13:49,346 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:13:55,030 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:13:55,033 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:13:55,051 - food_agent - evaluate_04._calculate_semantic_accuracy:922 - INFO - prompt: Compare these two responses and rate their semantic similarity from 0 to 1:
+Response #1: D'après les données, environ 62.99556681443952% des produits contiennent au moins un additif. La majorité des produits contiennent entre 0 et 4 additifs, avec une diminution progressive du nombre de produits à mesure que le nombre d'additifs augmente. Par exemple, 5843 produits ne contiennent aucun additif, tandis que 2946 produits contiennent un seul additif.
+Response #2: Selon Open Food Facts, 89,1% des produits ne contiennent aucun additif. Pour les autres : 2,3% ont 1 additif, 2,2% en ont 2, et environ 5% des produits contiennent 3 additifs ou plus.
+
+Consider:
+1. Key information present in both responses
+2. Factual consistency
+3. Completeness of information
+
+Output format: 
+Return exactly one line containing only a number between 0 and 1, with no 
+explanation or additional text. For example: 0.75
+
+2025-02-28 18:13:55,054 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:14:01,060 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:14:01,065 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:14:01,067 - food_agent - evaluate_04.evaluate_all:1021 - INFO - Evaluating question 3/20
+2025-02-28 18:14:01,161 - food_agent - evaluate_04._search_relevant_columns:524 - INFO - Found 5 relevant columns for query: Quels sont les produits alimentaires contenant le plus grand nombre d'additifs dans la base de données ?
+2025-02-28 18:14:01,161 - food_agent - evaluate_04._search_relevant_columns:526 - INFO - Column 'additives_n' with similarity 0.332
+2025-02-28 18:14:01,161 - food_agent - evaluate_04._search_relevant_columns:526 - INFO - Column 'additives_tags' with similarity 0.279
+2025-02-28 18:14:01,161 - food_agent - evaluate_04._search_relevant_columns:526 - INFO - Column 'new_additives_n' with similarity 0.252
+2025-02-28 18:14:01,161 - food_agent - evaluate_04._search_relevant_columns:526 - INFO - Column 'ingredients_n' with similarity 0.238
+2025-02-28 18:14:01,161 - food_agent - evaluate_04._search_relevant_columns:526 - INFO - Column 'ingredients_from_palm_oil_n' with similarity 0.234
+2025-02-28 18:14:01,161 - food_agent - evaluate_04._get_agent_response:562 - INFO - Getting agent response
+2025-02-28 18:14:01,161 - food_agent - evaluate_04._get_agent_response:624 - INFO - Additional notes for agent: You are a helpful assistant that answers questions about food products 
+using the Open Food Facts database.
+
+POTENTIALLY RELEVANT COLUMNS:
+The following columns have been identified through semantic search as potentially relevant, 
+with their similarity scores (higher means more likely relevant):
+
+
+
+SEARCH SEQUENCE RULES:
+1. ALWAYS start with database queries using the most relevant columns
+2. If initial query fails, try alternative database queries with different columns or approaches
+3. Only if database queries are unsuccessful, search the Canada Food Guide
+4. Document EVERY attempt in the steps array, including failures
+5. Never skip straight to Food Guide without trying database first
+6. Always include the source of the information in the answer ("Open Food Facts" or "Canada Food Guide")
+7. Always respond in the same language as the question (French or English)
+
+RESPONSE FORMAT REQUIREMENTS:
+1. Provide ONLY the natural language answer to the user's question
+2. Maximum response length: 200 characters
+3. DO NOT include SQL queries, code snippets, or technical details
+4. DO NOT explain your reasoning or methodology
+5. Respond in the same language as the question (French or English)
+6. DO mention the source of information ("Open Food Facts" or "Canada Food Guide")
+
+Please follow these rules to ensure a consistent and effective search strategy.
+
+2025-02-28 18:14:01,165 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:14:06,239 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:14:06,240 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:14:06,244 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:14:11,562 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:14:11,564 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:14:11,567 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:14:16,474 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:14:16,476 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:14:16,508 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:14:20,104 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:14:20,107 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:14:20,163 - food_agent - evaluate_04._calculate_semantic_accuracy:922 - INFO - prompt: Compare these two responses and rate their semantic similarity from 0 to 1:
+Response #1: D'après notre base de données, les produits alimentaires contenant le plus grand nombre d'additifs sont les 'Raspberry Flavoured Mini Cakes' avec 24 additifs, suivis des 'Snowballs' et 'Kitchen Sink Brownies' avec 22 additifs chacun. Il est important de noter que tous les produits listés contiennent plus de 20 additifs.
+Response #2: Selon Open Food Facts, le produit contenant le plus d'additifs est 'ah Louis Super Sandwich' avec 26 additifs, suivi des 'Beignes mini donuts' avec 25 additifs.
+
+Consider:
+1. Key information present in both responses
+2. Factual consistency
+3. Completeness of information
+
+Output format: 
+Return exactly one line containing only a number between 0 and 1, with no 
+explanation or additional text. For example: 0.75
+
+2025-02-28 18:14:20,166 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:14:25,082 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:14:25,085 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:14:25,088 - food_agent - evaluate_04.evaluate_all:1021 - INFO - Evaluating question 4/20
+2025-02-28 18:14:25,139 - food_agent - evaluate_04._search_relevant_columns:524 - INFO - Found 5 relevant columns for query: Quel est le pourcentage de produits alimentaires avec et sans additifs dans la base de données Open Food Facts ?
+2025-02-28 18:14:25,140 - food_agent - evaluate_04._search_relevant_columns:526 - INFO - Column 'unknown_ingredients_n' with similarity 0.397
+2025-02-28 18:14:25,140 - food_agent - evaluate_04._search_relevant_columns:526 - INFO - Column 'additives_tags' with similarity 0.388
+2025-02-28 18:14:25,140 - food_agent - evaluate_04._search_relevant_columns:526 - INFO - Column 'data_quality_info_tags' with similarity 0.382
+2025-02-28 18:14:25,140 - food_agent - evaluate_04._search_relevant_columns:526 - INFO - Column 'ingredients_with_unspecified_percent_n' with similarity 0.377
+2025-02-28 18:14:25,140 - food_agent - evaluate_04._search_relevant_columns:526 - INFO - Column 'ingredients_original_tags' with similarity 0.370
+2025-02-28 18:14:25,140 - food_agent - evaluate_04._get_agent_response:562 - INFO - Getting agent response
+2025-02-28 18:14:25,140 - food_agent - evaluate_04._get_agent_response:624 - INFO - Additional notes for agent: You are a helpful assistant that answers questions about food products 
+using the Open Food Facts database.
+
+POTENTIALLY RELEVANT COLUMNS:
+The following columns have been identified through semantic search as potentially relevant, 
+with their similarity scores (higher means more likely relevant):
+
+
+
+SEARCH SEQUENCE RULES:
+1. ALWAYS start with database queries using the most relevant columns
+2. If initial query fails, try alternative database queries with different columns or approaches
+3. Only if database queries are unsuccessful, search the Canada Food Guide
+4. Document EVERY attempt in the steps array, including failures
+5. Never skip straight to Food Guide without trying database first
+6. Always include the source of the information in the answer ("Open Food Facts" or "Canada Food Guide")
+7. Always respond in the same language as the question (French or English)
+
+RESPONSE FORMAT REQUIREMENTS:
+1. Provide ONLY the natural language answer to the user's question
+2. Maximum response length: 200 characters
+3. DO NOT include SQL queries, code snippets, or technical details
+4. DO NOT explain your reasoning or methodology
+5. Respond in the same language as the question (French or English)
+6. DO mention the source of information ("Open Food Facts" or "Canada Food Guide")
+
+Please follow these rules to ensure a consistent and effective search strategy.
+
+2025-02-28 18:14:25,144 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:14:29,901 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:14:29,905 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:14:29,911 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:14:35,035 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:14:35,038 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:14:35,045 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:14:39,211 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:14:39,214 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:14:39,222 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:14:43,593 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:14:43,595 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:14:43,607 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:14:47,300 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:14:47,303 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:14:47,321 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:14:51,801 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:14:51,804 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:14:51,832 - food_agent - evaluate_04._calculate_semantic_accuracy:922 - INFO - prompt: Compare these two responses and rate their semantic similarity from 0 to 1:
+Response #1: Selon les données d'Open Food Facts, 36.17% des produits alimentaires n'ont pas d'additifs, tandis que 63.83% en contiennent.
+Response #2: Selon Open Food Facts, 10.878462479694521% des produits contiennent des additifs, tandis que 89.12153752030548% n'en contiennent pas.
+
+Consider:
+1. Key information present in both responses
+2. Factual consistency
+3. Completeness of information
+
+Output format: 
+Return exactly one line containing only a number between 0 and 1, with no 
+explanation or additional text. For example: 0.75
+
+2025-02-28 18:14:51,837 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:14:58,752 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:14:58,755 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:14:58,759 - food_agent - evaluate_04.evaluate_all:1021 - INFO - Evaluating question 5/20
+2025-02-28 18:14:58,858 - food_agent - evaluate_04._search_relevant_columns:524 - INFO - Found 5 relevant columns for query: Quels sont les 10 additifs alimentaires les plus couramment utilisés dans les produits alimentaires?
+2025-02-28 18:14:58,858 - food_agent - evaluate_04._search_relevant_columns:526 - INFO - Column 'additives_n' with similarity 0.373
+2025-02-28 18:14:58,858 - food_agent - evaluate_04._search_relevant_columns:526 - INFO - Column 'additives_tags' with similarity 0.357
+2025-02-28 18:14:58,858 - food_agent - evaluate_04._search_relevant_columns:526 - INFO - Column 'new_additives_n' with similarity 0.278
+2025-02-28 18:14:58,858 - food_agent - evaluate_04._search_relevant_columns:526 - INFO - Column 'ingredients_with_unspecified_percent_n' with similarity 0.258
+2025-02-28 18:14:58,858 - food_agent - evaluate_04._search_relevant_columns:526 - INFO - Column 'ingredients_n' with similarity 0.246
+2025-02-28 18:14:58,858 - food_agent - evaluate_04._get_agent_response:562 - INFO - Getting agent response
+2025-02-28 18:14:58,858 - food_agent - evaluate_04._get_agent_response:624 - INFO - Additional notes for agent: You are a helpful assistant that answers questions about food products 
+using the Open Food Facts database.
+
+POTENTIALLY RELEVANT COLUMNS:
+The following columns have been identified through semantic search as potentially relevant, 
+with their similarity scores (higher means more likely relevant):
+
+
+
+SEARCH SEQUENCE RULES:
+1. ALWAYS start with database queries using the most relevant columns
+2. If initial query fails, try alternative database queries with different columns or approaches
+3. Only if database queries are unsuccessful, search the Canada Food Guide
+4. Document EVERY attempt in the steps array, including failures
+5. Never skip straight to Food Guide without trying database first
+6. Always include the source of the information in the answer ("Open Food Facts" or "Canada Food Guide")
+7. Always respond in the same language as the question (French or English)
+
+RESPONSE FORMAT REQUIREMENTS:
+1. Provide ONLY the natural language answer to the user's question
+2. Maximum response length: 200 characters
+3. DO NOT include SQL queries, code snippets, or technical details
+4. DO NOT explain your reasoning or methodology
+5. Respond in the same language as the question (French or English)
+6. DO mention the source of information ("Open Food Facts" or "Canada Food Guide")
+
+Please follow these rules to ensure a consistent and effective search strategy.
+
+2025-02-28 18:14:58,862 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:15:03,636 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:15:03,639 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:15:03,642 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:15:08,776 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:15:08,780 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:15:08,787 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:15:13,004 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:15:13,007 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:15:13,027 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:15:18,552 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:15:18,555 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:15:18,623 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:15:24,888 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:15:24,891 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:15:24,908 - food_agent - evaluate_04._calculate_semantic_accuracy:922 - INFO - prompt: Compare these two responses and rate their semantic similarity from 0 to 1:
+Response #1: Les 10 additifs alimentaires les plus couramment utilisés sont : E330 (acide citrique), E322 (lécithines), E322i (lécithine), E500 (carbonates de sodium), E500ii (carbonate acide de sodium), E415 (gomme xanthane), E202 (sorbate de potassium), E412 (gomme de guar), E471 (mono- et diglycérides d'acides gras), et E407 (carraghénanes). L'additif le plus fréquent, E330, est présent dans 3517 produits de notre base de données.
+Response #2: Selon Open Food Facts, les additifs les plus courants sont: acide citrique, lécithine, carbonates de sodium, bicarbonate de sodium, gomme xanthane, sorbate de potassium, gomme de guar, mono et diglycérides d'acides gras, et carraghénanes.
+
+Consider:
+1. Key information present in both responses
+2. Factual consistency
+3. Completeness of information
+
+Output format: 
+Return exactly one line containing only a number between 0 and 1, with no 
+explanation or additional text. For example: 0.75
+
+2025-02-28 18:15:24,915 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:15:32,011 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:15:32,013 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:15:32,017 - food_agent - evaluate_04.evaluate_all:1021 - INFO - Evaluating question 6/20
+2025-02-28 18:15:32,119 - food_agent - evaluate_04._search_relevant_columns:524 - INFO - Found 5 relevant columns for query: Quels produits alimentaires contiennent de l'acide citrique (E330) comme additif ?
+2025-02-28 18:15:32,119 - food_agent - evaluate_04._search_relevant_columns:526 - INFO - Column 'additives_tags' with similarity 0.495
+2025-02-28 18:15:32,119 - food_agent - evaluate_04._search_relevant_columns:526 - INFO - Column 'ingredients_without_ciqual_codes' with similarity 0.350
+2025-02-28 18:15:32,119 - food_agent - evaluate_04._search_relevant_columns:526 - INFO - Column 'ingredients_without_ciqual_codes_n' with similarity 0.291
+2025-02-28 18:15:32,119 - food_agent - evaluate_04._search_relevant_columns:526 - INFO - Column 'link' with similarity 0.289
+2025-02-28 18:15:32,119 - food_agent - evaluate_04._search_relevant_columns:526 - INFO - Column 'data_quality_info_tags' with similarity 0.289
+2025-02-28 18:15:32,119 - food_agent - evaluate_04._get_agent_response:562 - INFO - Getting agent response
+2025-02-28 18:15:32,120 - food_agent - evaluate_04._get_agent_response:624 - INFO - Additional notes for agent: You are a helpful assistant that answers questions about food products 
+using the Open Food Facts database.
+
+POTENTIALLY RELEVANT COLUMNS:
+The following columns have been identified through semantic search as potentially relevant, 
+with their similarity scores (higher means more likely relevant):
+
+
+
+SEARCH SEQUENCE RULES:
+1. ALWAYS start with database queries using the most relevant columns
+2. If initial query fails, try alternative database queries with different columns or approaches
+3. Only if database queries are unsuccessful, search the Canada Food Guide
+4. Document EVERY attempt in the steps array, including failures
+5. Never skip straight to Food Guide without trying database first
+6. Always include the source of the information in the answer ("Open Food Facts" or "Canada Food Guide")
+7. Always respond in the same language as the question (French or English)
+
+RESPONSE FORMAT REQUIREMENTS:
+1. Provide ONLY the natural language answer to the user's question
+2. Maximum response length: 200 characters
+3. DO NOT include SQL queries, code snippets, or technical details
+4. DO NOT explain your reasoning or methodology
+5. Respond in the same language as the question (French or English)
+6. DO mention the source of information ("Open Food Facts" or "Canada Food Guide")
+
+Please follow these rules to ensure a consistent and effective search strategy.
+
+2025-02-28 18:15:32,123 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:15:37,322 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:15:37,324 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:15:37,327 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:15:42,872 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:15:42,875 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:15:42,879 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:15:47,780 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:15:47,783 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:15:47,807 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:15:51,773 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:15:51,777 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:15:51,814 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:15:57,112 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:15:57,115 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:15:57,153 - food_agent - evaluate_04._calculate_semantic_accuracy:922 - INFO - prompt: Compare these two responses and rate their semantic similarity from 0 to 1:
+Response #1: La requête a trouvé 1000 produits contenant de l'acide citrique (E330). Parmi eux, on trouve des produits variés tels que du gingembre pour sushi, des plats préparés comme le macaroni au fromage, des fruits en conserve comme le litchi, des boissons gazeuses aromatisées, du bœuf séché (jerky), et des piments verts en dés. L'acide citrique est couramment utilisé comme conservateur et régulateur d'acidité dans divers types d'aliments.
+Response #2: Selon Open Food Facts, l'acide citrique (E330) est présent principalement dans les bonbons et confiseries, les boissons gazeuses et énergisantes, le houmous, et les chips. C'est un additif très courant.
+
+Consider:
+1. Key information present in both responses
+2. Factual consistency
+3. Completeness of information
+
+Output format: 
+Return exactly one line containing only a number between 0 and 1, with no 
+explanation or additional text. For example: 0.75
+
+2025-02-28 18:15:57,157 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:16:03,644 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:16:03,646 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:16:03,649 - food_agent - evaluate_04.evaluate_all:1021 - INFO - Evaluating question 7/20
+2025-02-28 18:16:03,695 - food_agent - evaluate_04._search_relevant_columns:524 - INFO - Found 5 relevant columns for query: Quelle est la répartition des produits alimentaires en fonction du nombre d'additifs qu'ils contiennent ?
+2025-02-28 18:16:03,695 - food_agent - evaluate_04._search_relevant_columns:526 - INFO - Column 'additives_n' with similarity 0.371
+2025-02-28 18:16:03,695 - food_agent - evaluate_04._search_relevant_columns:526 - INFO - Column 'additives_tags' with similarity 0.308
+2025-02-28 18:16:03,695 - food_agent - evaluate_04._search_relevant_columns:526 - INFO - Column 'new_additives_n' with similarity 0.278
+2025-02-28 18:16:03,695 - food_agent - evaluate_04._search_relevant_columns:526 - INFO - Column 'ingredients_with_unspecified_percent_n' with similarity 0.248
+2025-02-28 18:16:03,695 - food_agent - evaluate_04._search_relevant_columns:526 - INFO - Column 'ingredients_n' with similarity 0.237
+2025-02-28 18:16:03,695 - food_agent - evaluate_04._get_agent_response:562 - INFO - Getting agent response
+2025-02-28 18:16:03,695 - food_agent - evaluate_04._get_agent_response:624 - INFO - Additional notes for agent: You are a helpful assistant that answers questions about food products 
+using the Open Food Facts database.
+
+POTENTIALLY RELEVANT COLUMNS:
+The following columns have been identified through semantic search as potentially relevant, 
+with their similarity scores (higher means more likely relevant):
+
+
+
+SEARCH SEQUENCE RULES:
+1. ALWAYS start with database queries using the most relevant columns
+2. If initial query fails, try alternative database queries with different columns or approaches
+3. Only if database queries are unsuccessful, search the Canada Food Guide
+4. Document EVERY attempt in the steps array, including failures
+5. Never skip straight to Food Guide without trying database first
+6. Always include the source of the information in the answer ("Open Food Facts" or "Canada Food Guide")
+7. Always respond in the same language as the question (French or English)
+
+RESPONSE FORMAT REQUIREMENTS:
+1. Provide ONLY the natural language answer to the user's question
+2. Maximum response length: 200 characters
+3. DO NOT include SQL queries, code snippets, or technical details
+4. DO NOT explain your reasoning or methodology
+5. Respond in the same language as the question (French or English)
+6. DO mention the source of information ("Open Food Facts" or "Canada Food Guide")
+
+Please follow these rules to ensure a consistent and effective search strategy.
+
+2025-02-28 18:16:03,700 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:16:10,562 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:16:10,564 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:16:10,569 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:16:16,127 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:16:16,129 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:16:16,134 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:16:21,673 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:16:21,677 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:16:21,693 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:16:30,925 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:16:30,928 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:16:30,942 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:16:35,095 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:16:35,096 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:16:35,119 - food_agent - evaluate_04._calculate_semantic_accuracy:922 - INFO - prompt: Compare these two responses and rate their semantic similarity from 0 to 1:
+Response #1: Selon les données, environ 48.59200720252088% des produits contiennent des additifs. La majorité des produits avec additifs en contiennent entre 1 et 5. Par exemple, 2170 produits contiennent 1 additif, tandis que 971 produits contiennent 5 additifs.
+Response #2: Selon Open Food Facts, 36% des produits ne contiennent aucun additif, 18% en contiennent un seul, et 13% en contiennent deux. Plus de 67% des produits contiennent 2 additifs ou moins.
+
+Consider:
+1. Key information present in both responses
+2. Factual consistency
+3. Completeness of information
+
+Output format: 
+Return exactly one line containing only a number between 0 and 1, with no 
+explanation or additional text. For example: 0.75
+
+2025-02-28 18:16:35,124 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:16:50,373 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:16:50,378 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:16:50,383 - food_agent - evaluate_04.evaluate_all:1021 - INFO - Evaluating question 8/20
+2025-02-28 18:16:50,477 - food_agent - evaluate_04._search_relevant_columns:524 - INFO - Found 5 relevant columns for query: Quel est l'allergène le plus courant dans les produits alimentaires, et dans combien de produits est-il présent ?
+2025-02-28 18:16:50,477 - food_agent - evaluate_04._search_relevant_columns:526 - INFO - Column 'additives_n' with similarity 0.288
+2025-02-28 18:16:50,477 - food_agent - evaluate_04._search_relevant_columns:526 - INFO - Column 'additives_tags' with similarity 0.250
+2025-02-28 18:16:50,477 - food_agent - evaluate_04._search_relevant_columns:526 - INFO - Column 'new_additives_n' with similarity 0.248
+2025-02-28 18:16:50,477 - food_agent - evaluate_04._search_relevant_columns:526 - INFO - Column 'allergens_tags' with similarity 0.236
+2025-02-28 18:16:50,477 - food_agent - evaluate_04._search_relevant_columns:526 - INFO - Column 'brands' with similarity 0.229
+2025-02-28 18:16:50,477 - food_agent - evaluate_04._get_agent_response:562 - INFO - Getting agent response
+2025-02-28 18:16:50,477 - food_agent - evaluate_04._get_agent_response:624 - INFO - Additional notes for agent: You are a helpful assistant that answers questions about food products 
+using the Open Food Facts database.
+
+POTENTIALLY RELEVANT COLUMNS:
+The following columns have been identified through semantic search as potentially relevant, 
+with their similarity scores (higher means more likely relevant):
+
+
+
+SEARCH SEQUENCE RULES:
+1. ALWAYS start with database queries using the most relevant columns
+2. If initial query fails, try alternative database queries with different columns or approaches
+3. Only if database queries are unsuccessful, search the Canada Food Guide
+4. Document EVERY attempt in the steps array, including failures
+5. Never skip straight to Food Guide without trying database first
+6. Always include the source of the information in the answer ("Open Food Facts" or "Canada Food Guide")
+7. Always respond in the same language as the question (French or English)
+
+RESPONSE FORMAT REQUIREMENTS:
+1. Provide ONLY the natural language answer to the user's question
+2. Maximum response length: 200 characters
+3. DO NOT include SQL queries, code snippets, or technical details
+4. DO NOT explain your reasoning or methodology
+5. Respond in the same language as the question (French or English)
+6. DO mention the source of information ("Open Food Facts" or "Canada Food Guide")
+
+Please follow these rules to ensure a consistent and effective search strategy.
+
+2025-02-28 18:16:50,480 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:17:02,328 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:17:02,330 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:17:02,336 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:17:08,878 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:17:08,881 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:17:08,887 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:17:13,281 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:17:13,283 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:17:13,297 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:17:28,748 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:17:28,751 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:17:28,766 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:17:34,548 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:17:34,550 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:17:34,594 - food_agent - evaluate_04._calculate_semantic_accuracy:922 - INFO - prompt: Compare these two responses and rate their semantic similarity from 0 to 1:
+Response #1: L'allergène le plus courant dans les produits alimentaires est le Milk. Il est présent dans 4466 produits de notre base de données.
+Response #2: Selon Open Food Facts, le gluten est l'allergène le plus fréquent, présent dans 4 025 produits alimentaires.
+
+Consider:
+1. Key information present in both responses
+2. Factual consistency
+3. Completeness of information
+
+Output format: 
+Return exactly one line containing only a number between 0 and 1, with no 
+explanation or additional text. For example: 0.75
+
+2025-02-28 18:17:34,598 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:17:39,664 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:17:39,668 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:17:39,672 - food_agent - evaluate_04.evaluate_all:1021 - INFO - Evaluating question 9/20
+2025-02-28 18:17:39,733 - food_agent - evaluate_04._search_relevant_columns:524 - INFO - Found 5 relevant columns for query: Quels produits alimentaires contiennent à la fois du lait et des noix comme allergènes?
+2025-02-28 18:17:39,733 - food_agent - evaluate_04._search_relevant_columns:526 - INFO - Column 'allergens_tags' with similarity 0.223
+2025-02-28 18:17:39,733 - food_agent - evaluate_04._search_relevant_columns:526 - INFO - Column 'traces_tags' with similarity 0.208
+2025-02-28 18:17:39,733 - food_agent - evaluate_04._search_relevant_columns:526 - INFO - Column 'brands' with similarity 0.182
+2025-02-28 18:17:39,733 - food_agent - evaluate_04._search_relevant_columns:526 - INFO - Column 'link' with similarity 0.180
+2025-02-28 18:17:39,734 - food_agent - evaluate_04._search_relevant_columns:526 - INFO - Column 'labels' with similarity 0.179
+2025-02-28 18:17:39,734 - food_agent - evaluate_04._get_agent_response:562 - INFO - Getting agent response
+2025-02-28 18:17:39,734 - food_agent - evaluate_04._get_agent_response:624 - INFO - Additional notes for agent: You are a helpful assistant that answers questions about food products 
+using the Open Food Facts database.
+
+POTENTIALLY RELEVANT COLUMNS:
+The following columns have been identified through semantic search as potentially relevant, 
+with their similarity scores (higher means more likely relevant):
+
+
+
+SEARCH SEQUENCE RULES:
+1. ALWAYS start with database queries using the most relevant columns
+2. If initial query fails, try alternative database queries with different columns or approaches
+3. Only if database queries are unsuccessful, search the Canada Food Guide
+4. Document EVERY attempt in the steps array, including failures
+5. Never skip straight to Food Guide without trying database first
+6. Always include the source of the information in the answer ("Open Food Facts" or "Canada Food Guide")
+7. Always respond in the same language as the question (French or English)
+
+RESPONSE FORMAT REQUIREMENTS:
+1. Provide ONLY the natural language answer to the user's question
+2. Maximum response length: 200 characters
+3. DO NOT include SQL queries, code snippets, or technical details
+4. DO NOT explain your reasoning or methodology
+5. Respond in the same language as the question (French or English)
+6. DO mention the source of information ("Open Food Facts" or "Canada Food Guide")
+
+Please follow these rules to ensure a consistent and effective search strategy.
+
+2025-02-28 18:17:39,737 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:17:44,836 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:17:44,837 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:17:44,839 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:17:53,587 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:17:53,590 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:17:53,595 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:18:05,220 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:18:05,222 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:18:05,242 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:18:09,344 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:18:09,348 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:18:09,363 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:18:12,265 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 529 "
+2025-02-28 18:18:12,287 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:18:18,221 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:18:18,223 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:18:18,229 - sqlglot - helper.apply_index_offset:188 - INFO - Applying array index offset (-1)
+2025-02-28 18:18:18,233 - sqlglot - helper.apply_index_offset:188 - INFO - Applying array index offset (-1)
+2025-02-28 18:18:18,237 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:18:26,909 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:18:26,917 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:18:26,922 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:18:33,077 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:18:33,079 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:18:33,083 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:18:38,788 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:18:38,790 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:18:38,802 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:18:44,360 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:18:44,362 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:18:44,366 - sqlglot - helper.apply_index_offset:188 - INFO - Applying array index offset (-1)
+2025-02-28 18:18:44,368 - sqlglot - helper.apply_index_offset:188 - INFO - Applying array index offset (-1)
+2025-02-28 18:18:44,376 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:18:50,288 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:18:50,290 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:18:50,337 - food_agent - evaluate_04._calculate_semantic_accuracy:922 - INFO - prompt: Compare these two responses and rate their semantic similarity from 0 to 1:
+Response #1: Nous avons trouvé 567 produits contenant à la fois du lait et des noix comme allergènes. Quelques exemples incluent: [{'lang': 'main', 'text': 'Cherry Dark Chocolate'}, {'lang': 'en', 'text': 'Cherry Dark Chocolate'}, {'lang': 'fr', 'text': 'Cerise et Chocolat Noir Barres tenders de céréales entières'}] (code: 0018627104858), [{'lang': 'main', 'text': 'Hazelnut Swiss Classic'}, {'lang': 'en', 'text': 'Hazelnut Swiss Classic'}, {'lang': 'fr', 'text': 'Chocolat lait noisettes'}] (code: 0037466019871), et [{'lang': 'main', 'text': 'Fruit & Nut Swiss Classic'}, {'lang': 'en', 'text': 'Fruit & Nut Swiss Classic'}] (code: 0037466082523). Ces produits contiennent également d'autres allergènes potentiels.
+Response #2: D'après Open Food Facts, on trouve ces allergènes notamment dans les chocolats (Lindt), les glaces (Häagen-Dazs), les barres céréales (Kashi) et les tartinades aux amandes et chocolat.
+
+Consider:
+1. Key information present in both responses
+2. Factual consistency
+3. Completeness of information
+
+Output format: 
+Return exactly one line containing only a number between 0 and 1, with no 
+explanation or additional text. For example: 0.75
+
+2025-02-28 18:18:50,342 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:18:57,220 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:18:57,223 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:18:57,227 - food_agent - evaluate_04.evaluate_all:1021 - INFO - Evaluating question 10/20
+2025-02-28 18:18:57,325 - food_agent - evaluate_04._search_relevant_columns:524 - INFO - Found 5 relevant columns for query: Quels sont les produits alimentaires contenant le plus grand nombre d'allergènes potentiels ?
+2025-02-28 18:18:57,325 - food_agent - evaluate_04._search_relevant_columns:526 - INFO - Column 'ingredients_n' with similarity 0.260
+2025-02-28 18:18:57,325 - food_agent - evaluate_04._search_relevant_columns:526 - INFO - Column 'additives_n' with similarity 0.259
+2025-02-28 18:18:57,325 - food_agent - evaluate_04._search_relevant_columns:526 - INFO - Column 'ingredients_from_palm_oil_n' with similarity 0.256
+2025-02-28 18:18:57,325 - food_agent - evaluate_04._search_relevant_columns:526 - INFO - Column 'ingredients_with_unspecified_percent_n' with similarity 0.241
+2025-02-28 18:18:57,325 - food_agent - evaluate_04._search_relevant_columns:526 - INFO - Column 'additives_tags' with similarity 0.236
+2025-02-28 18:18:57,325 - food_agent - evaluate_04._get_agent_response:562 - INFO - Getting agent response
+2025-02-28 18:18:57,325 - food_agent - evaluate_04._get_agent_response:624 - INFO - Additional notes for agent: You are a helpful assistant that answers questions about food products 
+using the Open Food Facts database.
+
+POTENTIALLY RELEVANT COLUMNS:
+The following columns have been identified through semantic search as potentially relevant, 
+with their similarity scores (higher means more likely relevant):
+
+
+
+SEARCH SEQUENCE RULES:
+1. ALWAYS start with database queries using the most relevant columns
+2. If initial query fails, try alternative database queries with different columns or approaches
+3. Only if database queries are unsuccessful, search the Canada Food Guide
+4. Document EVERY attempt in the steps array, including failures
+5. Never skip straight to Food Guide without trying database first
+6. Always include the source of the information in the answer ("Open Food Facts" or "Canada Food Guide")
+7. Always respond in the same language as the question (French or English)
+
+RESPONSE FORMAT REQUIREMENTS:
+1. Provide ONLY the natural language answer to the user's question
+2. Maximum response length: 200 characters
+3. DO NOT include SQL queries, code snippets, or technical details
+4. DO NOT explain your reasoning or methodology
+5. Respond in the same language as the question (French or English)
+6. DO mention the source of information ("Open Food Facts" or "Canada Food Guide")
+
+Please follow these rules to ensure a consistent and effective search strategy.
+
+2025-02-28 18:18:57,328 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:19:03,183 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:19:03,186 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:19:03,190 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:19:08,791 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:19:08,794 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:19:08,799 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:19:15,452 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:19:15,454 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:19:15,472 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:19:20,976 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:19:20,979 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:19:20,993 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:19:25,422 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:19:25,425 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:19:25,464 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:19:30,568 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:19:30,571 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:19:30,639 - food_agent - evaluate_04._calculate_semantic_accuracy:922 - INFO - prompt:         Compare these two responses and rate their semantic similarity from 0 to 1:
+        Response #1: 
+D'après notre base de données, les produits contenant le plus grand nombre d'allergènes potentiels sont :
+1. Quesadillas au poulet (11 allergènes)
+2. General Tao chicken breast pieces (11 allergènes)
+3. Soupe aux nouilles Kimchi (11 allergènes)
+4. Kimchi Budak (11 allergènes)
+5. Tempura chicken breast fillets (10 allergènes)
+
+Ces produits contiennent souvent des allergènes communs tels que les crustacés, les œufs, le poisson, le gluten, le lait, la moutarde, les noix, les arachides, le sésame et le soja. Il est important pour les consommateurs ayant des allergies alimentaires de lire attentivement les étiquettes de ces produits.
+
+        Response #2: Selon Open Food Facts, le Général Tao de Thaizone et la soupe Kimchi contiennent le plus d'allergènes (11), suivis par plusieurs plats asiatiques et préparés avec 9-10 allergènes potentiels.
+
+        Consider:
+        1. Key information present in both responses
+        2. Factual consistency
+        3. Completeness of information
+
+        Output format: 
+        Return exactly one line containing only a number between 0 and 1, with no 
+        explanation or additional text. For example: 0.75
+
+2025-02-28 18:19:30,642 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:19:36,953 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:19:36,955 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:19:36,959 - food_agent - evaluate_04.evaluate_all:1021 - INFO - Evaluating question 11/20
+2025-02-28 18:19:37,021 - food_agent - evaluate_04._search_relevant_columns:524 - INFO - Found 5 relevant columns for query: Quels sont quelques exemples de produits alimentaires co-marqués ou associés à plusieurs marques ?
+2025-02-28 18:19:37,021 - food_agent - evaluate_04._search_relevant_columns:526 - INFO - Column 'ingredients_without_ciqual_codes' with similarity 0.219
+2025-02-28 18:19:37,021 - food_agent - evaluate_04._search_relevant_columns:526 - INFO - Column 'additives_tags' with similarity 0.213
+2025-02-28 18:19:37,021 - food_agent - evaluate_04._search_relevant_columns:526 - INFO - Column 'additives_n' with similarity 0.194
+2025-02-28 18:19:37,021 - food_agent - evaluate_04._search_relevant_columns:526 - INFO - Column 'ciqual_food_name_tags' with similarity 0.193
+2025-02-28 18:19:37,021 - food_agent - evaluate_04._search_relevant_columns:526 - INFO - Column 'ingredients_without_ciqual_codes_n' with similarity 0.186
+2025-02-28 18:19:37,021 - food_agent - evaluate_04._get_agent_response:562 - INFO - Getting agent response
+2025-02-28 18:19:37,021 - food_agent - evaluate_04._get_agent_response:624 - INFO - Additional notes for agent: You are a helpful assistant that answers questions about food products 
+using the Open Food Facts database.
+
+POTENTIALLY RELEVANT COLUMNS:
+The following columns have been identified through semantic search as potentially relevant, 
+with their similarity scores (higher means more likely relevant):
+
+
+
+SEARCH SEQUENCE RULES:
+1. ALWAYS start with database queries using the most relevant columns
+2. If initial query fails, try alternative database queries with different columns or approaches
+3. Only if database queries are unsuccessful, search the Canada Food Guide
+4. Document EVERY attempt in the steps array, including failures
+5. Never skip straight to Food Guide without trying database first
+6. Always include the source of the information in the answer ("Open Food Facts" or "Canada Food Guide")
+7. Always respond in the same language as the question (French or English)
+
+RESPONSE FORMAT REQUIREMENTS:
+1. Provide ONLY the natural language answer to the user's question
+2. Maximum response length: 200 characters
+3. DO NOT include SQL queries, code snippets, or technical details
+4. DO NOT explain your reasoning or methodology
+5. Respond in the same language as the question (French or English)
+6. DO mention the source of information ("Open Food Facts" or "Canada Food Guide")
+
+Please follow these rules to ensure a consistent and effective search strategy.
+
+2025-02-28 18:19:37,025 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:19:42,296 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:19:42,299 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:19:42,305 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:19:48,710 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:19:48,713 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:19:48,717 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:19:54,994 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:19:54,996 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:19:55,010 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:20:00,403 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:20:00,405 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:20:00,451 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:20:10,026 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:20:10,029 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:20:10,086 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:20:18,243 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:20:18,245 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:20:18,263 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:20:27,946 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:20:27,948 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:20:27,954 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:20:34,186 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:20:34,188 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:20:34,192 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:20:44,636 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:20:44,639 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:20:44,695 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:20:51,293 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:20:51,297 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:20:51,360 - food_agent - evaluate_04._calculate_semantic_accuracy:922 - INFO - prompt: Compare these two responses and rate their semantic similarity from 0 to 1:
+Response #1: D'après notre base de données, il existe de nombreux produits alimentaires associés à plusieurs marques. Par exemple, nous avons trouvé des produits liés à 'usda-organic-butternut-mountain-farm' et 'butternut-mountain-farm', ainsi que des produits associés à 'annie-s-homegrown' et 'annie-s'. Ces associations peuvent représenter des collaborations entre marques ou différentes lignes de produits d'une même entreprise.
+Response #2: D'après Open Food Facts, on trouve plusieurs exemples de co-marquage comme les glaces Ben & Jerry's avec différentes marques de confiserie, les produits Arm & Hammer, et les collaborations d'Oreo avec d'autres marques de snacks.
+
+Consider:
+1. Key information present in both responses
+2. Factual consistency
+3. Completeness of information
+
+Output format: 
+Return exactly one line containing only a number between 0 and 1, with no 
+explanation or additional text. For example: 0.75
+
+2025-02-28 18:20:51,364 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:20:57,335 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:20:57,337 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:20:57,342 - food_agent - evaluate_04.evaluate_all:1021 - INFO - Evaluating question 12/20
+2025-02-28 18:20:57,395 - food_agent - evaluate_04._search_relevant_columns:524 - INFO - Found 5 relevant columns for query: Quels sont quelques exemples de produits de grignotage disponibles dans la base de données ?
+2025-02-28 18:20:57,395 - food_agent - evaluate_04._search_relevant_columns:526 - INFO - Column 'packaging' with similarity 0.235
+2025-02-28 18:20:57,395 - food_agent - evaluate_04._search_relevant_columns:526 - INFO - Column 'labels' with similarity 0.226
+2025-02-28 18:20:57,395 - food_agent - evaluate_04._search_relevant_columns:526 - INFO - Column 'packaging_tags' with similarity 0.226
+2025-02-28 18:20:57,395 - food_agent - evaluate_04._search_relevant_columns:526 - INFO - Column 'packaging_shapes_tags' with similarity 0.212
+2025-02-28 18:20:57,395 - food_agent - evaluate_04._search_relevant_columns:526 - INFO - Column 'categories' with similarity 0.208
+2025-02-28 18:20:57,395 - food_agent - evaluate_04._get_agent_response:562 - INFO - Getting agent response
+2025-02-28 18:20:57,395 - food_agent - evaluate_04._get_agent_response:624 - INFO - Additional notes for agent: You are a helpful assistant that answers questions about food products 
+using the Open Food Facts database.
+
+POTENTIALLY RELEVANT COLUMNS:
+The following columns have been identified through semantic search as potentially relevant, 
+with their similarity scores (higher means more likely relevant):
+
+
+
+SEARCH SEQUENCE RULES:
+1. ALWAYS start with database queries using the most relevant columns
+2. If initial query fails, try alternative database queries with different columns or approaches
+3. Only if database queries are unsuccessful, search the Canada Food Guide
+4. Document EVERY attempt in the steps array, including failures
+5. Never skip straight to Food Guide without trying database first
+6. Always include the source of the information in the answer ("Open Food Facts" or "Canada Food Guide")
+7. Always respond in the same language as the question (French or English)
+
+RESPONSE FORMAT REQUIREMENTS:
+1. Provide ONLY the natural language answer to the user's question
+2. Maximum response length: 200 characters
+3. DO NOT include SQL queries, code snippets, or technical details
+4. DO NOT explain your reasoning or methodology
+5. Respond in the same language as the question (French or English)
+6. DO mention the source of information ("Open Food Facts" or "Canada Food Guide")
+
+Please follow these rules to ensure a consistent and effective search strategy.
+
+2025-02-28 18:20:57,399 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:21:04,141 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:21:04,143 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:21:04,146 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:21:09,009 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:21:09,012 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:21:09,016 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:21:14,642 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:21:14,644 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:21:14,664 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:21:20,581 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:21:20,583 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:21:20,592 - sqlglot - helper.apply_index_offset:188 - INFO - Applying array index offset (-1)
+2025-02-28 18:21:20,594 - sqlglot - helper.apply_index_offset:188 - INFO - Applying array index offset (-1)
+2025-02-28 18:21:20,621 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:21:25,793 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:21:25,794 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:21:25,839 - food_agent - evaluate_04._calculate_semantic_accuracy:922 - INFO - prompt: Compare these two responses and rate their semantic similarity from 0 to 1:
+Response #1: La base de données contient une variété de produits de grignotage, y compris des options sucrées et salées. Quelques exemples sont les gâteaux au chocolat, les craquelins Goldfish de différentes saveurs (comme le Cheddar et le Trio Fromage), et les barres Nature Valley Crunchy Oats 'N Honey.
+Response #2: D'après Open Food Facts, voici quelques exemples de produits de grignotage : chips, brownies, popcorn, bonbons gélifiés (oursons) et chocolat au lait.
+
+Consider:
+1. Key information present in both responses
+2. Factual consistency
+3. Completeness of information
+
+Output format: 
+Return exactly one line containing only a number between 0 and 1, with no 
+explanation or additional text. For example: 0.75
+
+2025-02-28 18:21:25,842 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:21:33,281 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:21:33,283 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:21:33,288 - food_agent - evaluate_04.evaluate_all:1021 - INFO - Evaluating question 13/20
+2025-02-28 18:21:33,339 - food_agent - evaluate_04._search_relevant_columns:524 - INFO - Found 5 relevant columns for query: Quelles sont les marques de produits alimentaires les plus courantes dans notre base de données ?
+2025-02-28 18:21:33,340 - food_agent - evaluate_04._search_relevant_columns:526 - INFO - Column 'additives_tags' with similarity 0.205
+2025-02-28 18:21:33,340 - food_agent - evaluate_04._search_relevant_columns:526 - INFO - Column 'ingredients_without_ciqual_codes' with similarity 0.202
+2025-02-28 18:21:33,340 - food_agent - evaluate_04._search_relevant_columns:526 - INFO - Column 'brands' with similarity 0.195
+2025-02-28 18:21:33,340 - food_agent - evaluate_04._search_relevant_columns:526 - INFO - Column 'link' with similarity 0.179
+2025-02-28 18:21:33,340 - food_agent - evaluate_04._search_relevant_columns:526 - INFO - Column 'nutriments' with similarity 0.170
+2025-02-28 18:21:33,340 - food_agent - evaluate_04._get_agent_response:562 - INFO - Getting agent response
+2025-02-28 18:21:33,340 - food_agent - evaluate_04._get_agent_response:624 - INFO - Additional notes for agent: You are a helpful assistant that answers questions about food products 
+using the Open Food Facts database.
+
+POTENTIALLY RELEVANT COLUMNS:
+The following columns have been identified through semantic search as potentially relevant, 
+with their similarity scores (higher means more likely relevant):
+
+
+
+SEARCH SEQUENCE RULES:
+1. ALWAYS start with database queries using the most relevant columns
+2. If initial query fails, try alternative database queries with different columns or approaches
+3. Only if database queries are unsuccessful, search the Canada Food Guide
+4. Document EVERY attempt in the steps array, including failures
+5. Never skip straight to Food Guide without trying database first
+6. Always include the source of the information in the answer ("Open Food Facts" or "Canada Food Guide")
+7. Always respond in the same language as the question (French or English)
+
+RESPONSE FORMAT REQUIREMENTS:
+1. Provide ONLY the natural language answer to the user's question
+2. Maximum response length: 200 characters
+3. DO NOT include SQL queries, code snippets, or technical details
+4. DO NOT explain your reasoning or methodology
+5. Respond in the same language as the question (French or English)
+6. DO mention the source of information ("Open Food Facts" or "Canada Food Guide")
+
+Please follow these rules to ensure a consistent and effective search strategy.
+
+2025-02-28 18:21:33,344 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:21:38,502 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:21:38,505 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:21:38,511 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:21:44,478 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:21:44,481 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:21:44,485 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:21:48,947 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:21:48,951 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:21:48,970 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:21:53,245 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:21:53,249 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:21:53,257 - sqlglot - helper.apply_index_offset:188 - INFO - Applying array index offset (-1)
+2025-02-28 18:21:53,257 - sqlglot - helper.apply_index_offset:188 - INFO - Applying array index offset (-1)
+2025-02-28 18:21:53,269 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:21:59,138 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:21:59,143 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:21:59,183 - food_agent - evaluate_04._calculate_semantic_accuracy:922 - INFO - prompt: Compare these two responses and rate their semantic similarity from 0 to 1:
+Response #1: Les cinq marques de produits alimentaires les plus courantes dans notre base de données sont : Compliments, Great Value, Western Family, President's Choice.
+Response #2: Selon Open Food Facts, les marques les plus courantes sont Great Value, Compliments, President's Choice, Western Family, No Name, Irresistibles, Selection, Kirkland et Nestlé.
+
+Consider:
+1. Key information present in both responses
+2. Factual consistency
+3. Completeness of information
+
+Output format: 
+Return exactly one line containing only a number between 0 and 1, with no 
+explanation or additional text. For example: 0.75
+
+2025-02-28 18:21:59,187 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:22:06,150 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:22:06,152 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:22:06,162 - food_agent - evaluate_04.evaluate_all:1021 - INFO - Evaluating question 14/20
+2025-02-28 18:22:06,219 - food_agent - evaluate_04._search_relevant_columns:524 - INFO - Found 5 relevant columns for query: Quels sont les principaux produits alimentaires bilingues ou multi-marques dans la base de données ?
+2025-02-28 18:22:06,219 - food_agent - evaluate_04._search_relevant_columns:526 - INFO - Column 'ingredients_without_ciqual_codes' with similarity 0.202
+2025-02-28 18:22:06,219 - food_agent - evaluate_04._search_relevant_columns:526 - INFO - Column 'product_name' with similarity 0.190
+2025-02-28 18:22:06,219 - food_agent - evaluate_04._search_relevant_columns:526 - INFO - Column 'allergens_tags' with similarity 0.186
+2025-02-28 18:22:06,219 - food_agent - evaluate_04._search_relevant_columns:526 - INFO - Column 'additives_tags' with similarity 0.177
+2025-02-28 18:22:06,219 - food_agent - evaluate_04._search_relevant_columns:526 - INFO - Column 'additives_n' with similarity 0.172
+2025-02-28 18:22:06,219 - food_agent - evaluate_04._get_agent_response:562 - INFO - Getting agent response
+2025-02-28 18:22:06,219 - food_agent - evaluate_04._get_agent_response:624 - INFO - Additional notes for agent: You are a helpful assistant that answers questions about food products 
+using the Open Food Facts database.
+
+POTENTIALLY RELEVANT COLUMNS:
+The following columns have been identified through semantic search as potentially relevant, 
+with their similarity scores (higher means more likely relevant):
+
+
+
+SEARCH SEQUENCE RULES:
+1. ALWAYS start with database queries using the most relevant columns
+2. If initial query fails, try alternative database queries with different columns or approaches
+3. Only if database queries are unsuccessful, search the Canada Food Guide
+4. Document EVERY attempt in the steps array, including failures
+5. Never skip straight to Food Guide without trying database first
+6. Always include the source of the information in the answer ("Open Food Facts" or "Canada Food Guide")
+7. Always respond in the same language as the question (French or English)
+
+RESPONSE FORMAT REQUIREMENTS:
+1. Provide ONLY the natural language answer to the user's question
+2. Maximum response length: 200 characters
+3. DO NOT include SQL queries, code snippets, or technical details
+4. DO NOT explain your reasoning or methodology
+5. Respond in the same language as the question (French or English)
+6. DO mention the source of information ("Open Food Facts" or "Canada Food Guide")
+
+Please follow these rules to ensure a consistent and effective search strategy.
+
+2025-02-28 18:22:06,223 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:22:11,372 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:22:11,375 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:22:11,378 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:22:15,677 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:22:15,680 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:22:15,684 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:22:21,918 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:22:21,921 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:22:21,943 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:22:27,647 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:22:27,649 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:22:27,662 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:22:31,853 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:22:31,855 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:22:31,872 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:22:36,155 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:22:36,159 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:22:36,206 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:22:46,349 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:22:46,352 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:22:46,358 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:22:51,461 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:22:51,463 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:22:51,466 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:23:02,161 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:23:02,164 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:23:02,176 - sqlglot - helper.apply_index_offset:188 - INFO - Applying array index offset (-1)
+2025-02-28 18:23:02,180 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:23:10,380 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:23:10,383 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:23:10,388 - sqlglot - helper.apply_index_offset:188 - INFO - Applying array index offset (-1)
+2025-02-28 18:23:10,421 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:23:13,530 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:23:13,532 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:23:13,582 - food_agent - evaluate_04._calculate_semantic_accuracy:922 - INFO - prompt:         Compare these two responses and rate their semantic similarity from 0 to 1:
+        Response #1: Les principaux produits alimentaires bilingues ou multi-marques dans la base de données sont :
+- No Name, Sans nom (79 produits)
+- Minçavi,Bravodeli (59 produits)
+- Sans nom, No Name (51 produits)
+- President's Choice,Le choix du président (28 produits)
+- Made Good, MadeGood (26 produits)
+
+        Response #2: D'après Open Food Facts, les principales marques bilingues sont Compliments, Great Value, President's Choice, Nestlé, Lindt et Cadbury, qui proposent leurs produits systématiquement en français et en anglais.
+
+        Consider:
+        1. Key information present in both responses
+        2. Factual consistency
+        3. Completeness of information
+
+        Output format: 
+        Return exactly one line containing only a number between 0 and 1, with no 
+        explanation or additional text. For example: 0.75
+
+2025-02-28 18:23:13,586 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:23:21,211 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:23:21,214 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:23:21,218 - food_agent - evaluate_04.evaluate_all:1021 - INFO - Evaluating question 15/20
+2025-02-28 18:23:21,289 - food_agent - evaluate_04._search_relevant_columns:524 - INFO - Found 5 relevant columns for query: Quels sont les différents produits de la marque Nestlé disponibles dans la base de données?
+2025-02-28 18:23:21,289 - food_agent - evaluate_04._search_relevant_columns:526 - INFO - Column 'ingredients_without_ciqual_codes' with similarity 0.205
+2025-02-28 18:23:21,289 - food_agent - evaluate_04._search_relevant_columns:526 - INFO - Column 'traces_tags' with similarity 0.188
+2025-02-28 18:23:21,289 - food_agent - evaluate_04._search_relevant_columns:526 - INFO - Column 'allergens_tags' with similarity 0.188
+2025-02-28 18:23:21,289 - food_agent - evaluate_04._search_relevant_columns:526 - INFO - Column 'nutrient_levels_tags' with similarity 0.160
+2025-02-28 18:23:21,289 - food_agent - evaluate_04._search_relevant_columns:526 - INFO - Column 'brands' with similarity 0.160
+2025-02-28 18:23:21,289 - food_agent - evaluate_04._get_agent_response:562 - INFO - Getting agent response
+2025-02-28 18:23:21,289 - food_agent - evaluate_04._get_agent_response:624 - INFO - Additional notes for agent: You are a helpful assistant that answers questions about food products 
+using the Open Food Facts database.
+
+POTENTIALLY RELEVANT COLUMNS:
+The following columns have been identified through semantic search as potentially relevant, 
+with their similarity scores (higher means more likely relevant):
+
+
+
+SEARCH SEQUENCE RULES:
+1. ALWAYS start with database queries using the most relevant columns
+2. If initial query fails, try alternative database queries with different columns or approaches
+3. Only if database queries are unsuccessful, search the Canada Food Guide
+4. Document EVERY attempt in the steps array, including failures
+5. Never skip straight to Food Guide without trying database first
+6. Always include the source of the information in the answer ("Open Food Facts" or "Canada Food Guide")
+7. Always respond in the same language as the question (French or English)
+
+RESPONSE FORMAT REQUIREMENTS:
+1. Provide ONLY the natural language answer to the user's question
+2. Maximum response length: 200 characters
+3. DO NOT include SQL queries, code snippets, or technical details
+4. DO NOT explain your reasoning or methodology
+5. Respond in the same language as the question (French or English)
+6. DO mention the source of information ("Open Food Facts" or "Canada Food Guide")
+
+Please follow these rules to ensure a consistent and effective search strategy.
+
+2025-02-28 18:23:21,293 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:23:26,778 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:23:26,781 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:23:26,787 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:23:32,678 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:23:32,684 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:23:32,689 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:23:37,696 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:23:37,699 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:23:37,716 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:23:42,406 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:23:42,409 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:23:42,416 - sqlglot - helper.apply_index_offset:188 - INFO - Applying array index offset (-1)
+2025-02-28 18:23:42,421 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:23:46,403 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:23:46,406 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:23:46,441 - food_agent - evaluate_04._calculate_semantic_accuracy:922 - INFO - prompt: Compare these two responses and rate their semantic similarity from 0 to 1:
+Response #1: La base de données contient 320 produits de la marque Nestlé. Parmi eux, on trouve des produits Nestlé, Nesquik, Gerber, et Maggi. Chaque produit est identifié par un code unique.
+Response #2: D'après Open Food Facts, Nestlé propose divers produits : boissons (Nesquik, Nescafé), collations (Coffee Crisp, Aero, Rolo), desserts (Drumstick), et aliments pour bébés (Gerber). Cette liste n'est pas exhaustive.
+
+Consider:
+1. Key information present in both responses
+2. Factual consistency
+3. Completeness of information
+
+Output format: 
+Return exactly one line containing only a number between 0 and 1, with no 
+explanation or additional text. For example: 0.75
+
+2025-02-28 18:23:46,445 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:23:52,293 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:23:52,308 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:23:52,310 - food_agent - evaluate_04.evaluate_all:1021 - INFO - Evaluating question 16/20
+2025-02-28 18:23:52,399 - food_agent - evaluate_04._search_relevant_columns:524 - INFO - Found 5 relevant columns for query: Quelles sont les 5 catégories d'aliments les plus courantes dans la base de données ?
+2025-02-28 18:23:52,399 - food_agent - evaluate_04._search_relevant_columns:526 - INFO - Column 'categories' with similarity 0.344
+2025-02-28 18:23:52,399 - food_agent - evaluate_04._search_relevant_columns:526 - INFO - Column 'categories_tags' with similarity 0.308
+2025-02-28 18:23:52,399 - food_agent - evaluate_04._search_relevant_columns:526 - INFO - Column 'food_groups_tags' with similarity 0.305
+2025-02-28 18:23:52,399 - food_agent - evaluate_04._search_relevant_columns:526 - INFO - Column 'ingredients_without_ciqual_codes' with similarity 0.303
+2025-02-28 18:23:52,399 - food_agent - evaluate_04._search_relevant_columns:526 - INFO - Column 'ciqual_food_name_tags' with similarity 0.298
+2025-02-28 18:23:52,399 - food_agent - evaluate_04._get_agent_response:562 - INFO - Getting agent response
+2025-02-28 18:23:52,399 - food_agent - evaluate_04._get_agent_response:624 - INFO - Additional notes for agent: You are a helpful assistant that answers questions about food products 
+using the Open Food Facts database.
+
+POTENTIALLY RELEVANT COLUMNS:
+The following columns have been identified through semantic search as potentially relevant, 
+with their similarity scores (higher means more likely relevant):
+
+
+
+SEARCH SEQUENCE RULES:
+1. ALWAYS start with database queries using the most relevant columns
+2. If initial query fails, try alternative database queries with different columns or approaches
+3. Only if database queries are unsuccessful, search the Canada Food Guide
+4. Document EVERY attempt in the steps array, including failures
+5. Never skip straight to Food Guide without trying database first
+6. Always include the source of the information in the answer ("Open Food Facts" or "Canada Food Guide")
+7. Always respond in the same language as the question (French or English)
+
+RESPONSE FORMAT REQUIREMENTS:
+1. Provide ONLY the natural language answer to the user's question
+2. Maximum response length: 200 characters
+3. DO NOT include SQL queries, code snippets, or technical details
+4. DO NOT explain your reasoning or methodology
+5. Respond in the same language as the question (French or English)
+6. DO mention the source of information ("Open Food Facts" or "Canada Food Guide")
+
+Please follow these rules to ensure a consistent and effective search strategy.
+
+2025-02-28 18:23:52,402 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:23:57,257 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:23:57,260 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:23:57,265 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:24:02,581 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:24:02,584 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:24:02,589 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:24:08,619 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:24:08,622 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:24:08,640 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:24:15,379 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:24:15,383 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:24:15,411 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:24:19,289 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:24:19,292 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:24:19,382 - food_agent - evaluate_04._calculate_semantic_accuracy:922 - INFO - prompt: Compare these two responses and rate their semantic similarity from 0 to 1:
+Response #1: Selon les données, les 5 catégories d'aliments les plus courantes sont : 1) Aliments et boissons d'origine végétale (7 664 produits), 2) Aliments d'origine végétale (6 990 produits), 3) Snacks (3 999 produits), 4) Snacks sucrés (3 142 produits), et 5) Boissons (2 730 produits).
+Response #2: Selon Open Food Facts, les 5 catégories les plus courantes sont : Snacks (3999), Boissons (2728), Céréales et pommes de terre (2227), Produits laitiers (1511), et Viandes (622).
+
+Consider:
+1. Key information present in both responses
+2. Factual consistency
+3. Completeness of information
+
+Output format: 
+Return exactly one line containing only a number between 0 and 1, with no 
+explanation or additional text. For example: 0.75
+
+2025-02-28 18:24:19,385 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:24:26,572 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:24:26,576 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:24:26,579 - food_agent - evaluate_04.evaluate_all:1021 - INFO - Evaluating question 17/20
+2025-02-28 18:24:26,673 - food_agent - evaluate_04._search_relevant_columns:524 - INFO - Found 5 relevant columns for query: Quels sont les produits alimentaires à base de plantes disponibles dans la base de données?
+2025-02-28 18:24:26,673 - food_agent - evaluate_04._search_relevant_columns:526 - INFO - Column 'minerals_tags' with similarity 0.195
+2025-02-28 18:24:26,673 - food_agent - evaluate_04._search_relevant_columns:526 - INFO - Column 'traces_tags' with similarity 0.177
+2025-02-28 18:24:26,673 - food_agent - evaluate_04._search_relevant_columns:526 - INFO - Column 'link' with similarity 0.174
+2025-02-28 18:24:26,673 - food_agent - evaluate_04._search_relevant_columns:526 - INFO - Column 'packaging' with similarity 0.171
+2025-02-28 18:24:26,673 - food_agent - evaluate_04._search_relevant_columns:526 - INFO - Column 'allergens_tags' with similarity 0.162
+2025-02-28 18:24:26,673 - food_agent - evaluate_04._get_agent_response:562 - INFO - Getting agent response
+2025-02-28 18:24:26,673 - food_agent - evaluate_04._get_agent_response:624 - INFO - Additional notes for agent: You are a helpful assistant that answers questions about food products 
+using the Open Food Facts database.
+
+POTENTIALLY RELEVANT COLUMNS:
+The following columns have been identified through semantic search as potentially relevant, 
+with their similarity scores (higher means more likely relevant):
+
+
+
+SEARCH SEQUENCE RULES:
+1. ALWAYS start with database queries using the most relevant columns
+2. If initial query fails, try alternative database queries with different columns or approaches
+3. Only if database queries are unsuccessful, search the Canada Food Guide
+4. Document EVERY attempt in the steps array, including failures
+5. Never skip straight to Food Guide without trying database first
+6. Always include the source of the information in the answer ("Open Food Facts" or "Canada Food Guide")
+7. Always respond in the same language as the question (French or English)
+
+RESPONSE FORMAT REQUIREMENTS:
+1. Provide ONLY the natural language answer to the user's question
+2. Maximum response length: 200 characters
+3. DO NOT include SQL queries, code snippets, or technical details
+4. DO NOT explain your reasoning or methodology
+5. Respond in the same language as the question (French or English)
+6. DO mention the source of information ("Open Food Facts" or "Canada Food Guide")
+
+Please follow these rules to ensure a consistent and effective search strategy.
+
+2025-02-28 18:24:26,676 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:24:31,380 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:24:31,384 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:24:31,389 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:24:38,214 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:24:38,217 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:24:38,221 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:24:45,182 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:24:45,185 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:24:45,202 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:24:51,312 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:24:51,313 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:24:51,324 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:24:56,032 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:24:56,036 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:24:56,044 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:25:03,613 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:25:03,616 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:25:03,624 - sqlglot - helper.apply_index_offset:188 - INFO - Applying array index offset (-1)
+2025-02-28 18:25:03,625 - sqlglot - helper.apply_index_offset:188 - INFO - Applying array index offset (-1)
+2025-02-28 18:25:03,634 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:25:11,596 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:25:11,599 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:25:11,604 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:25:16,787 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:25:16,789 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:25:16,796 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:25:23,071 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:25:23,073 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:25:23,080 - sqlglot - helper.apply_index_offset:188 - INFO - Applying array index offset (-1)
+2025-02-28 18:25:23,093 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:25:29,308 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:25:29,311 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:25:29,362 - food_agent - evaluate_04._calculate_semantic_accuracy:922 - INFO - prompt: Compare these two responses and rate their semantic similarity from 0 to 1:
+Response #1: La base de données contient une large gamme de produits alimentaires à base de plantes, notamment des céréales pour le petit-déjeuner, des pâtes, des fruits en conserve, des boissons végétales comme le lait de coco et l'eau de coco, des en-cas comme des barres de céréales, et des aliments en conserve comme des piments verts. Cette sélection variée offre de nombreuses options pour ceux qui recherchent des alternatives végétales.
+Response #2: D'après Open Food Facts, on trouve des produits alimentaires à base de plantes incluant des légumes, des céréales, des fruits, des noix et des produits de boulangerie de marques comme Nestlé, Catelli et Tipiak.
+
+Consider:
+1. Key information present in both responses
+2. Factual consistency
+3. Completeness of information
+
+Output format: 
+Return exactly one line containing only a number between 0 and 1, with no 
+explanation or additional text. For example: 0.75
+
+2025-02-28 18:25:29,366 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:25:34,826 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:25:34,829 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:25:34,833 - food_agent - evaluate_04.evaluate_all:1021 - INFO - Evaluating question 18/20
+2025-02-28 18:25:34,936 - food_agent - evaluate_04._search_relevant_columns:524 - INFO - Found 5 relevant columns for query: Quels sont les produits alimentaires avec la catégorisation la plus détaillée dans la base de données Open Food Facts?
+2025-02-28 18:25:34,936 - food_agent - evaluate_04._search_relevant_columns:526 - INFO - Column 'categories' with similarity 0.479
+2025-02-28 18:25:34,936 - food_agent - evaluate_04._search_relevant_columns:526 - INFO - Column 'food_groups_tags' with similarity 0.464
+2025-02-28 18:25:34,936 - food_agent - evaluate_04._search_relevant_columns:526 - INFO - Column 'unknown_ingredients_n' with similarity 0.430
+2025-02-28 18:25:34,936 - food_agent - evaluate_04._search_relevant_columns:526 - INFO - Column 'ciqual_food_name_tags' with similarity 0.427
+2025-02-28 18:25:34,936 - food_agent - evaluate_04._search_relevant_columns:526 - INFO - Column 'ingredients_original_tags' with similarity 0.424
+2025-02-28 18:25:34,936 - food_agent - evaluate_04._get_agent_response:562 - INFO - Getting agent response
+2025-02-28 18:25:34,936 - food_agent - evaluate_04._get_agent_response:624 - INFO - Additional notes for agent: You are a helpful assistant that answers questions about food products 
+using the Open Food Facts database.
+
+POTENTIALLY RELEVANT COLUMNS:
+The following columns have been identified through semantic search as potentially relevant, 
+with their similarity scores (higher means more likely relevant):
+
+
+
+SEARCH SEQUENCE RULES:
+1. ALWAYS start with database queries using the most relevant columns
+2. If initial query fails, try alternative database queries with different columns or approaches
+3. Only if database queries are unsuccessful, search the Canada Food Guide
+4. Document EVERY attempt in the steps array, including failures
+5. Never skip straight to Food Guide without trying database first
+6. Always include the source of the information in the answer ("Open Food Facts" or "Canada Food Guide")
+7. Always respond in the same language as the question (French or English)
+
+RESPONSE FORMAT REQUIREMENTS:
+1. Provide ONLY the natural language answer to the user's question
+2. Maximum response length: 200 characters
+3. DO NOT include SQL queries, code snippets, or technical details
+4. DO NOT explain your reasoning or methodology
+5. Respond in the same language as the question (French or English)
+6. DO mention the source of information ("Open Food Facts" or "Canada Food Guide")
+
+Please follow these rules to ensure a consistent and effective search strategy.
+
+2025-02-28 18:25:34,940 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:25:40,167 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:25:40,169 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:25:40,174 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:25:47,644 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:25:47,646 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:25:47,651 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:25:52,359 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:25:52,360 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:25:52,375 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:25:58,088 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:25:58,090 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:25:58,139 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:26:03,207 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:26:03,209 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:26:03,289 - food_agent - evaluate_04._calculate_semantic_accuracy:922 - INFO - prompt:     Compare these two responses and rate their semantic similarity from 0 to 1:
+    Response #1: D'après les résultats de la requête, les produits alimentaires avec la catégorisation la plus détaillée incluent:
+1. 'Tomates italienne' avec 25 catégories
+2. 'Pains a Sandwich, Multigrains' avec 22 catégories
+3. 'La Rassembleuse' (un sirop) avec 22 catégories
+Ces produits ont une grande variété de tags, allant des catégories générales comme 'aliments d'origine végétale' aux spécificités comme 'sans OGM' ou 'biologique'.
+    Response #2: D'après Open Food Facts, les Tomates italiennes sont le produit le plus finement catégorisé avec 25 catégories distinctes, suivi par le Pain à Sandwich Multigrains et La Rassembleuse avec 22 catégories chacun.
+
+    Consider:
+    1. Key information present in both responses
+    2. Factual consistency
+    3. Completeness of information
+
+    Output format: 
+    Return exactly one line containing only a number between 0 and 1, with no 
+    explanation or additional text. For example: 0.75
+
+2025-02-28 18:26:03,292 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:26:09,384 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:26:09,388 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:26:09,392 - food_agent - evaluate_04.evaluate_all:1021 - INFO - Evaluating question 19/20
+2025-02-28 18:26:09,483 - food_agent - evaluate_04._search_relevant_columns:524 - INFO - Found 5 relevant columns for query: Quels produits alimentaires ont été vérifiés par plusieurs contrôleurs ?
+2025-02-28 18:26:09,483 - food_agent - evaluate_04._search_relevant_columns:526 - INFO - Column 'owner' with similarity 0.216
+2025-02-28 18:26:09,483 - food_agent - evaluate_04._search_relevant_columns:526 - INFO - Column 'brands' with similarity 0.206
+2025-02-28 18:26:09,483 - food_agent - evaluate_04._search_relevant_columns:526 - INFO - Column 'labels' with similarity 0.201
+2025-02-28 18:26:09,483 - food_agent - evaluate_04._search_relevant_columns:526 - INFO - Column 'link' with similarity 0.197
+2025-02-28 18:26:09,483 - food_agent - evaluate_04._search_relevant_columns:526 - INFO - Column 'additives_tags' with similarity 0.188
+2025-02-28 18:26:09,483 - food_agent - evaluate_04._get_agent_response:562 - INFO - Getting agent response
+2025-02-28 18:26:09,484 - food_agent - evaluate_04._get_agent_response:624 - INFO - Additional notes for agent: You are a helpful assistant that answers questions about food products 
+using the Open Food Facts database.
+
+POTENTIALLY RELEVANT COLUMNS:
+The following columns have been identified through semantic search as potentially relevant, 
+with their similarity scores (higher means more likely relevant):
+
+
+
+SEARCH SEQUENCE RULES:
+1. ALWAYS start with database queries using the most relevant columns
+2. If initial query fails, try alternative database queries with different columns or approaches
+3. Only if database queries are unsuccessful, search the Canada Food Guide
+4. Document EVERY attempt in the steps array, including failures
+5. Never skip straight to Food Guide without trying database first
+6. Always include the source of the information in the answer ("Open Food Facts" or "Canada Food Guide")
+7. Always respond in the same language as the question (French or English)
+
+RESPONSE FORMAT REQUIREMENTS:
+1. Provide ONLY the natural language answer to the user's question
+2. Maximum response length: 200 characters
+3. DO NOT include SQL queries, code snippets, or technical details
+4. DO NOT explain your reasoning or methodology
+5. Respond in the same language as the question (French or English)
+6. DO mention the source of information ("Open Food Facts" or "Canada Food Guide")
+
+Please follow these rules to ensure a consistent and effective search strategy.
+
+2025-02-28 18:26:09,487 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:26:15,598 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:26:15,602 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:26:15,607 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:26:19,695 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:26:19,698 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:26:19,703 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:26:25,020 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:26:25,025 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:26:25,064 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:26:28,911 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:26:28,914 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:26:28,969 - food_agent - evaluate_04._calculate_semantic_accuracy:922 - INFO - prompt: Compare these two responses and rate their semantic similarity from 0 to 1:
+Response #1: Le produit 'Chocolat Noir Pépites' (code 3179140923061) a été vérifié par au moins deux contrôleurs : pommeorange147 et october-food-facts.
+Response #2: D'après Open Food Facts, le Chocolat Noir Pépites est le seul produit vérifié par plusieurs contrôleurs (2 contrôleurs différents).
+
+Consider:
+1. Key information present in both responses
+2. Factual consistency
+3. Completeness of information
+
+Output format: 
+Return exactly one line containing only a number between 0 and 1, with no 
+explanation or additional text. For example: 0.75
+
+2025-02-28 18:26:28,974 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:26:38,231 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:26:38,233 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:26:38,239 - food_agent - evaluate_04.evaluate_all:1021 - INFO - Evaluating question 20/20
+2025-02-28 18:26:38,295 - food_agent - evaluate_04._search_relevant_columns:524 - INFO - Found 5 relevant columns for query: Quels sont quelques exemples de produits de boulangerie classés comme 'pain moyen' dans la base de données CIQUAL ?
+2025-02-28 18:26:38,295 - food_agent - evaluate_04._search_relevant_columns:526 - INFO - Column 'categories' with similarity 0.240
+2025-02-28 18:26:38,295 - food_agent - evaluate_04._search_relevant_columns:526 - INFO - Column 'categories_tags' with similarity 0.203
+2025-02-28 18:26:38,295 - food_agent - evaluate_04._search_relevant_columns:526 - INFO - Column 'packaging' with similarity 0.203
+2025-02-28 18:26:38,295 - food_agent - evaluate_04._search_relevant_columns:526 - INFO - Column 'labels' with similarity 0.199
+2025-02-28 18:26:38,295 - food_agent - evaluate_04._search_relevant_columns:526 - INFO - Column 'ciqual_food_name_tags' with similarity 0.179
+2025-02-28 18:26:38,295 - food_agent - evaluate_04._get_agent_response:562 - INFO - Getting agent response
+2025-02-28 18:26:38,295 - food_agent - evaluate_04._get_agent_response:624 - INFO - Additional notes for agent: You are a helpful assistant that answers questions about food products 
+using the Open Food Facts database.
+
+POTENTIALLY RELEVANT COLUMNS:
+The following columns have been identified through semantic search as potentially relevant, 
+with their similarity scores (higher means more likely relevant):
+
+
+
+SEARCH SEQUENCE RULES:
+1. ALWAYS start with database queries using the most relevant columns
+2. If initial query fails, try alternative database queries with different columns or approaches
+3. Only if database queries are unsuccessful, search the Canada Food Guide
+4. Document EVERY attempt in the steps array, including failures
+5. Never skip straight to Food Guide without trying database first
+6. Always include the source of the information in the answer ("Open Food Facts" or "Canada Food Guide")
+7. Always respond in the same language as the question (French or English)
+
+RESPONSE FORMAT REQUIREMENTS:
+1. Provide ONLY the natural language answer to the user's question
+2. Maximum response length: 200 characters
+3. DO NOT include SQL queries, code snippets, or technical details
+4. DO NOT explain your reasoning or methodology
+5. Respond in the same language as the question (French or English)
+6. DO mention the source of information ("Open Food Facts" or "Canada Food Guide")
+
+Please follow these rules to ensure a consistent and effective search strategy.
+
+2025-02-28 18:26:38,299 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:26:43,759 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:26:43,762 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:26:43,769 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:26:50,206 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:26:50,209 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:26:50,213 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:26:55,841 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:26:55,844 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:26:55,860 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:27:01,453 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:27:01,456 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:27:01,489 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:27:06,907 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:27:06,910 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:27:06,944 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:27:12,535 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:27:12,538 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:27:12,551 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:27:15,707 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:27:15,710 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:27:16,428 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://html.duckduckgo.com/html "HTTP/2 200 OK"
+2025-02-28 18:27:17,964 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://lite.duckduckgo.com/lite/ "HTTP/2 200 OK"
+2025-02-28 18:27:18,721 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:27:21,856 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:27:21,859 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:27:23,244 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://lite.duckduckgo.com/lite/ "HTTP/2 200 OK"
+2025-02-28 18:27:24,641 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://lite.duckduckgo.com/lite/ "HTTP/2 200 OK"
+2025-02-28 18:27:29,339 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:27:39,157 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 529 "
+2025-02-28 18:27:39,170 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:27:50,986 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:27:50,990 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:27:51,003 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:28:01,949 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:28:01,951 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:28:01,958 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:28:07,183 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:28:07,187 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:28:07,197 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:28:14,281 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:28:14,283 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:28:14,312 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:28:18,461 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:28:18,463 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:28:18,505 - food_agent - evaluate_04._calculate_semantic_accuracy:922 - INFO - prompt: Compare these two responses and rate their semantic similarity from 0 to 1:
+Response #1: La base de données contient 66 produits classés comme 'pain moyen'. Quelques exemples incluent : Unknown product, Unknown product, Unknown product.
+Response #2: D'après Open Food Facts et le Guide alimentaire canadien, nous ne pouvons pas fournir d'exemples de 'pain moyen' selon la classification CIQUAL, car cette classification n'est pas utilisée dans ces sources.
+
+Consider:
+1. Key information present in both responses
+2. Factual consistency
+3. Completeness of information
+
+Output format: 
+Return exactly one line containing only a number between 0 and 1, with no 
+explanation or additional text. For example: 0.75
+
+2025-02-28 18:28:18,509 - LiteLLM - utils._check_valid_arg:2944 - INFO - 
+LiteLLM completion() model= claude-3-5-sonnet-20241022; provider = anthropic
+2025-02-28 18:28:24,111 - httpx - _client._send_single_request:1025 - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-02-28 18:28:24,115 - LiteLLM - utils.wrapper:1120 - INFO - Wrapper: Completed Call, calling success_handler
+2025-02-28 18:28:24,119 - food_agent - evaluate_04._log_detailed_results:1144 - INFO - ====== EVALUATION REPORT - OPEN FOOD FACTS AGENT ======
+Date: 2025-02-28 18:28:24
+
+----- EXECUTION INFORMATION -----
+Language: fr
+Questions processed: 20
+LLM Model: anthropic/claude-3-5-sonnet-20241022
+Total time: 815.83s
+Average time per question: 40.79s
+
+----- PERFORMANCE METRICS -----
+SQL Accuracy: 47.50%
+Semantic Accuracy: 54.67%
+Sequence Respect: 100.00%
+Success Rate: 100.00%
+
+----- RESPONSE TIMES -----
+Minimum: 18.95s
+Maximum: 100.17s
+Average: 40.79s
+Median: 29.90s
+
+----- DETAILS BY QUESTION -----
+
+Question 1: Quels sont les produits alimentaires sans additifs...
+Metrics:
+- SQL Accuracy: 50.00%
+- Semantic Accuracy: 85.00%
+- Sequence Respect: 100.00%
+- Response Time: 49.11s
+Expected answer (excerpt): La base de données contient 5843 produits sans additifs, incluant des produits comme le sirop d'érable biologique du Vermont, le lait faible en gras, l'agave bleu biologique, et le lait de coco....
+Agent answer (excerpt): D'après Open Food Facts, plusieurs produits sans additifs sont disponibles, notamment des sirops d'érable et d'agave, des boissons végétales (lait de coco, eau de coco), et des assaisonnements naturels....
+Source: Open Food Facts
+Expected SQL:
+SELECT code, product_name FROM products WHERE additives_n = 0
+Agent SQL:
+
+SELECT 
+    unnest(list_filter(product_name, x -> x.lang == 'fr'))['text'] AS nom_produit,
+    brands,
+    categories_tags
+FROM products 
+WHERE (additives_tags = '[]' 
+    OR additives_tags IS NULL
+    OR array_length(additives_tags) = 0)
+AND list_filter(product_name, x -> x.lang == 'fr') IS NOT NULL
+LIMIT 10
+
+----------------------------------------
+
+Question 2: Quelle est la répartition des produits alimentaire...
+Metrics:
+- SQL Accuracy: 50.00%
+- Semantic Accuracy: 15.00%
+- Sequence Respect: 100.00%
+- Response Time: 32.41s
+Expected answer (excerpt): D'après les données, environ 62.99556681443952% des produits contiennent au moins un additif. La majorité des produits contiennent entre 0 et 4 additifs, avec une diminution progressive du nombre de produits à mesure que le nombre d'additifs augmente. Par exemple, 5843 produits ne contiennent aucun additif, tandis que 2946 produits contiennent un seul additif....
+Agent answer (excerpt): Selon Open Food Facts, 89,1% des produits ne contiennent aucun additif. Pour les autres : 2,3% ont 1 additif, 2,2% en ont 2, et environ 5% des produits contiennent 3 additifs ou plus....
+Source: Open Food Facts
+Expected SQL:
+SELECT additives_n, COUNT(*) as product_count FROM products WHERE additives_n IS NOT NULL GROUP BY additives_n ORDER BY additives_n
+Agent SQL:
+
+SELECT 
+    ARRAY_LENGTH(additives_tags) as additives_count,
+    COUNT(*) as product_count
+FROM products 
+WHERE additives_tags IS NOT NULL
+GROUP BY ARRAY_LENGTH(additives_tags)
+ORDER BY additives_count
+LIMIT 10
+
+----------------------------------------
+
+Question 3: Quels sont les produits alimentaires contenant le ...
+Metrics:
+- SQL Accuracy: 50.00%
+- Semantic Accuracy: 20.00%
+- Sequence Respect: 100.00%
+- Response Time: 18.95s
+Expected answer (excerpt): D'après notre base de données, les produits alimentaires contenant le plus grand nombre d'additifs sont les 'Raspberry Flavoured Mini Cakes' avec 24 additifs, suivis des 'Snowballs' et 'Kitchen Sink Brownies' avec 22 additifs chacun. Il est important de noter que tous les produits listés contiennent plus de 20 additifs....
+Agent answer (excerpt): Selon Open Food Facts, le produit contenant le plus d'additifs est 'ah Louis Super Sandwich' avec 26 additifs, suivi des 'Beignes mini donuts' avec 25 additifs....
+Source: Open Food Facts
+Expected SQL:
+SELECT code, product_name, additives_n FROM products WHERE additives_n > 10 ORDER BY additives_n DESC
+Agent SQL:
+
+SELECT 
+    unnest(list_filter(product_name, x -> x.lang == 'fr'))['text'] AS nom_produit,
+    array_length(additives_tags) as nombre_additifs
+FROM products 
+WHERE array_length(additives_tags) > 0
+    AND list_filter(product_name, x -> x.lang == 'fr') IS NOT NULL
+ORDER BY array_length(additives_tags) DESC
+LIMIT 5
+
+----------------------------------------
+
+Question 4: Quel est le pourcentage de produits alimentaires a...
+Metrics:
+- SQL Accuracy: 50.00%
+- Semantic Accuracy: 35.00%
+- Sequence Respect: 100.00%
+- Response Time: 26.67s
+Expected answer (excerpt): Selon les données d'Open Food Facts, 36.17% des produits alimentaires n'ont pas d'additifs, tandis que 63.83% en contiennent....
+Agent answer (excerpt): Selon Open Food Facts, 10.878462479694521% des produits contiennent des additifs, tandis que 89.12153752030548% n'en contiennent pas....
+Source: Open Food Facts
+Expected SQL:
+SELECT ROUND(COUNT(CASE WHEN additives_n = 0 THEN 1 END) * 100.0 / COUNT(*), 2) as percent_no_additives, ROUND(COUNT(CASE WHEN additives_n > 0 THEN 1 END) * 100.0 / COUNT(*), 2) as percent_with_additives FROM products WHERE additives_n IS NOT NULL
+Agent SQL:
+
+SELECT 
+    COUNT(*) as total_products,
+    COUNT(CASE WHEN additives_tags IS NOT NULL AND array_length(additives_tags) > 0 THEN 1 END) as with_additives
+FROM products
+LIMIT 10
+
+----------------------------------------
+
+Question 5: Quels sont les 10 additifs alimentaires les plus c...
+Metrics:
+- SQL Accuracy: 0.00%
+- Semantic Accuracy: 95.00%
+- Sequence Respect: 100.00%
+- Response Time: 26.04s
+Expected answer (excerpt): Les 10 additifs alimentaires les plus couramment utilisés sont : E330 (acide citrique), E322 (lécithines), E322i (lécithine), E500 (carbonates de sodium), E500ii (carbonate acide de sodium), E415 (gomme xanthane), E202 (sorbate de potassium), E412 (gomme de guar), E471 (mono- et diglycérides d'acides gras), et E407 (carraghénanes). L'additif le plus fréquent, E330, est présent dans 3517 produits de notre base de données....
+Agent answer (excerpt): Selon Open Food Facts, les additifs les plus courants sont: acide citrique, lécithine, carbonates de sodium, bicarbonate de sodium, gomme xanthane, sorbate de potassium, gomme de guar, mono et diglycérides d'acides gras, et carraghénanes....
+Source: Open Food Facts
+Expected SQL:
+WITH unnested AS ( SELECT unnest(additives_tags) as additive FROM products WHERE additives_tags IS NOT NULL ) SELECT additive, COUNT(*) as frequency FROM unnested GROUP BY additive ORDER BY frequency DESC LIMIT 10;
+Agent SQL:
+None
+----------------------------------------
+
+Question 6: Quels produits alimentaires contiennent de l'acide...
+Metrics:
+- SQL Accuracy: 50.00%
+- Semantic Accuracy: 45.00%
+- Sequence Respect: 100.00%
+- Response Time: 25.00s
+Expected answer (excerpt): La requête a trouvé 1000 produits contenant de l'acide citrique (E330). Parmi eux, on trouve des produits variés tels que du gingembre pour sushi, des plats préparés comme le macaroni au fromage, des fruits en conserve comme le litchi, des boissons gazeuses aromatisées, du bœuf séché (jerky), et des piments verts en dés. L'acide citrique est couramment utilisé comme conservateur et régulateur d'acidité dans divers types d'aliments....
+Agent answer (excerpt): Selon Open Food Facts, l'acide citrique (E330) est présent principalement dans les bonbons et confiseries, les boissons gazeuses et énergisantes, le houmous, et les chips. C'est un additif très courant....
+Source: Open Food Facts
+Expected SQL:
+SELECT code, product_name, additives_tags FROM products WHERE array_contains(additives_tags, 'en:e330') LIMIT 1000;
+Agent SQL:
+
+SELECT 
+    categories_tags,
+    COUNT(*) as count
+FROM products 
+WHERE list_contains(ingredients_tags, 'en:e330') 
+    OR list_contains(ingredients_tags, 'en:citric-acid')
+GROUP BY categories_tags
+ORDER BY count DESC
+LIMIT 10
+
+----------------------------------------
+
+Question 7: Quelle est la répartition des produits alimentaire...
+Metrics:
+- SQL Accuracy: 50.00%
+- Semantic Accuracy: 45.00%
+- Sequence Respect: 100.00%
+- Response Time: 31.40s
+Expected answer (excerpt): Selon les données, environ 48.59200720252088% des produits contiennent des additifs. La majorité des produits avec additifs en contiennent entre 1 et 5. Par exemple, 2170 produits contiennent 1 additif, tandis que 971 produits contiennent 5 additifs....
+Agent answer (excerpt): Selon Open Food Facts, 36% des produits ne contiennent aucun additif, 18% en contiennent un seul, et 13% en contiennent deux. Plus de 67% des produits contiennent 2 additifs ou moins....
+Source: Open Food Facts
+Expected SQL:
+SELECT array_length(additives_tags) as num_additives, COUNT(*) as product_count FROM products WHERE additives_tags IS NOT NULL GROUP BY array_length(additives_tags) ORDER BY num_additives;
+Agent SQL:
+
+SELECT 
+    additives_n,
+    COUNT(*) as product_count,
+    ROUND(COUNT(*) * 100.0 / SUM(COUNT(*)) OVER (), 1) as percentage
+FROM products 
+WHERE additives_n IS NOT NULL
+GROUP BY additives_n
+ORDER BY additives_n
+LIMIT 10
+
+----------------------------------------
+
+Question 8: Quel est l'allergène le plus courant dans les prod...
+Metrics:
+- SQL Accuracy: 50.00%
+- Semantic Accuracy: 40.00%
+- Sequence Respect: 100.00%
+- Response Time: 44.08s
+Expected answer (excerpt): L'allergène le plus courant dans les produits alimentaires est le Milk. Il est présent dans 4466 produits de notre base de données....
+Agent answer (excerpt): Selon Open Food Facts, le gluten est l'allergène le plus fréquent, présent dans 4 025 produits alimentaires....
+Source: Open Food Facts
+Expected SQL:
+WITH RECURSIVE unnested AS ( SELECT unnest(allergens_tags) as allergen FROM products WHERE allergens_tags IS NOT NULL ) SELECT allergen, COUNT(*) as count FROM unnested GROUP BY allergen ORDER BY count DESC LIMIT 10;
+Agent SQL:
+
+SELECT 
+    CASE 
+        WHEN list_contains(allergens_tags, 'en:gluten') THEN 'Gluten'
+        WHEN list_contains(allergens_tags, 'en:milk') THEN 'Lait'
+        WHEN list_contains(allergens_tags, 'en:eggs') THEN 'Oeufs'
+        WHEN list_contains(allergens_tags, 'en:nuts') THEN 'Fruits à coque'
+        WHEN list_contains(allergens_tags, 'en:soybeans') THEN 'Soja'
+    END as allergen,
+    COUNT(*) as count
+FROM products 
+WHERE allergens_tags IS NOT NULL
+    AND (
+        list_contains(allergens_tags, 'en:gluten') OR
+        list_contains(allergens_tags, 'en:milk') OR
+        list_contains(allergens_tags, 'en:eggs') OR
+        list_contains(allergens_tags, 'en:nuts') OR
+        list_contains(allergens_tags, 'en:soybeans')
+    )
+GROUP BY allergen
+ORDER BY count DESC
+LIMIT 5
+
+----------------------------------------
+
+Question 9: Quels produits alimentaires contiennent à la fois ...
+Metrics:
+- SQL Accuracy: 50.00%
+- Semantic Accuracy: 60.00%
+- Sequence Respect: 100.00%
+- Response Time: 70.56s
+Expected answer (excerpt): Nous avons trouvé 567 produits contenant à la fois du lait et des noix comme allergènes. Quelques exemples incluent: [{'lang': 'main', 'text': 'Cherry Dark Chocolate'}, {'lang': 'en', 'text': 'Cherry Dark Chocolate'}, {'lang': 'fr', 'text': 'Cerise et Chocolat Noir Barres tenders de céréales entières'}] (code: 0018627104858), [{'lang': 'main', 'text': 'Hazelnut Swiss Classic'}, {'lang': 'en', 'text': 'Hazelnut Swiss Classic'}, {'lang': 'fr', 'text': 'Chocolat lait noisettes'}] (code: 00374660198...
+Agent answer (excerpt): D'après Open Food Facts, on trouve ces allergènes notamment dans les chocolats (Lindt), les glaces (Häagen-Dazs), les barres céréales (Kashi) et les tartinades aux amandes et chocolat....
+Source: Open Food Facts
+Expected SQL:
+SELECT code, product_name, allergens_tags FROM products WHERE allergens_tags IS NOT NULL AND array_contains(allergens_tags, 'en:milk') AND array_contains(allergens_tags, 'en:nuts') LIMIT 1000;
+Agent SQL:
+
+SELECT 
+    product_name[1]['text'] as nom_produit,
+    brands as marques
+FROM products 
+WHERE (list_contains(allergens_tags, 'en:milk') OR list_contains(allergens_tags, 'fr:lait'))
+AND (list_contains(allergens_tags, 'en:nuts') OR list_contains(allergens_tags, 'fr:fruits-a-coque'))
+AND product_name[1] IS NOT NULL
+LIMIT 5
+
+----------------------------------------
+
+Question 10: Quels sont les produits alimentaires contenant le ...
+Metrics:
+- SQL Accuracy: 50.00%
+- Semantic Accuracy: 70.00%
+- Sequence Respect: 100.00%
+- Response Time: 33.25s
+Expected answer (excerpt): 
+D'après notre base de données, les produits contenant le plus grand nombre d'allergènes potentiels sont :
+1. Quesadillas au poulet (11 allergènes)
+2. General Tao chicken breast pieces (11 allergènes)
+3. Soupe aux nouilles Kimchi (11 allergènes)
+4. Kimchi Budak (11 allergènes)
+5. Tempura chicken breast fillets (10 allergènes)
+
+Ces produits contiennent souvent des allergènes communs tels que les crustacés, les œufs, le poisson, le gluten, le lait, la moutarde, les noix, les arachides, le sésame e...
+Agent answer (excerpt): Selon Open Food Facts, le Général Tao de Thaizone et la soupe Kimchi contiennent le plus d'allergènes (11), suivis par plusieurs plats asiatiques et préparés avec 9-10 allergènes potentiels....
+Source: Open Food Facts
+Expected SQL:
+SELECT code, product_name, allergens_tags FROM products WHERE array_length(allergens_tags) >= 3 ORDER BY array_length(allergens_tags) DESC LIMIT 1000;
+Agent SQL:
+
+SELECT 
+    unnest(list_filter(product_name, x -> x.lang == 'fr'))['text'] AS nom_produit,
+    array_length(allergens_tags) as nombre_allergenes,
+    allergens_tags
+FROM products 
+WHERE allergens_tags IS NOT NULL 
+    AND array_length(allergens_tags) > 0
+    AND array_length(list_filter(product_name, x -> x.lang == 'fr')) > 0
+ORDER BY array_length(allergens_tags) DESC
+LIMIT 10
+
+----------------------------------------
+
+Question 11: Quels sont quelques exemples de produits alimentai...
+Metrics:
+- SQL Accuracy: 50.00%
+- Semantic Accuracy: 65.00%
+- Sequence Respect: 100.00%
+- Response Time: 74.28s
+Expected answer (excerpt): D'après notre base de données, il existe de nombreux produits alimentaires associés à plusieurs marques. Par exemple, nous avons trouvé des produits liés à 'usda-organic-butternut-mountain-farm' et 'butternut-mountain-farm', ainsi que des produits associés à 'annie-s-homegrown' et 'annie-s'. Ces associations peuvent représenter des collaborations entre marques ou différentes lignes de produits d'une même entreprise....
+Agent answer (excerpt): D'après Open Food Facts, on trouve plusieurs exemples de co-marquage comme les glaces Ben & Jerry's avec différentes marques de confiserie, les produits Arm & Hammer, et les collaborations d'Oreo avec d'autres marques de snacks....
+Source: Open Food Facts
+Expected SQL:
+SELECT code, brands_tags FROM products WHERE array_length(brands_tags) > 1 LIMIT 1000
+Agent SQL:
+
+SELECT 
+    DISTINCT
+    unnest(list_filter(product_name, x -> x.lang == 'fr'))['text'] AS nom_produit,
+    brands AS marques
+FROM products 
+WHERE (
+    LOWER(brands) LIKE '%nestle%' AND LOWER(brands) LIKE '%kitkat%'
+    OR LOWER(brands) LIKE '%oreo%' AND LOWER(brands) NOT LIKE '%oreo%only%'
+    OR LOWER(brands) LIKE '%milka%' AND LOWER(brands) NOT LIKE '%milka%only%'
+    OR LOWER(brands) LIKE '%nutella%' AND LOWER(brands) NOT LIKE '%nutella%only%'
+)
+AND list_filter(product_name, x -> x.lang == 'fr') IS NOT NULL
+LIMIT 10
+
+----------------------------------------
+
+Question 12: Quels sont quelques exemples de produits de grigno...
+Metrics:
+- SQL Accuracy: 50.00%
+- Semantic Accuracy: 70.00%
+- Sequence Respect: 100.00%
+- Response Time: 28.40s
+Expected answer (excerpt): La base de données contient une variété de produits de grignotage, y compris des options sucrées et salées. Quelques exemples sont les gâteaux au chocolat, les craquelins Goldfish de différentes saveurs (comme le Cheddar et le Trio Fromage), et les barres Nature Valley Crunchy Oats 'N Honey....
+Agent answer (excerpt): D'après Open Food Facts, voici quelques exemples de produits de grignotage : chips, brownies, popcorn, bonbons gélifiés (oursons) et chocolat au lait....
+Source: Open Food Facts
+Expected SQL:
+SELECT code, product_name, categories FROM products WHERE categories LIKE '%Snacks%' LIMIT 1000
+Agent SQL:
+
+SELECT 
+    p.product_name[1]['text'] as nom_produit,
+    COUNT(*) as count
+FROM products p
+WHERE (list_contains(categories_tags, 'en:snacks')
+    OR list_contains(categories_tags, 'en:chips-and-fries')
+    OR list_contains(categories_tags, 'en:nuts-and-dried-fruits')
+    OR list_contains(categories_tags, 'en:biscuits-and-cakes'))
+AND array_length(product_name) > 0
+GROUP BY p.product_name[1]['text']
+HAVING count >= 3
+ORDER BY count DESC
+LIMIT 10
+
+----------------------------------------
+
+Question 13: Quelles sont les marques de produits alimentaires ...
+Metrics:
+- SQL Accuracy: 50.00%
+- Semantic Accuracy: 61.00%
+- Sequence Respect: 100.00%
+- Response Time: 25.82s
+Expected answer (excerpt): Les cinq marques de produits alimentaires les plus courantes dans notre base de données sont : Compliments, Great Value, Western Family, President's Choice....
+Agent answer (excerpt): Selon Open Food Facts, les marques les plus courantes sont Great Value, Compliments, President's Choice, Western Family, No Name, Irresistibles, Selection, Kirkland et Nestlé....
+Source: Open Food Facts
+Expected SQL:
+SELECT brands, COUNT(*) as product_count FROM products WHERE brands IS NOT NULL GROUP BY brands ORDER BY product_count DESC LIMIT 1000;
+Agent SQL:
+
+SELECT 
+    brands_tags[1] as brand,
+    COUNT(*) as count
+FROM products 
+WHERE brands_tags IS NOT NULL
+GROUP BY brands_tags[1]
+HAVING count > 100
+ORDER BY count DESC
+LIMIT 10
+
+----------------------------------------
+
+Question 14: Quels sont les principaux produits alimentaires bi...
+Metrics:
+- SQL Accuracy: 50.00%
+- Semantic Accuracy: 35.00%
+- Sequence Respect: 100.00%
+- Response Time: 67.32s
+Expected answer (excerpt): Les principaux produits alimentaires bilingues ou multi-marques dans la base de données sont :
+- No Name, Sans nom (79 produits)
+- Minçavi,Bravodeli (59 produits)
+- Sans nom, No Name (51 produits)
+- President's Choice,Le choix du président (28 produits)
+- Made Good, MadeGood (26 produits)
+...
+Agent answer (excerpt): D'après Open Food Facts, les principales marques bilingues sont Compliments, Great Value, President's Choice, Nestlé, Lindt et Cadbury, qui proposent leurs produits systématiquement en français et en anglais....
+Source: Open Food Facts
+Expected SQL:
+SELECT brands, COUNT(*) as count FROM products WHERE brands LIKE '%,%' GROUP BY brands ORDER BY count DESC LIMIT 1000;
+Agent SQL:
+
+SELECT 
+    brands,
+    list_filter(product_name, x -> x.lang = 'main')[0]['text'] AS nom_principal,
+    COUNT(*) as count,
+    array_length(product_name) as versions_count
+FROM products 
+WHERE brands IS NOT NULL 
+    AND brands != ''
+    AND array_length(product_name) >= 2
+    AND (
+        list_contains(categories_tags, 'en:beverages')
+        OR list_contains(categories_tags, 'en:snacks')
+        OR list_contains(categories_tags, 'en:dairies')
+    )
+GROUP BY brands, nom_principal, array_length(product_name)
+HAVING COUNT(*) > 5
+ORDER BY count DESC
+LIMIT 10
+
+----------------------------------------
+
+Question 15: Quels sont les différents produits de la marque Ne...
+Metrics:
+- SQL Accuracy: 50.00%
+- Semantic Accuracy: 60.00%
+- Sequence Respect: 100.00%
+- Response Time: 25.12s
+Expected answer (excerpt): La base de données contient 320 produits de la marque Nestlé. Parmi eux, on trouve des produits Nestlé, Nesquik, Gerber, et Maggi. Chaque produit est identifié par un code unique....
+Agent answer (excerpt): D'après Open Food Facts, Nestlé propose divers produits : boissons (Nesquik, Nescafé), collations (Coffee Crisp, Aero, Rolo), desserts (Drumstick), et aliments pour bébés (Gerber). Cette liste n'est pas exhaustive....
+Source: Open Food Facts
+Expected SQL:
+SELECT code, brands FROM products WHERE LOWER(brands) LIKE LOWER('%Nestlé%') LIMIT 1000;
+Agent SQL:
+
+SELECT 
+    unnest(list_filter(product_name, x -> x.lang == 'fr'))['text'] AS nom_produit,
+    brands AS marque,
+    categories_tags[1] AS categorie
+FROM products 
+WHERE LOWER(brands) LIKE '%nestl%'
+  AND list_filter(product_name, x -> x.lang == 'fr') IS NOT NULL
+LIMIT 10
+
+----------------------------------------
+
+Question 16: Quelles sont les 5 catégories d'aliments les plus ...
+Metrics:
+- SQL Accuracy: 50.00%
+- Semantic Accuracy: 62.50%
+- Sequence Respect: 100.00%
+- Response Time: 26.90s
+Expected answer (excerpt): Selon les données, les 5 catégories d'aliments les plus courantes sont : 1) Aliments et boissons d'origine végétale (7 664 produits), 2) Aliments d'origine végétale (6 990 produits), 3) Snacks (3 999 produits), 4) Snacks sucrés (3 142 produits), et 5) Boissons (2 730 produits)....
+Agent answer (excerpt): Selon Open Food Facts, les 5 catégories les plus courantes sont : Snacks (3999), Boissons (2728), Céréales et pommes de terre (2227), Produits laitiers (1511), et Viandes (622)....
+Source: Open Food Facts
+Expected SQL:
+SELECT unnested_category, COUNT(*) as product_count FROM products, UNNEST(categories_tags) as unnested_category GROUP BY unnested_category ORDER BY product_count DESC LIMIT 1000;
+Agent SQL:
+
+SELECT 
+    CASE 
+        WHEN list_contains(categories_tags, 'en:snacks') THEN 'Snacks'
+        WHEN list_contains(categories_tags, 'en:beverages') THEN 'Boissons'
+        WHEN list_contains(categories_tags, 'en:dairies') THEN 'Produits laitiers'
+        WHEN list_contains(categories_tags, 'en:cereals-and-potatoes') THEN 'Céréales et pommes de terre'
+        WHEN list_contains(categories_tags, 'en:fruits-and-vegetables') THEN 'Fruits et légumes'
+        WHEN list_contains(categories_tags, 'en:meats') THEN 'Viandes'
+        WHEN list_contains(categories_tags, 'en:seafood') THEN 'Fruits de mer'
+        WHEN list_contains(categories_tags, 'en:desserts') THEN 'Desserts'
+        WHEN list_contains(categories_tags, 'en:breads') THEN 'Pains'
+    END as category,
+    COUNT(*) as count
+FROM products 
+WHERE categories_tags IS NOT NULL
+GROUP BY category
+HAVING category IS NOT NULL
+ORDER BY count DESC
+LIMIT 5
+
+----------------------------------------
+
+Question 17: Quels sont les produits alimentaires à base de pla...
+Metrics:
+- SQL Accuracy: 50.00%
+- Semantic Accuracy: 80.00%
+- Sequence Respect: 100.00%
+- Response Time: 62.65s
+Expected answer (excerpt): La base de données contient une large gamme de produits alimentaires à base de plantes, notamment des céréales pour le petit-déjeuner, des pâtes, des fruits en conserve, des boissons végétales comme le lait de coco et l'eau de coco, des en-cas comme des barres de céréales, et des aliments en conserve comme des piments verts. Cette sélection variée offre de nombreuses options pour ceux qui recherchent des alternatives végétales....
+Agent answer (excerpt): D'après Open Food Facts, on trouve des produits alimentaires à base de plantes incluant des légumes, des céréales, des fruits, des noix et des produits de boulangerie de marques comme Nestlé, Catelli et Tipiak....
+Source: Open Food Facts
+Expected SQL:
+SELECT code, product_name, categories_tags FROM products WHERE array_contains(categories_tags, 'en:plant-based-foods-and-beverages') LIMIT 1000;
+Agent SQL:
+
+SELECT DISTINCT
+    categories_tags[1] as categorie,
+    brands as marques
+FROM products 
+WHERE (
+    list_contains(categories_tags, 'en:legumes')
+    OR list_contains(categories_tags, 'en:cereals-and-potatoes')
+    OR list_contains(categories_tags, 'en:fruits')
+    OR list_contains(categories_tags, 'en:nuts')
+    OR list_contains(categories_tags, 'en:plant-based-foods')
+)
+AND brands IS NOT NULL
+LIMIT 10
+
+----------------------------------------
+
+Question 18: Quels sont les produits alimentaires avec la catég...
+Metrics:
+- SQL Accuracy: 50.00%
+- Semantic Accuracy: 85.00%
+- Sequence Respect: 100.00%
+- Response Time: 28.28s
+Expected answer (excerpt): D'après les résultats de la requête, les produits alimentaires avec la catégorisation la plus détaillée incluent:
+    1. 'Tomates italienne' avec 25 catégories
+    2. 'Pains a Sandwich, Multigrains' avec 22 catégories
+    3. 'La Rassembleuse' (un sirop) avec 22 catégories
+    Ces produits ont une grande variété de tags, allant des catégories générales comme 'aliments d'origine végétale' aux spécificités comme 'sans OGM' ou 'biologique'....
+Agent answer (excerpt): D'après Open Food Facts, les Tomates italiennes sont le produit le plus finement catégorisé avec 25 catégories distinctes, suivi par le Pain à Sandwich Multigrains et La Rassembleuse avec 22 catégories chacun....
+Source: Open Food Facts
+Expected SQL:
+SELECT code, product_name, array_length(categories_tags) as category_count, categories_tags FROM products WHERE categories_tags IS NOT NULL ORDER BY array_length(categories_tags) DESC LIMIT 1000;
+Agent SQL:
+
+SELECT 
+    unnest(list_filter(product_name, x -> x.lang == 'fr'))['text'] AS nom_produit,
+    array_length(categories_tags) as nb_categories,
+    categories_tags
+FROM products 
+WHERE categories_tags IS NOT NULL
+    AND array_length(list_filter(product_name, x -> x.lang == 'fr')) > 0
+ORDER BY array_length(categories_tags) DESC
+LIMIT 5
+
+----------------------------------------
+
+Question 19: Quels produits alimentaires ont été vérifiés par p...
+Metrics:
+- SQL Accuracy: 50.00%
+- Semantic Accuracy: 50.00%
+- Sequence Respect: 100.00%
+- Response Time: 19.43s
+Expected answer (excerpt): Le produit 'Chocolat Noir Pépites' (code 3179140923061) a été vérifié par au moins deux contrôleurs : pommeorange147 et october-food-facts....
+Agent answer (excerpt): D'après Open Food Facts, le Chocolat Noir Pépites est le seul produit vérifié par plusieurs contrôleurs (2 contrôleurs différents)....
+Source: Open Food Facts
+Expected SQL:
+SELECT code, product_name, checkers_tags FROM products WHERE array_length(checkers_tags) > 1 LIMIT 1000
+Agent SQL:
+
+SELECT 
+    unnest(list_filter(product_name, x -> x.lang == 'fr'))['text'] AS nom_produit,
+    array_length(checkers_tags) AS nombre_controleurs,
+    checkers_tags
+FROM products 
+WHERE array_length(checkers_tags) > 1
+AND list_filter(product_name, x -> x.lang == 'fr') IS NOT NULL
+ORDER BY array_length(checkers_tags) DESC
+LIMIT 10
+
+----------------------------------------
+
+Question 20: Quels sont quelques exemples de produits de boulan...
+Metrics:
+- SQL Accuracy: 50.00%
+- Semantic Accuracy: 15.00%
+- Sequence Respect: 100.00%
+- Response Time: 100.17s
+Expected answer (excerpt): La base de données contient 66 produits classés comme 'pain moyen'. Quelques exemples incluent : Unknown product, Unknown product, Unknown product....
+Agent answer (excerpt): D'après Open Food Facts et le Guide alimentaire canadien, nous ne pouvons pas fournir d'exemples de 'pain moyen' selon la classification CIQUAL, car cette classification n'est pas utilisée dans ces sources....
+Source: Open Food Facts
+Expected SQL:
+SELECT code, product_name, ciqual_food_name_tags FROM products WHERE ciqual_food_name_tags[1] = 'bread-average' LIMIT 1000
+Agent SQL:
+
+SELECT 
+    unnest(list_filter(product_name, x -> x.lang == 'fr'))['text'] AS nom_produit,
+    labels_tags
+FROM products 
+WHERE list_contains(categories_tags, 'fr:pain')
+    AND (
+        array_contains(labels_tags, '%ciqual%')
+        OR array_contains(labels_tags, '%classification%')
+    )
+LIMIT 10
+
+----------------------------------------
+====== END OF EVALUATION REPORT ======

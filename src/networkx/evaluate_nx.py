@@ -126,8 +126,17 @@ class AgentPerformance:
         """Pourcentage de questions où l'agent n'a pas pu répondre."""
         if not self.results:
             return 0.0
-        # Ne compter comme échecs que les résultats avec une erreur explicite
-        return sum(1 for r in self.results if r.error is not None and not r.error.startswith("Score:")) / len(self.results) * 100
+        
+        failure_count = 0
+        for r in self.results:
+            if r.error is not None and not r.error.startswith("Score:"):
+                failure_count += 1
+            elif r.agent_answer:
+                # Vérifier que agent_answer est bien une chaîne de caractères
+                if isinstance(r.agent_answer, str) and ("Désolé" in r.agent_answer or "Sorry" in r.agent_answer):
+                    failure_count += 1
+        
+        return (failure_count / len(self.results)) * 100
     
     @property
     def avg_response_time(self) -> float:
@@ -1346,11 +1355,19 @@ def evaluate_agent(
         
         Règles importantes:
         1. Limite-toi aux informations présentes dans la base de données
-        2. Ne génère pas d'informations sans source
-        3. Réponds dans la même langue que la question
-        4. Garde ta réponse concise et factuelle
-        5. N'inclus pas les requêtes SQL dans ta réponse
-        6. Utilise uniquement les données de la base DuckDB (pas de recherche web)
+        2. Réponds TOUJOURS dans la même langue que la question
+        3. Garde ta réponse concise et factuelle
+        4. N'inclus pas les requêtes SQL dans ta réponse
+        5. Utilise uniquement les données de la base DuckDB (pas de recherche web)
+        6. Si tu ne trouves pas de réponse après plusieurs tentatives de requêtes, réponds explicitement:
+        - Si la question est en français: "Désolé, je ne peux pas obtenir ces informations de la base de données."
+        - Si la question est en anglais: "Sorry, I cannot obtain this information from the database."
+        7. Si les requêtes retournent des erreurs ou des résultats vides, n'invente pas de réponse.
+        Indique clairement:
+        - Si la question est en français: "Désolé, je ne peux pas obtenir ces informations de la base de données."
+        - Si la question est en anglais: "Sorry, I cannot obtain this information from the database."
+        8. Ne donne jamais d'informations approximatives ou générales quand tu n'as pas pu obtenir
+        des données spécifiques de la base de données
         """
     else: # agent_type == "networkx":
         instructions = """
@@ -1363,6 +1380,17 @@ def evaluate_agent(
         2. Détermine l'opération NetworkX la plus appropriée à utiliser
         3. Formule ta requête de manière précise en utilisant les bons paramètres
         4. Si la première requête échoue, essaie des variantes de recherche (synonymes, termes partiels)
+        
+        IMPORTANT - GESTION DES ÉCHECS:
+        - Si après plusieurs tentatives de requêtes tu ne trouves pas de réponse, réponds explicitement:
+        - Si la question est en français: "Désolé, je ne peux pas obtenir ces informations du graphe de données."
+        - Si la question est en anglais: "Sorry, I cannot obtain this information from the graph database."
+        - Si tes requêtes retournent des erreurs ou des résultats vides, ne génère pas d'informations 
+        approximatives. Indique clairement:
+        - Si la question est en français: "Désolé, je ne peux pas obtenir ces informations du graphe de données."
+        - Si la question est en anglais: "Sorry, I cannot obtain this information from the graph database."
+        - N'utilise jamais d'informations générales pour remplacer des données manquantes spécifiques
+        - Réponds TOUJOURS dans la même langue que la question
 
         CONSEILS POUR LES REQUÊTES ALLERGÈNES:
         - Pour rechercher des allergènes, utilise "CONTAINS_ALLERGEN" avec différentes formes du nom

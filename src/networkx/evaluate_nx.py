@@ -1371,7 +1371,7 @@ def evaluate_agent(
         """
     else: # agent_type == "networkx":
         instructions = """
-        Tu es un assistant spécialisé dans l'interrogation de la base de données GraphQL
+        Tu es un assistant spécialisé dans l'interrogation de la base de données NetworkX
         Open Food Facts. Ta mission est de répondre aux questions sur les produits alimentaires
         en utilisant l'outil execute_graph_query pour exécuter des requêtes sur le graphe.
 

@@ -1,0 +1,7 @@
+2025-04-08 14:26:24,798 - food_agent - evaluate_04.<module>:70 - INFO - General information about execution progress
+2025-04-08 14:26:24,798 - food_agent - evaluate_04.<module>:71 - INFO - Logging initialized. Writing to logs/evaluation_20250408_142624.log
+2025-04-08 14:26:24,798 - food_agent - evaluate_04.<module>:72 - WARNING - Non-critical warnings
+2025-04-08 14:26:24,798 - food_agent - evaluate_04.<module>:73 - ERROR - Important but non-fatal errors
+2025-04-08 14:26:24,798 - food_agent - evaluate_04.<module>:74 - CRITICAL - Critical errors that prevent evaluation
+2025-04-08 14:26:24,799 - food_agent - evaluate_04.main:1191 - INFO - Starting evaluation script
+2025-04-08 14:26:24,841 - root - evaluate_04.main:1257 - ERROR - Failed to initialize agent: IO Error: Cannot open file "/Users/alain/Workspace/GitHub/ift-6005/src/duckdb/../data/food_canada.duckdb": No such file or directory

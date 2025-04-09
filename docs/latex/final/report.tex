@@ -107,11 +107,11 @@ Agent conversationnel pour l'interrogation de la base de données Open Food Fact
 \newcommand{\matricules}{994 029 313}
 \newcommand{\destinataire}{Luc Lamontagne}
 \newcommand{\cours}{IFT-6005 - Projet intégrateur}
-\newcommand{\dateremise}{7 avril 2025}
+\newcommand{\dateremise}{9 avril 2025}
 
 \title{IFT-6005 - Projet intégrateur - H25 \\ ~ \\ Agent conversationnel pour l'interrogation de la base de données Open Food Facts}
 \author{Alain Boisvert}
-\date{2 mars 2025}
+\date{9 avril 2025}
 
 \begin{document}
 
@@ -188,6 +188,7 @@ La figure \ref{fig:architecture} présente l'architecture modulaire du système,
     \caption{Architecture du système d'agent conversationnel pour l'interrogation d'Open Food Facts}
     \label{fig:architecture}
 \end{figure}
+
 
 \subsection{Sélection des technologies}
 
@@ -596,6 +597,7 @@ J'ai limité les tests à 20 questions par modèle afin de réduire les coûts d
 \midrule
 Nombre de questions & 20 & 20 & 20 & 20 & 20 & 20 \\
 Précision d'exécution (EX) (\%) & 31.1 & 25.0 & 28.6 & 40.0 & 42.5 & 47.5 \\
+Exécution SQL sans échec (\%) & 40.0 & 35.0 & 55.0 & 60.0 & 90.0 & 85.0 \\
 Précision sémantique (PS) (\%) & 16.7 & 20.0 & 66.5 & 49.5 & 62.3 & 54.7 \\
 Respect de séquence (RS) (\%) & 100.0 & 100.0 & 100.0 & 100.0 & 100.0 & 100.0 \\
 Temps de réponse moyen (TRM) & 432~s & 273~s & 239~s & 201~s & 37~s & 41~s \\
@@ -613,17 +615,21 @@ Ici \detokenize{Llama3.1:8B} réfère au modèle \texttt{ollama/llama3.1:8B-inst
 
 
 
-Les principales observations sont les suivantes :
+
+Les principales observations tirées de cette évaluation se dégagent clairement :
 
 \begin{itemize}
-\item \textbf{Performance des modèles} : Claude 3.5 Sonnet surpasse significativement les modèles \detokenize{Llama3.1:8B} et \detokenize{Qwen2.5:7B} sur presque toutes les métriques, particulièrement en précision d'exécution (EX) et en temps de réponse moyen (TRM).
-\item \textbf{Différences linguistiques} : Les performances varient selon la langue. Les résultats en français montrent généralement une bonne précision d'exécution pour Claude 3.5 Sonnet et \detokenize{Qwen2.5:7B} par rapport à l'anglais, suggérant une bonne capacité de traitement multilingue.
-\item \textbf{Respect de séquence} : Tous les modèles obtiennent un score parfait (100~\%) sur le respect de séquence (RS), indiquant que la stratégie de recherche définie est bien suivie indépendamment du modèle utilisé.
-\item \textbf{Précision sémantique} : \detokenize{Qwen2.5:7B} surpasse remarquablement \detokenize{Llama3.1:8B} en précision sémantique, particulièrement en anglais (66,5\,\% contre 16,7\,\%), suggérant peut-être une meilleure compréhension du domaine des produits alimentaires.
+\item \textbf{Performance des modèles} : Claude 3.5 Sonnet démontre une supériorité marquée par rapport aux modèles \detokenize{Llama3.1:8B} et \detokenize{Qwen2.5:7B}, notamment en termes de précision d'exécution (EX) et de rapidité de traitement (TRM).
+
+\item \textbf{Différences linguistiques} : La performance varie selon la langue traitée. En français, Claude 3.5 Sonnet et \detokenize{Qwen2.5:7B} atteignent une meilleure précision d'exécution qu'en anglais, ce qui témoigne de leur robustesse multilingue.
+
+\item \textbf{Respect de séquence} : L'ensemble des modèles obtient un score parfait (100~\%) pour le respect de séquence (RS), confirmant que tous suivent rigoureusement la stratégie de recherche définie, quel que soit leur niveau de performance global.
+
+\item \textbf{Précision sémantique} : \detokenize{Qwen2.5:7B} surpasse nettement \detokenize{Llama3.1:8B} dans la précision sémantique, particulièrement en anglais (66,5\,\% contre 16,7\,\%), ce qui pourrait indiquer une meilleure compréhension contextuelle du domaine alimentaire.
 \end{itemize}
 
-Ces résultats démontrent clairement l'avantage d'utiliser un modèle commercial comme Claude 3.5 Sonnet pour des applications pratiques, bien que \detokenize{Qwen2.5:7B} offre une alternative gratuite intéressante avec des performances acceptables, particulièrement pour la compréhension sémantique.
-Ces évaluations s'effectuent dans le script \texttt{evaluation\_04.py}.
+Un aspect particulièrement révélateur émerge de l'analyse détaillée des résultats : l'écart significatif entre la génération de requêtes SQL syntaxiquement correctes et la production de résultats pertinents. Claude 3.5 Sonnet parvient à générer des requêtes exécutables dans 85-90\% des cas, mais seulement 42-47\% d'entre elles produisent des résultats véritablement utiles. Cette disparité suggère que la difficulté principale ne réside pas dans la maîtrise de la syntaxe SQL, mais plutôt dans la compréhension fine de la structure de données spécifique à Open Food Facts et dans la capacité à formuler des requêtes adaptées à ses particularités.
+
 
 
 %----------------------------------------------------------------------------------------
@@ -774,6 +780,9 @@ Ce choix m'a permis de créer et manipuler un graphe de produits alimentaires en
 \section{Création du graphe}
 \label{sec:creation-graphe}
 
+
+\subsection{Création du graphe de produits alimentaires}
+
 J'ai développé un script \texttt{create\_nx\_graph.py} pour générer un graphe NetworkX à partir du même fichier parquet utilisé pour la base DuckDB. Le fonctionnement de ce script se décompose en plusieurs étapes clés :
 
 \begin{enumerate}
@@ -835,8 +844,49 @@ CONTAINS\_ALLERGEN & 19\,323 \\
 \end{minipage}
 \end{table}
 
-Cette structure riche en relations permet de modéliser efficacement les multiples connexions entre produits, ingrédients, additifs et autres entités pertinentes pour répondre aux questions des utilisateurs.
+Ces tableaux représentent l'intégralité des types de nœuds et de relations implémentés dans le graphe.
 
+Cette structure relationnelle permet de modéliser efficacement les connexions entre produits, ingrédients, additifs et autres entités pertinentes pour répondre aux questions des utilisateurs.
+
+\newpage
+
+% 4. Clarification du processus d'embeddings (après tableau 4 dans section 11)
+\subsection{Génération des embeddings}
+
+Pour permettre la recherche sémantique dans le graphe, chaque produit est doté d'un embedding vectoriel. Ces vecteurs sont générés par la fonction \texttt{get\_product\_embedding\_text()} qui combine plusieurs attributs du produit en un texte descriptif structuré:
+
+\begin{lstlisting}[language=Python, caption=Génération du texte pour l'embedding]
+text_parts = []
+if product_name:
+    text_parts.append(f"Nom: {product_name}")
+if pd.notna(product.get('brands')):
+    text_parts.append(f"Marque: {product.get('brands')}")
+if pd.notna(product.get('categories')):
+    text_parts.append(f"Catégories: {product.get('categories')}")
+# [...autres attributs selon disponibilité...]
+text = " ".join(text_parts)
+\end{lstlisting}
+
+Ce texte est ensuite transmis au modèle SentenceTransformer (\texttt{all-MiniLM-L6-v2}) qui génère un vecteur d'embedding de dimension 384. Cette représentation vectorielle est stockée comme propriété du n\oe ud produit dans le graphe et permet d'effectuer des recherches par similarité sémantique.
+
+% 3. Ajout de la sous-section sur NetworkX (après le début de la section 11)
+\subsection{Interface avec NetworkX}
+
+L'agent NetworkX est un agent conversationnel implémenté avec SmolAgents, configuré spécifiquement pour interroger le graphe de connaissances construit avec NetworkX.
+
+Contrairement à DuckDB qui utilise SQL ou Neo4j qui utilise Cypher, NetworkX est une bibliothèque Python pure qui n'a pas de langage de requête dédié. Pour faciliter l'interaction entre l'agent et NetworkX, j'ai développé une couche d'abstraction (NetworkXQueryTool) qui permet à l'agent NetworkX de soumettre des requêtes standardisées au format JSON, comme dans cet exemple:
+
+\begin{lstlisting}[caption=Exemple de requête JSON pour NetworkX]
+{
+    "operation": "search_by_relation",
+    "relation_type": "CONTAINS_ADDITIF",
+    "relation_target": "E330",
+    "limit": 5
+}
+\end{lstlisting}
+
+
+Ces requêtes JSON sont ensuite interprétées et traduites en appels à l'API Python native de NetworkX. Cette approche, bien que simplifiant l'interaction avec le graphe, s'est révélée être une limitation importante pour l'agent, qui ne pouvait pas exploiter pleinement la flexibilité qu'offre le parcours de graphe.
 
 
 \section{Évaluation comparative entre DuckDB et NetworkX}
@@ -908,40 +958,44 @@ ROUGE-L moyen & 0,1767 & 0,1144 & 0,1077 & 0,1023 & 0,0624 & 0,0054 \\
 \section{Interprétation des résultats}
 \label{sec:interpretation}
 
+Le constat le plus frappant est la performance globalement décevante des deux agents. L'agent DuckDB, malgré ses meilleurs résultats, ne parvient à répondre correctement qu'à la moitié des questions au mieux (43\% en français, 50\% en anglais). L'agent NetworkX présente des résultats encore plus préoccupants, avec un taux de réussite de seulement 17\% en français et 26\% en anglais, ainsi qu'un taux d'échec avoisinant les 50\%. Ces performances sont nettement insuffisantes pour une application pratique.
 
-Le constat le plus frappant est la performance globalement décevante des deux agents, avec des taux de réussite particulièrement faibles pour l'agent NetworkX. Même l'agent DuckDB, qui obtient de meilleurs résultats, ne parvient à répondre correctement qu'à la moitié des questions au mieux (43\% en français, 50\% en anglais). Ces performances sont nettement insuffisantes pour une application pratique.
-
-L'agent NetworkX présente des résultats encore plus préoccupants, avec un taux de réussite de seulement 17\% en français et 26\% en anglais, ainsi qu'un taux d'échec avoisinant les 50\%. Cette performance très en deçà des attentes soulève des questions importantes sur l'implémentation de cette approche dans le cadre du projet.
-
-Au-delà de cette première observation, plusieurs tendances se dégagent des résultats :
+\newpage
+Plusieurs tendances se dégagent des résultats :
 
 \begin{itemize}
     \item \textbf{Écart significatif entre approches} : L'agent DuckDB surpasse systématiquement l'agent NetworkX sur toutes les métriques, avec un écart d'environ 24-26 points de pourcentage en taux de réussite.
     
-    \item \textbf{Différences linguistiques} : Les performances varient selon la langue. L'agent DuckDB obtient de meilleurs résultats en anglais qu'en français (50\% contre 43\%), tandis que cette tendance est également observée pour NetworkX mais avec une différence plus marquée (26\% contre 17\%).
+    \item \textbf{Différences linguistiques} : Les deux agents obtiennent de meilleurs résultats en anglais qu'en français, avec une différence plus marquée pour NetworkX (26\% contre 17\%) que pour DuckDB (50\% contre 43\%).
     
     \item \textbf{Temps de réponse} : Les temps de réponse sont comparables en français, mais l'agent NetworkX se montre sensiblement plus lent en anglais (+3,36 secondes en moyenne).
     
-    \item \textbf{Qualité des réponses} : Les scores combinés et individuels (LLM, BLEU, ROUGE) reflètent également la supériorité de l'agent DuckDB en termes de pertinence et précision des réponses.
+    \item \textbf{Qualité des réponses} : Les scores combinés et individuels (LLM, BLEU, ROUGE) confirment la supériorité de l'agent DuckDB en termes de pertinence et précision.
 \end{itemize}
 
-L'analyse des journaux d'exécution révèle plusieurs problèmes récurrents expliquant ces performances décevantes :
+L'analyse des journaux d'exécution révèle plusieurs problèmes récurrents : échecs sur des questions apparemment simples, réponses sous forme de code plutôt que de langage naturel, et réponses pertinentes mais structurellement différentes des références (pénalisées par les métriques d'évaluation automatiques).
 
-\begin{itemize}
-    \item Des échecs sur des questions apparemment simples
-    \item Des réponses sous forme de code (requêtes Cypher ou scripts Python) plutôt que de langage naturel
-    \item Des réponses pertinentes mais structurellement différentes des références, pénalisées par les métriques d'évaluation automatiques
-\end{itemize}
+\subsection{Analyse des facteurs limitant les performances de NetworkX}
 
-La différence marquée entre les deux agents s'explique principalement par l'approche adoptée pour leur implémentation :
+La différence marquée entre les deux agents s'explique principalement par leur implémentation :
 
 \begin{itemize}
     \item L'agent DuckDB génère directement des requêtes SQL, un format bien maîtrisé par les LLMs actuels et adapté à leur paradigme de génération de texte.
     
-    \item L'agent NetworkX doit utiliser des méthodes Python prédéfinies plutôt que de générer librement du code, ce qui restreint considérablement sa flexibilité et sa capacité à répondre à des questions diverses.
+    \item En revanche, l'agent NetworkX souffre de trois limitations principales :
+    
+    \begin{itemize}
+        \item \textbf{Architecture contraignante}: La couche d'abstraction JSON créée limite considérablement la flexibilité de l'agent, le restreignant à un ensemble prédéfini d'opérations qui réduit sa capacité à traiter des questions complexes.
+        
+        \item \textbf{Familiarité des LLM}: Les modèles de langage sont généralement bien entraînés sur SQL et Cypher (Neo4j), mais beaucoup moins sur l'API Python de NetworkX, compliquant la génération de requêtes pertinentes.
+        
+        \item \textbf{Méthode d'interaction}: L'interface abstraite imposée empêche l'agent d'exploiter pleinement les capacités natives de parcours de graphe, contrairement à une génération directe de code Python NetworkX.
+    \end{itemize}
 \end{itemize}
 
-Cette différence fondamentale d'approche constitue vraisemblablement le facteur déterminant qui explique l'écart de performance. Lors d'expérimentations préliminaires avec Neo4j, l'agent semblait mieux à même de générer des requêtes Cypher, ce qui suggère qu'une implémentation permettant à l'agent de formuler librement des requêtes de parcours de graphe aurait probablement donné de meilleurs résultats que l'approche par méthodes prédéfinies utilisée avec NetworkX.
+Lors d'expérimentations préliminaires avec Neo4j, l'agent semblait mieux à même de générer des requêtes Cypher, suggérant qu'une implémentation permettant à l'agent de formuler librement des requêtes de parcours de graphe aurait probablement donné de meilleurs résultats. Malheureusement, des limitations techniques m'ont contraint à migrer vers NetworkX, avec les conséquences observées sur les performances.
+
+
 
 \section{Limites et perspectives d'amélioration}
 \label{sec:limites}
@@ -951,7 +1005,7 @@ Plusieurs pistes pourraient améliorer significativement les performances des de
 \begin{itemize}
     \item \textbf{Modèles plus performants} : L'utilisation de Claude 3.7 ou GPT-4 pourrait améliorer la compréhension des questions et la génération de requêtes.
     
-    \item \textbf{Augmentation du paramètre \texttt{max\_steps}} : Actuellement limité à 5 pour réduire les coûts d'utilisation de l'API Claude Haiku, ce paramètre définit le nombre maximal d'étapes que l'agent peut effectuer pour résoudre une tâche. Cette limite restreint la capacité de l'agent à explorer et raffiner ses approches face à des requêtes complexes, surtout lorsque plusieurs étapes intermédiaires sont nécessaires.
+    \item \textbf{Augmentation du paramètre \texttt{max\_steps}} : Limité à 5 pour réduire les coûts d'utilisation de l'API Claude Haiku, ce paramètre définit le nombre maximal d'étapes que l'agent peut effectuer pour résoudre une tâche. Cette limite restreint la capacité de l'agent à explorer et raffiner ses approches face à des requêtes complexes, surtout lorsque plusieurs étapes intermédiaires sont nécessaires.
     
     
     \item \textbf{Liberté de génération pour NetworkX} : Permettre à l'agent de générer directement des requêtes de parcours de graphe plutôt que de le restreindre à des méthodes prédéfinies.
@@ -966,12 +1020,23 @@ Plusieurs pistes pourraient améliorer significativement les performances des de
 \section{Conclusion de la partie 2}
 \label{sec:conclusion-partie2}
 
+
 Cette exploration d'une approche basée sur les graphes pour l'interrogation de la base Open Food Facts a mis en lumière à la fois le potentiel et les défis de cette méthode. Si les résultats empiriques favorisent clairement l'approche relationnelle avec DuckDB, il serait prématuré de conclure à la supériorité intrinsèque de cette dernière.
 
 Les performances décevantes de l'agent NetworkX semblent davantage liées à des choix d'implémentation qu'à des limitations fondamentales de l'approche par graphe. La recherche récente continue de souligner les avantages potentiels des graphes de connaissances pour enrichir le contexte sémantique des requêtes en langage naturel.
 
-L'ensemble du code source de ce projet, incluant les scripts de création du graphe et d'évaluation, est disponible publiquement dans le dépôt GitHub \url{https://github.com/boisalai/ift-6005}.
+Cette expérience m'a permis de tirer plusieurs enseignements importants:
+\begin{itemize}
+    \item \textbf{Impact du choix du modèle}: L'utilisation d'un LLM performant comme Claude 3.5 Sonnet améliore considérablement la qualité des requêtes générées et des réponses fournies.
+    
+    \item \textbf{Flexibilité des requêtes}: Les agents LLM sont plus performants lorsqu'ils peuvent générer librement leurs requêtes dans un langage qu'ils maîtrisent déjà (SQL, Cypher) plutôt que d'être contraints par une interface abstraite.
+    
+    \item \textbf{Importance de la documentation}: Une documentation détaillée de la structure des données et des exemples de requêtes est essentielle pour guider efficacement les agents.
+    
+    \item \textbf{Structure des données}: Il est préférable de reconstruire directement dans la base de données les relations entre les champs selon leur taxonomie, plutôt que de s'appuyer uniquement sur une documentation externe.
+\end{itemize}
 
+L'ensemble du code source de ce projet, incluant les scripts de création du graphe et d'évaluation, est disponible publiquement dans le dépôt GitHub \url{https://github.com/boisalai/ift-6005}.
 
 
 %----------------------------------------------------------------------------------------
